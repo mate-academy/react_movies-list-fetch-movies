@@ -1,84 +1,142 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { FormField } from '../FormField';
+import { CONTROLS_NAMES, FORM_CONFIG } from '../../constants/newMovieForm';
 
-const initialState = {
-  title: '',
-  description: '',
-  imgUrl: '',
-  imdbUrl: '',
-  imdbId: '',
-};
+const controlsInitialState = CONTROLS_NAMES.reduce((acc, name) => {
+  const { values, errors, touched } = acc;
+
+  return {
+    values: {
+      ...values,
+      [name]: '',
+    },
+    errors: {
+      ...errors,
+      [name]: null,
+    },
+    touched: {
+      ...touched,
+      [name]: false,
+    },
+  };
+}, {
+  values: {},
+  errors: {},
+  touched: {},
+});
 
 export class NewMovie extends Component {
-  state = initialState;
+  state = {
+    ...controlsInitialState,
+    isValid: true,
+  };
+
+  componentDidMount() {
+    const { errors, isValid } = this.validate();
+
+    this.setState({ errors, isValid });
+  }
 
   handleSubmit = (event) => {
     event.preventDefault();
 
-    this.props.onAdd(this.state);
+    const { isValid, values } = this.state;
 
-    this.setState(initialState);
+    if (!isValid) {
+      return;
+    }
+
+    this.props.onAdd(values);
+
+    this.setState(controlsInitialState);
   };
 
   handleChange = ({ target }) => {
-    this.setState({
-      [target.name]: target.value,
+    this.setState(prevState => ({
+      values: {
+        ...prevState.values,
+        [target.name]: target.value,
+      },
+    }));
+  };
+
+  handleBlur = ({ target: { name, value } }) => {
+    this.setState((prevState) => {
+      const validator = FORM_CONFIG[name].validate;
+      const error = validator
+        ? validator(name, value)
+        : null;
+      const newErrors = {
+        ...prevState.errors,
+        [name]: error,
+      };
+      const isValid = Object.values(newErrors)
+        .every(err => !err);
+
+      return {
+        touched: {
+          ...prevState.touched,
+          [name]: true,
+        },
+        errors: newErrors,
+        isValid,
+      };
     });
+  };
+
+  validate = () => {
+    const { values } = this.state;
+    const errorsEntries = CONTROLS_NAMES.map((name) => {
+      const validator = FORM_CONFIG[name].validate;
+      const error = validator
+        ? validator(name, values[name])
+        : null;
+
+      return [name, error];
+    });
+    const isValid = errorsEntries.every(([name, error]) => !error);
+
+    return {
+      errors: Object.fromEntries(errorsEntries),
+      isValid,
+    };
   };
 
   render() {
     const {
-      title,
-      description,
-      imgUrl,
-      imdbUrl,
-      imdbId,
+      values,
+      errors,
+      touched,
+      isValid,
     } = this.state;
 
     return (
       <form onSubmit={this.handleSubmit}>
-        <FormField
-          value={title}
-          name="title"
-          placeholder="Input movie title"
-          label="Title"
-          onChange={this.handleChange}
-        />
-        <FormField
-          value={description}
-          name="description"
-          placeholder="Input movie description"
-          label="Description"
-          onChange={this.handleChange}
-        />
-        <FormField
-          value={imgUrl}
-          name="imgUrl"
-          placeholder="Paste image url"
-          label="Image url"
-          onChange={this.handleChange}
-        />
-        <FormField
-          value={imdbUrl}
-          name="imdbUrl"
-          placeholder="Paste IMDB url"
-          label="IMDB url"
-          onChange={this.handleChange}
-        />
-        <FormField
-          value={imdbId}
-          name="imdbId"
-          placeholder="Enter IMDB id"
-          label="IMDB id"
-          onChange={this.handleChange}
-        />
+        {CONTROLS_NAMES.map((name) => {
+          const { label, placeholder } = FORM_CONFIG[name];
+
+          return (
+            <FormField
+              key={name}
+              value={values[name]}
+              name={name}
+              placeholder={placeholder}
+              label={label}
+              onChange={this.handleChange}
+              onBlur={this.handleBlur}
+              touched={touched[name]}
+              error={errors[name]}
+            />
+          );
+        })}
 
         <button
           type="submit"
           className="button is-primary"
+          disabled={!isValid}
         >
-          Add movie
+          Add Movie
         </button>
       </form>
     );

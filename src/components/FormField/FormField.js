@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
 import './FormField.scss';
 
 export const FormField = (props) => {
@@ -7,10 +8,15 @@ export const FormField = (props) => {
     name,
     label,
     onChange,
+    onBlur,
     placeholder,
     value,
     type,
+    touched,
+    error,
   } = props;
+
+  const inputClass = cx('input', { 'is-danger': touched && !!error });
 
   return (
     <div className="field">
@@ -22,13 +28,18 @@ export const FormField = (props) => {
         <input
           name={name}
           id={name}
-          className="input"
+          className={inputClass}
           type={type}
           placeholder={placeholder}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
         />
       </div>
+
+      {touched && error && (
+        <p className="help is-danger">{error}</p>
+      )}
     </div>
   );
 };
@@ -38,11 +49,15 @@ FormField.propTypes = {
   value: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  onBlur: PropTypes.func.isRequired,
+  touched: PropTypes.bool.isRequired,
   type: PropTypes.string,
+  error: PropTypes.string,
   placeholder: PropTypes.string,
 };
 
 FormField.defaultProps = {
   type: 'text',
   placeholder: 'Type text here',
+  error: '',
 };

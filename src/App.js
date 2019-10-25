@@ -19,6 +19,7 @@ export class App extends Component {
     return (
       <div className="page">
         <div className="page-content">
+          { /* Render SearchMovie component here */ }
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">

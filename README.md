@@ -1,6 +1,14 @@
 # Base template for React
 
 ## Task
+Implement SearchMovie component to fetch movies data from API.
+Use http://www.omdbapi.com/ (You need to register get API key)
+1. Create component `SearchMovie` which should have text field and  button
+1. When user enter movie title and click on search button, request to `http://www.omdbapi.com/?apikey=[yourkey]&t=:title` should be sent.
+1. If film has been found map data to same object as in `NewMovie` component.
+Pass this object to `onAdd` callback from props. Clear input value.
+1. If film is not found show error message below input. Clear error after next submit.
+1. (\*) Modify `addMovie` in `App` to ignore films with imdbId which exists.
 
 ## Workflow
 

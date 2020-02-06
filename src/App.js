@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import './App.scss';
+import { MovieCard } from './components/MovieCard';
 import { MoviesList } from './components/MoviesList';
-import { NewMovie } from './components/NewMovie';
-import data from './data.json';
+import { FindMovie } from './components/FindMovie';
+import data from './api/movies.json';
 
 export class App extends Component {
   state = {
     movies: data,
-  };
-
-  addMovie = (movie) => {
-    this.setState(({ movies }) => ({ movies: [...movies, movie] }));
   };
 
   render() {
@@ -19,11 +16,11 @@ export class App extends Component {
     return (
       <div className="page">
         <div className="page-content">
-          { /* Render SearchMovie component here */ }
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <NewMovie onAdd={this.addMovie} />
+          <FindMovie />
+          <MovieCard {...movies[0]} />
         </div>
       </div>
     );

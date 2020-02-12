@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.scss';
-import { MovieCard } from './components/MovieCard';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
@@ -20,7 +19,6 @@ export class App extends Component {
         </div>
         <div className="sidebar">
           <FindMovie />
-          <MovieCard {...movies[0]} />
         </div>
       </div>
     );

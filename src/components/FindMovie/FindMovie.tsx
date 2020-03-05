@@ -5,7 +5,7 @@ import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 
-const URL = 'http://www.omdbapi.com/?apikey=5c8f0f93&t=';
+const URL = 'https://www.omdbapi.com/?apikey=5c8f0f93&t=';
 const URL_IMDB = 'https://www.imdb.com/title/';
 
 interface Props {

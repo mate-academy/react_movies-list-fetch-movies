@@ -15,7 +15,7 @@ export const FindMovie: FC<Props> = (props) => {
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [isEnter, setIsEnter] = useState(false);
 
-  const URL = 'http://www.omdbapi.com/?apikey=bc4ea364&t=';
+  const URL = 'https://www.omdbapi.com/?apikey=bc4ea364&t=';
   const URL_IMDB = 'https://www.imdb.com/title/';
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {

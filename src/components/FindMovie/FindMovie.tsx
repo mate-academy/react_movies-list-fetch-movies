@@ -79,7 +79,7 @@ export const FindMovie = ({ addNewMovie, movies }: Props) => {
             />
           </div>
 
-          <p className="help is-danger" style={{ display: isError ? 'inline' : 'none' }}>
+          <p className="help is-danger" style={{ display: errorMessage ? 'inline' : 'none' }}>
             {errorMessage}
           </p>
         </div>

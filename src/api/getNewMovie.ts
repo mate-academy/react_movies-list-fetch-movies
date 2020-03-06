@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://www.omdbapi.com/?apikey=7d946cd0&t=';
+import { API_BASE_URL } from '../constants/getMovieConstants';
 
 export async function getNewMovie(movie: string): Promise<NewMovie> {
   const response = await fetch(`${API_BASE_URL}${movie}`);

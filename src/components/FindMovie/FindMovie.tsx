@@ -1,6 +1,7 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, FC } from 'react';
 import './FindMovie.scss';
 import { getNewMovie } from '../../api/getNewMovie';
+import { TITLE_BASE_URL } from '../../constants/getMovieConstants';
 
 import { MovieCard } from '../MovieCard';
 
@@ -9,7 +10,11 @@ interface Props {
   movies: Movie[];
 }
 
-export const FindMovie = ({ addNewMovie, movies }: Props) => {
+const checkSameMovie = (movies: Movie[], newMovie: Movie): boolean => {
+  return movies.every(movie => movie.imdbId !== newMovie.imdbId);
+};
+
+export const FindMovie: FC<Props> = ({ addNewMovie, movies }) => {
   const [filedValue, setFiledValue] = useState('');
   const [isLoad, setIsLoad] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -27,10 +32,9 @@ export const FindMovie = ({ addNewMovie, movies }: Props) => {
           title: movie.Title,
           description: movie.Plot,
           imgUrl: movie.Poster,
-          imdbUrl: movie.Year,
+          imdbUrl: `${TITLE_BASE_URL}${movie.imdbID}`,
           imdbId: movie.imdbID,
         });
-
         setIsError(false);
         setIsLoad(true);
         setErorMessage('');
@@ -38,22 +42,22 @@ export const FindMovie = ({ addNewMovie, movies }: Props) => {
       .catch(() => {
         setIsError(true);
         setIsLoad(false);
-        setErorMessage('we dont find any movie');
+        setErorMessage('we didn\'t find any movie');
       });
   };
 
   const addMovie = () => {
-    const id = movies.map(movie => movie.imdbId);
+    // const id = movies.map(movie => movie.imdbId);
 
     setFiledValue('');
 
     if (isLoad) {
-      if (!id.includes(newMovie.imdbId)) {
+      if (checkSameMovie(movies, newMovie)) {
         addNewMovie(newMovie);
         setNewMovie({});
         setIsLoad(false);
       } else {
-        setErorMessage('Movie has been add already');
+        setErorMessage('Movie has been added already');
       }
     } else {
       setErorMessage('There are not movie for adding');

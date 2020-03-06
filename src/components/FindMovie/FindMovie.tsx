@@ -113,7 +113,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
       <div className="container">
         <h2 className="title">Preview</h2>
         {replay && <p className="help is-danger">
-          This movie is already on the list.
+          This movie is already in the list.
         </p>}
         {newMovie && <MovieCard {...newMovie} />}
       </div>

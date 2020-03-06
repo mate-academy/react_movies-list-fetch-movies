@@ -4,11 +4,21 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-export class App extends Component {
+interface State {
+  movies: Movie[];
+}
+
+export class App extends Component<{}, State> {
   state = {
     movies: data,
   };
 
+  addMovie = (movie: Movie): void => {
+    this.setState(prevState => ({
+      movies: [...prevState.movies, movie],
+    }))
+  }
+ 
   render() {
     const { movies } = this.state;
 
@@ -18,7 +28,7 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addMovie={this.addMovie} />
         </div>
       </div>
     );

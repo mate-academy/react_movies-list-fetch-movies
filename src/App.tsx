@@ -1,26 +1,37 @@
-import React, { Component } from 'react';
-import './App.scss';
-import { MoviesList } from './components/MoviesList';
-import { FindMovie } from './components/FindMovie';
-import data from './api/movies.json';
+import React, { useState, FC } from 'react';
 
-export class App extends Component {
-  state = {
-    movies: data,
+import { FindMovie } from './components/FindMovie';
+import { MoviesList } from './components/MoviesList';
+
+import data from './api/movies.json';
+import { MovieForApp } from './constants/types';
+import './App.scss';
+
+
+export const App: FC = () => {
+  const [movies, setMovies] = useState<MovieForApp[]>(data);
+
+  const addMovie = (newMovie: MovieForApp): void => {
+    const index = movies.findIndex(
+      movie => movie.imdbId === newMovie.imdbId,
+    );
+
+    if (index === -1) {
+      setMovies(prevMovies => ([
+        ...prevMovies,
+        newMovie,
+      ]));
+    }
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie onMovieAdd={addMovie} />
+      </div>
+    </div>
+  );
+};

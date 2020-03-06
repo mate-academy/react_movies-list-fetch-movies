@@ -3,6 +3,9 @@ import cx from 'classnames';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
+const URL = 'https://www.omdbapi.com/?apikey=bc4ea364&t=';
+const URL_IMDB = 'https://www.imdb.com/title/';
+
 interface Props {
   addNewMovie: any;
   movies: Movie[];
@@ -15,9 +18,6 @@ export const FindMovie: FC<Props> = (props) => {
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [isEnter, setIsEnter] = useState(false);
 
-  const URL = 'https://www.omdbapi.com/?apikey=bc4ea364&t=';
-  const URL_IMDB = 'https://www.imdb.com/title/';
-
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
@@ -27,15 +27,14 @@ export const FindMovie: FC<Props> = (props) => {
 
   const handleFindFilm = async () => {
     const response = await fetch(`${URL}${text}`);
-    const filmFromServer = await response.json();
-
     const {
       Title: title,
       Plot: description,
       Poster: imgUrl,
       imdbID: imdbId,
       Response: isFound,
-    } = filmFromServer;
+    } = await response.json();
+
     const movie: Movie = {
       title,
       description,
@@ -47,9 +46,9 @@ export const FindMovie: FC<Props> = (props) => {
 
     if (movies.every(film => film.imdbId !== imdbId) && check) {
       setNewMovie(movie);
-
     } else {
       setIsEnter(true);
+      setNewMovie(null);
     }
   };
 
@@ -85,7 +84,7 @@ export const FindMovie: FC<Props> = (props) => {
           </div>
 
           <p className={cx('help', { 'is-danger': isEnter })}>
-            {isEnter ? ('Can&apos;t find a movie with such a title') : (' ')}
+            {isEnter ? "Can't find a movie with such a title" : (' ')}
           </p>
         </div>
 

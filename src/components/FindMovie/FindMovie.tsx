@@ -60,6 +60,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
       !replay && addMovie(newMovie);
       setQueryMovie('');
     }
+    setNewMovie(null);
   };
 
   return (

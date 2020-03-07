@@ -25,13 +25,21 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     getMovie(query)
       .then(movieFromServer => {
         const {
-          Title: title, Plot: description, Poster: imgUrl, imdbID: imdbId, Response,
+          Title: title,
+          Plot: description,
+          Poster: imgUrl,
+          imdbID: imdbId,
+          Response,
         } = movieFromServer;
 
         if (Response === 'True') {
           const imdbUrl = URL_IMDB + imdbId;
           const newMoovie = {
-            title, description, imgUrl, imdbId, imdbUrl,
+            title,
+            description,
+            imgUrl,
+            imdbId,
+            imdbUrl,
           };
 
           setMovie(newMoovie);

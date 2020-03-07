@@ -4,9 +4,7 @@ import React, {
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
-
-const MOVIES_URL = 'https://www.omdbapi.com/?apikey=4a842ba4&t=';
-const URL_IMDB = 'https://www.imdb.com/title/';
+import { MOVIES_URL, URL_IMDB } from '../../constans';
 
 interface Props {
   addMovie(movie: Movie): void;
@@ -30,16 +28,21 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     if (!movie) {
       return;
     }
+
     setQuery('');
     addMovie(movie);
     setMovie(null);
   };
 
-  const handleFindMovie = () => {
-    fetch(MOVIES_URL + query)
+  const getMovie = (searchValue: string) => {
+    return fetch(MOVIES_URL + searchValue)
       .then(movieFromServer => {
         return movieFromServer.json();
-      })
+      });
+  };
+
+  const handleFindMovie = () => {
+    getMovie(query)
       .then(findMovie => {
         const {
           Title: title,

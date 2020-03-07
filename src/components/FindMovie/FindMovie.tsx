@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, ChangeEvent,
+  FC, useState, ChangeEvent, FormEvent,
 } from 'react';
 import './FindMovie.scss';
 
@@ -41,7 +41,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       });
   };
 
-  const handleAdd = () => {
+  const handleAdd = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (movie) {
       addMovie(movie);
       setQuery('');
@@ -55,7 +56,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleAdd}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
           Movie title
@@ -93,8 +94,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
-              onClick={handleAdd}
+              type="submit"
               className="button is-primary"
             >
             Add to the list

@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?apikey=a91b1362&t=';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=a91b1362&t=';
 
 export const getFilm = async (filmTitle: string): Promise<Movie> => {
   const targetUrl = BASE_URL + filmTitle;

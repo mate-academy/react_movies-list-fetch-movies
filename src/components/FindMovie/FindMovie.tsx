@@ -28,27 +28,32 @@ export const FindMovie: FC<Props> = ({ addNewMovie }) => {
   };
 
   const handleSearch = async () => {
-    const movieRequest = await getMovieData(titleMovie);
+    try {
+      const movieRequest = await getMovieData(titleMovie);
 
-    setNewMovie(null);
+      setNewMovie(null);
 
-    if (movieRequest.Response === 'True') {
-      const imdbUrl = `${URL_IMDB}${movieRequest.imdbID}`;
+      if (movieRequest.Response === 'True') {
+        const imdbUrl = `${URL_IMDB}${movieRequest.imdbID}`;
 
-      const movie: Movie = {
-        title: movieRequest.Title,
-        description: movieRequest.Plot,
-        imgUrl: movieRequest.Poster,
-        imdbUrl,
-        imdbId: movieRequest.imdbID,
-      };
+        const movie: Movie = {
+          title: movieRequest.Title,
+          description: movieRequest.Plot,
+          imgUrl: movieRequest.Poster,
+          imdbUrl,
+          imdbId: movieRequest.imdbID,
+        };
 
-      setNewMovie(movie);
-      setError(false);
-      setAddButtonStatus(false);
-    } else {
-      setError(true);
-      setAddButtonStatus(true);
+        setNewMovie(movie);
+        setError(false);
+        setAddButtonStatus(false);
+      } else {
+        setError(true);
+        setAddButtonStatus(true);
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
     }
   };
 

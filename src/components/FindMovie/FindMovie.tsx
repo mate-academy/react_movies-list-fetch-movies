@@ -70,7 +70,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     }
   };
 
-
   return (
     <>
       <form className="find-movie" onSubmit={handleSubmit}>

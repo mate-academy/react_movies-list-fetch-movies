@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Movie } from '../../constants/types';
 import './MoviesList.scss';
 import { MovieCard } from '../MovieCard';
 

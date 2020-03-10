@@ -1,4 +1,10 @@
-import React, { FC, useState } from 'react';
+import React, {
+  FC,
+  useState,
+  ChangeEvent,
+  FormEvent,
+} from 'react';
+
 import cn from 'classnames';
 import './FindMovie.scss';
 import { getData } from '../../api/getData';
@@ -7,14 +13,15 @@ import { MovieCard } from '../MovieCard';
 
 interface Props {
   addMovie: (newMovie: Movie) => void;
+  movies: Movies;
 }
 
-export const FindMovie: FC<Props> = ({ addMovie }) => {
+export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
   const [movieTitle, setMovieTitle] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null >(null);
   const [error, setError] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
     setMovieTitle(value);
@@ -50,13 +57,15 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     findMovie();
   };
 
+  const isMovieAdded = movies.some(oldMovie => oldMovie.title === newMovie?.title);
+
   const handleAdd = () => {
-    if (newMovie) {
+    if (newMovie && !isMovieAdded) {
       addMovie(newMovie);
     }
 
@@ -90,6 +99,13 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
             ? (
               <p className="help is-danger">
             Can&apos;t find a movie with such a title
+              </p>
+            ) : null}
+
+          {isMovieAdded
+            ? (
+              <p className="help is-danger">
+            This movie is already in the list
               </p>
             ) : null}
         </div>

@@ -36,7 +36,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     } = newMovieFromServer;
 
     if (Response === 'True') {
-      const imdbUrl = API_URL + imdbId;
+      const imdbUrl = `${API_URL}${imdbId}`;
       const newMovie = {
         title,
         description,
@@ -82,10 +82,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cx.default({
-                input: true,
-                'is-danger': isError,
-              })}
+              className={cx.default('input', isError ? 'is-danger' : '')}
               value={inputValue}
               onChange={inputHandler}
             />

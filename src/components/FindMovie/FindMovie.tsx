@@ -29,7 +29,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     }
 
     try {
-      const getMoviesFromApi = await getData<NewMovie>(`http://www.omdbapi.com/?apikey=a3ae9a4e&t=${query}`);
+      const getMoviesFromApi = await getData<NewMovie>(`https://www.omdbapi.com/?apikey=a3ae9a4e&t=${query}`);
 
       if (getMoviesFromApi.Response === 'True') {
         setNewMovie({

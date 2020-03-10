@@ -2,11 +2,9 @@ import React, {
   FC, useState, ChangeEvent, FormEvent,
 } from 'react';
 import './FindMovie.scss';
-
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/getMovie';
 import { URL_IMDB } from '../../api/constants';
-
 
 interface Props {
   addMovie: (movie: Movie) => void;
@@ -21,7 +19,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setQuery(e.target.value);
   };
 
-  const handleSearch = (): void => {
+  const searchMovie = (): void => {
     getMovie(query)
       .then(movieFromServer => {
         const {
@@ -43,10 +41,21 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           };
 
           setMovie(newMoovie);
+          setQuery('');
         } else {
           setError(true);
         }
       });
+  };
+
+  const handleSearch = (): void => {
+    searchMovie();
+  };
+
+  const handleSearchByEnter = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter') {
+      searchMovie();
+    }
   };
 
   const handleAdd = (e: FormEvent<HTMLFormElement>) => {
@@ -64,7 +73,10 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie" onSubmit={handleAdd}>
+      <form
+        className="find-movie"
+        onSubmit={handleAdd}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
           Movie title
@@ -75,6 +87,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               onChange={handleInput}
+              onKeyPress={handleSearchByEnter}
               onFocus={handleFocus}
               value={query}
               placeholder="Enter a title to search"

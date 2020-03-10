@@ -4,7 +4,7 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-const BASE_URL = 'http://www.omdbapi.com/?apikey=4709decb&t=';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=4709decb&t=';
 
 interface State {
   movies: Movie[];

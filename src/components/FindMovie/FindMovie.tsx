@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const FindMovie: FC<Props> = ({ addMovie }) => {
-  const [movieTitle, setMovieTitle] = useState<string>('');
+  const [movieTitle, setMovieTitle] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
 

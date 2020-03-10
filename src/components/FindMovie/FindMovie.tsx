@@ -5,19 +5,22 @@ import React, {
   FormEvent,
 } from 'react';
 import './FindMovie.scss';
-
+import cx from 'classnames';
 import { MovieCard } from '../MovieCard';
+
+
+const URL = 'https://www.omdbapi.com/?apikey=6cf099a&t=';
+const IMDB_URL = 'https://www.imdb.com/title/';
 
 interface Props {
   addMovie(movie: Movie): void;
 }
 
 export const FindMovie: FC<Props> = ({ addMovie }) => {
-  const URL = 'https://www.omdbapi.com/?apikey=6cf099a&t=';
-  const IMDB_URL = 'https://www.imdb.com/title/';
   const [query, setQuery] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [isError, setError] = useState(false);
+  const [buttonDisable, setButtonDisable] = useState(true);
 
   const onChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
@@ -51,8 +54,10 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           };
 
           setNewMovie(movie);
+          setButtonDisable(false);
         } else {
           setError(true);
+          setButtonDisable(true);
         }
       });
   };
@@ -66,7 +71,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       setError(false);
       setNewMovie(null);
     } else {
-      setError(true);
+      setButtonDisable(true);
     }
   };
 
@@ -83,7 +88,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${isError ? 'is-danger' : ''}`}
+              className={cx('input', { 'is-danger': isError })}
               value={query}
               onChange={event => onChangeHandler(event)}
             />
@@ -109,6 +114,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
             <button
               type="submit"
               className="button is-primary"
+              disabled={buttonDisable}
             >
               Add to the list
             </button>

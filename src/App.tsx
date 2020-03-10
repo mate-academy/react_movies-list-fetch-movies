@@ -12,11 +12,11 @@ export const App: FC = () => {
   const [movies, setMovies] = useState<MovieForApp[]>(data);
 
   const addMovie = (newMovie: MovieForApp): void => {
-    const index = movies.findIndex(
+    const movieIndex = movies.findIndex(
       movie => movie.imdbId === newMovie.imdbId,
     );
 
-    if (index === -1) {
+    if (movieIndex === -1) {
       setMovies(prevMovies => ([
         ...prevMovies,
         newMovie,

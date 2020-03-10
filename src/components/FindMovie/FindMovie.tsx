@@ -10,7 +10,7 @@ import { MovieCard } from '../MovieCard';
 
 import { MovieForApp } from '../../constants/types';
 import { imdbUrl } from '../../constants/api';
-import { loadMovieByTitle } from '../../utils/movies';
+import { loadMovie } from '../../utils/movies';
 import './FindMovie.scss';
 
 interface Props {
@@ -38,7 +38,7 @@ export const FindMovie: FC<Props> = (props) => {
     setLoadError(false);
     setNoMovieFound(false);
 
-    loadMovieByTitle(inputValue)
+    loadMovie(inputValue)
       .then(data => {
         if (data.Response === 'False') {
           setNoMovieFound(true);

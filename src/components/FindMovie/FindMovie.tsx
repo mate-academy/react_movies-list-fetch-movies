@@ -69,15 +69,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     }
   };
 
-  const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-
-      searchMovie();
-      setInputValue('');
-    }
-  };
-
   return (
     <>
       <form className="find-movie" onSubmit={submitHandler}>
@@ -94,7 +85,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               className={cx.default('input', isError ? 'is-danger' : '')}
               value={inputValue}
               onChange={inputHandler}
-              onKeyDown={keyDownHandler}
             />
           </div>
 
@@ -109,7 +99,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={searchMovie}
             >

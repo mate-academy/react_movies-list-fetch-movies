@@ -3,7 +3,6 @@ import React, {
   useState,
   ChangeEvent,
   FormEvent,
-  KeyboardEvent,
 } from 'react';
 import './FindMovie.scss';
 
@@ -48,14 +47,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       });
   };
 
-  const handleEnter = (event: KeyboardEvent<HTMLInputElement>) => {
-    const { key } = event;
-
-    if (key === 'Enter') {
-      findMovie();
-    }
-  };
-
   const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { value } } = event;
 
@@ -90,7 +81,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               value={query}
               onChange={handleInput}
-              onKeyPress={handleEnter}
+
               className={error ? 'input is-danger' : 'input'}
             />
           </div>
@@ -114,7 +105,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
             >
               Add to the list

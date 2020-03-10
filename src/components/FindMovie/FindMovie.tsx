@@ -19,7 +19,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setQuery(e.target.value);
   };
 
-  const searchMovie = (): void => {
+  const handleSearch = (): void => {
     getMovie(query)
       .then(movieFromServer => {
         const {
@@ -46,16 +46,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           setError(true);
         }
       });
-  };
-
-  const handleSearch = (): void => {
-    searchMovie();
-  };
-
-  const handleSearchByEnter = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === 'Enter') {
-      searchMovie();
-    }
   };
 
   const handleAdd = (e: FormEvent<HTMLFormElement>) => {
@@ -87,7 +77,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               onChange={handleInput}
-              onKeyPress={handleSearchByEnter}
               onFocus={handleFocus}
               value={query}
               placeholder="Enter a title to search"
@@ -105,7 +94,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={handleSearch}
             >

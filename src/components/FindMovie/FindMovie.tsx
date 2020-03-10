@@ -22,18 +22,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setIsError(false);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (!movie) {
-      return;
-    }
-
-    setQuery('');
-    addMovie(movie);
-    setMovie(null);
-  };
-
   const getMovie = (searchValue: string) => {
     return fetch(MOVIES_URL + searchValue)
       .then(movieFromServer => {
@@ -41,7 +29,9 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       });
   };
 
-  const handleFindMovie = () => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     getMovie(query)
       .then(findMovie => {
         const {
@@ -68,6 +58,16 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           setIsError(true);
         }
       });
+  };
+
+  const handleAddMovie = () => {
+    if (!movie) {
+      return;
+    }
+
+    setQuery('');
+    addMovie(movie);
+    setMovie(null);
   };
 
   return (
@@ -97,9 +97,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={handleFindMovie}
             >
               Find a movie
             </button>
@@ -107,8 +106,9 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
+              onClick={handleAddMovie}
             >
               Add to the list
             </button>

@@ -2,6 +2,7 @@ import React, {
   FC, useState, ChangeEvent, FormEvent,
 } from 'react';
 import './FindMovie.scss';
+import className from 'classnames';
 import { IMDB_URL, getMovie } from '../../api/api';
 
 import { MovieCard } from '../MovieCard';
@@ -76,7 +77,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${isError ? 'is-danger' : ''}`}
+              className={className(isError ? 'input is-danger' : 'input')}
               value={query}
               onChange={handleChange}
             />
@@ -90,7 +91,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={handleFindMovie}
             >

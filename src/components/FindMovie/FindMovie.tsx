@@ -6,6 +6,8 @@ import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 
+const API_URL = 'https://www.omdbapi.com/?apikey=a3ae9a4e&t=';
+
 interface Props {
   addMovie: (newMovie: Movie | null) => void;
 }
@@ -23,13 +25,15 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setNewMovie(null);
   };
 
-  const findMovie = async () => {
+  const findMovie = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     if (!query) {
       return;
     }
 
     try {
-      const getMoviesFromApi = await getData<NewMovie>(`https://www.omdbapi.com/?apikey=a3ae9a4e&t=${query}`);
+      const getMoviesFromApi = await getData<NewMovie>(`${API_URL}${query}`);
 
       if (getMoviesFromApi.Response === 'True') {
         setNewMovie({
@@ -57,7 +61,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie" onSubmit={(event) => event.preventDefault()}>
+      <form className="find-movie" onSubmit={findMovie}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -74,7 +78,12 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          <p className={cx({ help: true, 'is-danger': isFindMovie, error: !isFindMovie })}>
+          <p className={cx({
+            help: true,
+            'is-danger': isFindMovie,
+            error: !isFindMovie,
+          })}
+          >
             Can&apos;t find a movie with such a title
           </p>
         </div>
@@ -82,9 +91,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={findMovie}
             >
               Find a movie
             </button>

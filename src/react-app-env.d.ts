@@ -1,5 +1,4 @@
 // eslint-disable-next-line
-/// <reference types="react-scripts" />
 
 interface Movie {
   title?: string;
@@ -41,7 +40,7 @@ interface NewMovie {
   Website: string;
 }
 
-interface OmdbResponse {
+interface ImdbResponse {
   Response: 'True' | 'False';
   Error?: string;
   [key: string]: any;

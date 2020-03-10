@@ -1,4 +1,5 @@
 import React, { ChangeEvent, useState, FC } from 'react';
+import classNames from 'classnames/bind';
 import './FindMovie.scss';
 import { getNewMovie } from '../../api/getNewMovie';
 import { TITLE_BASE_URL } from '../../constants/getMovieConstants';
@@ -16,8 +17,7 @@ const checkSameMovie = (movies: Movie[], newMovie: Movie): boolean => {
 
 export const FindMovie: FC<Props> = ({ addNewMovie, movies }) => {
   const [filedValue, setFiledValue] = useState('');
-  const [isLoad, setIsLoad] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [errorMessage, setErorMessage] = useState('');
   const [newMovie, setNewMovie] = useState<Movie>({});
 
@@ -35,27 +35,28 @@ export const FindMovie: FC<Props> = ({ addNewMovie, movies }) => {
           imdbUrl: `${TITLE_BASE_URL}${movie.imdbID}`,
           imdbId: movie.imdbID,
         });
-        setIsError(false);
-        setIsLoad(true);
+        setIsLoaded(true);
         setErorMessage('');
       })
       .catch(() => {
-        setIsError(true);
-        setIsLoad(false);
+        setIsLoaded(false);
         setErorMessage('we didn\'t find any movie');
       });
   };
 
-  const addMovie = () => {
-    // const id = movies.map(movie => movie.imdbId);
+  const handleSubmit = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+    getMovie();
+  };
 
+  const addMovie = () => {
     setFiledValue('');
 
-    if (isLoad) {
+    if (isLoaded) {
       if (checkSameMovie(movies, newMovie)) {
-        addNewMovie(newMovie);
+        addNewMovie([...movies, newMovie]);
         setNewMovie({});
-        setIsLoad(false);
+        setIsLoaded(false);
       } else {
         setErorMessage('Movie has been added already');
       }
@@ -64,9 +65,12 @@ export const FindMovie: FC<Props> = ({ addNewMovie, movies }) => {
     }
   };
 
+  const errorMessageClasses = classNames('help', 'is-danger', 'display-none', { 'display-inline': errorMessage.length > 0 });
+  const inputWithErrorClasses = classNames('input', { 'is-danger': errorMessage.length > 0 });
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -77,13 +81,13 @@ export const FindMovie: FC<Props> = ({ addNewMovie, movies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${isError ? 'is-danger' : ''}`}
+              className={ inputWithErrorClasses }
               onChange={handleChange}
               value={filedValue}
             />
           </div>
 
-          <p className="help is-danger" style={{ display: errorMessage ? 'inline' : 'none' }}>
+          <p className={errorMessageClasses}>
             {errorMessage}
           </p>
         </div>
@@ -113,7 +117,7 @@ export const FindMovie: FC<Props> = ({ addNewMovie, movies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {isLoad ? <MovieCard {...newMovie} /> : null}
+        {isLoaded ? <MovieCard {...newMovie} /> : null}
       </div>
     </>
   );

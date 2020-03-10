@@ -19,7 +19,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setQuery(e.target.value);
   };
 
-  const handleSearch = (): void => {
+  const handleSearch = (e: FormEvent<HTMLFormElement>): void => {
+    e.preventDefault();
     getMovie(query)
       .then(movieFromServer => {
         const {
@@ -48,8 +49,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       });
   };
 
-  const handleAdd = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleAdd = () => {
     if (movie) {
       addMovie(movie);
       setQuery('');
@@ -65,7 +65,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={handleAdd}
+        onSubmit={handleSearch}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -96,7 +96,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
             <button
               type="submit"
               className="button is-light"
-              onClick={handleSearch}
             >
             Find a movie
             </button>
@@ -104,7 +103,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
+              onClick={handleAdd}
               className="button is-primary"
             >
             Add to the list

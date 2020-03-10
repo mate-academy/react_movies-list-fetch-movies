@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-export const App = () => {
+export const App: FC = () => {
   const [movies, setMovies] = useState<Movie[]>(data);
 
   const addMovie = (movie: Movie): void => {

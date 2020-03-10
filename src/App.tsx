@@ -14,12 +14,13 @@ export class App extends Component <{}, State> {
     movies: data,
   };
 
-  addMovie = (movie: Movie): void => {
-    this.setState(prevState => ({
-      movies: [...prevState.movies, { ...movie }],
-    }));
+  addMovie = (movie: Movie) => {
+    if (this.state.movies.every(item => item.imdbId !== movie.imdbId)) {
+      this.setState(prevState => ({
+        movies: [...prevState.movies, movie],
+      }));
+    }
   };
-
 
   render() {
     const { movies } = this.state;

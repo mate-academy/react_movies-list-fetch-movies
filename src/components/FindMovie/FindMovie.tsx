@@ -104,7 +104,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={findMovie}
             >

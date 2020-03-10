@@ -21,6 +21,7 @@ export class App extends Component<{}, State> {
     }
   }
 
+
   render() {
     const { movies } = this.state;
 
@@ -30,7 +31,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie addMovie={this.addMovie}/>
+          <FindMovie addMovie={this.addMovie} movies={movies}/>
         </div>
       </div>
     );

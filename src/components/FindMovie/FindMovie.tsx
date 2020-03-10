@@ -9,12 +9,14 @@ const URL_IMDB = 'https://www.imdb.com/title/';
 
 interface Props {
   addMovie: (movie: Movie) => void;
+  movies: Movie[];
 }
 
-export const FindMovie: FC<Props> = ({ addMovie }) => {
+export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [error, setError] = useState(false);
+  const [duplicate, setDuplicate] = useState(false);
 
   const handleChange = ({ target }: ChangeEvent<HTMLInputElement>): void => {
     setQuery(target.value);
@@ -41,6 +43,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       };
       setMovie(newMovie);
       setError(false);
+      setDuplicate(false);
     } else {
       setError(true);
     }
@@ -49,14 +52,19 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (movie) {
+      const duplicate = movies.some(film => film.imdbId === movie.imdbId);
+      setDuplicate(duplicate);
+    }
+    if (!duplicate && movie) {
       addMovie(movie);
       setQuery('');
       setMovie(null);
-    }
+    } 
   };
 
   const handleFocus = () => {
     setError(false);
+    setDuplicate(false);
   };
 
   return(
@@ -82,6 +90,10 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
             <p className="help is-danger">
                Can&apos;t find a movie with such a title
             </p>}
+          {duplicate && 
+            <p className="help is-danger">
+               Movie already exists
+            </p>}  
       </div>
       <div className="field is-grouped">
         <div className="control">

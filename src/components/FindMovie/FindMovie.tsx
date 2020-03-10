@@ -84,7 +84,9 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn('input', isError ? 'is-danger' : '')}
+              className={cn('input', {
+                'is-danger': isError,
+              })}
               value={searchQuery}
               onChange={handleChange}
             />
@@ -94,8 +96,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title
               </p>
-            )
-            : null}
+            ) : null}
         </div>
 
         <div className="field is-grouped">

@@ -25,7 +25,7 @@ export const FindMovie: FC<Props> = (props) => {
     setIsEnter(false);
   };
 
-  const handleFindFilm = async () => {
+  const findFilm = async () => {
     const response = await fetch(`${URL}${text}`);
     const {
       Title: title,
@@ -42,9 +42,9 @@ export const FindMovie: FC<Props> = (props) => {
       imdbUrl: `${URL_IMDB}${imdbId}`,
       imdbId,
     };
-    const check = (isFound === 'True');
+    const isCheck = (isFound === 'True');
 
-    if (movies.every(film => film.imdbId !== imdbId) && check) {
+    if (movies.every(film => film.imdbId !== imdbId) && isCheck) {
       setNewMovie(movie);
     } else {
       setIsEnter(true);
@@ -91,7 +91,7 @@ export const FindMovie: FC<Props> = (props) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              onClick={handleFindFilm}
+              onClick={findFilm}
               type="button"
               className="button is-light"
             >

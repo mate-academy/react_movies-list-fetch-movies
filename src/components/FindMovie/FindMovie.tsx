@@ -45,7 +45,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (newMovie !== null) {
+    if (newMovie) {
       addMovie(newMovie);
     }
 
@@ -67,19 +67,23 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn('input', error ? 'is-danger' : '')}
+              className={cn('input', {
+                'is-danger': error,
+              })}
               onChange={changeTitle}
               value={movieTitle}
             />
           </div>
 
-          { error
-            ? (
-              <p className="help is-danger">
-                Can&apos;t find a movie with such a title
-              </p>
-            )
-            : null}
+          {
+            error
+              ? (
+                <p className="help is-danger">
+                  Can&apos;t find a movie with such a title
+                </p>
+              )
+              : null
+          }
         </div>
 
         <div className="field is-grouped">

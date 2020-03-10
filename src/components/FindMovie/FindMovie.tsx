@@ -9,14 +9,13 @@ import React,
 import './FindMovie.scss';
 import cn from 'classnames';
 import { MovieCard } from '../MovieCard';
+import { API_URL, getData } from '../../api/getData';
 
 interface Props {
   addMovie(movie: Movie): void;
 }
 
 export const FindMovie: FC<Props> = ({ addMovie }) => {
-  const URL = 'https://www.omdbapi.com/?apikey=574c753d&t=';
-  const IMDB_URL = 'https://www.imdb.com/title/';
   const [searchQuery, setSearchQuery] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [isError, setIsError] = useState(false);
@@ -26,36 +25,36 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setIsError(false);
   };
 
-  const handleFind = () => {
-    fetch(`${URL}${searchQuery}`)
-      .then(response => (
-        response.json()
-      ))
-      .then(movieFromApi => {
-        const {
-          Title: title,
-          Plot: description,
-          Poster: imgUrl,
-          imdbID: imdbId,
-          Response,
-        } = movieFromApi;
+  const handleFind = async () => {
+    const getNewMovie = () => {
+      return getData(`${API_URL}${searchQuery}`);
+    };
 
-        if (Response === 'True') {
-          const imdbUrl = `${IMDB_URL}${imdbId}`;
-          const movie = {
-            title,
-            description,
-            imgUrl,
-            imdbId,
-            imdbUrl,
-          };
+    const newMovieFromServer = await getNewMovie();
 
-          setNewMovie(movie);
-        } else {
-          setIsError(true);
-          setNewMovie(null);
-        }
-      });
+    const {
+      Title: title,
+      Plot: description,
+      Poster: imgUrl,
+      imdbID: imdbId,
+      Response,
+    } = newMovieFromServer;
+
+    if (Response === 'True') {
+      const imdbUrl = `${API_URL}${imdbId}`;
+      const movie = {
+        title,
+        description,
+        imgUrl,
+        imdbId,
+        imdbUrl,
+      };
+
+      setNewMovie(movie);
+    } else {
+      setIsError(true);
+      setNewMovie(null);
+    }
   };
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {

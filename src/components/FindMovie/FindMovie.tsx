@@ -22,7 +22,8 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
     setQuery(target.value);
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const movieFromApi = await getMovie(query);
     const {
       Title: title,
@@ -49,8 +50,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
     }
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const addMovieToList = () => {
     if (movie) {
       const duplicate = movies.some(film => film.imdbId === movie.imdbId);
       setDuplicate(duplicate);
@@ -69,7 +69,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
   return(
     <>
-    <form className="find-movie" onSubmit={handleSubmit}>
+    <form className="find-movie" onSubmit={handleSearch}>
       <div className="field">
         <label className="label" htmlFor="movie-title">
           Movie title
@@ -86,21 +86,22 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
               className={error ? 'input is-danger' : 'input'}
             />
           </div>
-          {error && 
+          {error && (
             <p className="help is-danger">
                Can&apos;t find a movie with such a title
-            </p>}
-          {duplicate && 
+            </p>
+          )}
+          {duplicate && (
             <p className="help is-danger">
                Movie already exists
-            </p>}  
+            </p>
+          )}  
       </div>
       <div className="field is-grouped">
         <div className="control">
           <button
-            type="button"
+            type="submit"
             className="button is-light"
-            onClick={handleSearch}
           >
             Find a movie
           </button>
@@ -108,8 +109,9 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
         <div className="control">
           <button
-            type="submit"
+            type="button"
             className="button is-primary"
+            onClick={addMovieToList}
           >
             Add to the list
           </button>

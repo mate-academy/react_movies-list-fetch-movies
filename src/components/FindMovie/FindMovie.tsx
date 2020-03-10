@@ -14,7 +14,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
   const [queryMovie, setQueryMovie] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
-  const [replay, setReplay] = useState(false);
+  const [isDuplicate, setIsDuplicate] = useState(false);
 
   const handleQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value: title } = event.target;
@@ -22,22 +22,22 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
     setQueryMovie(title.replace(regExp, ''));
     setError(false);
-    setReplay(false);
+    setIsDuplicate(false);
   }
 
   const searchedMovie = async () => {
-    const getedMovie = () => {
+    const getMovie = () => {
       return getData(`${API_URL}${queryMovie}`);
     };
-    const movieFromApi = await getedMovie();
+    const movieFromApi = await getMovie();
 
     const {
-          Title: title,
-          Plot: description,
-          Poster: imgUrl,
-          imdbID: imdbId,
-          Response: response,
-        } = movieFromApi;
+      Title: title,
+      Plot: description,
+      Poster: imgUrl,
+      imdbID: imdbId,
+      Response: response,
+    } = movieFromApi;
 
     if (response === 'True') {
       const imdbUrl = API_URL + imdbId;
@@ -53,11 +53,13 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (newMovie !== null) {
+    if (newMovie) {
       const { imdbId } = newMovie;
       const replay = movies.some(film => film.imdbId === imdbId);
-      setReplay(replay);
-      !replay && addMovie(newMovie);
+      setIsDuplicate(replay);
+      if (!replay) {
+        addMovie(newMovie);
+      }
       setQueryMovie('');
     }
     setNewMovie(null);
@@ -113,7 +115,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {replay && <p className="help is-danger">
+        {isDuplicate && <p className="help is-danger">
           This movie is already in the list.
         </p>}
         {newMovie && <MovieCard {...newMovie} />}

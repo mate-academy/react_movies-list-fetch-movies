@@ -25,7 +25,9 @@ export const FindMovie: FC<Props> = (props) => {
     setIsEnter(false);
   };
 
-  const findFilm = async () => {
+  const findFilm = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
     const response = await fetch(`${URL}${text}`);
     const {
       Title: title,
@@ -52,8 +54,7 @@ export const FindMovie: FC<Props> = (props) => {
     }
   };
 
-  const addToMovies = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const addToMovies = () => {
     if (newMovie === null) {
       return;
     }
@@ -66,7 +67,7 @@ export const FindMovie: FC<Props> = (props) => {
 
   return (
     <>
-      <form onSubmit={addToMovies} className="find-movie">
+      <form onSubmit={findFilm} className="find-movie">
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -91,8 +92,7 @@ export const FindMovie: FC<Props> = (props) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              onClick={findFilm}
-              type="button"
+              type="submit"
               className="button is-light"
             >
               Find a movie
@@ -101,7 +101,8 @@ export const FindMovie: FC<Props> = (props) => {
 
           <div className="control">
             <button
-              type="submit"
+              onClick={addToMovies}
+              type="button"
               className="button is-primary"
             >
               Add to the list

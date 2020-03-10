@@ -45,6 +45,10 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    findMovie();
+  };
+
+  const handleAddMovie = () => {
     if (newMovie) {
       addMovie(newMovie);
     }
@@ -89,9 +93,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -99,8 +102,9 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
+              onClick={handleAddMovie}
             >
               Add to the list
             </button>

@@ -69,6 +69,15 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     }
   };
 
+  const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+      searchMovie();
+      setInputValue('');
+    }
+  };
+
   return (
     <>
       <form className="find-movie" onSubmit={submitHandler}>
@@ -85,13 +94,14 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               className={cx.default('input', isError ? 'is-danger' : '')}
               value={inputValue}
               onChange={inputHandler}
+              onKeyDown={keyDownHandler}
             />
           </div>
 
           {isError
           && (
             <p className="help is-danger">
-            Can&apos;t find a movie with such a title
+              Can&apos;t find a movie with such a title
             </p>
           )}
         </div>

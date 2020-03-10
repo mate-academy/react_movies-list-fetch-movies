@@ -25,7 +25,8 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
     setIsDuplicate(false);
   }
 
-  const searchedMovie = async () => {
+  const searchedMovie = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     const getMovie = () => {
       return getData(`${API_URL}${queryMovie}`);
     };
@@ -51,8 +52,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
     }
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const addedNewMovie = () => {
     if (newMovie) {
       const { imdbId } = newMovie;
       const replay = movies.some(film => film.imdbId === imdbId);
@@ -67,7 +67,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
   return (
     <>
-      <form className="find-movie" onSubmit={handleSubmit}>
+      <form className="find-movie" onSubmit={searchedMovie}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -94,9 +94,8 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={searchedMovie}
             >
               Find a movie
             </button>
@@ -104,8 +103,9 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
+              onClick={addedNewMovie}
             >
               Add to the list
             </button>

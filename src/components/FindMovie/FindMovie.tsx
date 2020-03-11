@@ -19,7 +19,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
     setQuery(value);
     setFindMovie(false);
-    setMovie(null);
   };
 
   const getMovie = (searchString: string) => {
@@ -29,7 +28,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       });
   };
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     getMovie(query)

@@ -90,9 +90,11 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn('input', {
-                'is-danger': error,
-              })}
+              className={
+                cn('input', {
+                  'is-danger': error,
+                })
+              }
             />
           </div>
 
@@ -105,12 +107,14 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
               ) : null
           }
 
-          {isMovieAdded
-            ? (
-              <p className="help is-danger">
-            This movie is already in the list
-              </p>
-            ) : null}
+          {
+            isMovieAdded
+              ? (
+                <p className="help is-danger">
+              This movie is already in the list
+                </p>
+              ) : null
+          }
         </div>
 
         <div className="field is-grouped">
@@ -138,9 +142,11 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {newMovie
-          ? <MovieCard {...newMovie} />
-          : null}
+        {
+          newMovie
+            ? <MovieCard {...newMovie} />
+            : null
+        }
       </div>
     </>
   );

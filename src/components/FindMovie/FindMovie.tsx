@@ -19,7 +19,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     const { value } = event.target;
 
     setQuery(value);
-    setIsError(false);
   }
 
   const findNewMovie = (event: React.FormEvent<HTMLFormElement>) => {
@@ -82,9 +81,13 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               onChange={handleInput}
             />
           </div>
-          <p className="help is-danger">
-            {isError ? 'Can\'t find a movie with such a title' : ''}
-          </p>
+          {isError
+            ? (
+              <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+              </p>
+            )
+            : null}
         </div>
         <div className="field is-grouped">
           <div className="control">

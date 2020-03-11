@@ -89,7 +89,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           </div>
 
           <p className="help is-danger">
-            {isFindMovie ? 'Can`t find a movie with such a title' : ''}
+            {isFindMovie && 'There is no movie with this title'}
           </p>
         </div>
         <div className="field is-grouped">
@@ -116,7 +116,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie ? <MovieCard {...movie} /> : ''}
+        {movie && <MovieCard {...movie} /> }
       </div>
     </>
   );

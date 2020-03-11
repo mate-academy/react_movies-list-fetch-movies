@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, ChangeEvent, FormEvent,
+  FC, useState, ChangeEvent, FormEvent, KeyboardEvent
 } from 'react';
 import './FindMovie.scss';
 
@@ -22,6 +22,13 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setIsError(false);
   }
 
+  function handlerEnter(event: KeyboardEvent) {
+    if(event.key === 'Enter') {
+      event.preventDefault();
+      handlerFindButton();
+    }
+  }
+
   function handlerFindButton() {
     fetch(URL + query)
       .then(movieFromApi => {
@@ -29,7 +36,11 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       })
       .then(movieApi => {
         const {
-          Title: title, Plot: description, Poster: imgUrl, imdbID: imdbId, Response,
+          Title: title,
+          Plot: description,
+          Poster: imgUrl,
+          imdbID: imdbId,
+          Response,
         } = movieApi;
 
         if (Response === 'True') {
@@ -72,6 +83,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               className={`input ${isError ? 'is-danger' : ''}`}
               value={query}
               onChange={handleInput}
+              onKeyPress={handlerEnter}
             />
           </div>
           <p className="help is-danger">

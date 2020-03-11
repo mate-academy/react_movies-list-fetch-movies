@@ -8,7 +8,9 @@ export const App: FC = () => {
   const [movies, setMovies] = useState<Movie[]>(data);
 
   function addMovie(movie: Movie) {
-    if (!(movies.find(item => item.imdbId === movie.imdbId))) {
+    const isExist = movies.find(item => item.imdbId === movie.imdbId);
+    
+    if (!isExist) {
       setMovies([
         ...movies,
         movie,

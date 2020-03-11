@@ -64,8 +64,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       });
   };
 
-  const cn = className(isError ? 'input is-danger' : 'input');
-
   return (
     <>
       <form className="find-movie" onSubmit={handleSubmit}>
@@ -79,7 +77,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn}
+              className={className('input', { 'is-danger': isError })}
               value={query}
               onChange={handleChange}
             />

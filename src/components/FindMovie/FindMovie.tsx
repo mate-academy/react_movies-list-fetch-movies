@@ -13,16 +13,18 @@ import './FindMovie.scss';
 
 interface Props {
   addMovie: (movie: Movie) => void;
+  movies: Movie[];
 }
 
-export const FindMovie: FC<Props> = ({ addMovie }) => {
+export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [isError, setError] = useState(false);
 
-  const movieSearchHandler = async () => {
-    const movieFromServer = await getData(inputValue);
+  const submitHandler = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
+    const movieFromServer = await getData(inputValue);
     const {
       Title: title,
       Plot: description,
@@ -54,14 +56,18 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setInputValue(value.replace(/^\s/, ''));
   };
 
-  const submitHandler = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const movieSearchHandler = () => {
     if (movie) {
-      addMovie(movie);
-      setInputValue('');
-      setError(false);
-      setMovie(null);
+      const sameMovieTitle = movies.find(film => film.title === movie.title);
+
+      if (sameMovieTitle) {
+        setError(true);
+      } else {
+        addMovie(movie);
+        setInputValue('');
+        setError(false);
+        setMovie(null);
+      }
     }
   };
 
@@ -87,7 +93,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           {isError
           && (
             <p className="help is-danger">
-            Can&apos;t find a movie with such a title
+            Can&apos;t find a movie with such a title or the movie already exists.
             </p>
           )}
         </div>
@@ -95,9 +101,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={movieSearchHandler}
             >
               Find a movie
             </button>
@@ -105,8 +110,9 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
+              onClick={movieSearchHandler}
             >
               Add to the list
             </button>

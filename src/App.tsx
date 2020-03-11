@@ -9,6 +9,7 @@ export const App: FC = () => {
   const [movies, setMovies] = useState <Movie[]>([...staticList]);
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [error, setIsError] = useState('');
+  const [massage, setMassage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const getCorrectMovies = async (query: string): Promise<Movie> => {
@@ -25,6 +26,7 @@ export const App: FC = () => {
 
   const handleLoad = (query: string) => {
     setIsLoading(true);
+    setMassage(false);
     getCorrectMovies(query)
       .then(data => {
         if (!data.title) {
@@ -47,8 +49,9 @@ export const App: FC = () => {
   const addMovie = () => {
     if (foundMovie && !movies.some(movie => movie.imdbId === foundMovie.imdbId)) {
       setMovies([...movies, foundMovie]);
+    } else {
+      setMassage(true);
     }
-
     setFoundMovie(null);
   };
 
@@ -58,6 +61,9 @@ export const App: FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
+        {massage
+        && <p className="massage">This movie has already been added to your favorites list</p>}
+
         <FindMovie
           isLoading={isLoading}
           error={error}

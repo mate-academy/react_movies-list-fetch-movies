@@ -5,7 +5,7 @@ import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
 interface State {
-  movies: Movies;
+  movies: Movie[];
 }
 
 export class App extends Component <{}, State> {

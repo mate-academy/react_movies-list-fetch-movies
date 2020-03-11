@@ -10,10 +10,11 @@ import './FindMovie.scss';
 import { getData } from '../../api/getData';
 
 import { MovieCard } from '../MovieCard';
+import { baseMovieUrl } from '../../constants';
 
 interface Props {
   addMovie: (newMovie: Movie) => void;
-  movies: Movies;
+  movies: Movie[];
 }
 
 export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
@@ -29,7 +30,7 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
 
   const findMovie = async () => {
     const movie: MovieFromServer = await getData(movieTitle);
-    const baseMovieUrl = 'https://www.imdb.com/title/';
+
 
     const {
       Title: title,
@@ -95,12 +96,14 @@ export const FindMovie: FC<Props> = ({ addMovie, movies }) => {
             />
           </div>
 
-          {error
-            ? (
-              <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-              </p>
-            ) : null}
+          {
+            error
+              ? (
+                <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+                </p>
+              ) : null
+          }
 
           {isMovieAdded
             ? (

@@ -6,8 +6,6 @@ interface Movie {
   imdbId: string;
 }
 
-type Movies = Movie[];
-
 interface MovieFromServer {
   Title: string;
   Plot: string;

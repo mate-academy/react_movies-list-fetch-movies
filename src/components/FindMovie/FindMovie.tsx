@@ -98,14 +98,13 @@ export const FindMovie: FC<Props> = ({
       <div className="container">
         <h2 className="title">Preview</h2>
 
-        { foundMovie
-          ? <MovieCard {...foundMovie} />
-          : isLoading
-            && (
-              <div className="container-loader">
-                <div className="loader" />
-              </div>
-            )}
+        {foundMovie ? (
+          <MovieCard {...foundMovie} />
+        ) : isLoading && (
+          <div className="container-loader">
+            <div className="loader" />
+          </div>
+        )}
       </div>
     </>
   );

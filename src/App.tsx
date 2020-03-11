@@ -7,10 +7,14 @@ import data from './api/movies.json';
 export const App: FC = () => {
   const [movies, setMovies] = useState<Movie[]>(data);
 
-  function addMovie(movie: Movie) {
+  function addMovie(newMovie: Movie) {
+    if (movies.some(movie => movie.imdbId === newMovie.imdbId)) {
+      return;
+    }
+
     setMovies([
       ...movies,
-      movie,
+      newMovie,
     ]);
   }
 

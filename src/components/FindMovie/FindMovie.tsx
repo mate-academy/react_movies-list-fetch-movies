@@ -1,6 +1,7 @@
 import React, {
   FC, useState, ChangeEvent, FormEvent,
 } from 'react';
+import cn from 'classnames';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { BASE_URL, IMDB_URL } from '../../constans';
@@ -23,9 +24,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
   const getMovie = (searchString: string) => {
     return fetch(BASE_URL + searchString)
-      .then(movieFromServer => {
-        return movieFromServer.json();
-      });
+      .then(movieFromServer => movieFromServer.json());
   };
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -82,8 +81,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${isFindMovie ? 'is-danger' : ''}`}
               value={query}
+              className={cn({ input: true, 'is-danger': isFindMovie })}
               onChange={onChange}
             />
           </div>

@@ -1,4 +1,9 @@
-import React, { FC, useState, ChangeEvent } from 'react';
+import React, {
+  FC,
+  useState,
+  ChangeEvent,
+  FormEvent,
+} from 'react';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
@@ -20,7 +25,8 @@ export const FindMovie: FC<Props> = (props) => {
     setErrorMessage('');
   };
 
-  const findFilm = () => {
+  const findFilm = (event: FormEvent) => {
+    event.preventDefault();
     const response = getFilm(input);
 
     response
@@ -42,7 +48,7 @@ export const FindMovie: FC<Props> = (props) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={findFilm}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -69,9 +75,8 @@ export const FindMovie: FC<Props> = (props) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={findFilm}
             >
               Find a movie
             </button>

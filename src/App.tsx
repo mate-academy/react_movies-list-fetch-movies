@@ -4,9 +4,29 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-export class App extends Component {
-  state = {
+interface State {
+  movies: Movie[];
+}
+
+export class App extends Component<{}, State> {
+  state: State = {
     movies: data,
+  };
+
+  addMovie = (newMovie: Movie | null) => {
+    const { movies } = this.state;
+
+    if (newMovie === null) {
+      return;
+    }
+
+    if (movies.some(movie => movie.imdbId === newMovie.imdbId)) {
+      return;
+    }
+
+    this.setState(prevState => ({
+      movies: [...prevState.movies, newMovie],
+    }));
   };
 
   render() {
@@ -18,7 +38,7 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addMovie={this.addMovie} />
         </div>
       </div>
     );

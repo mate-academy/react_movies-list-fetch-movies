@@ -9,7 +9,7 @@ export const App: FC = () => {
 
   function addMovie(movie: Movie) {
     const isExist = movies.find(item => item.imdbId === movie.imdbId);
-    
+
     if (!isExist) {
       setMovies([
         ...movies,

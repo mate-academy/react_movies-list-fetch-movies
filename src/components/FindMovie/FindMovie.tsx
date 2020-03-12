@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, ChangeEvent, FormEvent, KeyboardEvent
+  FC, useState, ChangeEvent, FormEvent, /* KeyboardEvent */
 } from 'react';
 import './FindMovie.scss';
 
@@ -22,14 +22,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     setIsError(false);
   }
 
-  function handlerEnter(event: KeyboardEvent) {
-    if(event.key === 'Enter') {
-      event.preventDefault();
-      handlerFindButton();
-    }
-  }
-
-  function handlerFindButton() {
+  function submitHandler(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     fetch(URL + query)
       .then(movieFromApi => {
         return movieFromApi.json();
@@ -57,9 +51,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
       });
   }
 
-  function submitHandler(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
+  function handlerAddButton() {
     if (movie) {
       setQuery('');
       setIsError(false);
@@ -83,7 +75,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               className={`input ${isError ? 'is-danger' : ''}`}
               value={query}
               onChange={handleInput}
-              onKeyPress={handlerEnter}
             />
           </div>
           <p className="help is-danger">
@@ -93,17 +84,17 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={handlerFindButton}
             >
               Find a movie
             </button>
           </div>
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
+              onClick={handlerAddButton}
             >
               Add to the list
             </button>

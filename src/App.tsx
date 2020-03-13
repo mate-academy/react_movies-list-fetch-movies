@@ -62,9 +62,9 @@ export const App: FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        {message
-        && <p className="message">This movie has already been added to your favorites list</p>}
-
+        {message && (
+          <p className="message">This movie has already been added to your favorites list</p>
+        )}
         <FindMovie
           isLoading={isLoading}
           error={error}

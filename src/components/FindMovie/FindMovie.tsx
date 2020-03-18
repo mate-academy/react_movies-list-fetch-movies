@@ -6,6 +6,7 @@ import { MovieCard } from '../MovieCard';
 interface Props {
   findMovie(query: string): void;
   foundMovie: Movie | null;
+  disabledAdd: boolean | undefined;
   addMovie: () => void;
   error: string;
   isLoading: boolean;
@@ -13,6 +14,7 @@ interface Props {
 
 export const FindMovie: FC<Props> = ({
   findMovie,
+  disabledAdd,
   foundMovie,
   error,
   addMovie,
@@ -44,6 +46,7 @@ export const FindMovie: FC<Props> = ({
     event.preventDefault();
     handleClick(query);
   };
+
 
   return (
     <>
@@ -88,6 +91,7 @@ export const FindMovie: FC<Props> = ({
               type="button"
               onClick={addMovie}
               className="button is-primary"
+              disabled={disabledAdd}
             >
               Add to the list
             </button>

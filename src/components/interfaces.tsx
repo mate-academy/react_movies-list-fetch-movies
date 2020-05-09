@@ -11,4 +11,5 @@ export interface FindMovState {
   newMovie: MoviesCard | null,
   errorInput: boolean,
   isFinded: boolean,
+  loading: boolean,
 }

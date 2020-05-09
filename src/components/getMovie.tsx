@@ -1,7 +1,7 @@
 import { MoviesCard } from './interfaces';
 
 export const getMovie = async (title: string) => {
-  const movieUrl = `http://www.omdbapi.com/?apikey=12dad60c&t=${title}`;
+  const movieUrl = `https://www.omdbapi.com/?apikey=12dad60c&t=${title}`;
   const getDatas = await fetch(movieUrl);
   const preparedDatas = await getDatas.json();
 

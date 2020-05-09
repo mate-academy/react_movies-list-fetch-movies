@@ -7,6 +7,7 @@ import { MoviesCard, FindMovState } from '../interfaces';
 interface Props {
   hasAlready: boolean;
   addFilm: (newFilm: MoviesCard) => void;
+  isNotHasAlready: () => void;
 }
 
 export class FindMovie extends React.Component<Props> {
@@ -34,6 +35,8 @@ export class FindMovie extends React.Component<Props> {
   };
 
   findMovie = () => {
+    const { isNotHasAlready } = this.props;
+    isNotHasAlready();
     const { searchValue } = this.state;
     this.setState({ loading: true });
     if (!searchValue) {

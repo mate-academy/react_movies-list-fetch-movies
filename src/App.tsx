@@ -11,8 +11,11 @@ export class App extends Component {
     hasAlready: false,
   };
 
+  isNotHasAlready = () => {
+    this.setState({ hasAlready: false })
+  }
+
   addFilm = (newFilm: MoviesCard): void => {
-    this.setState({ hasAlready: false });
     const { movies } = this.state;
 
     const hasAlready = movies
@@ -34,7 +37,11 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie hasAlready={hasAlready} addFilm={this.addFilm} />
+          <FindMovie
+            hasAlready={hasAlready}
+            addFilm={this.addFilm}
+            isNotHasAlready={this.isNotHasAlready}
+          />
         </div>
       </div>
     );

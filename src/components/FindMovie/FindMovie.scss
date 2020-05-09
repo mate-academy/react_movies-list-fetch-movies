@@ -1,3 +1,19 @@
 .find-movie {
   margin-bottom: 20px;
+  position: relative;
+}
+
+.container-loader {
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0, 0.3);
+}
+
+.loader {
+  height: 40px;
+  width: 40px;
+  animation-duration: 800ms;
 }

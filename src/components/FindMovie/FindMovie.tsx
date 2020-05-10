@@ -56,9 +56,12 @@ export class FindMovie extends React.Component<Props> {
 
           if (newMovie) {
             this.setState({ isFinded: true });
+          } else {
+            this.setState({ errorInput: true });
           }
         }))
       .finally(() => this.setState({ loading: false }));
+
   };
 
   reset = () => {
@@ -121,7 +124,7 @@ export class FindMovie extends React.Component<Props> {
               <button
                 type="button"
                 className="button is-primary"
-                disabled={!isFinded}
+                disabled={!isFinded || errorInput}
                 onClick={() => {
                   if (newMovie) {
                     addFilm(newMovie);

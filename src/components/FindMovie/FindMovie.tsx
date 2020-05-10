@@ -36,7 +36,6 @@ export class FindMovie extends React.Component<Props> {
 
   findMovie = () => {
     const { isNotHasAlready } = this.props;
-    isNotHasAlready();
     const { searchValue } = this.state;
     this.setState({ loading: true });
     if (!searchValue) {
@@ -45,6 +44,8 @@ export class FindMovie extends React.Component<Props> {
     } else {
       this.setState({ errorInput: false });
     }
+
+    isNotHasAlready();
 
     const preparedValue: string = searchValue.replace(/ /g, '+');
 

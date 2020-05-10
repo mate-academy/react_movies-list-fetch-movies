@@ -10,39 +10,14 @@ export const getMovie = async (title: string) => {
   }
 
   const newMovieInfo: MoviesCard = {
-    description: '',
-    title: '',
-    imdbId: '',
+    description: preparedDatas.Plot,
+    title: preparedDatas.Title,
+    imdbId: preparedDatas.imdbID,
     imdbUrl: '',
-    imgUrl: '',
+    imgUrl: preparedDatas.Poster,
   };
 
-  for (const key in preparedDatas) {
-    switch (key) {
-      case 'Title':
-        newMovieInfo.title = preparedDatas[key];
-        break;
-
-      case 'Plot':
-        newMovieInfo.description = preparedDatas[key];
-        break;
-
-      case 'Poster':
-        newMovieInfo.imgUrl = preparedDatas[key];
-        break;
-
-      case 'imdbID':
-        newMovieInfo.imdbId = preparedDatas[key];
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  const imdbUrl = `https://www.imdb.com/title/${newMovieInfo.imdbId}/?ref_=nv_sr_srsg_0`;
-
-  newMovieInfo.imdbUrl = imdbUrl;
+  newMovieInfo.imdbUrl = `https://www.imdb.com/title/${newMovieInfo.imdbId}/?ref_=nv_sr_srsg_0`;
 
   return newMovieInfo;
 };

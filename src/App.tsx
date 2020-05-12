@@ -6,8 +6,8 @@ import data from './api/movies.json';
 import { MoviesCard } from './components/interfaces';
 
 interface State {
-  movies: MoviesCard[],
-  hasAlready: boolean,
+  movies: MoviesCard[];
+  hasAlready: boolean;
 }
 
 export class App extends Component {
@@ -17,8 +17,8 @@ export class App extends Component {
   };
 
   isNotHasAlready = () => {
-    this.setState({ hasAlready: false })
-  }
+    this.setState({ hasAlready: false });
+  };
 
   addFilm = (newFilm: MoviesCard): void => {
     const { movies } = this.state;

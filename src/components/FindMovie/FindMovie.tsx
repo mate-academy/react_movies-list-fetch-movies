@@ -21,48 +21,47 @@ export class FindMovie extends React.Component<Props> {
 
   handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    console.log(value);
-    this.setState(() => ({ searchValue: value }),
-      () => {
-        const { searchValue } = this.state;
 
-        if (searchValue) {
-          this.setState({ errorInput: false });
-        } else {
-          this.setState({ errorInput: true, newMovie: null });
-        }
-      });
+    this.setState(() => ({ searchValue: value }));
+
+    if (value) {
+      this.setState({ errorInput: false });
+    } else {
+      this.setState({ errorInput: true, newMovie: null });
+    }
   };
 
   findMovie = () => {
     const { isNotHasAlready } = this.props;
     const { searchValue } = this.state;
+
     this.setState({ loading: true });
 
     if (!searchValue) {
       this.setState({ errorInput: true });
+
       return;
-    } else {
-      this.setState({ errorInput: false });
     }
+
+    this.setState({ errorInput: false });
+
 
     isNotHasAlready();
 
     const preparedValue: string = searchValue.replace(/ /g, '+');
 
     getMovie(preparedValue)
-      .then(movie => this.setState({ newMovie: movie },
-        () => {
-          const { newMovie } = this.state;
+      .then(movie => this.setState({ newMovie: movie }))
+      .then(() => {
+        const { newMovie } = this.state;
 
-          if (newMovie) {
-            this.setState({ isFinded: true });
-          } else {
-            this.setState({ errorInput: true });
-          }
-        }))
+        if (newMovie) {
+          this.setState({ isFinded: true });
+        } else {
+          this.setState({ errorInput: true });
+        }
+      })
       .finally(() => this.setState({ loading: false }));
-
   };
 
   reset = () => {
@@ -76,7 +75,7 @@ export class FindMovie extends React.Component<Props> {
 
   render() {
     const {
-      searchValue, newMovie, errorInput, isFinded, loading
+      searchValue, newMovie, errorInput, isFinded, loading,
     } = this.state;
     const { hasAlready, addFilm } = this.props;
 
@@ -127,7 +126,10 @@ export class FindMovie extends React.Component<Props> {
                 className="button is-primary"
                 disabled={!isFinded || errorInput}
                 onClick={() => {
-                  newMovie && addFilm(newMovie);
+                  if (newMovie) {
+                    addFilm(newMovie);
+                  }
+
                   this.reset();
                 }}
               >
@@ -139,18 +141,21 @@ export class FindMovie extends React.Component<Props> {
 
         <div className="container">
           <h2 className="title">Preview</h2>
-          {loading
-            ? (
-              <p>Loading...</p>
-            ) : newMovie
-              ? (
-                <MovieCard {...newMovie} />
-              ) : hasAlready
-                ? (
-                  <p>This movie already there</p>
-                ) : (
-                  <p>Please, write correctly title</p>
-                )}
+          {loading && (
+            <p>Loading...</p>
+          )}
+
+          {!loading && newMovie && (
+            <MovieCard {...newMovie} />
+          )}
+
+          {!loading && !newMovie && hasAlready && (
+            <p>This movie already there</p>
+          )}
+
+          {!loading && !newMovie && !hasAlready && (
+            <p>Please, write correctly title</p>
+          )}
         </div>
       </>
     );

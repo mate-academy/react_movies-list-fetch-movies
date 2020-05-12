@@ -5,8 +5,13 @@ import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 import { MoviesCard } from './components/interfaces';
 
+interface State {
+  movies: MoviesCard[],
+  hasAlready: boolean,
+}
+
 export class App extends Component {
-  state = {
+  state: State = {
     movies: data,
     hasAlready: false,
   };
@@ -22,7 +27,7 @@ export class App extends Component {
       .some(movie => movie.imdbId === newFilm.imdbId);
 
     if (!hasAlready) {
-      this.setState({ movies: [...data, newFilm] });
+      this.setState((state: State) => ({ movies: [...state.movies, newFilm] }));
     } else {
       this.setState({ hasAlready: true });
     }

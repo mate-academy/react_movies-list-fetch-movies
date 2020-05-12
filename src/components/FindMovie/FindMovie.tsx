@@ -21,7 +21,7 @@ export class FindMovie extends React.Component<Props> {
 
   handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-
+    console.log(value);
     this.setState(() => ({ searchValue: value }),
       () => {
         const { searchValue } = this.state;
@@ -38,6 +38,7 @@ export class FindMovie extends React.Component<Props> {
     const { isNotHasAlready } = this.props;
     const { searchValue } = this.state;
     this.setState({ loading: true });
+
     if (!searchValue) {
       this.setState({ errorInput: true });
       return;
@@ -126,9 +127,7 @@ export class FindMovie extends React.Component<Props> {
                 className="button is-primary"
                 disabled={!isFinded || errorInput}
                 onClick={() => {
-                  if (newMovie) {
-                    addFilm(newMovie);
-                  }
+                  newMovie && addFilm(newMovie);
                   this.reset();
                 }}
               >

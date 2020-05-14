@@ -10,31 +10,33 @@ interface Props {
   isNotHasAlready: () => void;
 }
 
-const defaultData = {
+const defaultData: Movie = {
   title: '',
   description: '',
   imgUrl: '',
   imdbUrl: '',
   imdbId: '',
-}
+};
 
 export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlready }) => {
-  const [searchValue, setSearchValue] = useState('');
+  const [firstLoaded, serFirstLoaded] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [errorInput, setErrorInput] = useState(false);
-  const [isFinded, setFindStatus] = useState(false);
-  const [loading, setLoadingStatus] = useState(false);
+  const [isFound, setFindStatus] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [newMovie, setNewMovie] = useState(defaultData as MoviesCard | null);
 
   useEffect(() => {
-    firstLoad();
-  }, [])
+    fetchMovies();
+    setErrorInput(false);
+  }, []);
 
   useEffect(() => {
-    setStatus();
-  }, [isFinded, loading, newMovie]);
+    setSearchStatus();
+  }, [isFound, loading, newMovie]);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
+    setSearchQuery(e.target.value);
 
     if (e.target.value) {
       setErrorInput(false);
@@ -44,9 +46,10 @@ export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlread
   };
 
   const findMovie = () => {
-    setLoadingStatus(true);
+    serFirstLoaded(false);
+    setLoading(true);
 
-    if (!searchValue) {
+    if (!searchQuery) {
       setErrorInput(true);
 
       return;
@@ -55,29 +58,31 @@ export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlread
     setErrorInput(false);
     isNotHasAlready();
 
-    const preparedValue: string = searchValue.replace(/ /g, '+');
+    const preparedValue: string = searchQuery.replace(/ /g, '+');
 
     getMovie(preparedValue)
       .then((movie) => setNewMovie(movie as MoviesCard))
-      .finally(() => setLoadingStatus(false));
+      .finally(() => setLoading(false));
   };
 
   const reset = () => {
-    setSearchValue('');
+    setSearchQuery('');
     setNewMovie(null);
     setErrorInput(false);
     setFindStatus(false);
+    serFirstLoaded(true);
   };
 
-  const firstLoad = () => {
+  const fetchMovies = () => {
     setNewMovie(null);
-  }
+    setErrorInput(false);
+  };
 
-  const setStatus = () => {
-    if (newMovie && newMovie.title) {
+  const setSearchStatus = () => {
+    if (!firstLoaded && newMovie && newMovie.title) {
       setFindStatus(true);
       setErrorInput(false);
-    } else {
+    } else if (!firstLoaded) {
       setErrorInput(true);
       setFindStatus(false);
     }
@@ -100,7 +105,7 @@ export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlread
             <input
               type="text"
               id="movie-title"
-              value={searchValue}
+              value={searchQuery}
               placeholder="Enter a title to search"
               className={!loading && errorInput ? 'is-danger input' : 'input'}
               onChange={handleInput}
@@ -128,7 +133,7 @@ export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlread
             <button
               type="button"
               className="button is-primary"
-              disabled={!isFinded || errorInput}
+              disabled={!isFound || errorInput}
               onClick={() => {
                 if (newMovie) {
                   addFilm(newMovie);

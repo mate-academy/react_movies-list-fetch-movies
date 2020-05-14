@@ -13,14 +13,12 @@ export const App: React.FC = () => {
     setHasAlreadyStatus(false);
   };
 
-  const addFilm = (newFilm: MoviesCard) => {
+  const addFilm = (film: MoviesCard) => {
     const isHasAlready = movies
-      .some(movie => movie.imdbId === newFilm.imdbId);
+      .some(movie => movie.imdbId === film.imdbId);
 
     if (!isHasAlready) {
-      const dataWithNewMovies = [...movies, newFilm];
-
-      setMovies(dataWithNewMovies);
+      setMovies([...movies, film]);
     } else {
       setHasAlreadyStatus(true);
     }

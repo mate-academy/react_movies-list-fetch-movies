@@ -18,7 +18,7 @@ export const FindMovie = (props: FindMoviePropsType) => {
 
 
   const getNewMovieFromServer = () => {
-    return fetch(`http://www.omdbapi.com/?apikey=967a07c6&t=${seachingFieldValue}`)
+    return fetch(`https://www.omdbapi.com/?apikey=967a07c6&t=${seachingFieldValue}`)
       .then(responce => responce.json());
   };
 

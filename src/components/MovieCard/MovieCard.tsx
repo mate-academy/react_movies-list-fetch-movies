@@ -1,7 +1,7 @@
 import React from 'react';
 import './MovieCard.scss';
 
-type Props = Movie;
+type Props = MovieCard;
 
 export const MovieCard: React.FC<Props> = ({
   title,

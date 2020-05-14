@@ -10,13 +10,24 @@ interface Props {
   isNotHasAlready: () => void;
 }
 
+const defaultData = {
+  title: '',
+  description: '',
+  imgUrl: '',
+  imdbUrl: '',
+  imdbId: '',
+}
+
 export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlready }) => {
   const [searchValue, setSearchValue] = useState('');
   const [errorInput, setErrorInput] = useState(false);
   const [isFinded, setFindStatus] = useState(false);
   const [loading, setLoadingStatus] = useState(false);
-  // Не могу правильно типизировать под мою логику эту переменную
-  const [newMovie, setNewMovie] = useState(null as any);
+  const [newMovie, setNewMovie] = useState(defaultData as MoviesCard | null);
+
+  useEffect(() => {
+    firstLoad();
+  }, [])
 
   useEffect(() => {
     setStatus();
@@ -47,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlread
     const preparedValue: string = searchValue.replace(/ /g, '+');
 
     getMovie(preparedValue)
-      .then(movie => setNewMovie(movie))
+      .then((movie) => setNewMovie(movie as MoviesCard))
       .finally(() => setLoadingStatus(false));
   };
 
@@ -58,8 +69,12 @@ export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlread
     setFindStatus(false);
   };
 
+  const firstLoad = () => {
+    setNewMovie(null);
+  }
+
   const setStatus = () => {
-    if (newMovie) {
+    if (newMovie && newMovie.title) {
       setFindStatus(true);
       setErrorInput(false);
     } else {

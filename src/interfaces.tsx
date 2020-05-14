@@ -11,6 +11,6 @@ export interface Movie {
 
 
 export interface FindMoviePropsType {
-  setMovies: (x: []) => void;
+  setMovies: (x: Movie[]) => void;
   movies: Movie[];
 }

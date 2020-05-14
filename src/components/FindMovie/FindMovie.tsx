@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../getMovie';
-import { MoviesCard, FindMovState } from '../interfaces';
+import { MoviesCard } from '../interfaces';
 
 interface Props {
   hasAlready: boolean;
@@ -10,154 +10,142 @@ interface Props {
   isNotHasAlready: () => void;
 }
 
-export class FindMovie extends React.Component<Props> {
-  state: FindMovState = {
-    searchValue: '',
-    newMovie: null,
-    errorInput: false,
-    isFinded: false,
-    loading: false,
-  };
+export const FindMovie: React.FC<Props> = ({ hasAlready, addFilm, isNotHasAlready }) => {
+  const [searchValue, setSearchValue] = useState('');
+  const [errorInput, setErrorInput] = useState(false);
+  const [isFinded, setFindStatus] = useState(false);
+  const [loading, setLoadingStatus] = useState(false);
+  // Не могу правильно типизировать под мою логику эту переменную
+  const [newMovie, setNewMovie] = useState(null as any);
 
-  handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
+  useEffect(() => {
+    setStatus();
+  }, [isFinded, loading, newMovie]);
 
-    this.setState(() => ({ searchValue: value }));
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
 
-    if (value) {
-      this.setState({ errorInput: false });
+    if (e.target.value) {
+      setErrorInput(false);
     } else {
-      this.setState({ errorInput: true, newMovie: null });
+      setErrorInput(true);
     }
   };
 
-  findMovie = () => {
-    const { isNotHasAlready } = this.props;
-    const { searchValue } = this.state;
-
-    this.setState({ loading: true });
+  const findMovie = () => {
+    setLoadingStatus(true);
 
     if (!searchValue) {
-      this.setState({ errorInput: true });
+      setErrorInput(true);
 
       return;
     }
 
-    this.setState({ errorInput: false });
-
-
+    setErrorInput(false);
     isNotHasAlready();
 
     const preparedValue: string = searchValue.replace(/ /g, '+');
 
     getMovie(preparedValue)
-      .then(movie => this.setState({ newMovie: movie }))
-      .then(() => {
-        const { newMovie } = this.state;
-
-        if (newMovie) {
-          this.setState({ isFinded: true });
-        } else {
-          this.setState({ errorInput: true });
-        }
-      })
-      .finally(() => this.setState({ loading: false }));
+      .then(movie => setNewMovie(movie))
+      .finally(() => setLoadingStatus(false));
   };
 
-  reset = () => {
-    this.setState({
-      searchValue: '',
-      newMovie: null,
-      errorInput: false,
-      isFinded: false,
-    });
+  const reset = () => {
+    setSearchValue('');
+    setNewMovie(null);
+    setErrorInput(false);
+    setFindStatus(false);
   };
 
-  render() {
-    const {
-      searchValue, newMovie, errorInput, isFinded, loading,
-    } = this.state;
-    const { hasAlready, addFilm } = this.props;
+  const setStatus = () => {
+    if (newMovie) {
+      setFindStatus(true);
+      setErrorInput(false);
+    } else {
+      setErrorInput(true);
+      setFindStatus(false);
+    }
+  };
 
-    return (
-      <>
-        <form
-          className="find-movie"
-          onSubmit={e => {
-            e.preventDefault();
-          }}
-        >
-          <div className="field">
-            <label className="label" htmlFor="movie-title">
-              Movie title
-            </label>
+  return (
+    <>
+      <form
+        className="find-movie"
+        onSubmit={e => {
+          e.preventDefault();
+        }}
+      >
+        <div className="field">
+          <label className="label" htmlFor="movie-title">
+            Movie title
+          </label>
 
-            <div className="control">
-              <input
-                type="text"
-                id="movie-title"
-                value={searchValue}
-                placeholder="Enter a title to search"
-                className={errorInput ? 'is-danger input' : 'input'}
-                onChange={this.handleInput}
-              />
-            </div>
-            {errorInput && (
-              <p className="help is-danger">
-                Can&apos;t find a movie with such a title
-              </p>
-            )}
+          <div className="control">
+            <input
+              type="text"
+              id="movie-title"
+              value={searchValue}
+              placeholder="Enter a title to search"
+              className={!loading && errorInput ? 'is-danger input' : 'input'}
+              onChange={handleInput}
+            />
           </div>
-
-          <div className="field is-grouped">
-            <div className="control">
-              <button
-                type="button"
-                className="button is-light"
-                onClick={this.findMovie}
-              >
-                Find a movie
-              </button>
-            </div>
-
-            <div className="control">
-              <button
-                type="button"
-                className="button is-primary"
-                disabled={!isFinded || errorInput}
-                onClick={() => {
-                  if (newMovie) {
-                    addFilm(newMovie);
-                  }
-
-                  this.reset();
-                }}
-              >
-                Add to the list
-              </button>
-            </div>
-          </div>
-        </form>
-
-        <div className="container">
-          <h2 className="title">Preview</h2>
-          {loading && (
-            <p>Loading...</p>
-          )}
-
-          {!loading && newMovie && (
-            <MovieCard {...newMovie} />
-          )}
-
-          {!loading && !newMovie && hasAlready && (
-            <p>This movie already there</p>
-          )}
-
-          {!loading && !newMovie && !hasAlready && (
-            <p>Please, write correctly title</p>
+          {!loading && errorInput && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
           )}
         </div>
-      </>
-    );
-  }
-}
+
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              type="button"
+              className="button is-light"
+              onClick={findMovie}
+            >
+              Find a movie
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="button"
+              className="button is-primary"
+              disabled={!isFinded || errorInput}
+              onClick={() => {
+                if (newMovie) {
+                  addFilm(newMovie);
+                }
+
+                reset();
+              }}
+            >
+              Add to the list
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div className="container">
+        <h2 className="title">Preview</h2>
+        {loading && (
+          <p>Loading...</p>
+        )}
+
+        {!loading && newMovie && (
+          <MovieCard {...newMovie} />
+        )}
+
+        {!loading && !newMovie && hasAlready && (
+          <p>This movie already there</p>
+        )}
+
+        {!loading && !newMovie && !hasAlready && (
+          <p>Please, write correctly title</p>
+        )}
+      </div>
+    </>
+  );
+};

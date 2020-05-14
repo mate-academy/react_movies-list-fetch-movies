@@ -5,11 +5,3 @@ export interface MoviesCard {
   imdbUrl: string;
   imdbId: string;
 }
-
-export interface FindMovState {
-  searchValue: string;
-  newMovie: MoviesCard | null;
-  errorInput: boolean;
-  isFinded: boolean;
-  loading: boolean;
-}

@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 /// <reference types="react-scripts" />
 
-interface Movie {
+interface MovieCard {
   title: string;
   description: string;
   imgUrl: string;

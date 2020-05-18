@@ -13,13 +13,15 @@ export const FindMovie = (props: FindMoviePropsType) => {
     imdbUrl: '',
     imdbId: '',
   });
-  const [seachingFieldValue, setSeachingFildValue] = useState('');
+  const [seachingFieldValue, setSeachingFieldValue] = useState('');
   const [isMovieFound, setIsMovieFound] = useState(true);
+  const [isAlreadyAtList, setIsAlreadyAtList] = useState(false);
+  const API_URL = 'https://www.omdbapi.com/';
 
 
   const getNewMovieFromServer = () => {
-    return fetch(`https://www.omdbapi.com/?apikey=967a07c6&t=${seachingFieldValue}`)
-      .then(responce => responce.json());
+    return fetch(`${API_URL}?apikey=967a07c6&t=${seachingFieldValue}`)
+      .then(response => response.json());
   };
 
   const handleSeachingFormSubmit = (event: FormEvent) => {
@@ -42,13 +44,14 @@ export const FindMovie = (props: FindMoviePropsType) => {
           imdbUrl: `https://www.imdb.com/title/${imdbID}`,
           imdbId: imdbID,
         });
+        setIsAlreadyAtList(false);
       });
   };
 
   const handleSeachingFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
-    setSeachingFildValue(value);
+    setSeachingFieldValue(value);
     setIsMovieFound(true);
   };
 
@@ -58,7 +61,7 @@ export const FindMovie = (props: FindMoviePropsType) => {
     }
 
     if (movies.find((movie: Movie) => movie.imdbId === foundMovie.imdbId)) {
-      setSeachingFildValue('You already have one on your list.');
+      setIsAlreadyAtList(true);
 
       return;
     }
@@ -71,7 +74,7 @@ export const FindMovie = (props: FindMoviePropsType) => {
       imdbUrl: '',
       imdbId: '',
     });
-    setSeachingFildValue('');
+    setSeachingFieldValue('');
   };
 
   return (
@@ -97,10 +100,18 @@ export const FindMovie = (props: FindMoviePropsType) => {
           </div>
 
           <p
-            className={`help ${isMovieFound ? 'unvisible' : ''} is-danger`}
+            className={`help ${isMovieFound ? 'invisible' : ''} is-danger`}
           >
             Can&apos;t find a movie with such a title
           </p>
+          <p
+            className="is-danger"
+          >
+            {isAlreadyAtList
+              ? 'You already have one on your list.'
+              : ''}
+          </p>
+
         </div>
 
         <div className="field is-grouped">

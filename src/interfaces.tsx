@@ -1,6 +1,4 @@
 
-// import { SetStateAction } from "react";
-
 export interface Movie {
   title: string;
   description: string;
@@ -11,6 +9,6 @@ export interface Movie {
 
 
 export interface FindMoviePropsType {
-  setMovies: (x: Movie[]) => void;
+  setMovies: (Movies: Movie[]) => void;
   movies: Movie[];
 }

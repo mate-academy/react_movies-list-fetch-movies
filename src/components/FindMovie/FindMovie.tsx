@@ -17,7 +17,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
   const getMovie = async () => {
     const responce = await fetch(
-      `http://www.omdbapi.com/?apikey=c133fb8a&t=${title}`,
+      `https://www.omdbapi.com/?apikey=c133fb8a&t=${title}`,
     );
 
     return responce.json();

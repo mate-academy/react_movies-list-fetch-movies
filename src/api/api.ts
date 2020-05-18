@@ -7,7 +7,7 @@ const getData = async (url: string) => {
 
 export const getMovie = async (value: string) => {
   const API_KEY = '45abeff6';
-  const API_URL = `http://www.omdbapi.com/?apikey=${API_KEY}&t=${value}`;
+  const API_URL = `https://www.omdbapi.com/?apikey=${API_KEY}&t=${value}`;
   const movie = await getData(API_URL);
 
   return movie;

@@ -8,3 +8,10 @@ interface Movie {
   imdbUrl: string;
   imdbId: string;
 }
+
+interface MovieFormServer {
+  Title: string;
+  Poster: string;
+  Plot: string;
+  imdbID: string;
+}

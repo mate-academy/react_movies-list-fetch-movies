@@ -3,6 +3,7 @@ import cn from 'classnames';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../helpers/api';
 
 type Props = {
   movies: Movie[];
@@ -11,17 +12,9 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [title, setTitle] = useState<string>('');
-  const [foundMovie, setFoundMovie] = useState<Movie | null>();
+  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [movieIsFound, setMovieIsFound] = useState<boolean>(false);
-
-  const getMovie = async () => {
-    const responce = await fetch(
-      `https://www.omdbapi.com/?apikey=c133fb8a&t=${title}`,
-    );
-
-    return responce.json();
-  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -29,18 +22,18 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   };
 
   const handleSearchMovie = async () => {
-    const {
-      Title,
-      Plot,
-      Poster,
-      imdbID,
-    } = await getMovie();
-
     if (!title) {
       setErrorMessage('Enter the title please');
 
       return;
     }
+
+    const {
+      Title,
+      Plot,
+      Poster,
+      imdbID,
+    } = await getMovie(title);
 
     const movieToAdd: Movie = {
       title: Title,

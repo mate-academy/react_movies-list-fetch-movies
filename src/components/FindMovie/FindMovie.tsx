@@ -28,7 +28,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setLoading(true);
     const data = await getMovies(searchQuery)
       .then(response => response.json())
-      .catch(error => setError(`Something went wrong! ${error.message}.`));
+      .catch(error => {
+        setLoading(false);
+        setError(`Something went wrong! ${error.message}.`);
+      });
 
     if (data) {
       const foundMovie: Movie = {

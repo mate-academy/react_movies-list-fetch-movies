@@ -8,3 +8,8 @@ interface Movie {
   imdbUrl: string;
   imdbId: string;
 }
+
+type FindMovieProps = {
+  addMovie: (movie: Movie) => void;
+  usedMovieError: boolean;
+};

@@ -33,7 +33,9 @@ export const useFindMovie = ({ addMovie, usedMovieError }: FindMovieProps) => {
           return;
         }
 
-        const { Title, Plot, Poster, imdbID } = res.data;
+        const {
+          Title, Plot, Poster, imdbID,
+        } = res.data;
 
         setTitle(Title);
         setDescription(Plot);

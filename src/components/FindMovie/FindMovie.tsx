@@ -12,6 +12,11 @@ const defaultMovie: Movie = {
   imdbId: '',
 };
 
+const optionQuery = {
+  maxLength: 50,
+  pattern: /[^a-z0-9_.,!?:;'`" ]/ig,
+};
+
 type Props = {
   movies: Movie[];
   setMovies: (value: Movie[]) => void;
@@ -30,10 +35,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       .then(response => response.json())
       .catch(error => {
         setLoading(false);
-        setError(`Something went wrong! ${error.message}.`);
+        setError(`Error! ${error.message}.`);
       });
 
-    if (data) {
+    if (data.Response === 'True') {
       const foundMovie: Movie = {
         title: data.Title,
         description: data.Plot,
@@ -45,6 +50,9 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       setLoading(false);
       setLoaded(true);
       setSearchResult(foundMovie);
+    } else {
+      setLoading(false);
+      setError(`Warning! ${data.Error}.`);
     }
   };
 
@@ -63,6 +71,19 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setSearchResult(defaultMovie);
     setLoaded(false);
     setSearchQuery('');
+  };
+
+  const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    const { pattern, maxLength } = optionQuery;
+    const query = value
+      .replace(pattern, '')
+      .replace(/\s{2,}/g, ' ')
+      .slice(0, maxLength);
+
+    setSearchQuery(query);
+    setLoaded(false);
+    setError('');
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -89,12 +110,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               placeholder="Enter a title to search"
               className={cn('input', { 'is-danger': isError })}
               value={searchQuery}
-              autoComplete="off"
-              onChange={e => {
-                setSearchQuery(e.target.value);
-                setLoaded(false);
-                setError('');
-              }}
+              onChange={handleChangeInput}
             />
           </div>
           {isError && <p className="help is-danger">{isError}</p>}

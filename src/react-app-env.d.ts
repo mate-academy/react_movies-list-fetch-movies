@@ -11,5 +11,5 @@ interface Movie {
 
 type FindMovieProps = {
   addMovie: (movie: Movie) => void;
-  addingError: boolean;
+  usedMovieError: boolean;
 };

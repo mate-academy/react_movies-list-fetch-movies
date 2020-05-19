@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import axios from 'axios';
 import API_URL from '../../api/api';
 
-export const useFindMovie = ({ addMovie, addingError }: FindMovieProps) => {
+export const useFindMovie = ({ addMovie, usedMovieError }: FindMovieProps) => {
   const [searchInput, setSearchInput] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -33,11 +33,13 @@ export const useFindMovie = ({ addMovie, addingError }: FindMovieProps) => {
           return;
         }
 
-        setTitle(res.data.Title);
-        setDescription(res.data.Plot);
-        setImgUrl(res.data.Poster);
-        setImdbUrl(`https://www.imdb.com/title/${res.data.imdbID}`);
-        setImdbId(res.data.imdbID);
+        const { Title, Plot, Poster, imdbID } = res.data;
+
+        setTitle(Title);
+        setDescription(Plot);
+        setImgUrl(Poster);
+        setImdbUrl(`https://www.imdb.com/title/${imdbID}`);
+        setImdbId(imdbID);
         setPreviewReady(true);
         setAddingStatus(false);
       });
@@ -54,7 +56,7 @@ export const useFindMovie = ({ addMovie, addingError }: FindMovieProps) => {
     }
   }, [searchInput]);
 
-  const handleAddingToList = useCallback(() => {
+  const handleAddingMovie = useCallback(() => {
     if (!error && title.trim().length > 0) {
       addMovie({
         title, description, imgUrl, imdbUrl, imdbId,
@@ -76,8 +78,8 @@ export const useFindMovie = ({ addMovie, addingError }: FindMovieProps) => {
     saveInputValue,
     handleSearch,
     onBlur,
-    handleAddingToList,
-    addingError,
+    handleAddingMovie,
+    usedMovieError,
     errorTitle,
     isPreviewReady,
     isFilmAdded,

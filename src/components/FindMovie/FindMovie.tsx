@@ -12,8 +12,8 @@ export const FindMovie: FC<FindMovieProps> = (props) => {
     saveInputValue,
     handleSearch,
     onBlur,
-    handleAddingToList,
-    addingError,
+    handleAddingMovie,
+    usedMovieError,
     errorTitle,
     isPreviewReady,
     isFilmAdded,
@@ -74,7 +74,7 @@ export const FindMovie: FC<FindMovieProps> = (props) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={handleAddingToList}
+              onClick={handleAddingMovie}
               disabled={!isPreviewReady}
             >
               Add to the list
@@ -82,7 +82,7 @@ export const FindMovie: FC<FindMovieProps> = (props) => {
           </div>
         </div>
       </form>
-      {addingError
+      {usedMovieError
       && (
         <div className="adding-error-container">
           <p className="adding-error">

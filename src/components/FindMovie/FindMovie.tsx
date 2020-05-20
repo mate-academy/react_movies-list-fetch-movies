@@ -91,11 +91,6 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     findMovie();
   };
 
-  const handleClickSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    checkMovie();
-  };
-
   return (
     <>
       <form className="find-movie" onSubmit={handleFormSubmit}>
@@ -140,7 +135,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                 'border-dark': !isLoaded,
               })}
               disabled={!isLoaded}
-              onClick={handleClickSubmit}
+              onClick={checkMovie}
             >
               Add to the list
             </button>

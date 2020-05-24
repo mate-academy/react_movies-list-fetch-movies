@@ -13,3 +13,7 @@
   padding: 20px;
   border-left: 1px solid lightgray;
 }
+
+.border-dark.button.is-warning[disabled] {
+  border-color: hsl(0, 0%, 71%);
+}

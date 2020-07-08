@@ -66,7 +66,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({
           {
             errors.title && errors.title.type === 'required' && (
               <p className="help is-danger">
-                You entered empty field
+                This field is required
               </p>
             )
           }

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import './FindMovie.scss';
 
-import { MovieCard } from '../MovieCard';
-import { MovieI } from '../../interfaces/MovieI';
+import { MovieInterface } from '../../interfaces/MovieInterface';
+import { Preview } from '../Preview/Preview';
 
 type FormData = {
   title: string;
@@ -12,12 +12,12 @@ type FormData = {
 type FindMovieProps = {
   isMovieFound: boolean;
   requestMovie(title: string): void;
-  preview: MovieI | null;
+  preview: MovieInterface | null;
   isLoading: boolean;
   addMovie(): void;
 };
 
-export const FindMovie: React.FC<FindMovieProps> = ({
+export const FindMovie: FC<FindMovieProps> = ({
   isMovieFound,
   requestMovie,
   preview,
@@ -104,25 +104,11 @@ export const FindMovie: React.FC<FindMovieProps> = ({
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        <Preview isLoading={isLoading} preview={preview} />
+        <Preview
+          isLoading={isLoading}
+          preview={preview}
+        />
       </div>
     </>
   );
-};
-
-type PreviewProps = {
-  isLoading: boolean;
-  preview: MovieI | null;
-};
-
-const Preview: React.FC<PreviewProps> = ({ isLoading, preview }) => {
-  if (isLoading) {
-    return <span>Loading...</span>;
-  }
-
-  if (preview === null) {
-    return <span>Your matches display here.</span>;
-  }
-
-  return <MovieCard {...preview} />;
 };

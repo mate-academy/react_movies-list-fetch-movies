@@ -1,22 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
 import { fetchData } from '../../Api';
-import { movieType } from '../Interfaces/Interface';
+import { movieType, oneMovieType } from '../Interfaces/Interface';
 import { URL } from '../Interfaces/Constants';
 
 type findMovieType = {
-  handleChange: (event: React.FormEvent<HTMLInputElement>) => void;
-  title: string;
+  addMovie: (movie: oneMovieType) => void;
 };
 
-export const FindMovie: React.FC<findMovieType> = ({ handleChange, title }) => {
+export const FindMovie: React.FC<findMovieType> = ({ addMovie }) => {
+  const [isFetched, setIsFetched] = useState(false);
+  const [preview, setPreview] = useState<oneMovieType>();
+  const [isDisabled, setDisabled] = useState(true);
+  const [isError, setError] = useState(false);
+  const [title, setTitle] = useState('');
+
+  const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const { value } = event.currentTarget;
+
+    setError(false);
+    setTitle(value);
+  };
+
   const loadData = async () => {
+    setIsFetched(true);
     const dataFromServer = await fetchData<movieType>(`${URL}${title}`);
 
     if (dataFromServer.Response === 'False') {
-      console.log('non found');
+      setPreview(undefined);
+      setDisabled(true);
+      setError(true);
     } else {
       const newMovie = {
         title: dataFromServer.Title,
@@ -26,7 +40,28 @@ export const FindMovie: React.FC<findMovieType> = ({ handleChange, title }) => {
         imdbId: dataFromServer.imdbID,
       };
 
-      console.log(newMovie);
+      setPreview(newMovie);
+      setDisabled(false);
+    }
+
+    setIsFetched(false);
+  };
+
+  const keyUpHendler = (event: any) => {
+    const { keyCode } = event;
+
+    if (keyCode === 13) {
+      loadData();
+    }
+
+    setError(false);
+  };
+
+  const handleAddingMovie = () => {
+    if (preview) {
+      addMovie(preview);
+      setTitle('');
+      setPreview(undefined);
     }
   };
 
@@ -44,16 +79,17 @@ export const FindMovie: React.FC<findMovieType> = ({ handleChange, title }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
-              onChange={handleChange}
+              className={isError ? 'input error' : 'input correct'}
+              onChange={handleInputChange}
+              onKeyUp={keyUpHendler}
             />
+            {
+              isError
+                ? <p className="error-text">Movie was not found, please try again!</p>
+                : <></>
+            }
           </div>
-
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
         </div>
-
         <div className="field is-grouped">
           <div className="control">
             <button
@@ -67,9 +103,10 @@ export const FindMovie: React.FC<findMovieType> = ({ handleChange, title }) => {
 
           <div className="control">
             <button
-              disabled={true}
+              disabled={isDisabled}
               type="button"
               className="button is-primary"
+              onClick={handleAddingMovie}
             >
               Add to the list
             </button>
@@ -79,7 +116,16 @@ export const FindMovie: React.FC<findMovieType> = ({ handleChange, title }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        <MovieCard {...movies[0]} />
+        {
+          isFetched
+            ? <p>Loading.....</p>
+            : <></>
+        }
+        {
+          preview
+            ? <MovieCard movie={preview} />
+            : <></>
+        }
       </div>
     </>
   );

@@ -5,3 +5,11 @@ export type movieType ={
   imdbID: string;
   Response: string;
 };
+
+export type oneMovieType ={
+  title: string;
+  description: string;
+  imgUrl: string;
+  imdbUrl: string;
+  imdbId: string;
+};

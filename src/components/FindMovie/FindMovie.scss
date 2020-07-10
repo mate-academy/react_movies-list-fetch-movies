@@ -1,3 +1,15 @@
 .find-movie {
   margin-bottom: 20px;
 }
+
+.error {
+  border-color: red;
+  &-text {
+    color: red;
+    font-weight: bold;
+  }
+}
+
+.correct {
+  border-color: green;
+}

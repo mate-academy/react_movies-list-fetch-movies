@@ -62,6 +62,7 @@ export const FindMovie: React.FC<findMovieType> = ({ addMovie }) => {
       addMovie(preview);
       setTitle('');
       setPreview(undefined);
+      setDisabled(true);
     }
   };
 

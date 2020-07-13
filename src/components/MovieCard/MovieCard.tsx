@@ -1,12 +1,12 @@
 import React from 'react';
 import './MovieCard.scss';
-import { oneMovieType } from '../Interfaces/Interface';
+import { MovieInterface } from '../Interfaces/Interface';
 
-type movieCard = {
-  movie: oneMovieType;
-};
+interface Props {
+  movie: MovieInterface;
+}
 
-export const MovieCard: React.FC< movieCard> = ({ movie }) => {
+export const MovieCard: React.FC<Props> = ({ movie }) => {
   const {
     imdbUrl, imgUrl, title, description,
   } = movie;

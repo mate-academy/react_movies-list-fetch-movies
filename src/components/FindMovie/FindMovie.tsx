@@ -47,14 +47,13 @@ export const FindMovie: React.FC<findMovieType> = ({ addMovie }) => {
     setIsFetched(false);
   };
 
-  const keyUpHendler = (event: any) => {
+  const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const { keyCode } = event;
 
     if (keyCode === 13) {
+      event.preventDefault();
       loadData();
     }
-
-    setError(false);
   };
 
   const handleAddingMovie = () => {
@@ -82,7 +81,7 @@ export const FindMovie: React.FC<findMovieType> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className={isError ? 'input error' : 'input correct'}
               onChange={handleInputChange}
-              onKeyUp={keyUpHendler}
+              onKeyDown={keyDownHandler}
             />
             {
               isError

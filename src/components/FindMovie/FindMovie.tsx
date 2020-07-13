@@ -40,8 +40,8 @@ export const FindMovie: React.FC<findMovieType> = ({ addMovie }) => {
         imdbId: dataFromServer.imdbID,
       };
 
-      setPreview(newMovie);
       setDisabled(false);
+      setPreview(newMovie);
     }
 
     setIsFetched(false);

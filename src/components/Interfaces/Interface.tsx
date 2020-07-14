@@ -1,4 +1,4 @@
-export interface MovieFromServerInterface {
+export interface MovieFromServer {
   Plot: string;
   Poster: string;
   Title: string;
@@ -6,7 +6,7 @@ export interface MovieFromServerInterface {
   Response: string;
 }
 
-export interface MovieInterface {
+export interface Movie {
   title: string;
   description: string;
   imgUrl: string;

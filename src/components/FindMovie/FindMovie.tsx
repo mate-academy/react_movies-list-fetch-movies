@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { fetchData } from '../../Api';
-import { MovieFromServerInterface, MovieInterface } from '../Interfaces/Interface';
+import { MovieFromServer, Movie } from '../Interfaces/Interface';
 import { URL } from '../Interfaces/Constants';
 
 interface Props {
-  addMovie: (movie: MovieInterface) => void;
+  addMovie: (movie: Movie) => void;
 }
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [isFetched, setIsFetched] = useState(false);
-  const [preview, setPreview] = useState<MovieInterface>();
+  const [preview, setPreview] = useState<Movie>();
   const [isDisabled, setDisabled] = useState(true);
   const [isError, setError] = useState(false);
   const [title, setTitle] = useState('');
@@ -25,7 +25,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const loadData = async () => {
     setIsFetched(true);
-    const dataFromServer = await fetchData<MovieFromServerInterface>(`${URL}${title}`);
+    const dataFromServer = await fetchData<MovieFromServer>(`${URL}${title}`);
 
     if (dataFromServer.Response === 'False') {
       setPreview(undefined);

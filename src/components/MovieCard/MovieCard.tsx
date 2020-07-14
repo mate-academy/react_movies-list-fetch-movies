@@ -1,9 +1,9 @@
 import React from 'react';
 import './MovieCard.scss';
-import { MovieInterface } from '../Interfaces/Interface';
+import { Movie } from '../Interfaces/Interface';
 
 interface Props {
-  movie: MovieInterface;
+  movie: Movie;
 }
 
 export const MovieCard: React.FC<Props> = ({ movie }) => {

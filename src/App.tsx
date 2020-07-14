@@ -3,12 +3,12 @@ import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
-import { MovieInterface } from './components/Interfaces/Interface';
+import { Movie } from './components/Interfaces/Interface';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState(data);
 
-  const addMovieToTheList = (movie: MovieInterface) => {
+  const addMovieToTheList = (movie: Movie) => {
     const isExists = movies.find(film => film.imdbId === movie.imdbId);
 
     if (!isExists) {

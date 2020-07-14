@@ -3,18 +3,18 @@ import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
-import { MovieInterface, MovieFromServerInterface } from './interfaces/MovieInterface';
+import { Movie, MovieFromServer } from './interfaces/Movie';
 import { fetchMovie } from './api/api';
 
 export const App: FC = () => {
-  const [movies, setMovies] = useState<MovieInterface[]>([...data]);
-  const [isMovieFound, setIsMovieFound] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [preview, setPreview] = useState<MovieInterface | null>(null);
+  const [movies, setMovies] = useState<Movie[]>([...data]);
+  const [isMovieFound, setIsMovieFound] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [preview, setPreview] = useState<Movie | null>(null);
 
   const requestMovie = async (title: string) => {
     setIsLoading(true);
-    const dataFromApi = await fetchMovie<MovieFromServerInterface>(title);
+    const dataFromApi = await fetchMovie<MovieFromServer>(title);
 
     setIsLoading(false);
 

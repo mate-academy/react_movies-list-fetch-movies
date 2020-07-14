@@ -2,22 +2,22 @@ import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import './FindMovie.scss';
 
-import { MovieInterface } from '../../interfaces/MovieInterface';
+import { Movie } from '../../interfaces/Movie';
 import { Preview } from '../Preview/Preview';
 
 type FormData = {
   title: string;
 };
 
-type FindMovieProps = {
+type Props = {
   isMovieFound: boolean;
   requestMovie(title: string): void;
-  preview: MovieInterface | null;
+  preview: Movie | null;
   isLoading: boolean;
   addMovie(): void;
 };
 
-export const FindMovie: FC<FindMovieProps> = ({
+export const FindMovie: FC<Props> = ({
   isMovieFound,
   requestMovie,
   preview,

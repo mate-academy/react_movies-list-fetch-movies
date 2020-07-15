@@ -3,9 +3,9 @@ import React, { FC } from 'react';
 import './MoviesList.scss';
 import { MovieCard } from '../MovieCard';
 
-type Props = {
+interface Props {
   movies: Movie[];
-};
+}
 
 export const MoviesList: FC<Props> = ({
   movies = [],

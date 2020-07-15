@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../interfaces/Movie';
 
-type Props = {
+interface Props {
   isLoading: boolean;
   preview: Movie | null;
-};
+}
 
 export const Preview: FC<Props> = ({ isLoading, preview }) => {
   if (isLoading) {

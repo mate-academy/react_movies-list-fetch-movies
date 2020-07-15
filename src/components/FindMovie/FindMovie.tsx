@@ -9,7 +9,7 @@ type FormData = {
   title: string;
 };
 
-type Props = {
+interface Props {
   isMovieFound: boolean;
   requestMovie(title: string): void;
   preview: Movie | null;

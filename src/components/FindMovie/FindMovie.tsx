@@ -48,9 +48,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const { keyCode } = event;
+    const { key } = event;
 
-    if (keyCode === 13) {
+    if (key === 'Enter') {
       event.preventDefault();
       loadData();
     }
@@ -84,9 +84,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               onKeyDown={keyDownHandler}
             />
             {
-              isError
-                ? <p className="error-text">Movie was not found, please try again!</p>
-                : <></>
+              isError && <p className="error-text">Movie was not found, please try again!</p>
+
             }
           </div>
         </div>
@@ -117,14 +116,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       <div className="container">
         <h2 className="title">Preview</h2>
         {
-          isFetched
-            ? <p>Loading.....</p>
-            : <></>
+          isFetched && <p>Loading.....</p>
+
         }
         {
-          preview
-            ? <MovieCard movie={preview} />
-            : <></>
+          preview && <MovieCard movie={preview} />
         }
       </div>
     </>

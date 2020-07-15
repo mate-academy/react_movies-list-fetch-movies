@@ -1,55 +1,128 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
-
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
+import { fetchData } from '../../Api';
+import { MovieFromServer, Movie } from '../Interfaces/Interface';
+import { URL } from '../Interfaces/Constants';
 
-export const FindMovie = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+interface Props {
+  addMovie: (movie: Movie) => void;
+}
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+  const [isFetched, setIsFetched] = useState(false);
+  const [preview, setPreview] = useState<Movie>();
+  const [isDisabled, setDisabled] = useState(true);
+  const [isError, setError] = useState(false);
+  const [title, setTitle] = useState('');
+
+  const handleInputChange = (event: React.FormEvent<HTMLInputElement>) => {
+    const { value } = event.currentTarget;
+
+    setError(false);
+    setTitle(value);
+  };
+
+  const loadData = async () => {
+    setIsFetched(true);
+    const dataFromServer = await fetchData<MovieFromServer>(`${URL}${title}`);
+
+    if (dataFromServer.Response === 'False') {
+      setPreview(undefined);
+      setDisabled(true);
+      setError(true);
+    } else {
+      const newMovie = {
+        title: dataFromServer.Title,
+        description: dataFromServer.Plot,
+        imgUrl: dataFromServer.Poster,
+        imdbUrl: `https://www.imdb.com/title/${dataFromServer.imdbID}`,
+        imdbId: dataFromServer.imdbID,
+      };
+
+      setDisabled(false);
+      setPreview(newMovie);
+    }
+
+    setIsFetched(false);
+  };
+
+  const keyDownHandler = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const { key } = event;
+
+    if (key === 'Enter') {
+      event.preventDefault();
+      loadData();
+    }
+  };
+
+  const handleAddingMovie = () => {
+    if (preview) {
+      addMovie(preview);
+      setTitle('');
+      setPreview(undefined);
+      setDisabled(true);
+    }
+  };
+
+  return (
+    <>
+      <form className="find-movie">
+        <div className="field">
+          <label className="label" htmlFor="movie-title">
+            Movie title
+          </label>
+
+          <div className="control">
+            <input
+              value={title}
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className={isError ? 'input error' : 'input correct'}
+              onChange={handleInputChange}
+              onKeyDown={keyDownHandler}
+            />
+            {
+              isError && <p className="error-text">Movie was not found, please try again!</p>
+
+            }
+          </div>
         </div>
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              type="button"
+              className="button is-light"
+              onClick={loadData}
+            >
+              Find a movie
+            </button>
+          </div>
 
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
+          <div className="control">
+            <button
+              disabled={isDisabled}
+              type="button"
+              className="button is-primary"
+              onClick={handleAddingMovie}
+            >
+              Add to the list
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div className="container">
+        <h2 className="title">Preview</h2>
+        {
+          isFetched && <p>Loading.....</p>
+
+        }
+        {
+          preview && <MovieCard movie={preview} />
+        }
       </div>
-
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
-          >
-            Find a movie
-          </button>
-        </div>
-
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
-        </div>
-      </div>
-    </form>
-
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      <MovieCard {...movies[0]} />
-    </div>
-  </>
-);
+    </>
+  );
+};

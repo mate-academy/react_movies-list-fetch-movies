@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 export const MovieCard = ({
   title,
-  description = '',
+  description,
   imgUrl,
   imdbUrl,
 }) => (

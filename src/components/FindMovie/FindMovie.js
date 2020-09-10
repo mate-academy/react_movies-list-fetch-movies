@@ -11,38 +11,36 @@ export const FindMovie = ({ movies, addMovieToList, switchNoInTheList }) => {
   const [preview, updatePreview] = useState(movies[0]);
 
   const checkForMovie = () => {
-    if (movieFromInput) {
-      const moviePrepared = movieFromInput.split(' ').join('%20');
-      const input = movieFromInput.toLowerCase();
-      const movieFromData = movies
-        .find(film => film.title.toLowerCase() === input);
+    const moviePrepared = movieFromInput.split(' ').join('%20');
+    const input = movieFromInput.toLowerCase();
+    const movieFromData = movies
+      .find(film => film.title.toLowerCase() === input);
 
-      if (!movieFromData) {
-        getMovie(moviePrepared).then((movie) => {
-          if (movie.Response === 'False') {
-            changeCantFind(true);
+    if (movieFromData) {
+      updatePreview(movieFromData);
+    } else {
+      getMovie(moviePrepared).then((movie) => {
+        if (movie.Response === 'False') {
+          changeCantFind(true);
+        } else {
+          const checkById = movies.find(film => film.imdbId === movie.imdbID);
+
+          if (!checkById) {
+            const newMovie = {
+              title: movie.Title,
+              imdbId: movie.imdbID,
+              imgUrl: movie.Poster,
+              imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+              description: movie.Plot,
+            };
+
+            updatePreview(newMovie);
+            switchNoInTheList(true);
           } else {
-            const checkById = movies.find(film => film.imdbId === movie.imdbID);
-
-            if (!checkById) {
-              const newMovie = {
-                title: movie.Title,
-                imdbId: movie.imdbID,
-                imgUrl: movie.Poster,
-                imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-                description: movie.Plot,
-              };
-
-              updatePreview(newMovie);
-              switchNoInTheList(true);
-            } else {
-              updatePreview(checkById);
-            }
+            updatePreview(checkById);
           }
-        });
-      } else {
-        updatePreview(movieFromData);
-      }
+        }
+      });
     }
   };
 

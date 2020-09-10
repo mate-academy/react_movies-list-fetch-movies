@@ -31,16 +31,21 @@ export const FindMovie = ({ addMovie }) => {
     });
   };
 
-  const clearInput = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     const formInput = event.target.input;
 
     formInput.value = '';
   };
 
+  const handleChange = (event) => {
+    addMovieTitle(event.target.value);
+    setError(false);
+  };
+
   return (
     <>
-      <form className="find-movie" onSubmit={clearInput}>
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -53,10 +58,8 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': error })}
-              onChange={(event) => {
-                addMovieTitle(event.target.value);
-                setError(false);
-              }}
+              onChange={handleChange}
+              autoComplete="off"
             />
           </div>
 

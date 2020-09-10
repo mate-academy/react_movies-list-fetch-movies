@@ -11,7 +11,6 @@ export const FindMovie = ({ movies, addMovieToList, switchNoInTheList }) => {
   const [preview, updatePreview] = useState(movies[0]);
 
   const checkForMovie = () => {
-    const moviePrepared = movieFromInput.split(' ').join('%20');
     const input = movieFromInput.toLowerCase();
     const movieFromData = movies
       .find(film => film.title.toLowerCase() === input);
@@ -19,7 +18,7 @@ export const FindMovie = ({ movies, addMovieToList, switchNoInTheList }) => {
     if (movieFromData) {
       updatePreview(movieFromData);
     } else {
-      getMovie(moviePrepared).then((movie) => {
+      getMovie(movieFromInput).then((movie) => {
         if (movie.Response === 'False') {
           changeCantFind(true);
         } else {
@@ -60,7 +59,8 @@ export const FindMovie = ({ movies, addMovieToList, switchNoInTheList }) => {
               className="input is-danger"
               value={movieFromInput}
               onChange={(event) => {
-                getMovieFromUser(event.target.value); changeCantFind(false);
+                getMovieFromUser(event.target.value);
+                changeCantFind(false);
               }}
             />
           </div>

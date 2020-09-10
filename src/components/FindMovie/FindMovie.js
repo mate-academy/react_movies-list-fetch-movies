@@ -53,7 +53,10 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': error })}
-              onChange={event => addMovieTitle(event.target.value)}
+              onChange={(event) => {
+                addMovieTitle(event.target.value);
+                setError(false);
+              }}
             />
           </div>
 

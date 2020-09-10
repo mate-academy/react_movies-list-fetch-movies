@@ -7,11 +7,11 @@ import { MovieCard } from '../MovieCard';
 import movies from '../../api/movies.json';
 
 export const FindMovie = ({ addMovie }) => {
+  const [movieTitle, addMovieTitle] = useState('');
   const [loadedMovie, createMovie] = useState(movies[0]);
   const [error, setError] = useState(false);
 
-  const findMovie = async(event) => {
-    const movieTitle = event.target.form.input.value;
+  const findMovie = async() => {
     const movie = await fetchMovie(movieTitle);
 
     if (movie.Response === 'False') {
@@ -31,9 +31,16 @@ export const FindMovie = ({ addMovie }) => {
     });
   };
 
+  const clearInput = (event) => {
+    event.preventDefault();
+    const formInput = event.target.input;
+
+    formInput.value = '';
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={clearInput}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -46,6 +53,7 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': error })}
+              onChange={event => addMovieTitle(event.target.value)}
             />
           </div>
 
@@ -69,7 +77,7 @@ export const FindMovie = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
               onClick={() => addMovie(loadedMovie)}
             >

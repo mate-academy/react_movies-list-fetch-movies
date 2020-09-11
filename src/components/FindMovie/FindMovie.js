@@ -7,7 +7,7 @@ import { MovieCard } from '../MovieCard';
 import movies from '../../api/movies.json';
 
 export const FindMovie = ({ addMovie }) => {
-  const [movieTitle, addMovieTitle] = useState('');
+  const [movieTitle, changeMovieTitle] = useState('');
   const [loadedMovie, createMovie] = useState(movies[0]);
   const [error, setError] = useState(false);
 
@@ -33,13 +33,12 @@ export const FindMovie = ({ addMovie }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const formInput = event.target.input;
 
-    formInput.value = '';
+    changeMovieTitle('');
   };
 
   const handleChange = (event) => {
-    addMovieTitle(event.target.value);
+    changeMovieTitle(event.target.value);
     setError(false);
   };
 
@@ -58,6 +57,7 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': error })}
+              value={movieTitle}
               onChange={handleChange}
               autoComplete="off"
             />
@@ -73,7 +73,7 @@ export const FindMovie = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={findMovie}
             >
@@ -83,7 +83,7 @@ export const FindMovie = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
               onClick={() => addMovie(loadedMovie)}
             >

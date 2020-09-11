@@ -3,12 +3,13 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
+import movies from '../../api/movies.json';
 import { getMovie } from '../../api/api';
 
 import { MovieCard } from '../MovieCard';
 
-export const FindMovie = ({ movies, addMovie }) => {
-  const [movie, setMovie] = useState({});
+export const FindMovie = ({ addMovie }) => {
+  const [movie, setMovie] = useState(movies[0]);
   const [error, setError] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
@@ -26,31 +27,25 @@ export const FindMovie = ({ movies, addMovie }) => {
       description: result.Plot,
       imgUrl: result.Poster,
       imdbUrl: `https://www.imdb.com/title/${result.imdbId}`,
-      imdbId: result.imdbId,
+      imdbId: result.imdbID,
     });
   };
 
-  const handleChange = (value) => {
-    setInputValue(value);
+  const handleChange = (event) => {
     setError(false);
-  };
 
-  const onSubmit = (event) => {
-    event.preventDefault();
-
-    if (movies.every(item => item.imdbId !== movie.imdbId) && !error) {
-      addMovie([...movies, movie]);
-    }
-
-    setInputValue('');
-    setMovie({});
+    setInputValue(event.target.value);
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={event => onSubmit(event)}
+        onSubmit={(event) => {
+          event.preventDefault();
+
+          setInputValue('');
+        }}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -67,7 +62,8 @@ export const FindMovie = ({ movies, addMovie }) => {
                 'is-danger': error,
               })}
               value={inputValue}
-              onChange={event => handleChange(event.target.value)}
+              onChange={handleChange}
+              autoComplete="off"
             />
           </div>
 
@@ -84,7 +80,7 @@ export const FindMovie = ({ movies, addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={findMovie}
             >
@@ -94,8 +90,9 @@ export const FindMovie = ({ movies, addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
+              onClick={() => addMovie(movie)}
             >
               Add to the list
             </button>
@@ -112,6 +109,5 @@ export const FindMovie = ({ movies, addMovie }) => {
 };
 
 FindMovie.propTypes = {
-  movies: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
   addMovie: PropTypes.func.isRequired,
 };

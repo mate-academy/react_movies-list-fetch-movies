@@ -9,7 +9,6 @@ import { findMovie } from '../../api/api';
 export const FindMovie = ({ addToList }) => {
   const [query, setQuery] = useState('');
   const [newMovie, setNewMovie] = useState(null);
-  const [isExist, setIsExist] = useState(true);
   const [isHiddenWarning, setIsHiddenWarning] = useState(true);
 
   const handleQuery = async(title) => {
@@ -23,19 +22,18 @@ export const FindMovie = ({ addToList }) => {
         imdbUrl: `https://www.imdb.com/title/${movie.imdbID}/`,
         imdbId: movie.imdbID,
       });
-      setIsExist(true);
+      setIsHiddenWarning(true);
     } else {
-      setIsExist(false);
       setIsHiddenWarning(false);
     }
   };
 
   const handleAdding = () => {
-    if (query) {
+    if (newMovie) {
       addToList(newMovie);
       setQuery('');
     } else {
-      setIsExist(false);
+      setIsHiddenWarning(false);
     }
   };
 
@@ -43,7 +41,10 @@ export const FindMovie = ({ addToList }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={event => event.preventDefault()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleQuery(query);
+        }}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -57,22 +58,17 @@ export const FindMovie = ({ addToList }) => {
               placeholder="Enter a title to search"
               className={classNames(
                 'input',
-                { 'is-danger': !isExist && !isHiddenWarning },
+                { 'is-danger': !isHiddenWarning },
               )}
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
                 setIsHiddenWarning(true);
               }}
-              onKeyPress={(event) => {
-                if (event.key === 'Enter') {
-                  handleQuery(query);
-                }
-              }}
             />
           </div>
 
-          {!isExist && !isHiddenWarning && (
+          {!isHiddenWarning && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

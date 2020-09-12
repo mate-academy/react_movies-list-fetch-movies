@@ -13,7 +13,7 @@ export const App = () => {
       return;
     }
 
-    if (movies.find(movie => movie.imdbId === newMovie.imdbId)) {
+    if (movies.some(movie => movie.imdbId === newMovie.imdbId)) {
       toMessage(true);
       setTimeout(() => {
         toMessage(false);

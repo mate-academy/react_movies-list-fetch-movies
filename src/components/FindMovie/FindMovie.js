@@ -8,6 +8,23 @@ import { findMovie } from '../../api/api';
 
 export const FindMovie = ({ addedMovie }) => {
   const [movie, getMovie] = useState(null);
+  const getMovieFromServer = () => {
+    findMovie(document.getElementById('movie-title').value)
+      .then((result) => {
+        result.Response !== 'False'
+          ? getMovie(
+            {
+              title: result.Title,
+              description: result.Plot,
+              imgUrl: result.Poster,
+              imdbUrl:
+              `https://www.imdb.com/title/${result.imdbID}/`,
+              imdbId: result.imdbID,
+            },
+          )
+          : getMovie(undefined);
+      });
+  };
 
   return (
     <>
@@ -26,7 +43,9 @@ export const FindMovie = ({ addedMovie }) => {
                 'input',
                 { ' is-danger': movie === undefined },
               )}
-
+              onChange={() => {
+                getMovie(null);
+              }}
             />
           </div>
 
@@ -47,21 +66,7 @@ export const FindMovie = ({ addedMovie }) => {
               type="button"
               className="button is-light"
               onClick={() => {
-                findMovie(document.getElementById('movie-title').value)
-                  .then((result) => {
-                    result.Response !== 'False'
-                      ? getMovie(
-                        {
-                          title: result.Title,
-                          description: result.Plot,
-                          imgUrl: result.Poster,
-                          imdbUrl:
-                          `https://www.imdb.com/title/${result.imdbID}/`,
-                          imdbId: result.imdbID,
-                        },
-                      )
-                      : getMovie(undefined);
-                  });
+                getMovieFromServer();
               }}
             >
               Find a movie

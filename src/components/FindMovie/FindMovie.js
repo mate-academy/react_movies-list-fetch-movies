@@ -8,7 +8,7 @@ import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addMovie }) => {
   const [movieTitle, updateMovieTitle] = useState('');
-  const [loadMovie, createMovie] = useState({});
+  const [loadMovie, createMovie] = useState(null);
   const [error, toggleError] = useState(false);
   const [preview, setPreview] = useState(false);
 
@@ -22,9 +22,6 @@ export const FindMovie = ({ addMovie }) => {
       return;
     }
 
-    toggleError(false);
-    setPreview(true);
-
     createMovie({
       title: movie.Title,
       description: movie.Plot,
@@ -32,16 +29,22 @@ export const FindMovie = ({ addMovie }) => {
       imdbUrl: `https://www.imdb.com/title/${movie.imdbID}/`,
       imdbId: movie.imdbID,
     });
+
+    toggleError(false);
+    setPreview(true);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    findMovie(movieTitle);
-    updateMovieTitle('');
+    if (movieTitle) {
+      findMovie(movieTitle);
+      updateMovieTitle('');
+    }
   };
 
   const handleChange = (e) => {
     updateMovieTitle(e.target.value);
+
     toggleError(false);
   };
 

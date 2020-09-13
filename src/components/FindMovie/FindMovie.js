@@ -127,4 +127,10 @@ FindMovie.propTypes = {
   addToList: PropTypes.func.isRequired,
   isOnList: PropTypes.bool.isRequired,
   setExistence: PropTypes.func.isRequired,
+  movie: PropTypes.shape({
+    Title: PropTypes.string.isRequired,
+    Plot: PropTypes.string.isRequired,
+    Poster: PropTypes.string.isRequired,
+    imdbID: PropTypes.string.isRequired,
+  }).isRequired,
 };

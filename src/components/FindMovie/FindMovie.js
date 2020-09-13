@@ -11,6 +11,7 @@ export const FindMovie = ({ addMovie }) => {
   const [loadMovie, createMovie] = useState(null);
   const [error, toggleError] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [errorAddMovie, setMovie] = useState(false);
 
   const findMovie = async() => {
     const movie = await getMovie(movieTitle);
@@ -39,6 +40,7 @@ export const FindMovie = ({ addMovie }) => {
     if (movieTitle) {
       findMovie(movieTitle);
       updateMovieTitle('');
+      setMovie(true);
     }
   };
 
@@ -94,8 +96,10 @@ export const FindMovie = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
-                addMovie(loadMovie);
-                setPreview(false);
+                if (errorAddMovie) {
+                  addMovie(loadMovie);
+                  setPreview(false);
+                }
               }}
             >
               Add to the list

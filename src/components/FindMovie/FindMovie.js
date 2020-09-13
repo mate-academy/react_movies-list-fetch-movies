@@ -41,6 +41,9 @@ export const FindMovie = ({ addMovie }) => {
       findMovie(movieTitle);
       updateMovieTitle('');
       setMovie(true);
+      toggleError(false);
+    } else {
+      toggleError(true);
     }
   };
 

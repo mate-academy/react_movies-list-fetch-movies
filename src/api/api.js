@@ -1,4 +1,4 @@
-const ApiOMDb = 'http://www.omdbapi.com/?apikey=fc75dfe8&t=';
+const ApiOMDb = 'https://www.omdbapi.com/?apikey=fc75dfe8&t=';
 
 export const getMovie = async(title) => {
   const response = await fetch(`${ApiOMDb}${title}`);

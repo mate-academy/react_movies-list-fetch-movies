@@ -1,26 +1,49 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
+import { getMovie } from './api/movies';
 
-export class App extends Component {
-  state = {
-    movies: data,
+export const App = () => {
+  const [movies, setMovies] = useState(data);
+  const [query, setQuery] = useState('');
+
+  const changeQuery = (value) => {
+    setQuery(value);
   };
 
-  render() {
-    const { movies } = this.state;
+  const findMovie = () => {
+    const result = getMovie(encodeURI(query.toLowerCase()))
+      .then(obj => ({ ...obj }));
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+    return result;
+  };
+
+  const addMovie = (movie) => {
+    if (movies.find(item => item.imdbId === movie.imdbId)) {
+      return false;
+    }
+
+    setMovies([...movies, movie]);
+
+    return true;
+  };
+
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          query={query}
+          setQuery={setQuery}
+          changeQuery={changeQuery}
+          findMovie={findMovie}
+          addMovie={addMovie}
+        />
+      </div>
+    </div>
+  );
+};

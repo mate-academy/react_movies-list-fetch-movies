@@ -36,11 +36,10 @@ export const FindMovie = ({ setMovies, movies }) => {
 
   const handleMovieAddition = () => {
     setValue('');
+    setMovie(null);
 
     if (movie) {
-      const match = movies.find(film => film.imdbId === movie.imdbId);
-
-      if (!match) {
+      if (!movies.some(film => film.imdbId === movie.imdbId)) {
         setMovies([...movies, movie]);
       }
     }
@@ -48,7 +47,14 @@ export const FindMovie = ({ setMovies, movies }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          handleMovieFind();
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title

@@ -48,6 +48,7 @@ export const FindMovie = ({ addMovie }) => {
               onChange={(event) => {
                 findMovieTitle(event.target.value);
                 setNotFound(false);
+                previewFoundMoive('');
               }}
             />
           </div>

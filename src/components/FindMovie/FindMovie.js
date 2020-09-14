@@ -69,7 +69,7 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={findMovie}
+              onClick={() => findMovie()}
             >
               Find a movie
             </button>
@@ -79,7 +79,10 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addMovie(preview)}
+              onClick={() => {
+                addMovie(preview);
+                setTitle('');
+              }}
             >
               Add to the list
             </button>

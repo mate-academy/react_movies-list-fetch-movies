@@ -3,12 +3,11 @@ import PropTypes from 'prop-types';
 import './FindMovie.scss';
 import { findMoviesFromOMDb } from '../../api/findMovies';
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
 
 export const FindMovie = ({ addMovie }) => {
   const [movieTitle, findMovieTitle] = useState('');
   const [notFound, setNotFound] = useState(false);
-  const [foundMovie, previewFoundMoive] = useState(movies[0]);
+  const [foundMovie, previewFoundMoive] = useState('');
 
   const handleSubmit = async() => {
     const movie = await findMoviesFromOMDb(movieTitle);
@@ -30,7 +29,10 @@ export const FindMovie = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={event => event.preventDefault()}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -41,7 +43,7 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input${notFound ? ' is-danger' : ''}`}
               value={movieTitle}
               onChange={(event) => {
                 findMovieTitle(event.target.value);
@@ -63,7 +65,6 @@ export const FindMovie = ({ addMovie }) => {
               type="button"
               className="button is-light"
               onClick={handleSubmit}
-
             >
               Find a movie
             </button>
@@ -86,7 +87,9 @@ export const FindMovie = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        <MovieCard {...foundMovie} />
+        {foundMovie ? (
+          <MovieCard {...foundMovie} />
+        ) : ''}
       </div>
     </>
   );

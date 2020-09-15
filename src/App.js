@@ -5,11 +5,11 @@ import { FindMovie } from './components/FindMovie';
 import moviesfromServer from './api/movies.json';
 
 export const App = () => {
-  const [movies, setMovie] = useState(moviesfromServer);
+  const [movies, setMovies] = useState(moviesfromServer);
 
   const addMovie = (movie) => {
     if (!movies.find(film => film.imdbId === movie.imdbID)) {
-      setMovie(
+      setMovies(
         [
           ...movies,
           {

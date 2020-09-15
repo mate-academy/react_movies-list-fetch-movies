@@ -5,13 +5,13 @@ import { GetMovie } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ onAdd }) => {
-  const [queryTitle, setTitle] = useState('');
+  const [query, setQuery] = useState('');
   const [movieFromServer, setMovie] = useState('');
-  const [showedError, setError] = useState(false);
+  const [error, setError] = useState(false);
   const { Title, Plot, Poster, imdbID } = movieFromServer;
 
   const foundMovie = () => {
-    GetMovie(queryTitle)
+    GetMovie(query)
       .then((movie) => {
         setMovie(movie);
         setError(movie.Error);
@@ -22,7 +22,7 @@ export const FindMovie = ({ onAdd }) => {
     if (movieFromServer && Title) {
       onAdd(movieFromServer);
       setMovie('');
-      setTitle('');
+      setQuery('');
     }
   };
 
@@ -30,6 +30,10 @@ export const FindMovie = ({ onAdd }) => {
     <>
       <form
         className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          foundMovie();
+        }}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -41,18 +45,18 @@ export const FindMovie = ({ onAdd }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${showedError
+              className={`input ${error
                 && `is-danger`
               }`}
-              value={queryTitle}
+              value={query}
               onChange={(event) => {
-                setTitle(event.target.value);
+                setQuery(event.target.value);
                 setError(false);
               }}
             />
           </div>
 
-          {showedError && (
+          {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

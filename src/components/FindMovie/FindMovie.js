@@ -47,8 +47,8 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               value={title}
               placeholder="Enter a title to search"
-              className={classNames({
-                'input is-danger': error,
+              className={classNames('input', {
+                'is-danger': error,
               })}
               onChange={(event) => {
                 setTitle(event.target.value);

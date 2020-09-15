@@ -5,7 +5,7 @@ import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 import movies from '../../api/movies.json';
-import * as api from '../../api/omdbApi';
+import { fetchMovie } from '../../api/omdbApi';
 
 export const FindMovie = ({ addMovie }) => {
   const [query, setQuery] = useState('');
@@ -13,7 +13,7 @@ export const FindMovie = ({ addMovie }) => {
   const [previewMovie, setPreview] = useState(movies[0]);
 
   const findMovie = async() => {
-    const movie = await api.fetchMovie(query);
+    const movie = await fetchMovie(query);
 
     if (movie.Response !== 'False') {
       setPreview(

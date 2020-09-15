@@ -7,18 +7,19 @@ import { getMovie } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addMovie }) => {
-  const [movieTitle, updateMovieTitle] = useState('');
+  const [movieTitle, setMovieTitle] = useState('');
   const [loadMovie, createMovie] = useState(null);
-  const [error, toggleError] = useState(false);
+  const [isMovieFound, setIsMovieFound] = useState(false);
   const [preview, setPreview] = useState(false);
-  const [errorAddMovie, setMovie] = useState(false);
+  const [isMovieInList, setIsMovieInList] = useState(false);
 
   const findMovie = async() => {
     const movie = await getMovie(movieTitle);
 
     if (movie.Response === 'False') {
-      toggleError(true);
+      setIsMovieFound(true);
       setPreview(false);
+      setIsMovieInList(false);
 
       return;
     }
@@ -31,26 +32,27 @@ export const FindMovie = ({ addMovie }) => {
       imdbId: movie.imdbID,
     });
 
-    toggleError(false);
+    setIsMovieFound(false);
     setPreview(true);
+    setIsMovieInList(true);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (movieTitle) {
       findMovie(movieTitle);
-      updateMovieTitle('');
-      setMovie(true);
-      toggleError(false);
+      setMovieTitle('');
+      setIsMovieInList(true);
+      setIsMovieFound(false);
     } else {
-      toggleError(true);
+      setIsMovieFound(true);
     }
   };
 
   const handleChange = (e) => {
-    updateMovieTitle(e.target.value);
+    setMovieTitle(e.target.value);
 
-    toggleError(false);
+    setIsMovieFound(false);
   };
 
   return (
@@ -70,14 +72,14 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classes('input', { 'is-danger': error })}
+              className={classes('input', { 'is-danger': isMovieFound })}
               autoComplete="off"
               value={movieTitle}
               onChange={handleChange}
             />
           </div>
 
-          {error && (
+          {isMovieFound && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -99,9 +101,11 @@ export const FindMovie = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
-                if (errorAddMovie) {
+                if (isMovieInList) {
                   addMovie(loadMovie);
                   setPreview(false);
+                  setIsMovieInList(false);
+                  setMovieTitle('');
                 }
               }}
             >

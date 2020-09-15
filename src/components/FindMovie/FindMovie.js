@@ -25,6 +25,7 @@ export const FindMovie = ({ addToList }) => {
       setIsHiddenWarning(true);
     } else {
       setIsHiddenWarning(false);
+      setNewMovie(null);
     }
   };
 
@@ -32,6 +33,7 @@ export const FindMovie = ({ addToList }) => {
     if (newMovie) {
       addToList(newMovie);
       setQuery('');
+      setNewMovie(null);
     } else {
       setIsHiddenWarning(false);
     }

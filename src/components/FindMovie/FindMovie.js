@@ -15,8 +15,8 @@ export const FindMovie = ({ addMovie }) => {
   const findMovie = async() => {
     const movie = await api.fetchMovie(query);
 
-    movie.Response !== 'False'
-      ? setPreview(
+    if (movie.Response !== 'False') {
+      setPreview(
         {
           title: movie.Title,
           description: movie.Plot,
@@ -24,8 +24,11 @@ export const FindMovie = ({ addMovie }) => {
           imdbUrl: `https://www.imdb.com/title${movie.imdbID}`,
           imdbId: movie.imdbID,
         },
-      )
-      : setWarning(true);
+      );
+    } else {
+      setWarning(true);
+      setPreview(null);
+    }
   };
 
   return (
@@ -69,7 +72,7 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={findMovie}
+              onClick={() => findMovie()}
             >
               Find a movie
             </button>
@@ -81,8 +84,10 @@ export const FindMovie = ({ addMovie }) => {
               className="button is-primary"
               onClick={() => {
                 setQuery('');
-                addMovie(previewMovie);
-                setPreview(null);
+                if (previewMovie !== null) {
+                  addMovie(previewMovie);
+                  setPreview(null);
+                }
               }}
             >
               Add to the list
@@ -92,10 +97,12 @@ export const FindMovie = ({ addMovie }) => {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
         {previewMovie
         && (
-          <MovieCard {...previewMovie} />
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard {...previewMovie} />
+          </>
         )}
       </div>
     </>

@@ -3,12 +3,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
 import { getMovieFromServer } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
-  const [preview, setPreview] = useState(movies[0]);
+  const [preview, setPreview] = useState(null);
   const [error, setError] = useState(false);
 
   const findMovie = async() => {
@@ -30,6 +29,7 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const handleChange = (event) => {
+    setPreview(null);
     setError(false);
 
     setTitle(event.target.value);
@@ -85,7 +85,10 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="submit"
               className="button is-primary"
-              onClick={() => addMovie(preview)}
+              onClick={() => {
+                addMovie(preview);
+                setPreview(null);
+              }}
             >
               Add to the list
             </button>
@@ -93,10 +96,12 @@ export const FindMovie = ({ addMovie }) => {
         </div>
       </form>
 
-      <div className="container">
-        <h2 className="title">Preview</h2>
-        <MovieCard {...preview} />
-      </div>
+      {preview && (
+        <div className="container">
+          <h2 className="title">Preview</h2>
+          <MovieCard {...preview} />
+        </div>
+      )}
     </>
   );
 };

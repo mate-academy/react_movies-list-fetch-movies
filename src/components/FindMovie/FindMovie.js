@@ -15,7 +15,7 @@ export const FindMovie = ({ addNewMovie }) => {
   const findMovie = async() => {
     const movie = await getMovie(queryTitle);
 
-    if (!movie.Response || !queryTitle) {
+    if (movie.Response === 'False') {
       setMovieNotFound(true);
 
       return;

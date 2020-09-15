@@ -21,7 +21,7 @@ export const FindMovie = ({ movies, setMovies }) => {
   const findMovie = async() => {
     try {
       const response = await
-      fetch(`http://www.omdbapi.com/?apikey=b65353eb&t=${movieName}`);
+      fetch(`https://www.omdbapi.com/?apikey=b65353eb&t=${movieName}`);
       const data = await response.json();
 
       if (data.Response === 'False') {
@@ -35,7 +35,6 @@ export const FindMovie = ({ movies, setMovies }) => {
         imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
         imdbid: data.imdbID,
       });
-      // console.log(data);
     } catch (err) {
       setError('404 no connection to the server');
     }

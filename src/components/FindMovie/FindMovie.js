@@ -1,27 +1,23 @@
 import React, { useState } from 'react';
-import './FindMovie.scss';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api/movies';
+import './FindMovie.scss';
 
-export const FindMovie = ({
-  query,
-  changeQuery,
-  findMovie,
-  addMovie,
-  setQuery,
-}) => {
-  const [movie, createMovie] = useState({});
+export const FindMovie = ({ movies, setMovies }) => {
+  const [movie, createMovie] = useState(null);
   const [isChanging, setIsChanging] = useState(false);
   const [error, setError] = useState(false);
+  const [query, setQuery] = useState('');
 
   const setMovie = () => {
-    findMovie()
+    findMovie(query)
       .then((result) => {
         if (result.Response === 'False') {
           setError(true);
           setIsChanging(false);
-          createMovie({});
+          createMovie(null);
 
           return;
         }
@@ -42,6 +38,23 @@ export const FindMovie = ({
       });
   };
 
+  const findMovie = (inputText) => {
+    const result = getMovie(encodeURI(inputText.toLowerCase()))
+      .then(obj => ({ ...obj }));
+
+    return result;
+  };
+
+  const addMovie = (newMovie) => {
+    if (movies.find(item => item.imdbId === newMovie.imdbId)) {
+      return false;
+    }
+
+    setMovies([...movies, newMovie]);
+
+    return true;
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -57,9 +70,15 @@ export const FindMovie = ({
               placeholder="Enter a title to search"
               className={classNames('input', ({ 'is-danger': error }))}
               value={query}
-              onChange={(event) => {
+              onChange={({ target }) => {
                 setError(false);
-                changeQuery(event.target.value.trimLeft());
+                setQuery(target.value.trimLeft());
+              }}
+              onKeyPress={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  setMovie();
+                }
               }}
             />
           </div>
@@ -91,7 +110,7 @@ export const FindMovie = ({
               type="button"
               className="button is-primary"
               onClick={() => {
-                if (Object.keys(movie).length === 0) {
+                if (!movie) {
                   return;
                 }
 
@@ -121,9 +140,6 @@ export const FindMovie = ({
 };
 
 FindMovie.propTypes = {
-  query: PropTypes.string.isRequired,
-  setQuery: PropTypes.func.isRequired,
-  changeQuery: PropTypes.func.isRequired,
-  findMovie: PropTypes.func.isRequired,
-  addMovie: PropTypes.func.isRequired,
+  movies: PropTypes.string.isRequired,
+  setMovies: PropTypes.func.isRequired,
 };

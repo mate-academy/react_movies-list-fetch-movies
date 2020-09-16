@@ -8,12 +8,14 @@ export const FindMovie = ({ movies, addMovie }) => {
   const [query, setQuery] = useState('');
   const [newFilm, setNewFilm] = useState({});
   const [error, setError] = useState(false);
-  const [preview, setPreview] = useState(false);
+  const [shouldRenderPreview, setShouldRenderPreview] = useState(false);
   const [addingError, setAddingError] = useState(false);
 
   const handleChange = (event) => {
     setQuery(event.target.value);
     setError(false);
+    setNewFilm({});
+    setShouldRenderPreview(false);
   };
 
   const searchFilm = async() => {
@@ -28,11 +30,12 @@ export const FindMovie = ({ movies, addMovie }) => {
         imdbId: request.imdbID,
       });
       setError(false);
-      setPreview(true);
+      setShouldRenderPreview(true);
       setAddingError(false);
     } else {
       setError(true);
-      setPreview(false);
+      setShouldRenderPreview(false);
+      setNewFilm({});
     }
   };
 
@@ -43,11 +46,12 @@ export const FindMovie = ({ movies, addMovie }) => {
   const handleAdd = () => {
     if (movies.some(movie => movie.imdbId === newFilm.imdbId)) {
       setAddingError(true);
-    } else {
+    } else if (query && Object.keys(newFilm).length !== 0) {
       addMovie(newFilm);
-      setPreview(false);
+      setShouldRenderPreview(false);
       setAddingError(false);
       setQuery('');
+      setNewFilm({});
     }
   };
 
@@ -114,7 +118,7 @@ export const FindMovie = ({ movies, addMovie }) => {
           )
       }
 
-      {preview && (
+      {shouldRenderPreview && (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard {...newFilm} />

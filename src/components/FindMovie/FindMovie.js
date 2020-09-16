@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import cn from 'classnames';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
@@ -23,6 +24,7 @@ export const FindMovie = ({ movies, setMovies }) => {
 
     try {
       if (data.Response === 'False') {
+        setMovie(null);
         setSearchError(true);
 
         return;
@@ -53,7 +55,13 @@ export const FindMovie = ({ movies, setMovies }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleSearh();
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -65,7 +73,9 @@ export const FindMovie = ({ movies, setMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn(
+                'input', { 'is-danger': searchError },
+              )}
               onChange={event => handleInput(event)}
             />
           </div>
@@ -78,8 +88,8 @@ export const FindMovie = ({ movies, setMovies }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              onClick={handleSearh}
-              type="button"
+              onSubmit={handleSearh}
+              type="submit"
               className="button is-light"
             >
               Find a movie

@@ -57,7 +57,13 @@ export const FindMovie = ({ movies, addMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleAdd();
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -69,8 +75,14 @@ export const FindMovie = ({ movies, addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={`input ${error ? 'is-danger' : ''}`}
+              autoComplete="off"
               value={query}
               onChange={handleChange}
+              onKeyUp={(event) => {
+                if (event.key === 'Enter') {
+                  handleFind();
+                }
+              }}
             />
           </div>
 
@@ -98,9 +110,8 @@ export const FindMovie = ({ movies, addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={handleAdd}
             >
               Add to the list
             </button>

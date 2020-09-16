@@ -10,28 +10,27 @@ export const FindMovie = ({ addMovie }) => {
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState(false);
 
-  const findMovie = async() => {
-    const result = await getMovieFromServer(title);
+  const handleSubmit = async(query) => {
+    const result = await getMovieFromServer(query);
 
     if (result.Response === 'False') {
       setError(true);
+      setPreview(null);
+    } else {
+      setPreview({
+        title: result.Title,
+        description: result.Plot,
+        imgUrl: result.Poster,
+        imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
+        imdbId: result.imdbID,
+      });
 
-      return;
+      setError(false);
     }
-
-    setPreview({
-      title: result.Title,
-      description: result.Plot,
-      imgUrl: result.Poster,
-      imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
-      imdbId: result.imdbID,
-    });
   };
 
   const handleChange = (event) => {
-    setPreview(null);
     setError(false);
-
     setTitle(event.target.value);
   };
 
@@ -41,7 +40,7 @@ export const FindMovie = ({ addMovie }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          setTitle('');
+          handleSubmit(title);
         }}
       >
         <div className="field">
@@ -73,9 +72,8 @@ export const FindMovie = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -83,10 +81,11 @@ export const FindMovie = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
               onClick={() => {
                 addMovie(preview);
+                setTitle('');
                 setPreview(null);
               }}
             >

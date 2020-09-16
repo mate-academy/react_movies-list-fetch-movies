@@ -10,20 +10,31 @@ export const FindMovie = ({ movies, addMovie }) => {
   const [movieFromApi, setMovieFromApi] = useState('');
   const [error, setError] = useState(false);
   const [warn, setWarn] = useState(false);
+  const movieToAdd = {
+    title: movieFromApi.Title,
+    description: movieFromApi.Plot,
+    imgUrl: movieFromApi.Poster,
+    imdbUrl: `https://www.imdb.com/title/${movieFromApi.imdbID}/`,
+    imdbId: movieFromApi.imdbID,
+  };
 
   const addMovieWithBenefits = () => {
     setQuery('');
     setMovieFromApi('');
     addMovie([
       ...movies,
-      {
-        title: movieFromApi.Title,
-        description: movieFromApi.Plot,
-        imgUrl: movieFromApi.Poster,
-        imdbUrl: `https://www.imdb.com/title/${movieFromApi.imdbID}/`,
-        imdbId: movieFromApi.imdbID,
-      },
+      movieToAdd,
     ]);
+  };
+
+  const addHandler = () => {
+    if (!movies.some(movie => movieFromApi.imdbID === movie.imdbId)
+    && movieFromApi.Response === 'True') {
+      addMovieWithBenefits();
+    } else {
+      setWarn(true);
+      setError(false);
+    }
   };
 
   return (
@@ -52,14 +63,18 @@ export const FindMovie = ({ movies, addMovie }) => {
               }}
             />
           </div>
-          {error ? (
+          {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
-          ) : null}
+          )}
           {warn ? (
             <p className="help is-danger">
-              It&apos;s already in the list
+              {
+                movieFromApi.Response === 'True'
+                  ? `It's already in the list`
+                  : 'Nothing to add'
+              }
             </p>
           ) : null}
 
@@ -68,12 +83,13 @@ export const FindMovie = ({ movies, addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={() => {
                 getMovie(query)
                   .then((result) => {
                     setMovieFromApi({ ...result });
+                    setWarn(false);
                     setError(result.Response !== 'True');
                   });
               }}
@@ -86,13 +102,7 @@ export const FindMovie = ({ movies, addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={
-                () => (
-                  !movies.find(movie => movieFromApi.imdbID === movie.imdbId)
-                  && movieFromApi.imdbID
-                    ? addMovieWithBenefits()
-                    : setWarn(true))
-              }
+              onClick={() => addHandler()}
             >
               Add to the list
             </button>
@@ -102,14 +112,9 @@ export const FindMovie = ({ movies, addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movieFromApi.Response === 'True' ? (
-          <MovieCard
-            title={movieFromApi.Title}
-            description={movieFromApi.Plot}
-            imgUrl={movieFromApi.Poster}
-            imdbUrl={`https://www.imdb.com/title/${movieFromApi.imdbID}/`}
-          />
-        ) : null}
+        {movieFromApi.Response === 'True' && (
+          <MovieCard {...movieToAdd} />
+        )}
       </div>
     </>
   );

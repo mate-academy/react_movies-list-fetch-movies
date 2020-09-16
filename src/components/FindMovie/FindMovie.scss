@@ -1,3 +1,13 @@
 .find-movie {
   margin-bottom: 20px;
 }
+
+.input {
+  box-shadow: inset 0 0.0625em 0.125em rgba(10,10,10,.05);
+  max-width: 100%;
+  width: 100%;
+}
+
+.is-danger {
+  border-color: #f14668;
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import PropTypes from 'prop-types';
-
+import classNames from 'classnames/bind';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ movies, setMovies }) => {
@@ -69,7 +69,7 @@ export const FindMovie = ({ movies, setMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={(classNames('input', { 'is-danger': error }))}
               value={movieName}
               onChange={onChangeFilter}
             />

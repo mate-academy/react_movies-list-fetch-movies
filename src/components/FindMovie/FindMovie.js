@@ -4,12 +4,11 @@ import classNames from 'classnames';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
-  const [preview, setPreview] = useState(movies[0]);
+  const [preview, setPreview] = useState(null);
   const [error, setError] = useState(false);
 
   const findMovie = async() => {
@@ -25,6 +24,7 @@ export const FindMovie = ({ addMovie }) => {
       });
     } else {
       setError(true);
+      setPreview(null);
     }
   };
 
@@ -67,7 +67,7 @@ export const FindMovie = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={() => findMovie()}
             >
@@ -80,8 +80,11 @@ export const FindMovie = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
-                addMovie(preview);
-                setTitle('');
+                if (preview) {
+                  addMovie(preview);
+                  setTitle('');
+                  setPreview(null);
+                }
               }}
             >
               Add to the list
@@ -90,10 +93,12 @@ export const FindMovie = ({ addMovie }) => {
         </div>
       </form>
 
-      <div className="container">
-        <h2 className="title">Preview</h2>
-        <MovieCard {...preview} />
-      </div>
+      {preview && (
+        <div className="container">
+          <h2 className="title">Preview</h2>
+          <MovieCard {...preview} />
+        </div>
+      )}
     </>
   );
 };

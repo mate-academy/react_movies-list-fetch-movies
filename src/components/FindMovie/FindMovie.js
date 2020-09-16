@@ -68,7 +68,7 @@ export const FindMovie = ({ movies, addMovie }) => {
               Can&apos;t find a movie with such a title
             </p>
           )}
-          {warn ? (
+          {warn && (
             <p className="help is-danger">
               {
                 movieFromApi.Response === 'True'
@@ -76,7 +76,7 @@ export const FindMovie = ({ movies, addMovie }) => {
                   : 'Nothing to add'
               }
             </p>
-          ) : null}
+          )}
 
         </div>
 

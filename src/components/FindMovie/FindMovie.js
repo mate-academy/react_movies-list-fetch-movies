@@ -61,7 +61,7 @@ export const FindMovie = ({ movies, addMovie }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          handleAdd();
+          handleFind();
         }}
       >
         <div className="field">
@@ -100,9 +100,8 @@ export const FindMovie = ({ movies, addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={handleFind}
             >
               Find a movie
             </button>
@@ -110,8 +109,9 @@ export const FindMovie = ({ movies, addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
+              onClick={handleAdd}
             >
               Add to the list
             </button>

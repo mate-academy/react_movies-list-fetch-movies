@@ -8,18 +8,21 @@ import { getMovie } from '../../api/getMovie';
 
 export const FindMovie = ({ onAdd }) => {
   const [query, setQuery] = useState('');
-  const [errorInput, setErrorInput] = useState(false);
+  const [inputError, setInputError] = useState(false);
   const [movieFound, setMovieFound] = useState(null);
 
   const clearState = () => {
     setQuery('');
     setMovieFound(null);
-    setErrorInput(false);
+    setInputError(false);
   };
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={event => event.preventDefault()}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -32,18 +35,18 @@ export const FindMovie = ({ onAdd }) => {
               placeholder="Enter a title to search"
               className={classNames({
                 input: true,
-                'is-danger': errorInput,
+                'is-danger': inputError,
               })}
               value={query}
               onChange={({ target }) => {
                 setQuery(target.value.trimLeft());
-                setErrorInput(false);
+                setInputError(false);
               }}
             />
           </div>
 
           <p className={classNames({
-            error_message: !errorInput,
+            error_message: !inputError,
             help: true,
             'is-danger': true,
           })}
@@ -55,7 +58,7 @@ export const FindMovie = ({ onAdd }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={() => {
                 if (!query) {
@@ -66,7 +69,7 @@ export const FindMovie = ({ onAdd }) => {
                   .then((result) => {
                     if (result.Response === 'False') {
                       clearState();
-                      setErrorInput(true);
+                      setInputError(true);
 
                       return;
                     }

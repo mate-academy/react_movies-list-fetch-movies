@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 import { getMoviesByTitle } from '../../api';
+import movies from '../../api/movies.json';
 
 import { MovieCard } from '../MovieCard';
 
-export const FindMovie = ({ addMovie, movies }) => {
+export const FindMovie = ({ addMovie }) => {
   const [searchTitle, setSearchTitle] = useState('');
-  const [foundMovie, setFoundMovie] = useState(null);
+  const [foundMovie, setFoundMovie] = useState(movies[0]);
   const [error, setError] = useState(false);
 
   const handleFind = async() => {
@@ -24,10 +25,14 @@ export const FindMovie = ({ addMovie, movies }) => {
       title: response.Title,
       description: response.Plot,
       imgUrl: response.Poster,
-      imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-      imdbID: response.imdbID,
+      imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
+      imdbId: response.imdbID,
     });
   };
+
+  useEffect(() => {
+    setError(false);
+  }, [searchTitle]);
 
   return (
     <>
@@ -47,10 +52,10 @@ export const FindMovie = ({ addMovie, movies }) => {
             <input
               type="text"
               id="movie-title"
+              value={searchTitle}
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': error })}
               onChange={(event) => {
-                setError(false);
                 setSearchTitle(event.target.value.trimLeft());
               }}
             />
@@ -75,7 +80,7 @@ export const FindMovie = ({ addMovie, movies }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
               onClick={() => {
                 addMovie(foundMovie);
@@ -90,9 +95,7 @@ export const FindMovie = ({ addMovie, movies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {foundMovie && (
-          <MovieCard {...foundMovie} />
-        )}
+        <MovieCard {...foundMovie} />
       </div>
     </>
   );
@@ -100,9 +103,4 @@ export const FindMovie = ({ addMovie, movies }) => {
 
 FindMovie.propTypes = {
   addMovie: PropTypes.func.isRequired,
-  movies: PropTypes.arrayOf(PropTypes.shape(PropTypes.string)),
-};
-
-FindMovie.defaultProps = {
-  movies: [],
 };

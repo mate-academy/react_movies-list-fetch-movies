@@ -7,7 +7,7 @@ import data from './api/movies.json';
 export const App = () => {
   const [movies, setMovies] = useState(data);
   const addMovie = (foundMovie) => {
-    if (movies.some(item => item.imdbID === foundMovie.imdbID)) {
+    if (movies.find(item => item.imdbId === foundMovie.imdbId)) {
       return;
     }
 
@@ -25,7 +25,6 @@ export const App = () => {
         <div className="sidebar">
           <FindMovie
             addMovie={addMovie}
-            movies={movies}
           />
         </div>
       </div>

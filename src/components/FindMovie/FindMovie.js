@@ -4,12 +4,11 @@ import './FindMovie.scss';
 import { getFilms } from '../../api/api';
 
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
 
 export const FindMovie = ({ addMovie }) => {
-  const [movie, changeMovie] = useState(movies[0]);
-  const [title, changeTitle] = useState('');
-  const [error, changeError] = useState(false);
+  const [movie, setMovie] = useState(null);
+  const [title, setTitle] = useState('');
+  const [error, setError] = useState(false);
 
   const findFilm = async() => {
     if (title === '') {
@@ -19,12 +18,12 @@ export const FindMovie = ({ addMovie }) => {
     const film = await getFilms(title);
 
     if (film.Title === undefined) {
-      changeError(true);
+      setError(true);
 
       return;
     }
 
-    changeMovie({
+    setMovie({
       title: film.Title,
       description: film.Plot,
       imgUrl: film.Poster,
@@ -34,8 +33,8 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const handleChange = (event) => {
-    changeTitle(event.target.value);
-    changeError(false);
+    setTitle(event.target.value);
+    setError(false);
   };
 
   return (
@@ -44,7 +43,6 @@ export const FindMovie = ({ addMovie }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          changeTitle('');
         }}
       >
         <div className="field">
@@ -85,7 +83,11 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addMovie(movie)}
+              onClick={() => {
+                addMovie(movie);
+                setTitle('');
+                setMovie(null);
+              }}
             >
               Add to the list
             </button>
@@ -94,8 +96,8 @@ export const FindMovie = ({ addMovie }) => {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
-        <MovieCard {...movie} />
+        {movie && <h2 className="title">Preview</h2>}
+        {movie && <MovieCard {...movie} />}
       </div>
     </>
   );

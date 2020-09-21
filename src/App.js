@@ -6,13 +6,16 @@ import data from './api/movies.json';
 
 export function App() {
   const [movies, setMovies] = useState(data);
+  const [isFound, setIsFound] = useState(true);
 
   const addMovie = (newMovie) => {
-    if (movies.find(movie => movie.imdbId === newMovie.imdbId)) {
-      return;
-    }
+    if (isFound) {
+      if (movies.some(movie => movie.imdbId === newMovie.imdbId)) {
+        return;
+      }
 
-    setMovies([...movies, newMovie]);
+      setMovies([...movies, newMovie]);
+    }
   };
 
   return (
@@ -23,6 +26,8 @@ export function App() {
       <div className="sidebar">
         <FindMovie
           addMovie={addMovie}
+          isFound={isFound}
+          setIsFound={setIsFound}
         />
       </div>
     </div>

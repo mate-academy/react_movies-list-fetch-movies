@@ -6,9 +6,8 @@ import { MovieCard } from '../MovieCard';
 import movies from '../../api/movies.json';
 import { getMovie } from '../../api/api';
 
-export const FindMovie = ({ addMovie }) => {
+export const FindMovie = ({ addMovie, isFound, setIsFound }) => {
   const [query, setQuery] = useState('');
-  const [isFound, setIsFound] = useState(true);
   const [newMovie, setMovie] = useState(movies[0]);
 
   const findMovie = async() => {
@@ -24,7 +23,7 @@ export const FindMovie = ({ addMovie }) => {
       title: movie.Title,
       description: movie.Plot,
       imgUrl: movie.Poster,
-      imdbUrl: `https://www.imdb.com/title/tt0314331${movie.imdbID}`,
+      imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
       imdbId: movie.imdbID,
     });
   };
@@ -33,6 +32,7 @@ export const FindMovie = ({ addMovie }) => {
     event.preventDefault();
     addMovie(newMovie);
     setQuery('');
+    setMovie(null);
   };
 
   return (
@@ -70,7 +70,10 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => findMovie()}
+              onClick={() => {
+                findMovie();
+                setMovie(null);
+              }}
             >
               Find a movie
             </button>
@@ -89,7 +92,7 @@ export const FindMovie = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        <MovieCard {...newMovie} />
+        {newMovie && <MovieCard {...newMovie} />}
       </div>
     </>
   );
@@ -97,4 +100,6 @@ export const FindMovie = ({ addMovie }) => {
 
 FindMovie.propTypes = {
   addMovie: PropTypes.func.isRequired,
+  isFound: PropTypes.bool.isRequired,
+  setIsFound: PropTypes.func.isRequired,
 };

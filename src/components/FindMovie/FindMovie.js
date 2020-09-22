@@ -8,8 +8,8 @@ import movies from '../../api/movies.json';
 
 export const FindMovie = ({ newMovies }) => {
   const [title, setTitle] = useState('');
-  const [preview, setPreview] = useState(movies[0]);
-  const [filmIsExist, setMovieExist] = useState(true);
+  const [preview, setPreview] = useState(null);
+  const [shouldShowError, setShouldShowError] = useState(true);
 
   const findExistMovie = () => {
     const titleToLow = title.toLowerCase();
@@ -23,17 +23,16 @@ export const FindMovie = ({ newMovies }) => {
     getFilm(title)
       .then((movie) => {
         if (movie.Response === 'False') {
-          setMovieExist(false);
+          setShouldShowError(false);
+          setPreview(null);
         } else {
-          const moviesFromServer = {
+          setPreview({
             title: movie.Title,
             description: movie.Plot,
             imdbId: movie.imdbID,
             imgUrl: movie.Poster,
             imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-          };
-
-          setPreview(moviesFromServer);
+          });
         }
       });
   };
@@ -45,7 +44,7 @@ export const FindMovie = ({ newMovies }) => {
         onSubmit={(event) => {
           event.preventDefault();
           setTitle('');
-          setPreview([movies[0]]);
+          setPreview(null);
         }}
       >
         <div className="field">
@@ -58,13 +57,15 @@ export const FindMovie = ({ newMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={filmIsExist ? 'input' : 'input is-danger'}
+              className={shouldShowError ? 'input' : 'input is-danger'}
               value={title}
-              onChange={event => setTitle(event.target.value)
-              }
+              onChange={(event) => {
+                setTitle(event.target.value);
+                setShouldShowError(true);
+              }}
             />
           </div>
-          { filmIsExist || (
+          { shouldShowError || (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -86,9 +87,16 @@ export const FindMovie = ({ newMovies }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={() => newMovies(preview)}
+              onClick={() => {
+                if (preview) {
+                  newMovies(preview);
+                  setTitle('');
+                  setPreview(null);
+                }
+              }
+              }
             >
               Add to the list
             </button>
@@ -96,10 +104,12 @@ export const FindMovie = ({ newMovies }) => {
         </div>
       </form>
 
-      <div className="container">
-        <h2 className="title">Preview</h2>
-        <MovieCard {...preview} />
-      </div>
+      {preview && (
+        <div className="container">
+          <h2 className="title">Preview</h2>
+          <MovieCard {...preview} />
+        </div>
+      )}
     </>
   );
 };

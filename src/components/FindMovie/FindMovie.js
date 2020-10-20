@@ -9,7 +9,7 @@ import { PreviewMovie } from '../PreviewMovie';
 
 // eslint-disable-next-line arrow-body-style
 export const FindMovie = ({ addFilm, movies }) => {
-  const url = 'http://www.omdbapi.com/?apikey=c00fb1b5&t=';
+  const url = 'https://www.omdbapi.com/?apikey=c00fb1b5&t=';
   const [title, setTitle] = useState('');
   const [filmInfo, setFilmInfo] = useState({});
 

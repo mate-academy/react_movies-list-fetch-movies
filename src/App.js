@@ -9,6 +9,10 @@ export class App extends Component {
     movies: data,
   };
 
+  lol() {
+    return 'lol';
+  }
+
   render() {
     const { movies } = this.state;
 

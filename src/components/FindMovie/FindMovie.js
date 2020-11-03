@@ -8,35 +8,39 @@ import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovie, movies }) => {
   const [title, setTitle] = useState('');
-  const [isPreviewShown, setIsPreviewShown] = useState(false);
+  const [isPreviewShown, switchPreviewDisplay] = useState(false);
   const [newMovie, setNewMovie] = useState({});
   const [error, setError] = useState('');
-  const [isAddButtonDisabled, setDisability] = useState(true);
+  const [isAddButtonDisabled, switchAddButtonDisability] = useState(true);
+  const [isLoading, switchLoading] = useState(false);
 
   const handleChange = (event) => {
     setTitle(event.target.value);
     setError('');
   };
 
-  const findMovie = () => {
-    getMovie(title)
-      .then((result) => {
-        if (result.Response === 'False') {
-          setError(result.Error);
+  const findMovie = async() => {
+    switchLoading(true);
 
-          return;
-        }
+    const movieFromServer = await getMovie(title);
 
-        setNewMovie(result);
-        setIsPreviewShown(true);
-        setDisability(false);
-      });
+    if (movieFromServer.Response === 'False') {
+      setError(movieFromServer.Error);
+      switchLoading(false);
+
+      return;
+    }
+
+    setNewMovie(movieFromServer);
+    switchPreviewDisplay(true);
+    switchAddButtonDisability(false);
+    switchLoading(false);
   };
 
   const handleAddition = () => {
     setTitle('');
-    setIsPreviewShown(false);
-    setDisability(true);
+    switchPreviewDisplay(false);
+    switchAddButtonDisability(true);
 
     if (movies.some(movie => newMovie.imdbID === movie.imdbID)) {
       setError('You have already added this movie');
@@ -55,7 +59,7 @@ export const FindMovie = ({ addMovie, movies }) => {
             Movie title
           </label>
 
-          <div className="control">
+          <div className="control has-icons-left">
             <input
               type="text"
               id="movie-title"
@@ -63,10 +67,14 @@ export const FindMovie = ({ addMovie, movies }) => {
               className={classNames({
                 input: true,
                 'is-danger': error,
+                'is-loading': isLoading,
               })}
               value={title}
               onChange={handleChange}
             />
+            <span className="icon is-small is-left">
+              <i className="fas fa-search" />
+            </span>
           </div>
 
           {error && (
@@ -80,7 +88,11 @@ export const FindMovie = ({ addMovie, movies }) => {
           <div className="control">
             <button
               type="button"
-              className="button is-light"
+              className={classNames({
+                button: true,
+                'is-light': true,
+                'is-loading': isLoading,
+              })}
               onClick={findMovie}
             >
               Find a movie
@@ -90,9 +102,14 @@ export const FindMovie = ({ addMovie, movies }) => {
           <div className="control">
             <button
               type="button"
-              className="button is-primary"
+              className={classNames({
+                button: true,
+                'is-success': !isAddButtonDisabled,
+                'is-warning': isAddButtonDisabled,
+              })}
               onClick={handleAddition}
               disabled={isAddButtonDisabled}
+              title={isAddButtonDisabled ? 'Find movie first' : ''}
             >
               Add to the list
             </button>
@@ -100,11 +117,13 @@ export const FindMovie = ({ addMovie, movies }) => {
         </div>
       </form>
 
-      {isPreviewShown && (
+      {isPreviewShown ? (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard {...newMovie} />
         </div>
+      ) : (
+        <h3>Start searching to see preview</h3>
       )}
     </>
   );

@@ -7,6 +7,8 @@ export const MovieCard = ({
   Plot,
   Poster,
   imdbID,
+  Year,
+  imdbRating,
 }) => (
   <div className="card">
     <div className="card-image">
@@ -28,7 +30,12 @@ export const MovieCard = ({
           </figure>
         </div>
         <div className="media-content">
-          <p className="title is-8">{Title}</p>
+          <p className="title is-8">
+            {Title}
+          </p>
+          <span>
+            {`(${Year}) Rating: ${imdbRating}`}
+          </span>
         </div>
       </div>
 
@@ -46,6 +53,8 @@ MovieCard.propTypes = {
   Plot: PropTypes.string,
   Poster: PropTypes.string,
   imdbID: PropTypes.string,
+  Year: PropTypes.string,
+  imdbRating: PropTypes.string,
 };
 
 MovieCard.defaultProps = {
@@ -53,4 +62,6 @@ MovieCard.defaultProps = {
   Plot: '',
   Poster: '',
   imdbID: '',
+  Year: '',
+  imdbRating: '',
 };

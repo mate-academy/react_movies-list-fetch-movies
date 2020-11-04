@@ -27,6 +27,10 @@ export const Preview = ({ movie, isLoading }) => (
 );
 
 Preview.propTypes = {
-  movie: PropTypes.shape(MovieShape).isRequired,
+  movie: PropTypes.shape(MovieShape),
   isLoading: PropTypes.bool.isRequired,
+};
+
+Preview.defaultProps = {
+  movie: null,
 };

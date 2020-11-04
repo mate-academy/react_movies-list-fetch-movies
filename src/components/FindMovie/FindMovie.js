@@ -76,6 +76,12 @@ export const FindMovie = ({ addMovie, movies }) => {
               })}
               value={title}
               onChange={handleChange}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  findMovie();
+                }
+              }}
             />
             <span className="icon is-small is-left">
               <i className="fas fa-search" />

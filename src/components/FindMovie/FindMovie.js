@@ -22,19 +22,24 @@ export const FindMovie = ({ addMovie, movies }) => {
   const findMovie = async() => {
     switchLoading(true);
 
-    const movieFromServer = await getMovie(title);
+    try {
+      const movieFromServer = await getMovie(title);
 
-    if (movieFromServer.Response === 'False') {
-      setError(movieFromServer.Error);
+      if (movieFromServer.Response === 'False') {
+        setError(`Can't find this movie`);
+        switchLoading(false);
+
+        return;
+      }
+
+      setNewMovie(movieFromServer);
+      switchPreviewDisplay(true);
+      switchAddButtonDisability(false);
       switchLoading(false);
-
-      return;
+    } catch (serverError) {
+      setError(`Server doesn't response`);
+      switchLoading(false);
     }
-
-    setNewMovie(movieFromServer);
-    switchPreviewDisplay(true);
-    switchAddButtonDisability(false);
-    switchLoading(false);
   };
 
   const handleAddition = () => {

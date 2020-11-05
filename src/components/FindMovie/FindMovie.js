@@ -8,7 +8,7 @@ import { Buttons } from '../Buttons';
 import { InputField } from '../InputField';
 
 const KEY = '3e232a7e';
-const API_URL = `http://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&t=`;
+const API_URL = `https://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&t=`;
 
 export const FindMovie = ({ addMovie, movies }) => {
   const [value, setValue] = useState('');

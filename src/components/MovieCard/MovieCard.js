@@ -2,7 +2,7 @@ import React from 'react';
 import './MovieCard.scss';
 import PropTypes from 'prop-types';
 
-export const MovieCard = ({
+export const MovieCard = React.memo(({
   Title,
   Plot,
   Poster,
@@ -46,7 +46,7 @@ export const MovieCard = ({
       </div>
     </div>
   </div>
-);
+));
 
 MovieCard.propTypes = {
   Title: PropTypes.string,

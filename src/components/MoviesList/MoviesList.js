@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
 
 export const MoviesList = ({
-  movies = [],
+  movies,
 }) => (
   <div className="movies">
     {movies.map(movie => (
@@ -19,5 +19,9 @@ MoviesList.propTypes = {
     PropTypes.shape({
       imdbID: PropTypes.string.isRequired,
     }).isRequired,
-  ).isRequired,
+  ),
+};
+
+MoviesList.defaultProps = {
+  movies: [],
 };

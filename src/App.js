@@ -11,11 +11,11 @@ export const App = () => {
   const [movies, setMovies] = useState(data);
 
   function addMovie(movie) {
-    if (movies.some(({ imdbId }) => imdbId === movie.imdbId)) {
-      return;
-    }
-
     setMovies(currentMovies => [...currentMovies, movie]);
+  }
+
+  function hasMovie(movie) {
+    return movies.some(({ imdbId }) => imdbId === movie.imdbId);
   }
 
   return (
@@ -24,7 +24,7 @@ export const App = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie addMovie={addMovie} />
+        <FindMovie addMovie={addMovie} hasMovie={hasMovie} />
       </div>
     </div>
   );

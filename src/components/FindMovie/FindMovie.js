@@ -6,7 +6,7 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { getMoviesByTitle } from '../../api/movies';
 
-export const FindMovie = React.memo(({ addMovie }) => {
+export const FindMovie = React.memo(({ addMovie, hasMovie }) => {
   const [movie, setMovie] = useState(null);
   const [title, setTitle] = useState('');
   const [error, setError] = useState(null);
@@ -17,7 +17,7 @@ export const FindMovie = React.memo(({ addMovie }) => {
     getMoviesByTitle(title)
       .then((findedMovie) => {
         if (!findedMovie.Title) {
-          setError(findedMovie.Error);
+          setError('Can\'t find a movie with such a title');
           setMovie(null);
 
           return;
@@ -35,7 +35,14 @@ export const FindMovie = React.memo(({ addMovie }) => {
       .catch(err => console.warn(err));
   }
 
-  function reset() {
+  function onSubmit() {
+    if (hasMovie(movie)) {
+      setError('Already have this movie');
+
+      return;
+    }
+
+    addMovie(movie);
     setTitle('');
     setMovie(null);
   }
@@ -63,7 +70,7 @@ export const FindMovie = React.memo(({ addMovie }) => {
 
           {error && (
             <p className="help is-danger">
-              Can&apos;t find a movie with such a title
+              {error}
             </p>
           )}
         </div>
@@ -86,8 +93,7 @@ export const FindMovie = React.memo(({ addMovie }) => {
               disabled={!movie}
               onClick={(event) => {
                 event.preventDefault();
-                addMovie(movie);
-                reset();
+                onSubmit();
               }}
             >
               Add to the list
@@ -108,4 +114,5 @@ export const FindMovie = React.memo(({ addMovie }) => {
 
 FindMovie.propTypes = {
   addMovie: PropTypes.func.isRequired,
+  hasMovie: PropTypes.func.isRequired,
 };

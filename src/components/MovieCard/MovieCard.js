@@ -22,7 +22,7 @@ export const MovieCard = ({
         <div className="media-left">
           <figure className="image is-48x48">
             <img
-              src="images/imdb-logo.jpeg"
+              src="/images/imdb-logo.jpeg"
               alt="imdb"
             />
           </figure>

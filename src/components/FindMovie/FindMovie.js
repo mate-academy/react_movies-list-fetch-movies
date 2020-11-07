@@ -82,6 +82,8 @@ export const FindMovie = React.memo(({ addMovie }) => {
               onClick={(event) => {
                 event.preventDefault();
                 addMovie(movie);
+                setTitle('');
+                setMovie(null);
               }}
             >
               Add to the list

@@ -35,6 +35,11 @@ export const FindMovie = React.memo(({ addMovie }) => {
       .catch(err => console.warn(err));
   }
 
+  function reset() {
+    setTitle('');
+    setMovie(null);
+  }
+
   return (
     <>
       <form className="find-movie">
@@ -82,8 +87,7 @@ export const FindMovie = React.memo(({ addMovie }) => {
               onClick={(event) => {
                 event.preventDefault();
                 addMovie(movie);
-                setTitle('');
-                setMovie(null);
+                reset();
               }}
             >
               Add to the list

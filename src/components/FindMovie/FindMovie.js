@@ -15,7 +15,7 @@ export const FindMovie = ({ addMovie, movies }) => {
   const requestMovie = async(title) => {
     try {
       const response = await fetch(
-        `http://www.omdbapi.com/?apikey=3705330a&t=${title}`,
+        `https://www.omdbapi.com/?apikey=3705330a&t=${title}`,
       );
       const result = await response.json();
 

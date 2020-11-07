@@ -15,7 +15,7 @@ export const FindMovie = ({ addMovie, movies }) => {
   const requestMovie = async(title) => {
     try {
       const response = await fetch(
-        `https://www.omdbapi.com/?apikey=3705330a&t=${title}`,
+        `http://www.omdbapi.com/?apikey=3705330a&t=${title}`,
       );
       const result = await response.json();
 
@@ -32,9 +32,11 @@ export const FindMovie = ({ addMovie, movies }) => {
       });
 
       setFoundMovie(formatMovie(result));
+      setIsLoading(false);
     } catch (Error) {
       setFoundMovie(null);
       setErrorMessage(Error.message);
+      setIsLoading(false);
     }
   };
 
@@ -46,7 +48,6 @@ export const FindMovie = ({ addMovie, movies }) => {
   const handleFindMovie = () => {
     setFoundMovie(null);
     setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 300);
     requestMovie(movieTitle);
   };
 

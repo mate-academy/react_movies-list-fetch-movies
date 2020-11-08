@@ -53,7 +53,7 @@ export const FindMovie = ({ addMovie, movies }) => {
 
   const onAdd = () => {
     if (!movie) {
-      setMovieError('Movie did not selected');
+      setMovieError('Movie not selected');
 
       return;
     }

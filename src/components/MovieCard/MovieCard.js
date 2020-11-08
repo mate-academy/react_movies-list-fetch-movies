@@ -41,9 +41,11 @@ export const MovieCard = ({
   </div>
 );
 
-MovieCard.propTypes = {
+export const MovieCardShape = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   imgUrl: PropTypes.string.isRequired,
   imdbUrl: PropTypes.string.isRequired,
 };
+
+MovieCard.propTypes = MovieCardShape;

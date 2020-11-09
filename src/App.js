@@ -7,21 +7,13 @@ export const App = () => {
   const [movies, setMovies] = useState([]);
 
   const addMovies = (newMovie) => {
-    if (!customIncludes(movies, newMovie)) {
+    const hasAlreadyMovie = movies.find(movie => (
+      movie.imdbUrl === newMovie.imdbUrl
+    ));
+
+    if (!hasAlreadyMovie) {
       setMovies([...movies, newMovie]);
     }
-  };
-
-  const customIncludes = (array, item) => {
-    let ind = 0;
-
-    array.forEach((element) => {
-      if (element.imdbUrl === item.imdbUrl) {
-        ind = 1;
-      }
-    });
-
-    return ind;
   };
 
   return (

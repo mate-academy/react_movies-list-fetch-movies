@@ -9,15 +9,11 @@ export const MoviesList = ({
 }) => (
   <div className="movies">
     {movies.map(movie => (
-      <MovieCard key={movie.imdbId} {...movie} />
+      <MovieCard key={movie.imdbUrl} {...movie} />
     ))}
   </div>
 );
 
 MoviesList.propTypes = {
-  movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      imdbId: PropTypes.string.isRequired,
-    }).isRequired,
-  ).isRequired,
+  movies: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

@@ -1,6 +1,11 @@
-const MOVIE_URL = 'http://www.omdbapi.com/?apikey=d905df00&t=';
+const MOVIE_URL = 'https://www.omdbapi.com/?apikey=d905df00&t=';
 
-export function getMovie(title) {
-  return fetch(MOVIE_URL + title)
-    .then(response => response.json());
-}
+export const getMovie = async(title) => {
+  const response = await fetch(MOVIE_URL + title);
+
+  if (!response.ok) {
+    throw new Error(`${response.status}`);
+  }
+
+  return response.json();
+};

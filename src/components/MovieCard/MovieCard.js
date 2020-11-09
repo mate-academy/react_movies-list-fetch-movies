@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './MovieCard.scss';
 import PropTypes from 'prop-types';
 
-export const MovieCard = ({
+export const MovieCard = memo(({
   title,
   description = '',
   imgUrl,
@@ -39,7 +39,7 @@ export const MovieCard = ({
       </div>
     </div>
   </div>
-);
+));
 
 MovieCard.propTypes = {
   title: PropTypes.string.isRequired,

@@ -9,24 +9,24 @@ export const FindMovie = ({
   movies,
 }) => {
   const [newMovie, setNewMovie] = useState(null);
-  const [query, setQuery] = useState('');
+  const [enteredTitle, setEnteredTitle] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [hasLoadingError, setHasLoadingError] = useState(false);
   const [hasBeenAdded, setHasBeenAdded] = useState(false);
 
-  const handleChange = (event) => {
+  const handleChangeTitleOfMovie = (event) => {
     const { value } = event.target;
 
-    if (value !== query) {
+    if (value !== enteredTitle) {
       setHasLoadingError(false);
       setHasBeenAdded(false);
     }
 
-    setQuery(value);
+    setEnteredTitle(value);
   };
 
-  const clickedButtonFind = () => {
-    getMovie(query)
+  const findMovie = () => {
+    getMovie(enteredTitle)
       .then((movieFromServer) => {
         const movie = {
           title: movieFromServer.Title,
@@ -52,7 +52,7 @@ export const FindMovie = ({
       addMovie(newMovie);
 
       setNewMovie(null);
-      setQuery('');
+      setEnteredTitle('');
       setDisabled(true);
     } else {
       setHasBeenAdded(true);
@@ -77,8 +77,8 @@ export const FindMovie = ({
               placeholder="Enter a title to search"
               className="input"
               name="value"
-              value={query}
-              onChange={handleChange}
+              value={enteredTitle}
+              onChange={handleChangeTitleOfMovie}
             />
           </div>
 
@@ -100,7 +100,7 @@ export const FindMovie = ({
             <button
               type="button"
               className="button is-light"
-              onClick={clickedButtonFind}
+              onClick={findMovie}
             >
               Find a movie
             </button>

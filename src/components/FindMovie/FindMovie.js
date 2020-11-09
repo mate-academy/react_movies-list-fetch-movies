@@ -1,23 +1,19 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
-import cn from 'classnames';
+import ClassNames from 'classnames';
 import PropTypes from 'prop-types';
 
 import { MovieCard } from '../MovieCard';
 import { Loader } from '../Loader';
 
 const KEY = 'd575e7df';
-const API_OMDB = `http://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&`;
+const API_OMDB = `https://www.omdbapi.com/?i=tt3896198&apikey=${KEY}&`;
 
 export const FindMovie = ({ addMovie, movies }) => {
   const [foundMovie, setFoundMovie] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [movieTitle, setMovieTitle] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  /*   const wait = (delay) => {
-    return new Promise(resolve => setTimeout(resolve, display));
-  } */
 
   const requestMovie = async(title) => {
     try {
@@ -83,7 +79,7 @@ export const FindMovie = ({ addMovie, movies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn('input', { 'is-danger': errorMessage })}
+              className={ClassNames('input', { 'is-danger': errorMessage })}
               onChange={handleInput}
               value={movieTitle}
             />

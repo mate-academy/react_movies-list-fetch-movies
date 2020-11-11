@@ -27,6 +27,7 @@ export function FindMovie({ addMovie, movies }) {
     setSearchError(false);
     setMovieAlreadyInList(false);
     setQuery(event.target.value);
+    setMovieForPreview();
   };
 
   const movieSearch = async() => {
@@ -42,9 +43,13 @@ export function FindMovie({ addMovie, movies }) {
     setMovieForPreview(requestedMovie);
   };
 
+  const preventDefaultSubmit = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={preventDefaultSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -57,7 +62,8 @@ export function FindMovie({ addMovie, movies }) {
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': searchError })}
               value={query}
-              onChange={event => changeQuery(event)}
+              onChange={changeQuery}
+              autoComplete="off"
             />
           </div>
           {searchError && (
@@ -97,14 +103,16 @@ export function FindMovie({ addMovie, movies }) {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
         {movieForPreview && (
-          <MovieCard
-            Title={movieForPreview.Title}
-            Plot={movieForPreview.Plot}
-            Poster={movieForPreview.Poster}
-            imdbID={movieForPreview.imdbID}
-          />
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard
+              Title={movieForPreview.Title}
+              Plot={movieForPreview.Plot}
+              Poster={movieForPreview.Poster}
+              imdbID={movieForPreview.imdbID}
+            />
+          </>
         )}
       </div>
     </>

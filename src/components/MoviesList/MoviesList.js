@@ -7,10 +7,17 @@ import { MovieCard } from '../MovieCard';
 export const MoviesList = ({
   movies = [],
 }) => (
+
   <div className="movies">
-    {movies.map(movie => (
+    {movies.length === 0
+      ? <p>Please add your favorite movies</p>
+      : (movies.map(movie => (
+        <MovieCard key={movie.imdbID} {...movie} />
+      )))
+    }
+    {/* {movies.map(movie => (
       <MovieCard key={movie.imdbID} {...movie} />
-    ))}
+    ))} */}
   </div>
 );
 

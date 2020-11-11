@@ -52,12 +52,6 @@ export const FindMovie = ({ addMovie }) => {
               className={`input ${error ? 'is-danger' : ''}`}
               value={title}
               onChange={handleChange}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault();
-                  findMovie();
-                }
-              }}
             />
           </div>
 

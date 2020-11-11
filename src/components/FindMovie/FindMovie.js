@@ -11,7 +11,7 @@ export const FindMovie = ({ setMovies, moviesList }) => {
   const [error, setError] = useState(false);
   const [duplicateError, setDuplicateError] = useState(false);
 
-  const BASE_URL = `http://www.omdbapi.com/?apikey=7301fdd3&t=${title}`;
+  const BASE_URL = `https://www.omdbapi.com/?apikey=7301fdd3&t=${title}`;
 
   async function getMovies() {
     const response = await fetch(BASE_URL);

@@ -13,7 +13,7 @@ export const FindMovie = ({ setMovies, moviesList }) => {
 
   const BASE_URL = `http://www.omdbapi.com/?apikey=7301fdd3&t=${title}`;
 
-  const getMovies = async() => {
+  async function getMovies() {
     const response = await fetch(BASE_URL);
     const movies = await response.json();
 
@@ -25,7 +25,7 @@ export const FindMovie = ({ setMovies, moviesList }) => {
       setTitle('');
       setError(false);
     }
-  };
+  }
 
   const findMovie = () => {
     getMovies();

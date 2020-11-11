@@ -2,12 +2,15 @@ import React, { Component } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import data from './api/movies.json';
 
 export class App extends Component {
   state = {
-    movies: data,
+    movies: [],
   };
+
+  onCklickAddMovie = (movie) => {
+    this.setState(prevState => ({ movies: [...prevState.movies, movie] }));
+  }
 
   render() {
     const { movies } = this.state;
@@ -18,7 +21,10 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie
+            movies={movies}
+            onCklickAddMovie={this.onCklickAddMovie}
+          />
         </div>
       </div>
     );

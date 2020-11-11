@@ -16,7 +16,7 @@ export const FindMovie = ({ addMovie }) => {
     try {
       const newMovie = await loadMovie(title);
 
-      if (!newMovie.Response) {
+      if (newMovie.Response === 'False') {
         setTitleError(true);
 
         return;

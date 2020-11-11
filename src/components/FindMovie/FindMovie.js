@@ -1,15 +1,34 @@
 import React, { useState } from 'react';
 
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 
-export const FindMovie = () => {
+export const FindMovie = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState({});
-  const [error, setError] = useState(false);
+  const [isMessageVisible, setVisibility] = useState(false);
+
+  const { Title, Plot, Poster, imdbID } = movie;
+
+  const handleSearch = () => {
+    getMovie(query).then((movieFromServer) => {
+      setMovie(movieFromServer);
+      setVisibility(movieFromServer.Title === undefined);
+    });
+    setQuery('');
+  };
+
+  const handleAddition = () => {
+    if (Title !== undefined) {
+      addMovie(Title, Plot, Poster, imdbID);
+    }
+
+    setQuery('');
+  };
 
   return (
     <>
@@ -26,15 +45,16 @@ export const FindMovie = () => {
               placeholder="Enter a title to search"
               className={
                 classNames('input', {
-                  'is-danger': error,
+                  'is-danger': isMessageVisible,
                 })
               }
               value={query}
               onChange={event => setQuery(event.target.value)}
-              onFocus={() => setError(false)}
+              onFocus={() => setVisibility(false)}
             />
           </div>
-          {!error ? null
+
+          {!isMessageVisible ? null
             : (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title
@@ -48,13 +68,7 @@ export const FindMovie = () => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => {
-                getMovie(query).then((movieFromServer) => {
-                  setMovie(movieFromServer);
-                  setError(movieFromServer.Title === undefined);
-                });
-                setQuery('');
-              }}
+              onClick={handleSearch}
             >
               Find a movie
             </button>
@@ -64,6 +78,7 @@ export const FindMovie = () => {
             <button
               type="button"
               className="button is-primary"
+              onClick={handleAddition}
             >
               Add to the list
             </button>
@@ -73,17 +88,22 @@ export const FindMovie = () => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {!movie.Title ? null
+
+        {!Title ? null
           : (
             <MovieCard
-              title={movie.Title}
-              description={movie.Plot}
-              imgUrl={movie.Poster}
-              imdbUrl={`https://www.imdb.com/title/${movie.imdbID}`}
+              title={Title}
+              description={Plot}
+              imgUrl={Poster}
+              imdbUrl={`https://www.imdb.com/title/${imdbID}`}
             />
           )
         }
       </div>
     </>
   );
+};
+
+FindMovie.propTypes = {
+  addMovie: PropTypes.func.isRequired,
 };

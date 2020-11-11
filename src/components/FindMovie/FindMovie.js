@@ -44,14 +44,15 @@ export const FindMovie = ({ addMovie, movies }) => {
 
   const handleAddition = () => {
     setTitle('');
-    switchPreviewDisplay(false);
-    switchAddButtonDisability(true);
 
     if (movies.some(movie => newMovie.imdbID === movie.imdbID)) {
       setError('You have already added this movie');
 
       return;
     }
+
+    switchPreviewDisplay(false);
+    switchAddButtonDisability(true);
 
     addMovie(newMovie);
   };

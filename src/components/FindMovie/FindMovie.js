@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import ClassNames from 'classnames';
+import classNames from 'classnames';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
@@ -13,29 +13,31 @@ export const FindMovie = React.memo(({ addMovie, hasMovie }) => {
 
   useEffect(() => setError(null), [title]);
 
-  function getMovie() {
-    getMoviesByTitle(title)
-      .then((findedMovie) => {
-        if (!findedMovie.Title) {
-          setError('Can\'t find a movie with such a title');
-          setMovie(null);
+  async function getMovie() {
+    try {
+      const findedMovie = await getMoviesByTitle(title);
 
-          return;
-        }
+      if (!findedMovie.Title) {
+        setError('Can\'t find a movie with such a title');
+        setMovie(null);
 
-        setMovie({
-          title: findedMovie.Title,
-          description: findedMovie.Plot,
-          imgUrl: findedMovie.Poster,
-          imdbUrl: `https://www.imdb.com/title/${findedMovie.imdbID}`,
-          imdbId: findedMovie.imdbID,
-        });
-      })
+        return;
+      }
+
+      setMovie({
+        title: findedMovie.Title,
+        description: findedMovie.Plot,
+        imgUrl: findedMovie.Poster,
+        imdbUrl: `https://www.imdb.com/title/${findedMovie.imdbID}`,
+        imdbId: findedMovie.imdbID,
+      });
+    } catch (err) {
       // eslint-disable-next-line no-console
-      .catch(err => console.warn(err));
+      console.warn(err);
+    }
   }
 
-  function onSubmit() {
+  function handleSubmit() {
     if (hasMovie(movie)) {
       setError('Already have this movie');
 
@@ -60,11 +62,14 @@ export const FindMovie = React.memo(({ addMovie, hasMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={ClassNames('input', {
+              className={classNames('input', {
                 'is-danger': error,
               })}
               value={title}
-              onChange={({ target }) => setTitle(target.value)}
+              onChange={useCallback(
+                ({ target }) => setTitle(target.value),
+                [],
+              )}
             />
           </div>
 
@@ -91,10 +96,7 @@ export const FindMovie = React.memo(({ addMovie, hasMovie }) => {
               type="button"
               className="button is-primary"
               disabled={!movie}
-              onClick={(event) => {
-                event.preventDefault();
-                onSubmit();
-              }}
+              onClick={handleSubmit}
             >
               Add to the list
             </button>

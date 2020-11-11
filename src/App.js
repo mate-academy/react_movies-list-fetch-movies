@@ -3,9 +3,6 @@ import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
-import { getMoviesByTitle } from './api/movies';
-
-getMoviesByTitle('yt');
 
 export const App = () => {
   const [movies, setMovies] = useState(data);

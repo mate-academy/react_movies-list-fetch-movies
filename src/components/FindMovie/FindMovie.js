@@ -143,7 +143,7 @@ export const FindMovie = ({ addMovie, movies }) => {
           (!loading && movie) && (<MovieCard {...movie} />)
         }
         {
-          (!loading && movie) && (<p>Film not selected</p>)
+          (!loading && !movie) && (<p>Film not selected</p>)
         }
       </div>
     </>

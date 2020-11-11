@@ -82,6 +82,7 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
+              disabled={!cardVisible}
               onClick={() => {
                 addMovie(movie);
                 reset();

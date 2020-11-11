@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
@@ -13,7 +13,7 @@ export const FindMovie = ({ addMovie, movies }) => {
   const [movieError, setMovieError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const findFilm = async() => {
+  const findFilm = useCallback(async() => {
     setLoading(true);
     const requestedMovie = await getFilm(serchTitle);
 
@@ -43,14 +43,14 @@ export const FindMovie = ({ addMovie, movies }) => {
 
     setMovieError('');
     setLoading(false);
-  };
+  }, [serchTitle]);
 
   const handleChange = (event) => {
     setSerchTitle(event.target.value);
     setMovieError('');
   };
 
-  const onAdd = () => {
+  const onAdd = useCallback(() => {
     if (!movie) {
       setMovieError('Movie not selected');
 
@@ -70,7 +70,7 @@ export const FindMovie = ({ addMovie, movies }) => {
     addMovie(movie);
     setMovie(null);
     setSerchTitle('');
-  };
+  }, [movie]);
 
   return (
     <>
@@ -142,8 +142,9 @@ export const FindMovie = ({ addMovie, movies }) => {
         {
           (!loading && movie) && (<MovieCard {...movie} />)
         }
-
-        <p>Film not selected</p>
+        {
+          (!loading && movie) && (<p>Film not selected</p>)
+        }
       </div>
     </>
   );

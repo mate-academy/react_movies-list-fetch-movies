@@ -76,13 +76,11 @@ export const FindMovie = ({ addMovie, movies }) => {
             />
           </div>
 
-          <p className="help is-danger">
-            {
-              errorFindMovie
-                ? "Can't find a movie with such a title"
-                : ''
-            }
-          </p>
+          {errorFindMovie && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">

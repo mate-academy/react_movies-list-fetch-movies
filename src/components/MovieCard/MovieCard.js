@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './MovieCard.scss';
 import PropTypes from 'prop-types';
 
-export const MovieCard = ({
-  title,
-  description = '',
-  imgUrl,
-  imdbUrl,
+export const MovieCard = memo(({
+  Title: title,
+  Plot: description = '',
+  Poster: imgUrl,
+  imdbID,
 }) => (
   <div className="card">
     <div className="card-image">
@@ -35,15 +35,15 @@ export const MovieCard = ({
       <div className="content">
         {description}
         <br />
-        <a href={imdbUrl}>IMDB</a>
+        <a href={`https://www.imdb.com/title/${imdbID}/`}>IMDB</a>
       </div>
     </div>
   </div>
-);
+));
 
 MovieCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  imgUrl: PropTypes.string.isRequired,
-  imdbUrl: PropTypes.string.isRequired,
+  Title: PropTypes.string.isRequired,
+  Plot: PropTypes.string.isRequired,
+  Poster: PropTypes.string.isRequired,
+  imdbID: PropTypes.string.isRequired,
 };

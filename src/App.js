@@ -1,26 +1,23 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import data from './api/movies.json';
 
-export class App extends Component {
-  state = {
-    movies: data,
-  };
+export const App = () => {
+  const [moviesList, setMovies] = useState([]);
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        {
+          moviesList.length === 0
+            ? (<h1>Add your movies here</h1>)
+            : <MoviesList movies={moviesList} />
+        }
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie setMovies={setMovies} moviesList={moviesList} />
+      </div>
+    </div>
+  );
+};

@@ -89,6 +89,7 @@ export const FindMovie = ({ onCklickAddMovie, movies }) => {
             <button
               type="button"
               className="button is-primary"
+              disabled={!foundMovie}
               onClick={() => {
                 if (isMovieUnique(foundMovie, movies)) {
                   onCklickAddMovie(foundMovie);

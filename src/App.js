@@ -3,10 +3,9 @@ import './App.scss';
 
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import data from './api/movies.json';
 
 export const App = () => {
-  const [movies, setMovies] = useState(data);
+  const [movies, setMovies] = useState([]);
 
   const addMovie = (newMovie) => {
     setMovies(currentMovies => [...currentMovies, newMovie]);
@@ -15,7 +14,15 @@ export const App = () => {
   return (
     <div className="page">
       <div className="page-content">
-        <MoviesList movies={movies} />
+        {movies.length
+          ? <MoviesList movies={movies} />
+          : (
+            <h2 className="title is-5">
+              Add some movies to see them here
+            </h2>
+          )
+        }
+
       </div>
       <div className="sidebar">
         <FindMovie

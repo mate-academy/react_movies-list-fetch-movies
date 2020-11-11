@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -132,18 +131,19 @@ export const FindMovie = ({ addMovie, movies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {loading
-          ? (
+        {
+          loading
+          && (
             <div className="spinner-border" role="status">
               <span className="sr-only">Loading...</span>
             </div>
           )
-          : (
-            movie
-              ? (<MovieCard {...movie} />)
-              : (<p>Film not selected</p>)
-          )
         }
+        {
+          (!loading && movie) && (<MovieCard {...movie} />)
+        }
+
+        <p>Film not selected</p>
       </div>
     </>
   );

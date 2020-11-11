@@ -36,7 +36,8 @@ export const FindMovie = ({ addMovie }) => {
     }
   };
 
-  const reset = () => {
+  const addToList = () => {
+    addMovie(movie);
     setMovie({});
     setTitle('');
     setCardVisible(false);
@@ -83,10 +84,7 @@ export const FindMovie = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               disabled={!cardVisible}
-              onClick={() => {
-                addMovie(movie);
-                reset();
-              }}
+              onClick={addToList}
             >
               Add to the list
             </button>

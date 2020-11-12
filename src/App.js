@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
+import './App.scss';
 
 export const App = () => {
   const [movies, setMovies] = useState(data);
 
   const addNewMovie = (newMovie) => {
-    if (
-      movies.some(movie => movie.imdbId === newMovie.imdbId)) {
-      return;
-    }
+    const hasAlreadyMovie = movies.find(movie => (
+      movie.imdbUrl === newMovie.imdbUrl
+    ));
 
-    setMovies(prevMovies => [...prevMovies, newMovie]);
+    if (!hasAlreadyMovie) {
+      setMovies([...movies, newMovie]);
+    }
   };
 
   return (

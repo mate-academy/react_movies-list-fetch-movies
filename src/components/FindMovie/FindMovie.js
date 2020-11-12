@@ -3,44 +3,43 @@ import './FindMovie.scss';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
-import { fetchMovie } from '../../api/Api';
+import { getMovie } from '../../api/Api';
 
 export const FindMovie = ({ addNewMovie }) => {
-  const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState(null);
-  const [notFound, setNotFound] = useState(false);
+  const [movie, setMovie] = useState();
+  const [query, setQuery] = useState('');
+  const [notFound, setLoadingError] = useState(false);
 
-  const getMovie = () => {
-    fetchMovie(title)
-      .then((movieFromApi) => {
-        if (movieFromApi.Response === 'False') {
-          setNotFound(true);
+  const findMovie = async() => {
+    const movieFromServer = await getMovie(query);
 
-          return;
-        }
-
-        setNotFound(false);
-
-        setMovie({
-          title: movieFromApi.Title,
-          description: movieFromApi.Plot,
-          imgUrl: movieFromApi.Poster,
-          imdbUrl: `https://www.imdb.com/title/${movieFromApi.imdbID}`,
-          imdbId: movieFromApi.imdbID,
-        });
+    if (movieFromServer.Response === 'True') {
+      setMovie({
+        title: movieFromServer.Title,
+        description: movieFromServer.Plot,
+        imgUrl: movieFromServer.Poster,
+        imdbUrl: movieFromServer.imdbID,
       });
+    } else {
+      setMovie(undefined);
+      setLoadingError(true);
+    }
+  };
+
+  const handleChange = (event) => {
+    setQuery(event.target.value);
+    setLoadingError(false);
+  };
+
+  const sendMovie = () => {
+    addNewMovie(movie);
+    setMovie(undefined);
+    setQuery('');
   };
 
   return (
     <>
-      <form
-        className="find-movie"
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          return getMovie();
-        }}
-      >
+      <form className="find-movie">
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -48,11 +47,8 @@ export const FindMovie = ({ addNewMovie }) => {
 
           <div className="control">
             <input
-              value={title}
-              onChange={(event) => {
-                setTitle(event.target.value);
-                setNotFound(false);
-              }}
+              value={query}
+              onChange={handleChange}
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
@@ -73,7 +69,7 @@ export const FindMovie = ({ addNewMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={getMovie}
+              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -83,13 +79,8 @@ export const FindMovie = ({ addNewMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                if (movie) {
-                  addNewMovie(movie);
-                  setTitle('');
-                  setMovie(null);
-                }
-              }}
+              onClick={sendMovie}
+              disabled={!movie}
             >
               Add to the list
             </button>

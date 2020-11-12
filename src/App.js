@@ -1,32 +1,32 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-export class App extends Component {
-  state = {
-    movies: [],
+function isMovieUnique(movie, moviesList) {
+  return !moviesList.some(movieItem => movieItem.imdbId === movie.imdbId);
+}
+
+export const App = () => {
+  const [movies, setMovies] = useState([]);
+
+  const addMovie = (movie) => {
+    if (isMovieUnique(movie, movies)) {
+      setMovies([...movies, movie]);
+    }
   };
 
-  onCklickAddMovie = (movie) => {
-    this.setState(prevState => ({ movies: [...prevState.movies, movie] }));
-  }
-
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie
-            movies={movies}
-            onCklickAddMovie={this.onCklickAddMovie}
-          />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          movies={movies}
+          addMovie={addMovie}
+        />
+      </div>
+    </div>
+  );
+};

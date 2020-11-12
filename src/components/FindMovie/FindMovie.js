@@ -16,14 +16,22 @@ function convertMovie(serverMovie) {
   };
 }
 
-function isMovieUnique(movie, moviesList) {
-  return !moviesList.some(movieItem => movieItem.imdbId === movie.imdbId);
+function onChangeValue(event, setHasError, setInputValue) {
+  setHasError(false);
+  setInputValue(event.target.value);
 }
 
-export const FindMovie = ({ onCklickAddMovie, movies }) => {
+export const FindMovie = ({ addMovie, movies }) => {
   const [inputValue, setInputValue] = useState('');
   const [foundMovie, setFoundMovie] = useState(null);
   const [hasError, setHasError] = useState(false);
+
+  function addMovieToTheList() {
+    addMovie(foundMovie);
+
+    setInputValue('');
+    setFoundMovie(null);
+  }
 
   return (
     <>
@@ -50,10 +58,8 @@ export const FindMovie = ({ onCklickAddMovie, movies }) => {
           <div className="control">
             <input
               value={inputValue}
-              onChange={(event) => {
-                setHasError(false);
-                setInputValue(event.target.value);
-              }}
+              onChange={
+                event => onChangeValue(event, setHasError, setInputValue)}
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
@@ -90,14 +96,7 @@ export const FindMovie = ({ onCklickAddMovie, movies }) => {
               type="button"
               className="button is-primary"
               disabled={!foundMovie}
-              onClick={() => {
-                if (isMovieUnique(foundMovie, movies)) {
-                  onCklickAddMovie(foundMovie);
-                }
-
-                setInputValue('');
-                setFoundMovie(null);
-              }}
+              onClick={() => addMovieToTheList()}
             >
               Add to the list
             </button>
@@ -116,7 +115,7 @@ export const FindMovie = ({ onCklickAddMovie, movies }) => {
 };
 
 FindMovie.propTypes = {
-  onCklickAddMovie: PropTypes.func.isRequired,
+  addMovie: PropTypes.func.isRequired,
   movies: PropTypes.arrayOf(PropTypes.shape({
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,

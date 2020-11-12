@@ -6,7 +6,7 @@ import { getMovie } from '../../api/Api';
 
 export const FindMovie = ({ addMovie, movies }) => {
   const [newMovie, setNewMovie] = useState(null);
-  const [query, setquery] = useState('');
+  const [query, setQuery] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [hasLoadingError, setHasLoadingError] = useState(false);
   const [hasBeenAdded, setHasBeenAdded] = useState(false);
@@ -19,7 +19,7 @@ export const FindMovie = ({ addMovie, movies }) => {
       setHasBeenAdded(false);
     }
 
-    setquery(value);
+    setQuery(value);
   };
 
   const findMovie = () => {
@@ -49,7 +49,7 @@ export const FindMovie = ({ addMovie, movies }) => {
       addMovie(newMovie);
 
       setNewMovie(null);
-      setquery('');
+      setQuery('');
       setDisabled(true);
     } else {
       setHasBeenAdded(true);

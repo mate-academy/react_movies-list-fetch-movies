@@ -5,5 +5,9 @@ export async function getMovie(title) {
 
   const result = await response.json();
 
+  if (result.Response === 'False') {
+    throw new Error(`No movie found. Please choose another one!`);
+  }
+
   return result;
 }

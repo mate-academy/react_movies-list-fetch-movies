@@ -2,38 +2,36 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import propTypes from 'prop-types';
-// import Loader from 'react-loader-spinner';
+import Loader from 'react-loader-spinner';
 
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovie, movies }) => {
-  const [foundMovie, setFoundMovie] = useState(null);
+  const [foundMovie, setMovie] = useState(null);
   const [title, setTitle] = useState('');
   const [error, setError] = useState(null);
 
-  const searchMovie = () => {
-    getMovie(title)
-      .then((movie) => {
-        setFoundMovie({
-          title: movie.Title,
-          description: movie.Plot,
-          imgUrl: movie.Poster,
-          imdbUrl: `https://www.imdb.com/title/${movie.imdbId}`,
-          imdbId: movie.imdbID,
-        });
+  const findMovie = async() => {
+    try {
+      const newMovie = await getMovie(title);
+
+      if (newMovie.Response === 'False') {
+        setError('movie not found');
+        setMovie(null);
+
+        return;
+      }
+
+      setMovie({
+        title: newMovie.Title,
+        description: newMovie.Plot,
+        imgUrl: newMovie.Poster,
+        imdbUrl: `https://www.imdb.com/title/${movies.imdbId}`,
+        imdbId: movies.imdbID,
       });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (!movies.some(movie => movie.imdbId === foundMovie.imdbId)) {
-      addMovie(foundMovie);
-      setFoundMovie(null);
-      setTitle('');
-    } else {
-      setError('The movie is already on the list');
+    } catch (err) {
+      setError(true);
     }
   };
 
@@ -43,6 +41,20 @@ export const FindMovie = ({ addMovie, movies }) => {
     }
 
     setTitle(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (movies.some(movie => movie.imdbId === foundMovie.imdbId)) {
+      setError('The movie is already on the list');
+
+      return;
+    }
+
+    addMovie(foundMovie);
+    setMovie(null);
+    setTitle('');
   };
 
   return (
@@ -67,13 +79,18 @@ export const FindMovie = ({ addMovie, movies }) => {
               autoComplete="off"
             />
           </div>
+          {error && (
+            <p className="help is-danger">
+              {error}
+            </p>
+          )}
         </div>
         <div className="field is-grouped">
           <div className="control">
             <button
               type="button"
               className="button is-light"
-              onClick={searchMovie}
+              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -83,7 +100,6 @@ export const FindMovie = ({ addMovie, movies }) => {
             <button
               type="submit"
               className="button is-primary"
-              disabled={!foundMovie}
             >
               Add to the list
             </button>
@@ -93,20 +109,19 @@ export const FindMovie = ({ addMovie, movies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {foundMovie && (
+        {foundMovie ? (
           <MovieCard {...foundMovie} />
         )
-          // : (
-          //   <div className="loader">
-          //     <Loader
-          //       type="Circles"
-          //       color="purple"
-          //       height={120}
-          //       width={120}
-          //       timeout={3000}
-          //     />
-          //   </div>
-          // )
+          : (
+            <div className="loader">
+              <Loader
+                type="Circles"
+                color="gray"
+                height={100}
+                width={100}
+              />
+            </div>
+          )
         }
       </div>
     </>
@@ -119,6 +134,5 @@ FindMovie.propTypes = {
     title: propTypes.string.isRequired,
     description: propTypes.string.isRequired,
     imgUrl: propTypes.string.isRequired,
-    imdbUrl: propTypes.string.isRequired,
-  }).isRequired).isRequired,
+  })).isRequired,
 };

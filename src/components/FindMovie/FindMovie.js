@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { MovieCardPropTypesShape } from '../../PropTypesShapes';
 
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
@@ -13,7 +14,10 @@ export function FindMovie({ addMovie, movies }) {
   const [searchError, setSearchError] = useState(false);
 
   const checkMovieInList = () => {
-    if (movies.find(movie => movie.imdbID === movieForPreview.imdbID)) {
+    const movieInListCheck = movies.find(movie => (
+      movie.imdbID === movieForPreview.imdbID));
+
+    if (movieInListCheck) {
       setMovieAlreadyInList(true);
 
       return;
@@ -30,7 +34,8 @@ export function FindMovie({ addMovie, movies }) {
     setMovieForPreview();
   };
 
-  const movieSearch = async() => {
+  const movieSearch = async(event) => {
+    event.preventDefault();
     const requestedMovie = await getMovie(query);
 
     if (requestedMovie.Response === 'False') {
@@ -43,13 +48,9 @@ export function FindMovie({ addMovie, movies }) {
     setMovieForPreview(requestedMovie);
   };
 
-  const preventDefaultSubmit = (event) => {
-    event.preventDefault();
-  };
-
   return (
     <>
-      <form className="find-movie" onSubmit={preventDefaultSubmit}>
+      <form className="find-movie">
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -76,7 +77,7 @@ export function FindMovie({ addMovie, movies }) {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={movieSearch}
             >
@@ -107,10 +108,7 @@ export function FindMovie({ addMovie, movies }) {
           <>
             <h2 className="title">Preview</h2>
             <MovieCard
-              Title={movieForPreview.Title}
-              Plot={movieForPreview.Plot}
-              Poster={movieForPreview.Poster}
-              imdbID={movieForPreview.imdbID}
+              movie={movieForPreview}
             />
           </>
         )}
@@ -122,11 +120,6 @@ export function FindMovie({ addMovie, movies }) {
 FindMovie.propTypes = {
   addMovie: PropTypes.func.isRequired,
   movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      Title: PropTypes.string.isRequired,
-      Plot: PropTypes.string.isRequired,
-      Poster: PropTypes.string.isRequired,
-      imdbID: PropTypes.string.isRequired,
-    }).isRequired,
+    MovieCardPropTypesShape,
   ).isRequired,
 };

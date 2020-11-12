@@ -3,16 +3,16 @@ import './MovieCard.scss';
 import PropTypes from 'prop-types';
 
 export const MovieCard = ({
-  Title,
-  Plot = '',
-  Poster,
-  imdbID,
+  title,
+  description = '',
+  imgUrl,
+  imdbUrl,
 }) => (
   <div className="card">
     <div className="card-image">
       <figure className="image is-4by3">
         <img
-          src={Poster}
+          src={imgUrl}
           alt="Film logo"
         />
       </figure>
@@ -28,22 +28,22 @@ export const MovieCard = ({
           </figure>
         </div>
         <div className="media-content">
-          <p className="title is-8">{Title}</p>
+          <p className="title is-8">{title}</p>
         </div>
       </div>
 
       <div className="content">
-        {Plot}
+        {description}
         <br />
-        <a href={`https://www.imdb.com/title/${imdbID}/`}>IMDB</a>
+        <a href={`https://www.imdb.com/title/${imdbUrl}/`}>IMDB</a>
       </div>
     </div>
   </div>
 );
 
 MovieCard.propTypes = {
-  Title: PropTypes.string.isRequired,
-  Plot: PropTypes.string.isRequired,
-  Poster: PropTypes.string.isRequired,
-  imdbID: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  imgUrl: PropTypes.string.isRequired,
+  imdbUrl: PropTypes.string.isRequired,
 };

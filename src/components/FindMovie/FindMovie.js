@@ -9,23 +9,10 @@ import { getMovie } from '../myApi';
 export const FindMovie = ({ movies, addNewMovie }) => {
   const [query, setQuery] = useState('');
   const [newMovie, setNewMovie] = useState();
-  const [movieAlreadyInList, setMovieAlreadyInList] = useState(false);
   const [error, setError] = useState(false);
-
-  const checkMovieInList = () => {
-    if (movies.find(movie => movie.imdbID === newMovie.imdbID)) {
-      setMovieAlreadyInList(true);
-
-      return;
-    }
-
-    addNewMovie(newMovie);
-    setQuery('');
-  };
 
   const handleChangeQuery = ({ target }) => {
     setError(false);
-    setMovieAlreadyInList(false);
     setQuery(target.value);
     setNewMovie();
   };
@@ -34,18 +21,37 @@ export const FindMovie = ({ movies, addNewMovie }) => {
     getMovie(query)
       .then((movie) => {
         if (movie.Response === 'False') {
-          setError(true);
+          setError('No movie was found');
+          setNewMovie(null);
 
           return;
         }
 
-        setError(false);
-        setNewMovie(movie);
+        setNewMovie({
+          title: movie.Title,
+          description: movie.Plot,
+          imgUrl: movie.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movie.imdbId}`,
+          imdbId: movie.imdbID,
+        });
       });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (movies.find(movie => movie.imdbID === newMovie.imdbID)) {
+      setError(true);
+
+      return;
+    }
+
+    addNewMovie(newMovie);
+    setQuery('');
+  };
+
+  const handleReset = () => {
+    setQuery('');
+    setNewMovie();
   };
 
   return (
@@ -89,12 +95,14 @@ export const FindMovie = ({ movies, addNewMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={checkMovieInList}
-              disabled={!newMovie}
+              onClick={() => {
+                addNewMovie(newMovie);
+                handleReset();
+              }}
             >
               Add to the list
             </button>
-            {movieAlreadyInList && (
+            {newMovie && (
               <p className={classNames({ 'help is-danger': !error })}>
                 The movie already on the list
               </p>
@@ -103,16 +111,9 @@ export const FindMovie = ({ movies, addNewMovie }) => {
         </div>
       </form>
       <div className="container">
+        <h2 className="title">Preview</h2>
         {newMovie && (
-          <>
-            <h2 className="title">Preview</h2>
-            <MovieCard
-              Title={newMovie.Title}
-              Plot={newMovie.Plot}
-              Poster={newMovie.Poster}
-              imdbID={newMovie.imdbID}
-            />
-          </>
+          <MovieCard {...newMovie} />
         )}
       </div>
     </>
@@ -123,10 +124,10 @@ FindMovie.propTypes = {
   addNewMovie: PropTypes.func.isRequired,
   movies: PropTypes.arrayOf(
     PropTypes.shape({
-      Title: PropTypes.string.isRequired,
-      Plot: PropTypes.string.isRequired,
-      Poster: PropTypes.string.isRequired,
-      imdbID: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      imgUrl: PropTypes.string.isRequired,
+      imdbUrl: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
 };

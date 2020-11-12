@@ -7,14 +7,8 @@ import './App.scss';
 export const App = () => {
   const [movies, setMovies] = useState(data);
 
-  const addNewMovie = (newMovie) => {
-    const hasAlreadyMovie = movies.find(movie => (
-      movie.imdbUrl === newMovie.imdbUrl
-    ));
-
-    if (!hasAlreadyMovie) {
-      setMovies([...movies, newMovie]);
-    }
+  const addMovie = (newMovie) => {
+    setMovies(currentMovies => [...currentMovies, newMovie]);
   };
 
   return (
@@ -23,7 +17,10 @@ export const App = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie addNewMovie={addNewMovie} />
+        <FindMovie
+          addMovie={addMovie}
+          movies={movies}
+        />
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ export const App = () => {
   return (
     <div className="page">
       <div className="page-content">
-        {movies.length && (
+        {!!movies.length && (
           <MoviesList movies={movies} />
         )}
       </div>

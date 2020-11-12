@@ -2,7 +2,6 @@ import React from 'react';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
 
 export const FindMovie = () => (
   <>
@@ -49,7 +48,7 @@ export const FindMovie = () => (
 
     <div className="container">
       <h2 className="title">Preview</h2>
-      <MovieCard {...movies[0]} />
+      <MovieCard />
     </div>
   </>
 );

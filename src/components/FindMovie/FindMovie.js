@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import propTypes from 'prop-types';
-import Loader from 'react-loader-spinner';
 
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
@@ -10,7 +9,7 @@ import { getMovie } from '../../api/api';
 export const FindMovie = ({ addMovie, movies }) => {
   const [foundMovie, setMovie] = useState(null);
   const [title, setTitle] = useState('');
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(false);
 
   const findMovie = async() => {
     try {
@@ -37,7 +36,7 @@ export const FindMovie = ({ addMovie, movies }) => {
 
   const handleChange = (event) => {
     if (event.target.value !== title) {
-      setError(null);
+      setError(false);
     }
 
     setTitle(event.target.value);
@@ -109,19 +108,9 @@ export const FindMovie = ({ addMovie, movies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {foundMovie ? (
+        {foundMovie && (
           <MovieCard {...foundMovie} />
         )
-          : (
-            <div className="loader">
-              <Loader
-                type="Circles"
-                color="gray"
-                height={100}
-                width={100}
-              />
-            </div>
-          )
         }
       </div>
     </>

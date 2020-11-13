@@ -13,9 +13,14 @@ export const App = () => {
   return (
     <div className="page">
       <div className="page-content">
-        <MoviesList
-          movies={movies}
-        />
+        {movies.length
+          ? <MoviesList movies={movies} />
+          : (
+            <h2>
+              Add your movies
+            </h2>
+          )
+        }
       </div>
       <div className="sidebar">
         <FindMovie

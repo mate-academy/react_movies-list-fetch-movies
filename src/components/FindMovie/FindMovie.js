@@ -1,3 +1,5 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable arrow-body-style */
 /* eslint-disable no-console */
 /* eslint-disable arrow-parens */
 import React, { useState } from 'react';
@@ -12,30 +14,35 @@ export const FindMovie = (props) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState(false);
   const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const findMovie = (e) => {
     e.preventDefault();
     if (query) {
+      setLoading(true);
       request(query).then((res) => {
         if (res.Error) {
           setError(true);
           setMovie(null);
+          setLoading(false);
         } else {
           setError(false);
           setMovie(res);
+          setLoading(false);
+          setQuery('');
         }
       });
     }
   };
 
   const addToList = () => {
-    const isAdded = props.movies.some((item) => item.imdbId === movie.imdbID);
-
-    if (isAdded) {
-      return;
-    }
-
     if (movie) {
+      const isAdded = props.movies.some((item) => item.imdbId === movie.imdbID);
+
+      if (isAdded) {
+        return;
+      }
+
       props.addMovie({
         title: movie.Title,
         description: movie.Plot,
@@ -78,7 +85,11 @@ export const FindMovie = (props) => {
 
         <div className="field is-grouped">
           <div className="control">
-            <button type="submit" className="button is-light">
+            <button
+              type="submit"
+              className="button is-light"
+              disabled={loading}
+            >
               Find a movie
             </button>
           </div>
@@ -88,6 +99,7 @@ export const FindMovie = (props) => {
               type="button"
               className="button is-primary"
               onClick={addToList}
+              disabled={loading}
             >
               Add to the list
             </button>
@@ -97,14 +109,17 @@ export const FindMovie = (props) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie && (
-          <MovieCard
-            title={movie.Title}
-            description={movie.Plot}
-            imgUrl={movie.Poster}
-            imdbUrl={`https://www.imdb.com/title/${movie.imdbID}`}
-          />
-        )}
+        {movie &&
+          (!loading ? (
+            <MovieCard
+              title={movie.Title}
+              description={movie.Plot}
+              imgUrl={movie.Poster}
+              imdbUrl={`https://www.imdb.com/title/${movie.imdbID}`}
+            />
+          ) : (
+            '...Loading'
+          ))}
       </div>
     </>
   );

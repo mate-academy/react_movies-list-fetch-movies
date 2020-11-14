@@ -24,13 +24,13 @@ export const FindMovie = (props) => {
         if (res.Error) {
           setError(true);
           setMovie(null);
-          setLoading(false);
         } else {
           setError(false);
           setMovie(res);
-          setLoading(false);
           setQuery('');
         }
+
+        setLoading(false);
       });
     }
   };

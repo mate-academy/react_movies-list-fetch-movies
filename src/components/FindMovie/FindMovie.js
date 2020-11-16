@@ -55,7 +55,8 @@ export const FindMovie = ({ addMovie, movies }) => {
               type="button"
               className="button is-light"
               onClick={() => {
-                fetch(`http://www.omdbapi.com/?apikey=bcb65536&t=${inputValue}`)
+                // eslint-disable-next-line max-len
+                fetch(`https://www.omdbapi.com/?apikey=bcb65536&t=${inputValue}`)
                   .then(result => result.json())
                   .then(setMovie)
                   .catch(() => {

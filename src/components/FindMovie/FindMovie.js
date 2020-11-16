@@ -55,6 +55,10 @@ export const FindMovie = ({ addMovie, movies }) => {
               type="button"
               className="button is-light"
               onClick={() => {
+                if (!inputValue) {
+                  return;
+                }
+
                 // eslint-disable-next-line max-len
                 fetch(`https://www.omdbapi.com/?apikey=bcb65536&t=${inputValue}`)
                   .then(result => result.json())
@@ -73,6 +77,10 @@ export const FindMovie = ({ addMovie, movies }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
+                if (!inputValue) {
+                  return;
+                }
+
                 checkMovie();
                 setInputValue('');
                 setMovie(null);

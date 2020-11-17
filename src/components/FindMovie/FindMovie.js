@@ -20,14 +20,17 @@ export const FindMovie = ({ addMovie, movies }) => {
     addMovie([...movies, movie]);
   };
 
+  // eslint-disable-next-line max-len
+  const getData = movieName => fetch(`https://www.omdbapi.com/?apikey=bcb65536&t=${movieName}`)
+    .then(result => result.json());
+
   const findMovie = (movieName) => {
     if (!movieName) {
       return;
     }
 
     // eslint-disable-next-line max-len
-    fetch(`https://www.omdbapi.com/?apikey=bcb65536&t=${movieName}`)
-      .then(result => result.json())
+    getData(movieName)
       .then(setMovie)
       .catch(() => {
         setError(1);

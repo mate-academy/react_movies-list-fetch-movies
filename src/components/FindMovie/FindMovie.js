@@ -20,6 +20,37 @@ export const FindMovie = ({ addMovie, movies }) => {
     addMovie([...movies, movie]);
   };
 
+  const findMovie = (movieName) => {
+    if (!movieName) {
+      return;
+    }
+
+    // eslint-disable-next-line max-len
+    fetch(`https://www.omdbapi.com/?apikey=bcb65536&t=${movieName}`)
+      .then(result => result.json())
+      .then(setMovie)
+      .catch(() => {
+        setError(1);
+      });
+  };
+
+  const addMovieToList = (movieName) => {
+    if (!movieName) {
+      return;
+    }
+
+    checkMovie();
+    setInputValue('');
+    setMovie(null);
+  };
+
+  const changeHandler = (event) => {
+    const { value } = event.target;
+
+    setError('');
+    setInputValue(value);
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -35,10 +66,7 @@ export const FindMovie = ({ addMovie, movies }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
-              onChange={(event) => {
-                setError('');
-                setInputValue(event.target.value);
-              }}
+              onChange={changeHandler}
             />
           </div>
 
@@ -55,17 +83,7 @@ export const FindMovie = ({ addMovie, movies }) => {
               type="button"
               className="button is-light"
               onClick={() => {
-                if (!inputValue) {
-                  return;
-                }
-
-                // eslint-disable-next-line max-len
-                fetch(`https://www.omdbapi.com/?apikey=bcb65536&t=${inputValue}`)
-                  .then(result => result.json())
-                  .then(setMovie)
-                  .catch(() => {
-                    setError(1);
-                  });
+                findMovie(inputValue);
               }}
             >
               Find a movie
@@ -77,13 +95,7 @@ export const FindMovie = ({ addMovie, movies }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
-                if (!inputValue) {
-                  return;
-                }
-
-                checkMovie();
-                setInputValue('');
-                setMovie(null);
+                addMovieToList(inputValue);
               }}
             >
               Add to the list

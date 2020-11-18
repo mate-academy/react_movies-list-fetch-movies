@@ -1,8 +1,8 @@
-# Movies list - Fetch movies
+# Movies list
 
 You can use this [DEMO LINK](https://antonskliarov.github.io/react_movies-list-fetch-movies/) to browse the movie list and add your favorite movie to it.
 
-## Task
+## Description
 
 1. When a user enters a movie title and clicks the search button, a request is sent to [OMDb API](http://www.omdbapi.com/).
 1. If the movie is not found, an error message is displayed.

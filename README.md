@@ -14,4 +14,5 @@ You can use this [DEMO LINK](https://antonskliarov.github.io/react_movies-list-f
 
   * Fork and clone this repository
   * Run `npm install` in your terminal
+  * Run `npm install classnames --save` in your terminal
   * Run `npm start`

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { movieShape } from '../../shapes/movieShape';
 import { MovieCard } from '../MovieCard';
+import { getData } from '../../api/api';
 
 export const FindMovie = ({ addMovie, movies }) => {
   const [error, setError] = useState('');
@@ -20,20 +21,15 @@ export const FindMovie = ({ addMovie, movies }) => {
     addMovie([...movies, movie]);
   };
 
-  // eslint-disable-next-line max-len
-  const getData = movieName => fetch(`https://www.omdbapi.com/?apikey=bcb65536&t=${movieName}`)
-    .then(result => result.json());
-
   const findMovie = (movieName) => {
     if (!movieName) {
       return;
     }
 
-    // eslint-disable-next-line max-len
     getData(movieName)
       .then(setMovie)
-      .catch(() => {
-        setError(1);
+      .catch((err) => {
+        setError(err.message);
       });
   };
 
@@ -75,7 +71,7 @@ export const FindMovie = ({ addMovie, movies }) => {
 
           {error && (
             <p className="help is-danger">
-              Can&apos;t find a movie with such a title
+              {error}
             </p>
           )}
         </div>

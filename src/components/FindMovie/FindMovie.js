@@ -96,7 +96,7 @@ export function FindMovie({ addMovie, movies }) {
             </button>
             {movieAlreadyInList && (
               <p className={classNames({ 'help is-danger': !searchError })}>
-                The movie already on the list
+                This movie is already on the list
               </p>
             )}
           </div>

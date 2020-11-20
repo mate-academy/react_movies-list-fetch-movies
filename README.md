@@ -1,15 +1,17 @@
-# Movies list - Fetch movies
-- Replace `<your_account>` with your Github username in the
- [DEMO LINK](https://<your_account>.github.io/react_movies-list-fetch-movies/)
-- Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
+# Movies list
 
-## Task
-Implement `FindMovie` component to load movies from [OMDb API](http://www.omdbapi.com/) (You need to register and get an API key).
+You can use this [DEMO LINK](https://antonskliarov.github.io/react_movies-list-fetch-movies/) to browse the movie list and add your favorite movie to it.
 
-> Don't use class components. Use React Hooks instead.
+## Description
 
-1. When user enters a movie title and clicks a search button, send a request to `http://www.omdbapi.com/?apikey=[yourkey]&t=[title]`.
-1. If film is not found show an error message below the input. Hide the error after changing a title.
-1. If a film has been found show the preview as a `MovieCard`.
-1. Add a movie to the list after submitting a form and clear the input.
-1. Don't add the same film to the list twice (compare by `imdbId`).
+1. When a user enters a movie title and clicks the search button, a request is sent to [OMDb API](http://www.omdbapi.com/).
+1. If the movie is not found, an error message is displayed.
+1. If the movie was found, user can see its preview.
+1. User can add a movie to the list.
+1. User can't add the same film to the list twice.
+
+### Installing
+
+  * Fork and clone this repository
+  * Run `npm install` in your terminal
+  * Run `npm start`

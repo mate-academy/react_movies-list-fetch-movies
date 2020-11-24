@@ -6,7 +6,7 @@ import { PropTypes } from 'prop-types';
 import { MovieCard } from '../MovieCard';
 import { fetchMovieByTitle } from '../../api/movies';
 
-export const FindMovie = ({ addMovie }) => {
+export const FindMovie = ({ addMovie, isExist }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState({});
   const [error, setError] = useState(false);
@@ -82,6 +82,9 @@ export const FindMovie = ({ addMovie }) => {
             </button>
           </div>
         </div>
+        <div className="field is-grouped">
+          {isExist && 'This movie is already in the movie-list'}
+        </div>
       </form>
 
       {
@@ -97,4 +100,5 @@ export const FindMovie = ({ addMovie }) => {
 
 FindMovie.propTypes = {
   addMovie: PropTypes.func.isRequired,
+  isExist: PropTypes.bool.isRequired,
 };

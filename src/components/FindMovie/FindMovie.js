@@ -6,36 +6,36 @@ import PropTypes from 'prop-types';
 import { getMovie } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 import { Buttons } from '../Buttons';
+import { movieShape } from '../../shapes/movieShape';
 
 export const FindMovie = ({ addMovie, movies }) => {
   const [foundMovie, setFoundMovie] = useState(null);
   const [error, setError] = useState(null);
   const [title, setTitle] = useState('');
 
-  const searchMovie = () => {
-    getMovie(title)
-      .then((movie) => {
-        if (movie.Response === 'False') {
-          setError('No movies found');
-          setFoundMovie(null);
+  const searchMovie = async() => {
+    const currentMovie = await getMovie(title);
 
-          return;
-        }
+    if (currentMovie.Responce === 'False') {
+      setError('No movies found');
+      setFoundMovie(null);
 
-        setFoundMovie({
-          title: movie.Title,
-          description: movie.Plot,
-          imgUrl: movie.Poster,
-          imdbUrl: `https://www.imdb.com/title/${movie.imdbId}`,
-          imdbId: movie.imdbID,
-        });
-      });
+      return;
+    }
+
+    setFoundMovie({
+      title: currentMovie.Title,
+      description: currentMovie.Plot,
+      imgUrl: currentMovie.Poster,
+      imdbUrl: `https://www.imdb.com/title/${currentMovie.imdbID}`,
+      imdbID: currentMovie.imdbID,
+    });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!movies.some(movie => movie.imdbId === foundMovie.imdbId)) {
+    if (!movies.some(movie => movie.imdbID === foundMovie.imdbID)) {
       addMovie(foundMovie);
 
       setFoundMovie(null);
@@ -97,10 +97,5 @@ export const FindMovie = ({ addMovie, movies }) => {
 
 FindMovie.propTypes = {
   addMovie: PropTypes.func.isRequired,
-  movies: PropTypes.arrayOf(PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    imgUrl: PropTypes.string.isRequired,
-    imdbUrl: PropTypes.string.isRequired,
-  }).isRequired).isRequired,
+  movies: movieShape.isRequired,
 };

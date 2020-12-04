@@ -1,3 +1,15 @@
 .find-movie {
   margin-bottom: 20px;
 }
+
+.label {
+  color: rgb(245, 238, 238);
+}
+
+
+.control {
+  &:hover {
+    background: #2097ce;
+    box-shadow: 0 6px 23px rgba(243, 245, 248, 0.46);
+  }
+}

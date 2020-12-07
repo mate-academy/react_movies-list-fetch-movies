@@ -9,13 +9,23 @@ export const FindMovie = ({ moviesList, onSetMoviesList }) => {
   const [inputTitle, setInputTitle] = useState('');
   const [movie, setMovie] = useState(null);
 
-  // eslint-disable-next-line max-len
-  const request = title => fetch(`http://www.omdbapi.com/?apikey=f6ee504e&t=${title}`)
+  const request = title => fetch(
+    `http://www.omdbapi.com/?apikey=f6ee504e&t=${title}`,
+  )
     .then(response => response.json())
     .catch(() => null);
 
   const handleFindMovie = () => {
-    request(inputTitle)
+    const searchTitle = inputTitle !== ''
+      ? inputTitle.split('').map(
+        (letter, index) => (index === 0
+          ? letter.toUpperCase()
+          : letter),
+      )
+        .join('')
+      : inputTitle;
+
+    request(searchTitle)
       .then((result) => {
         setError(result === null || result.Response === 'False');
         setMovie(result.Response === 'False' ? null : result);

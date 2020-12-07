@@ -8,11 +8,11 @@ import { request } from '../../api';
 export const FindMovie = ({ movies, setMovies }) => {
   const [value, setValue] = useState('');
   const [movie, setMovie] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(false);
   const handleFindMovie = title => (
     request(title).then((res) => {
       if (res.Response === 'True') {
-        setError('');
+        setError(false);
         setMovie({
           title: res.Title,
           description: res.Plot,
@@ -24,11 +24,11 @@ export const FindMovie = ({ movies, setMovies }) => {
         setError('Can\'t find a movie with such a title!');
       }
     }));
-  const handleAddMovie = (movs, mov) => {
-    if (movs.find(m => m.imdbId === mov.imdbId)) {
-      setError(`"${movie.title}" has already been added!`);
+  const handleAddMovie = (moviesUsers, movieUsers) => {
+    if (moviesUsers.find(movieItem => movieItem.imdbId === movieUsers.imdbId)) {
+      setError(`"${movieUsers.title}" has already been added!`);
     } else {
-      setMovies([...movs, movie]);
+      setMovies([...moviesUsers, movieUsers]);
       setMovie('');
       setValue('');
     }
@@ -51,7 +51,7 @@ export const FindMovie = ({ movies, setMovies }) => {
               value={value}
               onChange={(e) => {
                 setValue(e.target.value);
-                setError('');
+                setError(false);
                 setMovie('');
               }}
             />

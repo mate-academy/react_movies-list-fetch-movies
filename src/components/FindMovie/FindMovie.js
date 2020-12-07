@@ -10,7 +10,7 @@ export const FindMovie = ({ moviesList, onSetMoviesList }) => {
   const [movie, setMovie] = useState(null);
 
   const request = title => fetch(
-    ` http://www.omdbapi.com/?i=tt3896198&apikey=f6ee504e&t=${title}`,
+    ` https://www.omdbapi.com/?i=tt3896198&apikey=f6ee504e&t=${title}`,
   )
     .then(response => response.json())
     .catch(() => null);

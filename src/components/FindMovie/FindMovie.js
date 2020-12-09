@@ -33,13 +33,13 @@ export const FindMovie = ({ addMovie }) => {
     setError(false);
   };
 
-  const handelSubmit = event => event.preventDefault();
+  const handleSubmit = event => event.preventDefault();
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={handelSubmit}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">

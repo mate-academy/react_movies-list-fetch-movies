@@ -3,46 +3,44 @@ import './FindMovie.scss';
 
 import { FindMovieTypes } from './FindMovieTypes';
 import { MovieCard } from '../MovieCard';
+import { request } from '../../api/api';
 
-export const FindMovie = ({ moviesList, onSetMoviesList }) => {
+export const FindMovie = ({ addMovie }) => {
   const [error, setError] = useState(false);
   const [inputTitle, setInputTitle] = useState('');
   const [movie, setMovie] = useState(null);
-
-  const request = title => fetch(
-    ` https://www.omdbapi.com/?i=tt3896198&apikey=f6ee504e&t=${title}`,
-  )
-    .then(response => response.json())
-    .catch(() => null);
+  const [loading, setLoading] = useState(false);
 
   const handleFindMovie = () => {
+    setLoading(true);
     request(inputTitle)
       .then((result) => {
         setError(result === null || result.Response === 'False');
         setMovie(result.Response === 'False' ? null : result);
+        setLoading(false);
       });
   };
 
-  const handleAddMovie = () => {
-    if (!moviesList.find(film => film.imdbId === movie.imdbID)) {
-      const updateMoviesList = [{
-        title: movie.Title,
-        description: movie.Plot,
-        imgUrl: movie.Poster,
-        imdbId: movie.imdbID,
-        imdbUrl: `https://www.imdb.com/title/${movie.imdbID}/`,
-      }, ...moviesList];
-
-      onSetMoviesList(updateMoviesList);
-    }
-
+  const addMovieToTheList = () => {
+    addMovie({
+      title: movie.Title,
+      description: movie.Plot,
+      imgUrl: movie.Poster,
+      imdbId: movie.imdbID,
+      imdbUrl: `https://www.imdb.com/title/${movie.imdbID}/`,
+    });
     setInputTitle('');
     setError(false);
   };
 
+  const handelSubmit = event => event.preventDefault();
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={handelSubmit}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -70,7 +68,7 @@ export const FindMovie = ({ moviesList, onSetMoviesList }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={handleFindMovie}
             >
@@ -80,9 +78,10 @@ export const FindMovie = ({ moviesList, onSetMoviesList }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={handleAddMovie}
+              disabled={!movie}
+              onClick={addMovieToTheList}
             >
               Add to the list
             </button>
@@ -92,14 +91,22 @@ export const FindMovie = ({ moviesList, onSetMoviesList }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        { movie !== null && (
-          <MovieCard
-            title={movie.Title}
-            description={movie.Plot}
-            imgUrl={movie.Poster}
-            imdbUrl={`https://www.imdb.com/title/${movie.imdbID}/`}
-          />
-        )}
+        { movie && (
+          !loading
+            ? (
+              <MovieCard
+                title={movie.Title}
+                description={movie.Plot}
+                imgUrl={movie.Poster}
+                imdbUrl={`https://www.imdb.com/title/${movie.imdbID}/`}
+              />
+            )
+            : (
+              <img
+                src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif"
+                alt="loading..."
+              />
+            ))}
       </div>
     </>
   );

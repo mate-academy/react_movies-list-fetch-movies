@@ -7,6 +7,12 @@ import data from './api/movies.json';
 export const App = () => {
   const [movies, setMovies] = useState(data);
 
+  const handleAddMovie = (newMovie) => {
+    if (!movies.find(movie => movie.imdbId === newMovie.imdbId)) {
+      setMovies([newMovie, ...movies]);
+    }
+  };
+
   return (
     <div className="page">
       <div className="page-content">
@@ -14,8 +20,7 @@ export const App = () => {
       </div>
       <div className="sidebar">
         <FindMovie
-          moviesList={movies}
-          onSetMoviesList={setMovies}
+          addMovie={handleAddMovie}
         />
       </div>
     </div>

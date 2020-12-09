@@ -5,14 +5,14 @@ import { PropTypes } from 'prop-types';
 import { MovieCard } from '../MovieCard';
 import { request } from '../../api';
 
-export const FindMovie = ({ movies, setMovies }) => {
-  const [value, setValue] = useState('');
-  const [movie, setMovie] = useState('');
-  const [error, setError] = useState(false);
-  const handleFindMovie = title => (
+export const FindMovie = ({ addMovie }) => {
+  const [query, setValue] = useState('');
+  const [movie, setMovie] = useState(null);
+  const [error, setError] = useState('');
+  const findMovie = title => (
     request(title).then((res) => {
       if (res.Response === 'True') {
-        setError(false);
+        setError('');
         setMovie({
           title: res.Title,
           description: res.Plot,
@@ -24,13 +24,14 @@ export const FindMovie = ({ movies, setMovies }) => {
         setError('Can\'t find a movie with such a title!');
       }
     }));
-  const handleAddMovie = (moviesUsers, movieUsers) => {
-    if (moviesUsers.find(movieItem => movieItem.imdbId === movieUsers.imdbId)) {
-      setError(`"${movieUsers.title}" has already been added!`);
-    } else {
-      setMovies([...moviesUsers, movieUsers]);
+
+  const valid = () => {
+    try {
+      addMovie(movie);
       setMovie('');
       setValue('');
+    } catch {
+      setError(`"${movie.title}" has already been added!`);
     }
   };
 
@@ -48,10 +49,10 @@ export const FindMovie = ({ movies, setMovies }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', { 'input is-danger': error })}
-              value={value}
+              value={query}
               onChange={(e) => {
                 setValue(e.target.value);
-                setError(false);
+                setError('');
                 setMovie('');
               }}
             />
@@ -64,7 +65,10 @@ export const FindMovie = ({ movies, setMovies }) => {
             <button
               type="button"
               className={classNames('button', { 'button is-light': error })}
-              onClick={() => handleFindMovie(value)}
+              onClick={(e) => {
+                e.preventDefault();
+                findMovie(query);
+              }}
             >
               Find a movie
             </button>
@@ -74,7 +78,7 @@ export const FindMovie = ({ movies, setMovies }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => handleAddMovie(movies, movie)}
+              onClick={valid}
               disabled={!movie}
             >
               Add to the list
@@ -96,6 +100,5 @@ export const FindMovie = ({ movies, setMovies }) => {
 };
 
 FindMovie.propTypes = {
-  movies: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setMovies: PropTypes.func.isRequired,
+  addMovie: PropTypes.func.isRequired,
 };

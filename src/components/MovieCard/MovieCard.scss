@@ -3,7 +3,12 @@
 }
 
 .card {
-  background-color: rgba(45, 45, 46, 0.897)
+  background-color: rgba(45, 45, 46, 0.897);
+
+  &__empty {
+    background-color: rgb(4, 2, 16);
+    color: #e12154;
+  }
 }
 
 .title, .description {

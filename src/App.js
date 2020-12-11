@@ -10,7 +10,7 @@ export const App = () => {
   const checkMovie = (loadedMovie) => {
     const sameMovie = movies.find(movie => movie.imdbId === loadedMovie.imdbId);
 
-    if (sameMovie) {
+    if (sameMovie || loadedMovie === '') {
       return;
     }
 

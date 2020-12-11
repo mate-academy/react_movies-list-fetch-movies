@@ -3,12 +3,11 @@ import './FindMovie.scss';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
   const [titleOfMovie, setTitleOfMovie] = useState('');
-  const [loadedMovie, createMovie] = useState(movies[0]);
+  const [loadedMovie, createMovie] = useState('');
   const [error, setError] = useState(false);
 
   const findMovie = async() => {
@@ -97,9 +96,7 @@ export const FindMovie = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {error ? (
-          'Wrong title of Movie'
-        ) : (
+        {error ? 'Wrong title of Movie' : (
           <MovieCard {...loadedMovie} />
         )}
       </div>

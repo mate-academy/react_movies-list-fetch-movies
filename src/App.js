@@ -32,7 +32,11 @@ export class App extends Component {
   }
 
   addMovie = () => {
-    const { searchedMovie } = this.state;
+    const { searchedMovie, movies } = this.state;
+
+    if (movies.find(movie => movie.imdbId === searchedMovie.imdbId)) {
+      return;
+    }
 
     if (searchedMovie) {
       this.setState(prevState => ({

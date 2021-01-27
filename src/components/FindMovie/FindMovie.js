@@ -8,6 +8,22 @@ export const FindMovie = ({ addMovie }) => {
   const [value, setValue] = useState('');
   const [movie, setMovie] = useState('');
 
+  const transferFoundMovie = () => {
+    addMovie(movie);
+    setValue('');
+    setMovie('');
+  };
+
+  const movieSearch = async() => {
+    const result = await getMovie(value);
+
+    setMovie(result);
+  };
+
+  const saveInputValue = (event) => {
+    setValue(event.target.value);
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -23,9 +39,7 @@ export const FindMovie = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className={`input ${movie.Error ? 'input is-danger' : ''}`}
               value={value}
-              onChange={(event) => {
-                setValue(event.target.value);
-              }}
+              onChange={saveInputValue}
             />
           </div>
 
@@ -41,11 +55,7 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={async() => {
-                const result = await getMovie(value);
-
-                setMovie(result);
-              }}
+              onClick={movieSearch}
             >
               Find a movie
             </button>
@@ -55,11 +65,7 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                addMovie(movie);
-                setValue('');
-                setMovie('');
-              }}
+              onClick={transferFoundMovie}
             >
               Add to the list
             </button>
@@ -67,10 +73,12 @@ export const FindMovie = ({ addMovie }) => {
         </div>
       </form>
 
-      <div className="container">
-        <h2 className="title">Preview</h2>
-        <MovieCard {...movie} />
-      </div>
+      {movie !== '' && !movie.Error && (
+        <div className="container">
+          <h2 className="title">Preview</h2>
+          <MovieCard {...movie} />
+        </div>
+      )}
     </>
   );
 };

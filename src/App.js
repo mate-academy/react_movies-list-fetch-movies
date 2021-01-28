@@ -8,7 +8,10 @@ export const App = () => {
   const [movies, updateMovies] = useState(data);
 
   const addMovie = (movie) => {
-    if (!movies.some(film => film.imdbId === movie.imdbId)) {
+    const isDuplicate = movies
+      .some(film => film.imdbId === movie.imdbId);
+
+    if (!isDuplicate) {
       updateMovies(prevMovies => ([
         ...prevMovies,
         movie,

@@ -12,7 +12,7 @@ export const FindMovie = ({ onMovieAdd }) => {
   const [movie, setMovie] = useState();
 
   const getMovie = async(title) => {
-    getMovieByTitle(title).then((movieFromServer) => {
+    await getMovieByTitle(title).then((movieFromServer) => {
       if (movieFromServer.Response === 'False') {
         setMovie(null);
         setError(true);

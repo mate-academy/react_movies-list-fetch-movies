@@ -18,6 +18,7 @@ export const FindMovie = ({ onAdd, error, setError }) => {
 
   const searchMovie = () => {
     setLoading(true);
+
     getMovie(value).then((data) => {
       if (data.Error) {
         setError(true);
@@ -77,6 +78,8 @@ export const FindMovie = ({ onAdd, error, setError }) => {
               onClick={() => {
                 if (movie) {
                   onAdd(movie);
+                  setMovie('');
+                  setValue('');
                 }
               }}
             >

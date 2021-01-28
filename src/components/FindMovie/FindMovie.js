@@ -25,7 +25,9 @@ export const FindMovie = ({ addMovie }) => {
   }, [titleToFind]);
 
   function startShowing() {
-    if (titleToFind.trim().length > 0) {
+    if (titleToFind.trim().length > 0
+      && foundMovie.Response === 'True'
+    ) {
       setShowStatus(true);
       setMovieToShow(foundMovie);
     }
@@ -45,14 +47,20 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={`input ${
-                foundMovie.Response === 'False' && `is-danger`
+                (
+                  foundMovie.Response === 'False'
+                  && titleToFind.length !== 0
+                ) && `is-danger`
               }`}
               value={titleToFind}
               onChange={event => setTitleToFind(event)}
             />
           </div>
 
-          {foundMovie.Response === 'False' && (
+          {(
+            foundMovie.Response === 'False'
+            && titleToFind.length !== 0
+          ) && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -87,7 +95,7 @@ export const FindMovie = ({ addMovie }) => {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
+        {showStatus && (<h2 className="title">Preview</h2>)}
         {showStatus && (<MovieCard {...movieToShow} />)}
       </div>
     </>

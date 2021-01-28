@@ -1,4 +1,4 @@
-const URL = 'http://www.omdbapi.com/?apikey=';
+const URL = 'https://www.omdbapi.com/?apikey=';
 const KEY = 'edc9ca3c';
 
 const request = async(title) => {

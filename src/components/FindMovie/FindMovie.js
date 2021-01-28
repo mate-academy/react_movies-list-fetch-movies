@@ -12,21 +12,21 @@ export const FindMovie = ({ onMovieAdd }) => {
   const [movie, setMovie] = useState();
 
   const getMovie = async(title) => {
-    await getMovieByTitle(title).then((movieFromServer) => {
-      if (movieFromServer.Response === 'False') {
-        setMovie(null);
-        setError(true);
+    const movieFromServer = await getMovieByTitle(title);
 
-        return;
-      }
+    if (movieFromServer.Response === 'False') {
+      setMovie(null);
+      setError(true);
 
-      setMovie({
-        title: movieFromServer.Title,
-        description: movieFromServer.Plot,
-        imgUrl: movieFromServer.Poster,
-        imdbId: movieFromServer.imdbID,
-        imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
-      });
+      return;
+    }
+
+    setMovie({
+      title: movieFromServer.Title,
+      description: movieFromServer.Plot,
+      imgUrl: movieFromServer.Poster,
+      imdbId: movieFromServer.imdbID,
+      imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
     });
   };
 

@@ -20,15 +20,15 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const handleResult = async() => {
-    const movieFetched = await getMovie(apiAdress);
-
-    // eslint-disable-next-line no-prototype-builtins
-    if (movieFetched.hasOwnProperty('Error')) {
-      setErrorMessage(`Can't find a movie with such a title`);
-    } else {
-      setMovieNew({ ...movieFetched });
-      setIsMovieFound(true);
-    }
+    getMovie(apiAdress)
+      .then((movieFromServer) => {
+        if (movieFromServer.Title) {
+          setMovieNew({ ...movieFromServer });
+          setIsMovieFound(true);
+        } else {
+          setErrorMessage(`Can't find a movie with such a title`);
+        }
+      });
   };
 
   const submitResult = () => {

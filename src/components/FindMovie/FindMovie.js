@@ -10,8 +10,6 @@ export const FindMovie = ({ addMovie }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [movieNew, setMovieNew] = useState({});
   const [isMovieFound, setIsMovieFound] = useState(false);
-  const yourkey = 'e1b34ef6';
-  const apiAdress = `http://www.omdbapi.com/?apikey=${yourkey}&t=${title}`;
 
   const inputTitle = (value) => {
     setTitle(value);
@@ -20,7 +18,7 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const handleResult = async() => {
-    getMovie(apiAdress)
+    getMovie(title)
       .then((movieFromServer) => {
         if (movieFromServer.Title) {
           setMovieNew({ ...movieFromServer });

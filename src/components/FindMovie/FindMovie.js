@@ -19,7 +19,7 @@ export const FindMovie = ({ onAddMovie }) => {
   const onFindMovie = async() => {
     setMovie('');
     const response = await (
-      await fetch(`http://www.omdbapi.com/?apikey=2a880529&t=${query}`)
+      await fetch(`https://www.omdbapi.com/?apikey=2a880529&t=${query}`)
     ).json();
 
     if (response.Response === 'True') {

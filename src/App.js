@@ -8,11 +8,11 @@ export const App = () => {
   const [movies, setMovies] = useState(data);
 
   const addMovie = (movie) => {
-    if (movies.find(item => item.Title === movie.Title)) {
-      return;
-    }
+    const findedDuplicate = movies.some(film => film.imdbId === movie.imdbId);
 
-    setMovies(currentMovie => [...currentMovie, movie]);
+    if (!findedDuplicate) {
+      setMovies(currentMovie => ([...currentMovie, movie]));
+    }
   };
 
   return (

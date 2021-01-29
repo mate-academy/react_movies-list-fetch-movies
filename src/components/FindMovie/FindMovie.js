@@ -30,9 +30,19 @@ export const FindMovie = ({ onAdd }) => {
     });
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    setQuery('');
+    onAdd(movie);
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={handleSubmit}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -74,12 +84,8 @@ export const FindMovie = ({ onAdd }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={() => {
-                setQuery('');
-                onAdd(movie);
-              }}
             >
               Add to the list
             </button>

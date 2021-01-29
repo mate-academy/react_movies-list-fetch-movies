@@ -22,11 +22,11 @@ export const FindMovie = ({ onAdd }) => {
     }
 
     setMovie({
-      title: movie.Title,
-      description: movie.Plot,
-      imgUrl: movie.Poster,
-      imdbId: movie.imdbID,
-      imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+      title: newMovie.Title,
+      description: newMovie.Plot,
+      imgUrl: newMovie.Poster,
+      imdbId: newMovie.imdbID,
+      imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
     });
   };
 

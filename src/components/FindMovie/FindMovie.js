@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
-import ClassNames from 'classnames';
+import cn from 'classnames';
 import PropTypes from 'prop-types';
 
 import { MovieCard } from '../MovieCard';
 
-export const FindMovie = ({ clearInput,
+export const FindMovie = ({
+  clearInput,
   addMovie,
   findMovie,
   searchedMovie,
-  found }) => {
+  isFound,
+}) => {
   const [query, setValue] = useState('');
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+    clearInput();
+  };
 
   return (
     <>
@@ -25,16 +32,15 @@ export const FindMovie = ({ clearInput,
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={ClassNames('input', { 'is-danger': !found })}
+              className={cn('input', { 'is-danger': !isFound })}
               value={query}
               onChange={(e) => {
-                setValue(e.target.value);
-                clearInput();
+                handleChange(e);
               }}
             />
           </div>
 
-          {found || (
+          {isFound || (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -46,9 +52,7 @@ export const FindMovie = ({ clearInput,
             <button
               type="button"
               className="button is-light"
-              onClick={() => {
-                findMovie(query);
-              }}
+              onClick={() => findMovie(query)}
             >
               Find a movie
             </button>
@@ -58,9 +62,7 @@ export const FindMovie = ({ clearInput,
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                addMovie();
-              }}
+              onClick={addMovie}
             >
               Add to the list
             </button>
@@ -84,9 +86,8 @@ FindMovie.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string,
     imgUrl: PropTypes.string.isRequired,
-    imdbUrl: PropTypes.string.isRequired,
   }),
-  found: PropTypes.bool.isRequired,
+  isFound: PropTypes.bool.isRequired,
 };
 FindMovie.defaultProps = {
   searchedMovie: {},

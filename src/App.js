@@ -1,78 +1,72 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 import { getMovie } from './api';
 
-export class App extends Component {
-  state = {
-    movies: data,
-    searchedMovie: null,
-    found: true,
+export const App = () => {
+  const [movies, setMovies] = useState([]);
+  const [isFound, setIsFound] = useState(true);
+  const [searchedMovie, setSearchedMovie] = useState(null);
+
+  useEffect(() => {
+    setMovies(data);
+  }, []);
+
+  const clearInput = () => {
+
   };
 
-  findMovie = async(query) => {
-    const searchedMovie = await getMovie(query);
+  const findMovie = async(query) => {
+    const newMovie = await getMovie(query);
 
-    if (searchedMovie.Response === 'True') {
-      this.setState({
-        searchedMovie: {
-          ...searchedMovie,
-          title: searchedMovie.Title,
-          imdbId: searchedMovie.imdbID,
-          description: searchedMovie.Plot,
-          imgUrl: searchedMovie.Poster,
-        },
-        found: true,
-      });
-    } else {
-      this.setState({ found: false });
+    if (newMovie.Response === 'False') {
+      setIsFound(false);
+      setSearchedMovie(null);
+
+      return;
     }
-  }
 
-  addMovie = () => {
-    const { searchedMovie, movies } = this.state;
+    setSearchedMovie({
+      ...newMovie,
+      title: newMovie.Title,
+      imdbId: newMovie.imdbID,
+      description: newMovie.Plot,
+      imgUrl: newMovie.Poster,
+    });
+
+    setIsFound(true);
+  };
+
+  const addMovie = () => {
+    if (!searchedMovie) {
+      return;
+    }
 
     if (movies.find(movie => movie.imdbId === searchedMovie.imdbId)) {
       return;
     }
 
-    if (searchedMovie) {
-      this.setState(prevState => ({
-        movies: [
-          ...prevState.movies,
-          searchedMovie],
-        searchedMovie: null,
-        found: true,
-      }));
-    }
-  }
+    setMovies(prevState => ([...prevState, searchedMovie]));
+    setIsFound(true);
+  };
 
-  clearInput = () => {
-    this.setState({
-      searchedMovie: null, found: true,
-    });
-  }
-
-  render() {
-    const { movies, searchedMovie, found } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie
-            found={found}
-            clearInput={this.clearInput}
-            searchedMovie={searchedMovie}
-            findMovie={this.findMovie}
-            addMovie={this.addMovie}
-          />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          isFound={isFound}
+          clearInput={clearInput}
+          searchedMovie={searchedMovie}
+          findMovie={findMovie}
+          addMovie={addMovie}
+          setSearchedMovie={setSearchedMovie}
+        />
+      </div>
+    </div>
+  );
+};

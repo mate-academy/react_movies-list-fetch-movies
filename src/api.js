@@ -1,3 +1,3 @@
-import { baseRequest } from './helpers';
+import { request } from './helpers';
 
-export const getMovie = query => baseRequest(query);
+export const getMovie = query => request(query);

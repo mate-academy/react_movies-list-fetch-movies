@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({
-  clearInput,
   addMovie,
   findMovie,
   searchedMovie,
@@ -16,7 +15,6 @@ export const FindMovie = ({
 
   const handleChange = (e) => {
     setValue(e.target.value);
-    clearInput();
   };
 
   return (
@@ -34,9 +32,7 @@ export const FindMovie = ({
               placeholder="Enter a title to search"
               className={cn('input', { 'is-danger': !isFound })}
               value={query}
-              onChange={(e) => {
-                handleChange(e);
-              }}
+              onChange={e => handleChange(e)}
             />
           </div>
 
@@ -52,7 +48,10 @@ export const FindMovie = ({
             <button
               type="button"
               className="button is-light"
-              onClick={() => findMovie(query)}
+              onClick={() => {
+                findMovie(query);
+                setValue('');
+              }}
             >
               Find a movie
             </button>

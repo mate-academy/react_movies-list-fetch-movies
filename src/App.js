@@ -14,10 +14,6 @@ export const App = () => {
     setMovies(data);
   }, []);
 
-  const clearInput = () => {
-
-  };
-
   const findMovie = async(query) => {
     const newMovie = await getMovie(query);
 
@@ -60,7 +56,6 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           isFound={isFound}
-          clearInput={clearInput}
           searchedMovie={searchedMovie}
           findMovie={findMovie}
           addMovie={addMovie}

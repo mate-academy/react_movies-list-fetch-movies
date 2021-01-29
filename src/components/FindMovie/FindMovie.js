@@ -78,7 +78,6 @@ export const FindMovie = ({
 };
 
 FindMovie.propTypes = {
-  clearInput: PropTypes.func.isRequired,
   addMovie: PropTypes.func.isRequired,
   findMovie: PropTypes.func.isRequired,
   searchedMovie: PropTypes.shape({

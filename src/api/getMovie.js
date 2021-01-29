@@ -6,15 +6,3 @@ export const getMovie = async(query) => {
 
   return result;
 };
-
-// const getMovie = (query) => {
-//   fetch(`http://www.omdbapi.com/?apikey=e533ffbf&t=star wars`)
-//     .then((response) => {
-//       return response.json();
-//     })
-//     .then((data) => {
-//       console.log(data);
-//     });
-// };
-
-// getMovie('6 Underground').then(r => console.log(r));

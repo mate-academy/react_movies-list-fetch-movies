@@ -1,11 +1,11 @@
-const BASE_URL = 'http://www.omdbapi.com/?apikey=b6667533';
-
-const wait = delay => new Promise(resolve => setTimeout(resolve, delay));
+const BASE_URL = 'https://www.omdbapi.com/?apikey=b6667533';
 
 export const getMovie = async(title) => {
   const response = await fetch(`${BASE_URL}&t=${title}`);
 
-  await wait(100);
+  if (!response.ok) {
+    throw new Error(`${response.status} - ${response.statusText}`);
+  }
 
   return response.json();
 };

@@ -3,22 +3,21 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
+import { getResponse } from '../../api/movies';
 
 export const FindMovie = ({ onAddMovie }) => {
   const [title, setTitle] = useState('');
 
-  const [movie, setMovie] = useState({});
+  const [movie, setMovie] = useState(null);
 
   const [movieFound, setMovieFind] = useState(true);
 
   useEffect(() => {
-    setMovieFind((!movie.error));
+    setMovieFind((true));
   }, [movie]);
-  // eslint-disable-next-line
-  const getMovie = () => fetch(`http://www.omdbapi.com/?apikey=aa871ce9&t=${title}`)
-  // eslint-disable-next-line
-    .then(response => response.json())
-    .then((result) => {
+
+  const onFindMovie = () => {
+    getResponse(title).then((result) => {
       if (!result.Error) {
         setMovie({
           title: result.Title,
@@ -28,11 +27,10 @@ export const FindMovie = ({ onAddMovie }) => {
           imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
         });
       } else {
-        setMovie({
-          error: result.Error,
-        });
+        setMovieFind(false);
       }
     });
+  };
 
   return (
     <>
@@ -57,13 +55,11 @@ export const FindMovie = ({ onAddMovie }) => {
               }}
             />
           </div>
-          {(movieFound)
-          || (
+          {movieFound || (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
-          )
-          }
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -71,9 +67,7 @@ export const FindMovie = ({ onAddMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => {
-                getMovie();
-              }}
+              onClick={onFindMovie}
             >
               Find a movie
             </button>
@@ -84,10 +78,9 @@ export const FindMovie = ({ onAddMovie }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
-                if ('imdbId' in movie) {
-                  onAddMovie(movie);
-                  setTitle('');
-                }
+                movie && onAddMovie(movie);
+                setTitle('');
+                setMovie(null);
               }}
             >
               Add to the list
@@ -97,14 +90,12 @@ export const FindMovie = ({ onAddMovie }) => {
       </form>
 
       <div className="container">
-        { ('imdbId' in movie)
-      && (
-        <>
-          <h2 className="title">Preview</h2>
-          <MovieCard movie={movie} />
-        </>
-      )
-        }
+        { movie && (
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={movie} />
+          </>
+        )}
       </div>
     </>
   );

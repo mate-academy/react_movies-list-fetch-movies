@@ -5,11 +5,14 @@ import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
 
 export const MoviesList = ({
-  movies = [],
+  movies,
 }) => (
   <div className="movies">
     {movies.map(movie => (
-      <MovieCard key={movie.imdbId} {...movie} />
+      <MovieCard
+        key={movie.imdbId}
+        movie={movie}
+      />
     ))}
   </div>
 );

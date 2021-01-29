@@ -1,5 +1,5 @@
 // const MOVIES_URL = `http://www.omdbapi.com/?apikey=6b42759e&i=tt3896198`;
-const MOVIES_URL = `http://www.omdbapi.com/?apikey=6b42759e`;
+const MOVIES_URL = `https://www.omdbapi.com/?apikey=6b42759e`;
 
 export async function getMovie(title) {
   const response = await fetch(`${MOVIES_URL}&t=${title}`);

@@ -15,7 +15,7 @@ export const FindMovie = ({ addMovie }) => {
   const movieRequest = async() => {
     try {
       // eslint-disable-next-line
-      const find = await fetch(`http://www.omdbapi.com/?apikey=${key}&t=${enteredName}`);
+      const find = await fetch(`https://www.omdbapi.com/?apikey=${key}&t=${enteredName}`);
       const result = await find.json();
 
       if (enteredName.trim() && !result.Error) {

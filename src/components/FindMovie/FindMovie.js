@@ -22,9 +22,12 @@ export const FindMovie = ({ onAdd }) => {
       return;
     }
 
+    if (error) {
+      setError(false);
+    }
+
     setMovie(newMovie);
     setSearch('');
-    setError(!error);
   };
 
   return (

@@ -123,21 +123,25 @@ export class FindMovie extends React.Component {
               </button>
             </div>
 
-            <div className="control">
-              <button
-                type="submit"
-                className="button is-primary"
-              >
-                Add to the list
-              </button>
-            </div>
+            {!errorState && (
+              <div className="control">
+                <button
+                  type="submit"
+                  className="button is-primary"
+                >
+                  Add to the list
+                </button>
+              </div>
+            )}
           </div>
         </form>
 
-        <div className="container">
-          <h2 className="title">Preview</h2>
-          <MovieCard {...findMovie} />
-        </div>
+        {!(findMovie.title === undefined) && (
+          <div className="container">
+            <h2 className="title">Preview</h2>
+            <MovieCard {...findMovie} />
+          </div>
+        )}
       </>
     );
   }

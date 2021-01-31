@@ -57,7 +57,9 @@ export class FindMovie extends React.Component {
       .some(movie => movie.imdbId
         .localeCompare(this.state.findMovie.imdbId) === 0);
 
-    !movieCheck && this.props.onAdd(this.state.findMovie);
+    const isMovieTitle = !(this.state.findMovie.title === undefined);
+
+    !movieCheck && isMovieTitle && this.props.onAdd(this.state.findMovie);
 
     movieCheck && this.setState({
       errorState: true,
@@ -123,16 +125,14 @@ export class FindMovie extends React.Component {
               </button>
             </div>
 
-            {!errorState && (
-              <div className="control">
-                <button
-                  type="submit"
-                  className="button is-primary"
-                >
-                  Add to the list
-                </button>
-              </div>
-            )}
+            <div className="control">
+              <button
+                type="submit"
+                className="button is-primary"
+              >
+                Add to the list
+              </button>
+            </div>
           </div>
         </form>
 

@@ -8,10 +8,7 @@ export const App = () => {
 
   const addMovie = (findedMovie) => {
     setMovie((availableMovies) => {
-      const moviesForCompare = availableMovies
-        .filter(movie => movie.imdbID !== findedMovie.imdbID);
-
-      if (availableMovies.length === moviesForCompare.length
+      if (availableMovies.every(movie => movie.imdbID !== findedMovie.imdbID)
         && findedMovie.imdbID) {
         return [...availableMovies, findedMovie];
       }

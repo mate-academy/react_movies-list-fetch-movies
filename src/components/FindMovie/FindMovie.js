@@ -10,9 +10,14 @@ import { getMovies } from '../../api/api';
 export const FindMovie = ({ addMovie }) => {
   const [inputValue, setValue] = useState('');
   const [movie, setMovie] = useState('');
+  const [movieError, setMovieError] = useState(false);
 
   const fetchMovie = async() => {
     const res = await getMovies(inputValue);
+
+    if (res.Error) {
+      setMovieError(true);
+    }
 
     setMovie(res);
   };
@@ -43,13 +48,16 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames('input', { 'is-danger': movie.Error })}
+              className={classNames('input', { 'is-danger': movieError })}
               value={inputValue}
-              onChange={e => setValue(e.target.value)}
+              onChange={(e) => {
+                setValue(e.target.value);
+                setMovieError(false);
+              }}
             />
           </div>
           {
-            movie.Error
+            movieError
             && (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title

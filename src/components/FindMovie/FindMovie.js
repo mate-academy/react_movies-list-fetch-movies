@@ -14,6 +14,7 @@ export const FindMovie = ({ onAdd }) => {
 
   const handleChange = (e) => {
     setTitle(e.target.value.toLowerCase());
+    setIsFilmNotFound(false);
   };
 
   const handleSearch = () => {

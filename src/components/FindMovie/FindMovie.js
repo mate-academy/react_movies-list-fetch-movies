@@ -7,20 +7,17 @@ import { MovieCard } from '../MovieCard';
 export const FindMovie = ({ addMovie }) => {
   const [value, setValue] = useState('');
   const [movie, setMovie] = useState('');
-  const [test, setTest] = useState(false);
 
   const onAddMovie = () => {
     addMovie(movie);
     setValue('');
     setMovie('');
-    setTest(false);
   };
 
   const onFindMovie = async() => {
     const result = await getMovie(value);
 
     setMovie(result);
-    setTest(true);
   };
 
   return (
@@ -66,7 +63,7 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={test && (onAddMovie)}
+              onClick={(onAddMovie)}
             >
               Add to the list
             </button>

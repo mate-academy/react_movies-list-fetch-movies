@@ -9,7 +9,7 @@ export const App = () => {
 
   const addMovie = (movie) => {
     if (movies.some(movieFromServer => (
-      movieFromServer.imdbId === movie.imdbId
+      movieFromServer.imdbID === movie.imdbID
     ))) {
       return;
     }

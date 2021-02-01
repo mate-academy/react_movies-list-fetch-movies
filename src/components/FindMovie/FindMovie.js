@@ -4,40 +4,34 @@ import './FindMovie.scss';
 import classnames from 'classnames';
 
 import { MovieCard } from '../MovieCard';
-import { request } from '../../api/helpers';
+import * as api from '../../api/helpers';
 
 export const FindMovie = ({ onAdd }) => {
   const [search, setSearch] = useState('');
-  const [movie, setMovie] = useState(null);
-  const [error, setError] = useState(false);
+  const [movie, setMovie] = useState('');
 
-  const getMovieByTitle = async() => {
-    const transformedSearch = search.split(' ').join('+');
-    const newMovie = await request(transformedSearch);
+  const getMovie = async() => {
+    const newMovie = await api.getMovies(search);
 
-    if (newMovie.Response === 'False') {
-      setError(true);
-      setMovie(null);
+    setMovie(newMovie);
+  };
 
+  const addNMovie = (event) => {
+    event.preventDefault();
+    if (movie.Error) {
       return;
     }
 
-    if (error) {
-      setError(false);
-    }
-
-    setMovie(newMovie);
+    onAdd(movie);
     setSearch('');
+    setMovie(null);
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          getMovieByTitle();
-        }}
+        onSubmit={addNMovie}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -49,12 +43,12 @@ export const FindMovie = ({ onAdd }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classnames('input', { 'is-danger': error })}
+              className={classnames('input', { 'is-danger': movie?.Error })}
               value={search}
               onChange={event => setSearch(event.target.value)}
             />
           </div>
-          {error && (
+          {movie?.Error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -66,7 +60,7 @@ export const FindMovie = ({ onAdd }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={getMovieByTitle}
+              onClick={getMovie}
             >
               Find a movie
             </button>
@@ -74,16 +68,15 @@ export const FindMovie = ({ onAdd }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={() => onAdd(movie)}
             >
               Add to the list
             </button>
           </div>
         </div>
       </form>
-      {movie && (
+      {movie?.Title && (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard {...movie} />

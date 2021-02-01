@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?t=';
+const BASE_URL = 'https://www.omdbapi.com/?t=';
 // const DATA_URL = '/?apikey=1aae898a&';
 const apikey = '&apikey=1aae898a';
 

@@ -8,7 +8,8 @@ export const App = () => {
 
   const addMovie = (film) => {
     setMovie((prevMovies) => {
-      if (prevMovies.every(item => item.imdbID !== film.imdbID)) {
+      if (prevMovies
+        .every(item => item.imdbID !== film.imdbID) && film.imdbID) {
         return [...prevMovies, film];
       }
 

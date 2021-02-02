@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FindMovie.scss';
 import PropTypes from 'prop-types';
+import { usePrevious } from 'react-hanger';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/getMovie';
 
@@ -9,6 +10,20 @@ export const FindMovie = (props) => {
   const [movie, setMovie] = useState({});
   const [isValidUrl, setIsValidUrl] = useState(false);
   const [moviePreview, setMoviePreview] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const prevQuery = usePrevious(query);
+
+  useEffect(() => {
+    if (!query) {
+      setButtonDisabled(true);
+    } else {
+      setButtonDisabled(false);
+    }
+
+    if (query !== prevQuery) {
+      setIsValidUrl(false);
+    }
+  }, [query]);
 
   const onHandleInput = (e) => {
     setQuery(e.target.value);
@@ -35,6 +50,18 @@ export const FindMovie = (props) => {
     setIsValidUrl(false);
   };
 
+  const onAddButton = () => {
+    if (!query) {
+      setIsValidUrl(true);
+
+      return;
+    }
+
+    props.addMovie(movie);
+    setQuery('');
+    setMoviePreview(false);
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -54,11 +81,11 @@ export const FindMovie = (props) => {
             />
           </div>
 
-          {isValidUrl && (
+          {isValidUrl ? (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
-          )}
+          ) : ''}
         </div>
 
         <div className="field is-grouped">
@@ -74,19 +101,10 @@ export const FindMovie = (props) => {
 
           <div className="control">
             <button
-              onClick={() => {
-                if (!query) {
-                  setIsValidUrl(true);
-
-                  return;
-                }
-
-                props.addMovie(movie);
-                setQuery('');
-                setMoviePreview(false);
-              }}
+              disabled={buttonDisabled}
               type="button"
               className="button is-primary"
+              onClick={onAddButton}
             >
               Add to the list
             </button>

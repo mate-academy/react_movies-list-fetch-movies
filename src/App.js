@@ -8,11 +8,7 @@ export const App = () => {
   const [movies, setMovies] = useState(data);
 
   const addMovie = (newMovie) => {
-    const repeatedMovie = movies.some(movie => (
-      movie.imdbId === newMovie.imdbId
-    ));
-
-    if (repeatedMovie) {
+    if (movies.some(movie => (movie.imdbId === newMovie.imdbId))) {
       return;
     }
 

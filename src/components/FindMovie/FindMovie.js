@@ -3,20 +3,17 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import './FindMovie.scss';
+import { getMovie } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addMovie }) => {
-  const key = '85d016e4';
-
   const [enteredName, setMovieSearch] = useState('');
   const [foundMovie, setMovie] = useState(null);
-  const [isCorrect, setAvailability] = useState(false);
+  const [isCorrect, setAvailability] = useState(true);
 
   const movieRequest = async() => {
     try {
-      // eslint-disable-next-line
-      const find = await fetch(`https://www.omdbapi.com/?apikey=${key}&t=${enteredName}`);
-      const result = await find.json();
+      const result = await getMovie(enteredName);
 
       if (enteredName.trim() && !result.Error) {
         setAvailability(true);
@@ -27,7 +24,6 @@ export const FindMovie = ({ addMovie }) => {
 
       setAvailability(false);
     } catch (error) {
-      setAvailability(false);
       throw error;
     }
   };
@@ -49,14 +45,17 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is-danger': (!isCorrect || !foundMovie),
+                'is-danger': (!isCorrect && !foundMovie),
               })}
               value={enteredName}
-              onChange={event => setMovieSearch(event.target.value)}
+              onChange={(event) => {
+                setMovieSearch(event.target.value);
+                setAvailability(true);
+              }}
             />
           </div>
 
-          {(!isCorrect || !foundMovie)
+          {(!isCorrect && !foundMovie)
             && (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title

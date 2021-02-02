@@ -8,7 +8,7 @@ export const App = () => {
   const [movies, setMovies] = useState(data);
 
   const addMovie = (newMovie) => {
-    if (!newMovie || movies.find(movie => movie.imdbID === newMovie.imdbID)) {
+    if (!newMovie || movies.some(movie => movie.imdbID === newMovie.imdbID)) {
       return;
     }
 

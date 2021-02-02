@@ -9,11 +9,11 @@ export const App = () => {
   const [movies, setMovies] = useState(data);
 
   const addMovie = (newMovie) => {
-    const duplicate = movies.find(movie => movie.imdbId === newMovie.imdbId);
-
-    if (!duplicate) {
-      setMovies([...movies, newMovie]);
+    if (movies.some(movie => movie.imdbId === newMovie.imdbId)) {
+      return;
     }
+
+    setMovies([...movies, newMovie]);
   };
 
   return (

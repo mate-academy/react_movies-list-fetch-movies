@@ -9,7 +9,7 @@ import { getMovie } from '../../api/api';
 export const FindMovie = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState(false);
-  const [movie, setMovie] = useState();
+  const [movie, setMovie] = useState(null);
 
   const getMovieFromServer = async(title) => {
     const newMovie = await getMovie(title);

@@ -11,11 +11,12 @@ export const FindMovie = ({ addMovie }) => {
   const [error, setError] = useState(false);
   const [trueMovie, setTrueMovie] = useState('');
 
-  const onFormSend = () => {
+  const onFormSend = (e) => {
     if (!trueMovie || trueMovie.Error) {
       return;
     }
 
+    e.preventDefault();
     addMovie(trueMovie);
     setQuery('');
     setError(false);
@@ -25,6 +26,7 @@ export const FindMovie = ({ addMovie }) => {
   const onInputChange = (event) => {
     setSearchClicked(false);
     setQuery(event.target.value);
+    setError(false);
   };
 
   const onSearchClick = () => {
@@ -43,7 +45,7 @@ export const FindMovie = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={e => e.preventDefault()}
+        onSubmit={e => onFormSend(e)}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -82,9 +84,8 @@ export const FindMovie = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={onFormSend}
             >
               Add to the list
             </button>

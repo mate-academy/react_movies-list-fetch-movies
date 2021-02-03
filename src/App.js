@@ -11,7 +11,7 @@ export function App() {
       return;
     }
 
-    setMovies(prevMovies => [movie, ...prevMovies]);
+    setMovies([movie, ...movies]);
   };
 
   return (

@@ -10,7 +10,6 @@ export const FindMovie = ({ addNew }) => {
   const [inputValue, setInputValue] = useState('');
   const [movie, setSingleMovie] = useState(false);
   const add = async movieName => setSingleMovie(await findMovie(movieName));
-  const someFunction = item => movie;
 
   return (
     <>
@@ -55,7 +54,7 @@ export const FindMovie = ({ addNew }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addNew(someFunction(movie))}
+              onClick={() => addNew(movie)}
             >
               Add to the list
 

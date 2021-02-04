@@ -5,8 +5,14 @@ import { FindMovie } from './components/FindMovie';
 
 export const App = () => {
   const [movies, setMovies] = useState([]);
-  const addNewMovie = (suck) => {
-    setMovies([...movies, suck]);
+  const addNewMovie = (newMovie) => {
+    const checkMovieImbd = movies.find(e => e.imdbID === newMovie.imdbID);
+
+    if (checkMovieImbd || !newMovie.Title) {
+      return;
+    }
+
+    setMovies([...movies, newMovie]);
   };
 
   return (

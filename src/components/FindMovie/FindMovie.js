@@ -6,20 +6,19 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addNewMovie, error, setError }) => {
-  const [value, setValue] = useState('');
+  const [query, setQuery] = useState('');
   const [movie, setMovie] = useState('');
-
   const [loader, setLoading] = useState(false);
 
   const handleSearch = ({ target }) => {
     setError(false);
-    setValue(target.value);
+    setQuery(target.value);
   };
 
   const searchMovie = () => {
     setLoading(true);
 
-    getMovie(value)
+    getMovie(query)
       .then((data) => {
         if (data.Error) {
           setError(true);
@@ -38,7 +37,7 @@ export const FindMovie = ({ addNewMovie, error, setError }) => {
     if (movie) {
       addNewMovie(movie);
       setMovie('');
-      setValue('');
+      setQuery('');
     }
   };
 
@@ -53,7 +52,7 @@ export const FindMovie = ({ addNewMovie, error, setError }) => {
             <input
               type="text"
               id="movie-title"
-              value={value}
+              value={query}
               onChange={handleSearch}
               placeholder="Enter a title to search"
               className={classnames('input', { 'is-danger': error })}

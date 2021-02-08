@@ -8,11 +8,10 @@ export const App = () => {
   const [error, setError] = useState('');
 
   const addMovie = (movie) => {
-    if (!movies
-      .some(displayedMovie => displayedMovie.imdbId === movie.imdbId)) {
-      setMovie(prevMovies => [...prevMovies, movie]);
-    } else {
+    if (movies.some(displayedMovie => displayedMovie.imdbID === movie.imdbID)) {
       setError('Movie already in the list');
+    } else {
+      setMovie(prevMovies => [...prevMovies, movie]);
     }
   };
 

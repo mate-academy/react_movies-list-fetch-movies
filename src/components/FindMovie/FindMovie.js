@@ -59,6 +59,7 @@ export const FindMovie = ({ addMovie, error, setError }) => {
                       return;
                     }
 
+                    setError('');
                     setMovie(result);
                   });
               }}

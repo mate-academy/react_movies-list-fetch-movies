@@ -6,23 +6,23 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 
 export const FindMovie = ({ addMovie }) => {
-  const [value, setValue] = useState('');
-  const [movie, setMovie] = useState('');
+  const [query, setQuery] = useState('');
+  const [movie, setMovie] = useState(null);
   const [searchError, setSearchError] = useState(false);
 
   const onChangeValue = (event) => {
-    setValue(event.target.value);
+    setQuery(event.target.value);
     setSearchError(false);
-    setMovie('');
+    setMovie(null);
   };
 
   const searchMovie = () => {
-    if (value) {
-      getMovie(value)
+    if (query) {
+      getMovie(query)
         .then((result) => {
           if (result.Response === 'False') {
             setSearchError(true);
-            setMovie('');
+            setMovie(null);
           } else {
             setMovie({
               title: result.Title,
@@ -39,8 +39,8 @@ export const FindMovie = ({ addMovie }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     addMovie(movie);
-    setValue('');
-    setMovie('');
+    setQuery('');
+    setMovie(null);
   };
 
   return (
@@ -59,8 +59,8 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${searchError ? 'is-danger' : ''}`}
-              value={value}
+              className={`input ${searchError && 'is-danger'}`}
+              value={query}
               onChange={onChangeValue}
             />
           </div>
@@ -95,7 +95,7 @@ export const FindMovie = ({ addMovie }) => {
         </div>
       </form>
 
-      {movie !== '' && !searchError && (
+      {movie && !searchError && (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard {...movie} />

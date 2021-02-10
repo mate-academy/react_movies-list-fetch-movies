@@ -1,5 +1,5 @@
-const apiKey = 'e8f0b8eb';
-const url = `https://www.omdbapi.com/?apikey=${apiKey}&t=`;
+const API_KEY = 'e8f0b8eb';
+const API_URL = `https://www.omdbapi.com/?apikey=${API_KEY}&t=`;
 
-export const getMovie = title => fetch(`${url}${title}`)
+export const getMovie = title => fetch(`${API_URL}${title}`)
   .then(result => result.json());

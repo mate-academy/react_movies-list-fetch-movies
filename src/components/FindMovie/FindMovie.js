@@ -7,8 +7,25 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/getMovies';
 
 export const FindMovie = ({ addMovie, error, setError }) => {
-  const [value, setValue] = useState('');
+  const [movieTitle, setMovieTitle] = useState('');
   const [movie, setMovie] = useState(null);
+  const findMovie = () => {
+    getMovie(movieTitle)
+      .then((result) => {
+        if (result.Error) {
+          setError('Cant find a movie');
+
+          return;
+        }
+
+        setError('');
+        setMovie(result);
+      });
+  };
+
+  const checkMovie = () => {
+    movie && addMovie(movie);
+  };
 
   return (
     <>
@@ -27,12 +44,8 @@ export const FindMovie = ({ addMovie, error, setError }) => {
                 input: true,
                 'is-danger': error === 'Cant find a movie',
               })}
-              value={value}
-              onChange={
-                ((event) => {
-                  setValue(event.target.value);
-                })
-              }
+              value={movieTitle}
+              onChange={event => setMovieTitle(event.target.value)}
             />
           </div>
 
@@ -50,19 +63,7 @@ export const FindMovie = ({ addMovie, error, setError }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => {
-                getMovie(value)
-                  .then((result) => {
-                    if (result.Error) {
-                      setError('Cant find a movie');
-
-                      return;
-                    }
-
-                    setError('');
-                    setMovie(result);
-                  });
-              }}
+              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -72,9 +73,7 @@ export const FindMovie = ({ addMovie, error, setError }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                movie && addMovie(movie);
-              }}
+              onClick={checkMovie}
             >
               Add to the list
             </button>

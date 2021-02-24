@@ -1,5 +1,5 @@
 /* eslint-disable no-throw-literal */
-const baseURL = 'http://www.omdbapi.com/';
+const baseURL = 'https://www.omdbapi.com/';
 const key = 'f7a5fcde';
 
 const request = url => fetch(`${baseURL}${url}`)

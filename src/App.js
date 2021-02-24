@@ -11,9 +11,10 @@ export class App extends Component {
 
   addMovie = (movie) => {
     this.setState((state) => {
-      const newMovie = state.movies.some(film => film.imdbId === movie.imdbId);
+      const isMovieInTheList = state.movies
+        .some(film => film.imdbId === movie.imdbId);
 
-      return (newMovie) ? { movies: state.movies } : {
+      return (isMovieInTheList) ? { movies: state.movies } : {
         movies: [...state.movies, movie,
         ],
       };

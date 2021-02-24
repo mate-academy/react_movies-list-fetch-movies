@@ -1,5 +1,6 @@
 /* eslint-disable no-throw-literal */
-const baseURL = 'http://www.omdbapi.com/?i=tt3896198&apikey=f7a5fcde';
+const baseURL = 'http://www.omdbapi.com/';
+const key = 'f7a5fcde';
 
 const request = url => fetch(`${baseURL}${url}`)
   .then((response) => {
@@ -17,4 +18,4 @@ const request = url => fetch(`${baseURL}${url}`)
     return response;
   });
 
-export const getMovie = query => request(`&t=${query}`);
+export const getMovie = query => request(`?t=${query}&apikey=${key}`);

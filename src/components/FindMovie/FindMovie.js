@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/request';
 
-export const FindMovie = ({ addMovie }) => {
+export const FindMovie = ({ addMovie, isMovieInList }) => {
   const [input, setInput] = useState('');
   const [preview, setPreview] = useState('');
   const [error, setError] = useState(false);
@@ -65,6 +65,11 @@ export const FindMovie = ({ addMovie }) => {
             Can&apos;t find a movie with such a title
           </p>
           )}
+          {isMovieInList && (
+          <p className="help is-danger">
+            Movie is already in the list!
+          </p>
+          )}
         </div>
         <div className="field is-grouped">
           <div className="control">
@@ -101,10 +106,9 @@ export const FindMovie = ({ addMovie }) => {
       </form>
       <div className="container">
         <h2 className="title">Preview</h2>
-        {!error && (
-          preview !== ''
-            ? <MovieCard {...preview} />
-            : 'Search Movies')}
+        {!error && preview
+          ? (<MovieCard {...preview} />)
+          : 'Search Movies'}
       </div>
     </>
   );
@@ -112,4 +116,5 @@ export const FindMovie = ({ addMovie }) => {
 
 FindMovie.propTypes = {
   addMovie: PropTypes.func.isRequired,
+  isMovieInList: PropTypes.bool.isRequired,
 };

@@ -6,25 +6,18 @@ import data from './api/movies.json';
 
 export const App = () => {
   const [movies, setMovies] = useState(data);
-  const [sameMovie, setSameMovie] = useState(false);
-  const [noMovie, setNoMovie] = useState(false);
+  const [error, setError] = useState(false);
 
   const addNewMovie = (newMovie) => {
-    if (movies.find(movie => movie.imdbId === newMovie.imdbId)) {
-      setSameMovie(true);
+    if (movies.find(movie => movie.imdbId === newMovie.imdbId)
+      || !newMovie.imdbId) {
+      setError(true);
 
       return;
     }
 
-    if (!newMovie.imdbId) {
-      setNoMovie(true);
-
-      return;
-    }
-
-    setSameMovie(false);
-    setNoMovie(false);
     setMovies(prevMoviesList => [newMovie, ...prevMoviesList]);
+    setError(false);
   };
 
   return (
@@ -35,10 +28,8 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           onAdd={addNewMovie}
-          setNoMovie={setNoMovie}
-          setSameMovie={setSameMovie}
-          sameMovie={sameMovie}
-          noMovie={noMovie}
+          setError={setError}
+          error={error}
         />
       </div>
     </div>

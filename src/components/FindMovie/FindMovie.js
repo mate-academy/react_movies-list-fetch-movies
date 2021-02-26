@@ -6,18 +6,16 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({
-  onAdd, sameMovie,
-  noMovie, setNoMovie, setSameMovie,
+  onAdd, error, setError,
 }) => {
   const [title, setTitle] = useState('');
   const [newMovie, setNewMovie] = useState(null);
-  const [emptyInput, setemptyInput] = useState(false);
+  const [isMovieFind, setIsMovieFind] = useState(true);
 
   const handleChange = ({ target }) => {
     setTitle(target.value);
-    setNoMovie(false);
-    setSameMovie(false);
-    setemptyInput(false);
+    setError(false);
+    setIsMovieFind(true);
   };
 
   async function findNewMovie() {
@@ -33,26 +31,21 @@ export const FindMovie = ({
 
     if (movieFromServer.Error) {
       setNewMovie(null);
-      setNoMovie(true);
       setTitle('');
+      setIsMovieFind(false);
     }
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
     findNewMovie();
-    setemptyInput(false);
   };
 
   const addMovie = () => {
     if (newMovie) {
       onAdd(newMovie);
       setTitle('');
-      setemptyInput(false);
       setNewMovie(null);
-      setNoMovie(false);
-    } else {
-      setemptyInput(true);
     }
   };
 
@@ -64,7 +57,7 @@ export const FindMovie = ({
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
-            Movie title
+            Find movie and add to the list
           </label>
 
           <div className="control">
@@ -73,7 +66,7 @@ export const FindMovie = ({
               id="movie-title"
               value={title}
               placeholder="Enter a title to search"
-              className={noMovie
+              className={error
                 ? 'input is-danger'
                 : 'input'
               }
@@ -81,24 +74,17 @@ export const FindMovie = ({
             />
           </div>
 
-          {noMovie
+          {!isMovieFind
             && (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title
               </p>
             )
           }
-          {sameMovie
+          {error
             && (
               <p className="help is-danger">
                 This movie is already on the list
-              </p>
-            )
-          }
-          {emptyInput
-            && (
-              <p className="help is-danger">
-                please enter the title first and find a movie
               </p>
             )
           }
@@ -141,8 +127,6 @@ export const FindMovie = ({
 
 FindMovie.propTypes = {
   onAdd: PropTypes.func.isRequired,
-  setSameMovie: PropTypes.func.isRequired,
-  setNoMovie: PropTypes.func.isRequired,
-  sameMovie: PropTypes.bool.isRequired,
-  noMovie: PropTypes.bool.isRequired,
+  setError: PropTypes.func.isRequired,
+  error: PropTypes.bool.isRequired,
 };

@@ -1,4 +1,4 @@
-const BASE_URL = `http://www.omdbapi.com/?apikey=1a5efd02&t=`;
+const BASE_URL = `https://www.omdbapi.com/?apikey=1a5efd02&t=`;
 
 const request = url => fetch(`${BASE_URL}${url}`)
   .then((response) => {

@@ -1,5 +1,5 @@
 
-const BASE_URL = 'http://www.omdbapi.com';
+const BASE_URL = 'https://www.omdbapi.com';
 
 const request = (url, options) => fetch(`${BASE_URL}${url}`, options)
   .then(res => res.json());

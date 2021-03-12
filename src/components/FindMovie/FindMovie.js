@@ -29,12 +29,14 @@ export const FindMovie = ({ onAdd }) => {
   };
 
   const setInputValueEvent = (e) => {
+    e.preventDefault();
     setInputValue(e.target.value);
     setIsSuccess(false);
   };
 
-  const setMovieEvent = (e) => {
-    e.preventDefault();
+  const setMovieEvent = () => {
+    // e.preventDefault();
+
     getMovie(inputValue)
       .then((res) => {
         if (!JSON.parse(res.Response.toLowerCase())) {
@@ -47,6 +49,13 @@ export const FindMovie = ({ onAdd }) => {
         setMovie(res);
       });
     setInputValue('');
+  };
+
+  const pressEnterEvent = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      setMovieEvent();
+    }
   };
 
   const newMovie = createNewMovie();
@@ -71,6 +80,7 @@ export const FindMovie = ({ onAdd }) => {
                 { 'is-primary': !isNotASuccess },
               )}
               onChange={setInputValueEvent}
+              onKeyDown={pressEnterEvent}
             />
           </div>
 
@@ -86,7 +96,10 @@ export const FindMovie = ({ onAdd }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={setMovieEvent}
+              onClick={(e) => {
+                e.preventDefault();
+                setMovieEvent();
+              }}
             >
               Find a movie
             </button>
@@ -97,7 +110,8 @@ export const FindMovie = ({ onAdd }) => {
               type="button"
               className="button is-primary"
               onClick={(e) => {
-                onAdd(e, newMovie);
+                e.preventDefault();
+                onAdd(newMovie);
                 setMovie({});
                 setDisabled(true);
               }}

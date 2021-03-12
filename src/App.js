@@ -9,9 +9,7 @@ export class App extends Component {
     movies: data,
   };
 
-  addMovie = (e, movie) => {
-    e.preventDefault();
-
+  addMovie = (movie) => {
     const { movies } = this.state;
 
     if (movies.some(m => m.imdbId === movie.imdbId)) {

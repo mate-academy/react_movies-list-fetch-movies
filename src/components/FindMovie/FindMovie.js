@@ -9,14 +9,8 @@ import { getMovie } from '../../api/movieFromServer';
 export const FindMovie = ({ onAdd }) => {
   const [movie, setMovie] = useState({});
   const [inputValue, setInputValue] = useState('');
-  const [isNotASuccess, setIsSuccess] = useState(false);
-  const [isDisabled, setDisabled] = useState(true);
 
   const createNewMovie = () => {
-    if (Object.keys(movie).includes('Error') || !Object.keys(movie).length) {
-      return {};
-    }
-
     const { Title, Plot, Poster, imdbID } = movie;
 
     return {
@@ -31,21 +25,11 @@ export const FindMovie = ({ onAdd }) => {
   const setInputValueEvent = (e) => {
     e.preventDefault();
     setInputValue(e.target.value);
-    setIsSuccess(false);
   };
 
   const setMovieEvent = () => {
-    // e.preventDefault();
-
     getMovie(inputValue)
       .then((res) => {
-        if (!JSON.parse(res.Response.toLowerCase())) {
-          setIsSuccess(true);
-          setDisabled(true);
-        } else {
-          setDisabled(false);
-        }
-
         setMovie(res);
       });
     setInputValue('');
@@ -59,6 +43,7 @@ export const FindMovie = ({ onAdd }) => {
   };
 
   const newMovie = createNewMovie();
+  const isSuccess = !Object.values(newMovie).includes(undefined);
 
   return (
     <>
@@ -76,15 +61,15 @@ export const FindMovie = ({ onAdd }) => {
               value={inputValue}
               className={className(
                 'input',
-                { 'is-danger': isNotASuccess },
-                { 'is-primary': !isNotASuccess },
+                { 'is-danger': !isSuccess && Object.keys(movie).length > 0 },
+                { 'is-primary': isSuccess },
               )}
               onChange={setInputValueEvent}
               onKeyDown={pressEnterEvent}
             />
           </div>
 
-          {isNotASuccess && (
+          {!isSuccess && Object.keys(movie).length > 0 && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -100,6 +85,7 @@ export const FindMovie = ({ onAdd }) => {
                 e.preventDefault();
                 setMovieEvent();
               }}
+              disabled={!inputValue.length}
             >
               Find a movie
             </button>
@@ -113,9 +99,8 @@ export const FindMovie = ({ onAdd }) => {
                 e.preventDefault();
                 onAdd(newMovie);
                 setMovie({});
-                setDisabled(true);
               }}
-              disabled={isDisabled}
+              disabled={!isSuccess}
             >
               Add to the list
             </button>
@@ -123,7 +108,7 @@ export const FindMovie = ({ onAdd }) => {
         </div>
       </form>
 
-      {Object.keys(newMovie).length > 0 && (
+      {isSuccess && (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard {...newMovie} />

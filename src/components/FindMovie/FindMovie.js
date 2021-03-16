@@ -17,6 +17,7 @@ export const FindMovie = ({ handleAdd }) => {
 
     setErrorTitle(false);
     setErrorMovie(false);
+    setMovie({});
     setTitle(value);
   }
 
@@ -25,7 +26,7 @@ export const FindMovie = ({ handleAdd }) => {
 
     const result = await response.json();
 
-    if (result.Error) {
+    if (result.Response === 'False') {
       setErrorTitle(true);
 
       return;

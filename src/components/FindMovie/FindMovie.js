@@ -4,7 +4,7 @@ import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 
-const BASE_URL = 'http://www.omdbapi.com/?apikey=de242cb8&t=';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=de242cb8&t=';
 
 export const FindMovie = ({ handleAdd }) => {
   const [title, setTitle] = useState('');

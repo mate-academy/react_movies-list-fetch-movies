@@ -32,6 +32,10 @@ export const FindMovie = ({ setMovies }) => {
   };
 
   const setNewMovieToList = () => {
+    if (!film) {
+      return;
+    }
+
     setMovies(movies => (
       (!movies.some(movie => movie.imdbUrl === film.imdbUrl)
         ? [...movies, film] : movies)

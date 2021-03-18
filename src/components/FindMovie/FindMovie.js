@@ -42,7 +42,10 @@ export const FindMovie = ({ addMovie, movies }) => {
       imdbUrl,
     };
 
-    if (!movies.find(film => film.imdbId) && !movieIsNotFound && movie) {
+    if (!movies.find(film => film.imdbId === newMovie.imdbId)
+      && !movieIsNotFound
+      && movie
+    ) {
       addMovie([...movies, newMovie]);
       setTitle('');
       setMovie('');

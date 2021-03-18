@@ -22,7 +22,7 @@ export const FindMovie = ({ onAdd, movies }) => {
     const movie = await request(title);
 
     if (movie.Title) {
-      const collectedMovieProperies = {
+      const collectedMovieProperties = {
         title: movie.Title,
         imdbId: movie.imdbID,
         imgUrl: movie.Poster,
@@ -31,12 +31,12 @@ export const FindMovie = ({ onAdd, movies }) => {
       };
 
       const checkMovie = movies.some(
-        property => property.imdbId === collectedMovieProperies.imdbId,
+        property => property.imdbId === collectedMovieProperties.imdbId,
       );
 
       setTitle('');
       setIsDuplicate(checkMovie);
-      setMovie(collectedMovieProperies);
+      setMovie(collectedMovieProperties);
       setDisabledButton(false);
     } else {
       setError(true);

@@ -9,7 +9,7 @@ import { request } from '../../api/api';
 export const FindMovie = ({ onAdd, movies }) => {
   const [title, setTitle] = useState('');
   const [error, setError] = useState(true);
-  const [newMovie, setMovie] = useState(movies[0]);
+  const [newMovie, setMovie] = useState('');
   const [disabledButton, setDisabledButton] = useState(true);
   const [isDuplicate, setIsDuplicate] = useState(false);
 
@@ -20,8 +20,6 @@ export const FindMovie = ({ onAdd, movies }) => {
 
   const handleFindMovie = async() => {
     const movie = await request(title);
-
-    setTitle('');
 
     if (movie.Title) {
       const collectedMovieProperies = {
@@ -36,6 +34,7 @@ export const FindMovie = ({ onAdd, movies }) => {
         property => property.imdbId === collectedMovieProperies.imdbId,
       );
 
+      setTitle('');
       setIsDuplicate(checkMovie);
       setMovie(collectedMovieProperies);
       setDisabledButton(false);
@@ -46,15 +45,14 @@ export const FindMovie = ({ onAdd, movies }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setDisabledButton(true);
+    setMovie('');
 
     if (isDuplicate) {
-      setDisabledButton(true);
-
       return;
     }
 
     onAdd(newMovie);
-    setDisabledButton(true);
   };
 
   return (
@@ -109,7 +107,7 @@ export const FindMovie = ({ onAdd, movies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        <MovieCard {...newMovie} />
+        {newMovie && (<MovieCard {...newMovie} />)}
       </div>
     </>
   );

@@ -1,4 +1,4 @@
-const url = 'http://www.omdbapi.com/?apikey=7942a07a&t=';
+const url = 'https://www.omdbapi.com/?apikey=7942a07a&t=';
 
 export const getMovie = async(title) => {
   const response = await fetch(`${url}${title}`);

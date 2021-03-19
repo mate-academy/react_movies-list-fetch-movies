@@ -37,7 +37,7 @@ export const FindMovie = ({ setMovies }) => {
     }
 
     setMovies(movies => (
-      (!movies.some(movie => movie.imdbUrl === film.imdbUrl)
+      (!movies.some(movie => movie.imdbUrl.slice(-9) === film.imdbUrl)
         ? [...movies, film] : movies)
     ));
   };

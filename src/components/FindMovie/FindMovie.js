@@ -1,55 +1,135 @@
-import React from 'react';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
 
 import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
+import { request } from '../../api/api';
 
-export const FindMovie = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+export const FindMovie = ({ addMovie, movies }) => {
+  const [newMovie, setMovie] = useState('');
+  const [buttonVisible, setButtonVisible] = useState(true);
+  const [title, setTitle] = useState('');
+  const [error, setError] = useState(true);
+  const [isdisable, setIsdisable] = useState(false);
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
-        </div>
+  const findMovie = async() => {
+    const movie = await request(title);
 
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
-      </div>
+    if (movie.Title) {
+      const selectMovie = {
+        title: movie.Title,
+        imdbId: movie.imdbID,
+        imgUrl: movie.Poster,
+        description: movie.Plot,
+        imbdUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+      };
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
+      const movieCheck = movies.some(
+        item => item.imdbId === selectMovie.imdbId,
+      );
+
+      setTitle('');
+      setIsdisable(movieCheck);
+      setMovie(selectMovie);
+      setButtonVisible(false);
+    } else {
+      setError(true);
+    }
+  };
+
+  const changeTitle = (event) => {
+    setTitle(event.target.value);
+    setError(false);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    setMovie('');
+    setButtonVisible(true);
+
+    if (isdisable) {
+      return;
+    }
+
+    addMovie(newMovie);
+  };
+
+  return (
+    <>
+      <form
+        className="find-movie"
+        onSubmit={handleSubmit}
+      >
+        <div className="field">
+          <label className="label" htmlFor="movie-title">
+            Movie title
+          </label>
+
+          <div className="control">
+            <input
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className={classNames('input', { 'is-danger': error })}
+              value={title}
+              onChange={changeTitle}
+            />
+          </div>
+
+          <p className={classNames(
+            'help', 'is-danger', { 'is-hidden': !error },
+          )}
           >
-            Find a movie
-          </button>
+            Can&apos;t find a movie with such a title
+          </p>
         </div>
 
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              type="button"
+              className="button is-light"
+              onClick={findMovie}
+            >
+              Find a movie
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="button"
+              className="button is-primary"
+              disabled={buttonVisible}
+            >
+              Add to the list
+            </button>
+          </div>
         </div>
+      </form>
+
+      <div className="container">
+        <h2 className="title">Preview</h2>
+        { newMovie && (<MovieCard {...newMovie} />)}
       </div>
-    </form>
+    </>
+  );
+};
 
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      <MovieCard {...movies[0]} />
-    </div>
-  </>
-);
+FindMovie.propTypes = {
+  addMovie: PropTypes.func.isRequired,
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      imgUrl: PropTypes.string,
+      imdbUrl: PropTypes.string,
+      imdbId: PropTypes.string.isRequired,
+    }),
+  ),
+};
+
+FindMovie.defaultProps = {
+  movies: [],
+};

@@ -7,31 +7,70 @@ import { MovieCard } from '../MovieCard';
 const BASE_URL = 'https://www.omdbapi.com/?apikey=de242cb8&t=';
 
 export const FindMovie = ({ handleAdd }) => {
-  const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState({});
-  const [errorTitle, setErrorTitle] = useState(false);
-  const [errorMovie, setErrorMovie] = useState(false);
+  const [movieData, setMovieData] = useState({
+    movie: {},
+    title: '',
+    errorTitle: false,
+    errorMovie: false,
+  });
 
   const handleChange = useCallback(
     (event) => {
       const { value } = event.target;
 
-      setErrorTitle(false);
-      setErrorMovie(false);
-      setMovie({});
-      setTitle(value);
+      setMovieData({
+        movie: {},
+        title: value,
+        errorTitle: false,
+        errorMovie: false,
+      });
     },
     [],
   );
-
-  const findMovie = useCallback(
+  /*   const errorCatcher = useCallback(
     async() => {
-      const response = await fetch(`${BASE_URL}${title}`);
+      try {
+        const response = await fetch(`${BASE_URL}${title}`);
+
+        const result = await response.json();
+
+        return result;
+      } catch (error) {
+        setErrorTitle(true);
+
+        throw new Error();
+      }
+    },
+    [],
+  ); */
+  /* IDK how to do with TRY CATCH (Q&A --->) */
+  /*   const errorCatcher = async() => {
+    try {
+      const response = await fetch(`${BASE_URL}${movieData.title}`);
 
       const result = await response.json();
 
+      return result;
+    } catch {
+      setMovieData({
+        ...movieData,
+        errorTitle: true,
+      });
+      // eslint-disable-next-line no-console
+      throw new Error();
+    }
+  }; */
+
+  const findMovie = useCallback(
+    async() => {
+      const response = await fetch(`${BASE_URL}${movieData.title}`);
+      const result = await response.json();
+
       if (result.Response === 'False') {
-        setErrorTitle(true);
+        setMovieData({
+          ...movieData,
+          errorTitle: true,
+        });
 
         return;
       }
@@ -44,23 +83,32 @@ export const FindMovie = ({ handleAdd }) => {
         imdbUrl: `https://www.imdb.com/title/${key.imdbID}`,
       }));
 
-      setMovie(newMovie);
-    },
-    [title],
+      setMovieData({
+        ...movieData,
+        movie: newMovie,
+      });
+    }, [movieData],
   );
 
   const addMovie = useCallback(
     () => {
-      if (movie && Object.keys(movie).length === 0) {
-        setErrorMovie(true);
+      if (movieData.movie && Object.keys(movieData.movie).length === 0) {
+        setMovieData({
+          ...movieData,
+          errorMovie: true,
+        });
 
         return;
       }
 
-      handleAdd(movie);
-      setTitle('');
-    },
-    [movie, handleAdd],
+      handleAdd(movieData.movie);
+      setMovieData({
+        ...movieData,
+        titel: '',
+        errorMovie: false,
+        errorTitle: false,
+      });
+    }, [movieData, handleAdd],
   );
 
   return (
@@ -75,18 +123,18 @@ export const FindMovie = ({ handleAdd }) => {
             <input
               type="text"
               id="movie-title"
-              value={title}
+              value={movieData.title}
               onChange={handleChange}
               placeholder="Enter a title to search"
               className="input is-danger"
             />
           </div>
-          {errorTitle && (
+          {movieData.errorTitle && (
           <p className="help is-danger">
             Can&apos;t find a movie with such a title
           </p>
           )}
-          {errorMovie && (
+          {movieData.errorMovie && (
           <p className="help is-danger">
             Can&apos;t add undefined movie
           </p>
@@ -119,8 +167,8 @@ export const FindMovie = ({ handleAdd }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie.length > 0
-          && <MovieCard {...movie[0]} />
+        {movieData.movie.length > 0
+          && <MovieCard {...movieData.movie[0]} />
         }
       </div>
     </>

@@ -10,8 +10,7 @@ export const App = () => {
   const addMovie = useCallback(
     (newMovie) => {
       setMovies(currentMovies => currentMovies.concat(newMovie));
-    },
-    [],
+    }, [],
   );
 
   return (
@@ -21,9 +20,7 @@ export const App = () => {
       </div>
       <div className="sidebar">
         <FindMovie
-          handleAdd={(item) => {
-            addMovie(item);
-          }}
+          handleAdd={addMovie}
         />
       </div>
     </div>

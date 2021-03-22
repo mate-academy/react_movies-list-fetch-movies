@@ -9,11 +9,10 @@ export const MoviesList = ({
 }) => (
   <div className="movies">
     {movies.filter((movie, index, self) => (
-      index === self.findIndex(item => (
-        item.imdbId === movie.imdbId
-      )))).map(movie => (
+      index === self.findIndex(item => (item.imdbId === movie.imdbId))))
+      .map(movie => (
         <MovieCard key={movie.imdbId} {...movie} />
-    ))}
+      ))}
   </div>
 );
 

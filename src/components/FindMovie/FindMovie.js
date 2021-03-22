@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
@@ -12,48 +12,56 @@ export const FindMovie = ({ handleAdd }) => {
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorMovie, setErrorMovie] = useState(false);
 
-  function handleChange(event) {
-    const { value } = event.target;
+  const handleChange = useCallback(
+    (event) => {
+      const { value } = event.target;
 
-    setErrorTitle(false);
-    setErrorMovie(false);
-    setMovie({});
-    setTitle(value);
-  }
+      setErrorTitle(false);
+      setErrorMovie(false);
+      setMovie({});
+      setTitle(value);
+    },
+    [],
+  );
 
-  async function findMovie() {
-    const response = await fetch(`${BASE_URL}${title}`);
+  const findMovie = useCallback(
+    async() => {
+      const response = await fetch(`${BASE_URL}${title}`);
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (result.Response === 'False') {
-      setErrorTitle(true);
+      if (result.Response === 'False') {
+        setErrorTitle(true);
 
-      return;
-    }
+        return;
+      }
 
-    const newMovie = [result].map(key => ({
-      title: key.Title,
-      imdbId: key.imdbID,
-      description: key.Plot,
-      imgUrl: key.Poster,
-      imdbUrl: `https://www.imdb.com/title/${key.imdbID}`,
+      const newMovie = [result].map(key => ({
+        title: key.Title,
+        imdbId: key.imdbID,
+        description: key.Plot,
+        imgUrl: key.Poster,
+        imdbUrl: `https://www.imdb.com/title/${key.imdbID}`,
+      }));
 
-    }));
+      setMovie(newMovie);
+    },
+    [title],
+  );
 
-    setMovie(newMovie);
-  }
+  const addMovie = useCallback(
+    () => {
+      if (movie && Object.keys(movie).length === 0) {
+        setErrorMovie(true);
 
-  function addMovie() {
-    if (movie && Object.keys(movie).length === 0) {
-      setErrorMovie(true);
+        return;
+      }
 
-      return;
-    }
-
-    handleAdd(movie);
-    setTitle('');
-  }
+      handleAdd(movie);
+      setTitle('');
+    },
+    [movie, handleAdd],
+  );
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ClassNames from 'classnames';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
@@ -14,6 +14,10 @@ export const FindMovie = ({ addMovie }) => {
   const [isError, setIsError] = useState(false);
   const [canAddMovie, setCanAddMovie] = useState(false);
 
+  useEffect(() => {
+    setCanAddMovie(movie !== null);
+  }, [movie]);
+
   const findMovie = useCallback(() => {
     getMovieByTitle(targetTitle).then((data) => {
       let newMovie;
@@ -26,7 +30,6 @@ export const FindMovie = ({ addMovie }) => {
           imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
           imdbId: data.imdbID,
         };
-        setCanAddMovie(true);
       } else {
         newMovie = null;
         setIsError(true);

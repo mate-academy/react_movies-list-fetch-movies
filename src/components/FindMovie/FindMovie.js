@@ -57,7 +57,7 @@ export const FindMovie = ({ handleAdd }) => {
 
   const addMovie = useCallback(
     () => {
-      if (movieData.movie && Object.keys(movieData.movie).length === 0) {
+      if (Object.keys(movieData.movie).length === 0) {
         setMovieData({
           ...movieData,
           errorMovie: true,

@@ -6,7 +6,8 @@ export const getMovie = async(url) => {
     const response = await fetch(`${BASE_URL}${url}`);
 
     if (!response.ok) {
-      throw new Error();
+      // eslint-disable-next-line no-console
+      console.log(response.statusText);
     }
 
     const result = await response.json();

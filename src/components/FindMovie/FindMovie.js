@@ -18,21 +18,24 @@ export const FindMovie = ({ onAdd, movies }) => {
   }, []);
 
   const handleFindMovie = useCallback(async() => {
-    const movie = await request(title);
+    try {
+      const movie = await request(title);
 
-    if (movie.Title) {
-      const collectedMovieProperties = {
+      if (movie.Error) {
+        throw new Error();
+      }
+
+      setMovie({
         title: movie.Title,
         imdbId: movie.imdbID,
         imgUrl: movie.Poster,
         description: movie.Plot,
         imbdUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-      };
+      });
 
-      setTitle('');
-      setMovie(collectedMovieProperties);
       setDisabledButton(false);
-    } else {
+      setTitle('');
+    } catch {
       setError(true);
     }
   });

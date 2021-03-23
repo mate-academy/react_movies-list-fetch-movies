@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -10,7 +10,7 @@ export const FindMovie = ({ addMovie, movies }) => {
   const [movie, setMovie] = useState(null);
   const [movieIsNotFound, setStatus] = useState(false);
 
-  function findMovieByTitle(event) {
+  const findMovieByTitle = useCallback((event) => {
     event.preventDefault();
     getMovie(input)
       .then((result) => {
@@ -27,9 +27,9 @@ export const FindMovie = ({ addMovie, movies }) => {
           setStatus(true);
         }
       });
-  }
+  });
 
-  function addNewMovie() {
+  const addNewMovie = useCallback(() => {
     if (!movies.find(film => film.imdbId === movie.imdbId)
       && !movieIsNotFound
       && movie
@@ -38,7 +38,7 @@ export const FindMovie = ({ addMovie, movies }) => {
       setInput('');
       setMovie(null);
     }
-  }
+  });
 
   function changeValue(event) {
     const { value } = event.target;

@@ -6,9 +6,9 @@ export const getMovie = async(title) => {
   try {
     return response.json();
   } catch {
-    // eslint-disable-next-line
-        return Promise.reject(
-      `${response.status} ${response.status.text}`,
-    );
-  }
+    if (!response.ok) {
+      return Promise.reject(
+        `${response.status} ${response.status.text}`
+      );
+  }}
 };

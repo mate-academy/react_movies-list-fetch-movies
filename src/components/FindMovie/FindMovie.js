@@ -18,18 +18,16 @@ export const FindMovie = ({ addMovie, movies }) => {
     event.preventDefault();
     getMovie(title)
       .then((result) => {
-        if (result.Response === 'False') {
+        try {
+          setMovie(result.Title);
+          setImdbId(result.imdbID);
+          setDescription(result.Plot);
+          setImgUrl(result.Poster);
+          setImdbUrl(`https://www.imdb.com/title/${result.imdbID}`);
+          setStatus(false);
+        } catch {
           setStatus(true);
-
-          return;
         }
-
-        setMovie(result.Title);
-        setImdbId(result.imdbID);
-        setDescription(result.Plot);
-        setImgUrl(result.Poster);
-        setImdbUrl(`https://www.imdb.com/title/${result.imdbID}`);
-        setStatus(false);
       });
   }
 

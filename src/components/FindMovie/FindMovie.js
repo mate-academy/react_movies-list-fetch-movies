@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
-
-const BASE_URL = 'https://www.omdbapi.com/?apikey=de242cb8&t=';
+import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ handleAdd }) => {
   const [movieData, setMovieData] = useState({
@@ -27,44 +26,10 @@ export const FindMovie = ({ handleAdd }) => {
     },
     [],
   );
-  /*   const errorCatcher = useCallback(
-    async() => {
-      try {
-        const response = await fetch(`${BASE_URL}${title}`);
-
-        const result = await response.json();
-
-        return result;
-      } catch (error) {
-        setErrorTitle(true);
-
-        throw new Error();
-      }
-    },
-    [],
-  ); */
-  /* IDK how to do with TRY CATCH (Q&A --->) */
-  /*   const errorCatcher = async() => {
-    try {
-      const response = await fetch(`${BASE_URL}${movieData.title}`);
-
-      const result = await response.json();
-
-      return result;
-    } catch {
-      setMovieData({
-        ...movieData,
-        errorTitle: true,
-      });
-      // eslint-disable-next-line no-console
-      throw new Error();
-    }
-  }; */
 
   const findMovie = useCallback(
     async() => {
-      const response = await fetch(`${BASE_URL}${movieData.title}`);
-      const result = await response.json();
+      const result = await getMovie(movieData.title);
 
       if (result.Response === 'False') {
         setMovieData({

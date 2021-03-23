@@ -1,24 +1,23 @@
-import React, { useState } from 'react';
-import './FindMovie.scss';
+import React, { useState, useCallback } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-
 import { MovieCard } from '../MovieCard';
 import { request } from '../../api/api';
+
+import './FindMovie.scss';
 
 export const FindMovie = ({ onAdd, movies }) => {
   const [title, setTitle] = useState('');
   const [error, setError] = useState(true);
   const [newMovie, setMovie] = useState('');
   const [disabledButton, setDisabledButton] = useState(true);
-  const [isDuplicate, setIsDuplicate] = useState(false);
 
-  const handleChangeTitle = (e) => {
+  const handleChangeTitle = useCallback((e) => {
     setTitle(e.target.value);
     setError(false);
-  };
+  }, []);
 
-  const handleFindMovie = async() => {
+  const handleFindMovie = useCallback(async() => {
     const movie = await request(title);
 
     if (movie.Title) {
@@ -30,30 +29,31 @@ export const FindMovie = ({ onAdd, movies }) => {
         imbdUrl: `https://www.imdb.com/title/${movie.imdbID}`,
       };
 
-      const checkMovie = movies.some(
-        property => property.imdbId === collectedMovieProperties.imdbId,
-      );
-
       setTitle('');
-      setIsDuplicate(checkMovie);
       setMovie(collectedMovieProperties);
       setDisabledButton(false);
     } else {
       setError(true);
     }
-  };
+  });
 
-  const handleSubmit = (event) => {
+  const handleSubmit = useCallback((event) => {
     event.preventDefault();
     setDisabledButton(true);
     setMovie('');
 
-    if (isDuplicate) {
+    const checkMovie = movies.some(
+      property => property.imdbId.includes(
+        newMovie.imdbId,
+      ),
+    );
+
+    if (checkMovie) {
       return;
     }
 
     onAdd(newMovie);
-  };
+  });
 
   return (
     <>

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
+
 import data from './api/movies.json';
+import './App.scss';
 
 export const App = () => {
   const [movies, setMovie] = useState(data);

@@ -37,21 +37,22 @@ export const FindMovie = ({ setMovies }) => {
     }
 
     setMovies(movies => (
-      (!movies.some(movie => movie.imdbUrl.slice(-9) === film.imdbUrl)
+      (!movies.some(movie => movie.imdbId === film.imdbId)
         ? [...movies, film] : movies)
     ));
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    setTitle('');
+    setNewMovieToList();
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          setTitle('');
-          setNewMovieToList();
-        }
-        }
+        onSubmit={submitHandler}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -85,11 +86,7 @@ export const FindMovie = ({ setMovies }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={
-                () => {
-                  findFilm();
-                }
-              }
+              onClick={findFilm}
             >
               Find a movie
             </button>

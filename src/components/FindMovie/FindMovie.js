@@ -6,24 +6,22 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovie, movies }) => {
-  const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState();
-  const [imdbId, setImdbId] = useState('');
-  const [description, setDescription] = useState('');
-  const [imgUrl, setImgUrl] = useState('');
-  const [imdbUrl, setImdbUrl] = useState('');
+  const [input, setInput] = useState('');
+  const [movie, setMovie] = useState(null);
   const [movieIsNotFound, setStatus] = useState(false);
 
   function findMovieByTitle(event) {
     event.preventDefault();
-    getMovie(title)
+    getMovie(input)
       .then((result) => {
         try {
-          setMovie(result.Title);
-          setImdbId(result.imdbID);
-          setDescription(result.Plot);
-          setImgUrl(result.Poster);
-          setImdbUrl(`https://www.imdb.com/title/${result.imdbID}`);
+          setMovie({
+            title: result.Title,
+            description: result.Plot,
+            imdbId: result.imdbID,
+            imgUrl: result.Poster,
+            imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
+          });
           setStatus(false);
         } catch {
           setStatus(true);
@@ -32,25 +30,13 @@ export const FindMovie = ({ addMovie, movies }) => {
   }
 
   function addNewMovie() {
-    const newMovie = {
-      title: movie,
-      description,
-      imdbId,
-      imgUrl,
-      imdbUrl,
-    };
-
-    if (!movies.find(film => film.imdbId === newMovie.imdbId)
+    if (!movies.find(film => film.imdbId === movie.imdbId)
       && !movieIsNotFound
       && movie
     ) {
-      addMovie([...movies, newMovie]);
-      setTitle('');
-      setMovie('');
-      setImdbId('');
-      setDescription('');
-      setImgUrl('');
-      setImdbUrl('');
+      addMovie([...movies, movie]);
+      setInput('');
+      setMovie(null);
     }
   }
 
@@ -58,7 +44,7 @@ export const FindMovie = ({ addMovie, movies }) => {
     const { value } = event.target;
 
     setStatus(false);
-    setTitle(value);
+    setInput(value);
   }
 
   return (
@@ -73,7 +59,7 @@ export const FindMovie = ({ addMovie, movies }) => {
             <input
               type="text"
               id="movie-title"
-              value={title}
+              value={input}
               onChange={changeValue}
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': movieIsNotFound })}
@@ -114,13 +100,7 @@ export const FindMovie = ({ addMovie, movies }) => {
         <h2 className="title">Preview</h2>
         {!movieIsNotFound && movie
       && (
-      <MovieCard
-        title={movie}
-        description={description}
-        imgUrl={imgUrl}
-        imdbUrl={imdbUrl}
-        imdbId={imdbId}
-      />
+      <MovieCard {...movie} />
       )}
       </div>
     </>

@@ -15,7 +15,10 @@ export const FindMovie = ({ setMovies }) => {
   const findFilm = async() => {
     const newFilm = await getFilm(newTitle);
 
-    if (newFilm.Title) {
+    if (!newFilm.Title) {
+      setLoadingError(false);
+      setShowError(true);
+    } else {
       setFilm({
         title: newFilm.Title,
         description: newFilm.Plot,
@@ -25,9 +28,6 @@ export const FindMovie = ({ setMovies }) => {
       setLoadingError(true);
       setShowError(false);
       setTitle('');
-    } else {
-      setLoadingError(false);
-      setShowError(true);
     }
   };
 

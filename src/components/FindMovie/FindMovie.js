@@ -15,7 +15,7 @@ export const FindMovie = ({ setMovies }) => {
   const findFilm = async() => {
     const newFilm = await getFilm(newTitle);
 
-    if (!newFilm.Title) {
+    if (newFilm.Response === 'False') {
       setLoadingError(false);
       setShowError(true);
     } else {
@@ -36,10 +36,13 @@ export const FindMovie = ({ setMovies }) => {
       return;
     }
 
-    setMovies(movies => (
-      (!movies.some(movie => movie.imdbId === film.imdbId)
-        ? [...movies, film] : movies)
-    ));
+    setMovies((movies) => {
+      if (!movies.some(movie => movie.imdbId === film.imdbId)) {
+        return [...movies, film];
+      }
+
+      return movies;
+    });
   };
 
   const submitHandler = (event) => {

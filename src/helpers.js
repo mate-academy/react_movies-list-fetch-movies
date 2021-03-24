@@ -5,11 +5,11 @@ export const getFilm = async(breakPoint) => {
     const response = await fetch(`${titleUrl}${breakPoint}`);
 
     if (!response.ok) {
-      throw new Error();
+      throw new Error(response.statusText);
     }
 
     return await response.json();
   } catch (error) {
-    throw new Error();
+    throw new Error(error.statusText);
   }
 };

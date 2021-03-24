@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
@@ -11,8 +11,11 @@ export const FindMovie = ({ addMovieHandler }) => {
   const [value, setValue] = useState('');
   const [movieCard, setMovie] = useState(null);
 
-  const findNewMovie = async() => (
-    setMovie(await getMovie(value))
+  const findNewMovie = useCallback(
+    async() => {
+      setMovie(await getMovie(value));
+    },
+    [value],
   );
 
   const addMovie = () => {
@@ -69,7 +72,7 @@ export const FindMovie = ({ addMovieHandler }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => setMovie(findNewMovie())}
+              onClick={() => findNewMovie()}
             >
               Find a movie
             </button>

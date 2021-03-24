@@ -11,7 +11,7 @@ export const FindMovie = ({ addMovieHandler }) => {
   const [value, setValue] = useState('');
   const [movieCard, setMovie] = useState(null);
 
-  const movieHandler = async() => (
+  const findNewMovie = async() => (
     setMovie(await getMovie(value))
   );
 
@@ -69,7 +69,7 @@ export const FindMovie = ({ addMovieHandler }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => setMovie(movieHandler())}
+              onClick={() => setMovie(findNewMovie())}
             >
               Find a movie
             </button>

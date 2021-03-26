@@ -8,14 +8,14 @@ import movies from '../../api/movies.json';
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovieHandler }) => {
-  const [value, setValue] = useState('');
+  const [titleValue, setValue] = useState('');
   const [movieCard, setMovie] = useState(null);
 
   const findNewMovie = useCallback(
     async() => {
-      setMovie(await getMovie(value));
+      setMovie(await getMovie(titleValue));
     },
-    [value],
+    [titleValue],
   );
 
   const addMovie = () => {
@@ -56,7 +56,7 @@ export const FindMovie = ({ addMovieHandler }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
-              value={value}
+              value={titleValue}
               onChange={event => setValue(event.target.value)}
             />
           </div>
@@ -72,7 +72,7 @@ export const FindMovie = ({ addMovieHandler }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => findNewMovie()}
+              onClick={findNewMovie}
             >
               Find a movie
             </button>

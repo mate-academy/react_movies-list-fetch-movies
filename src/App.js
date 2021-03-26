@@ -7,9 +7,9 @@ import data from './api/movies.json';
 export const App = () => {
   const [movies, setMovies] = useState(data);
 
-  const addMovieHandler = (movie) => {
-    setMovies(movie);
-  };
+  // const addMovieHandler = (movie) => {
+  //   setMovies(movie);
+  // };
 
   return (
     <div className="page">
@@ -17,7 +17,7 @@ export const App = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie addMovieHandler={addMovieHandler} />
+        <FindMovie addMovieHandler={setMovies} />
       </div>
     </div>
   );

@@ -39,7 +39,6 @@ export const FindMovie = ({ addMovie, movies }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setButtonVisible(true);
 
     const checkMovie = movies.some(
       movie => movie.imdbId.includes(
@@ -51,6 +50,7 @@ export const FindMovie = ({ addMovie, movies }) => {
       return;
     }
 
+    setButtonVisible(true);
     addMovie(newMovie);
     setNewMovie('');
   };

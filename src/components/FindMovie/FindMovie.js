@@ -71,8 +71,9 @@ export const FindMovie = (
             )}
             {isAdd && (
               <p className="success-add">
-                {`${title.slice(0, 1)
-                  .toUpperCase()}${title.slice(1)} movie was added!`}
+                <strong>{foundMovie.Title}</strong>
+                {' '}
+                movie was added!
               </p>
             )}
           </div>

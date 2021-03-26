@@ -7,11 +7,10 @@ import { MovieCard } from '../MovieCard';
 import { request } from '../../api/api';
 
 export const FindMovie = ({ addMovie, movies }) => {
-  const [newMovie, setMovie] = useState('');
+  const [newMovie, setNewMovie] = useState('');
   const [buttonVisible, setButtonVisible] = useState(true);
   const [title, setTitle] = useState('');
   const [error, setError] = useState(true);
-  const [isdisable, setIsdisable] = useState(false);
 
   const findMovie = async() => {
     const movie = await request(title);
@@ -25,13 +24,8 @@ export const FindMovie = ({ addMovie, movies }) => {
         imbdUrl: `https://www.imdb.com/title/${movie.imdbID}`,
       };
 
-      const movieCheck = movies.some(
-        item => item.imdbId === selectMovie.imdbId,
-      );
-
       setTitle('');
-      setIsdisable(movieCheck);
-      setMovie(selectMovie);
+      setNewMovie(selectMovie);
       setButtonVisible(false);
     } else {
       setError(true);
@@ -45,22 +39,16 @@ export const FindMovie = ({ addMovie, movies }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    setMovie('');
     setButtonVisible(true);
 
-    if (isdisable) {
-      return;
-    }
-
     addMovie(newMovie);
+    setNewMovie('');
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -102,6 +90,7 @@ export const FindMovie = ({ addMovie, movies }) => {
               type="button"
               className="button is-primary"
               disabled={buttonVisible}
+              onClick={handleSubmit}
             >
               Add to the list
             </button>

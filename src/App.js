@@ -19,7 +19,7 @@ export const App = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie movieAdder={addMovie} />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );

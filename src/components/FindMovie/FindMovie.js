@@ -6,7 +6,7 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { movieRequest } from '../../api/filmAPI';
 
-export const FindMovie = ({ movieAdder }) => {
+export const FindMovie = ({ addMovie }) => {
   const [isMovieFound, setMovieStatus] = useState(false);
   const [isErrorVisible, setErrorVisibility] = useState(false);
   const [movie, setMovie] = useState(null);
@@ -36,9 +36,9 @@ export const FindMovie = ({ movieAdder }) => {
     });
   };
 
-  const addMovie = () => {
+  const prepareMovie = () => {
     if (isMovieFound && movie !== null) {
-      movieAdder(movie);
+      addMovie(movie);
     }
 
     setInput('');
@@ -86,7 +86,7 @@ export const FindMovie = ({ movieAdder }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={addMovie}
+              onClick={prepareMovie}
             >
               Add to the list
             </button>
@@ -107,5 +107,5 @@ export const FindMovie = ({ movieAdder }) => {
 };
 
 FindMovie.propTypes = {
-  movieAdder: PropTypes.func.isRequired,
+  addMovie: PropTypes.func.isRequired,
 };

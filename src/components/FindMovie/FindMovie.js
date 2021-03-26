@@ -41,6 +41,16 @@ export const FindMovie = ({ addMovie, movies }) => {
     event.preventDefault();
     setButtonVisible(true);
 
+    const checkMovie = movies.some(
+      movie => movie.imdbId.includes(
+        newMovie.imdbId,
+      ),
+    );
+
+    if (checkMovie) {
+      return;
+    }
+
     addMovie(newMovie);
     setNewMovie('');
   };

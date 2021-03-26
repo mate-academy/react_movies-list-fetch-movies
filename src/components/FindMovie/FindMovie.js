@@ -5,7 +5,15 @@ import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
 import { getMovies } from '../../api/api';
 
-export const FindMovie = ({ addMovieHandler, isDuplicate, setIsDuplicate }) => {
+export const FindMovie = (
+  {
+    addMovieHandler,
+    isDuplicate,
+    setIsDuplicate,
+    isAdd,
+    setIsAdd,
+  },
+) => {
   const [title, setTitle] = useState('');
   const [foundMovie, setFoundMovie] = useState('');
   const [isFound, setIsFound] = useState(false);
@@ -22,14 +30,15 @@ export const FindMovie = ({ addMovieHandler, isDuplicate, setIsDuplicate }) => {
       setFoundMovie(response);
       setIsFound(false);
     });
-  });
+  }, [title]);
 
   const onChangeInputHandler = useCallback((e) => {
     setTitle(e.target.value);
     setIsFound(false);
     setFoundMovie('');
     setIsDuplicate(false);
-  });
+    setIsAdd(false);
+  }, [setIsDuplicate, setIsAdd]);
 
   return (
     <>
@@ -59,6 +68,12 @@ export const FindMovie = ({ addMovieHandler, isDuplicate, setIsDuplicate }) => {
             <p className="help  is-danger">
               This movie already exists in collection
             </p>
+            )}
+            {isAdd && (
+              <p className="success-add">
+                {`${title.slice(0, 1)
+                  .toUpperCase()}${title.slice(1)} movie was added!`}
+              </p>
             )}
           </div>
         </div>
@@ -101,8 +116,15 @@ export const FindMovie = ({ addMovieHandler, isDuplicate, setIsDuplicate }) => {
   );
 };
 
+FindMovie.defaultProps = {
+  isDuplicate: 'null',
+  isAdd: false,
+};
+
 FindMovie.propTypes = {
   addMovieHandler: PropTypes.func.isRequired,
   setIsDuplicate: PropTypes.func.isRequired,
-  isDuplicate: PropTypes.bool.isRequired,
+  setIsAdd: PropTypes.func.isRequired,
+  isDuplicate: PropTypes.bool,
+  isAdd: PropTypes.bool,
 };

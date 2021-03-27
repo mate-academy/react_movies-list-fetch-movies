@@ -4,6 +4,7 @@ import './FindMovie.scss';
 import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
 import { getMovies } from '../../api/api';
+import { Loader } from '../Loader/Loader';
 
 export const FindMovie = (
   {
@@ -17,8 +18,10 @@ export const FindMovie = (
   const [title, setTitle] = useState('');
   const [foundMovie, setFoundMovie] = useState(null);
   const [isFound, setIsFound] = useState(false);
+  const [isLoad, setIsLoad] = useState(false);
 
   const findMovieHandler = useCallback(() => {
+    setIsLoad(true);
     getMovies(title).then((response) => {
       if (response.Error) {
         setIsFound(true);
@@ -29,6 +32,7 @@ export const FindMovie = (
 
       setFoundMovie(response);
       setIsFound(false);
+      setIsLoad(false);
     });
   }, [title]);
 
@@ -108,15 +112,18 @@ export const FindMovie = (
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {!isFound && foundMovie
-            && (
-            <MovieCard
-              title={foundMovie.Title}
-              description={foundMovie.Plot}
-              imgUrl={foundMovie.Poster}
-              imdbUrl={foundMovie.Website}
-            />
-            )}
+        <Loader isLoad={isLoad}>
+          {!isFound && foundMovie
+        && (
+          <MovieCard
+            title={foundMovie.Title}
+            description={foundMovie.Plot}
+            imgUrl={foundMovie.Poster}
+            imdbUrl={foundMovie.Website}
+          />
+        )}
+        </Loader>
+
       </div>
     </>
   );

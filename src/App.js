@@ -14,7 +14,10 @@ export const App = () => {
   }, []);
 
   const addMovieHandler = useCallback((movie) => {
-    if (!mov.some(m => m.imdbId === movie.imdbID)) {
+    if (
+      movie.imdbID !== undefined
+      && !mov.some(m => m.imdbId === movie.imdbID)
+    ) {
       setMovies([
         ...mov,
         {

@@ -15,7 +15,7 @@ export const FindMovie = (
   },
 ) => {
   const [title, setTitle] = useState('');
-  const [foundMovie, setFoundMovie] = useState('');
+  const [foundMovie, setFoundMovie] = useState(null);
   const [isFound, setIsFound] = useState(false);
 
   const findMovieHandler = useCallback(() => {
@@ -39,6 +39,10 @@ export const FindMovie = (
     setIsDuplicate(false);
     setIsAdd(false);
   }, [setIsDuplicate, setIsAdd]);
+
+  // if (foundMovie) {
+  //   setAddActive(false);
+  // }
 
   return (
     <>
@@ -94,6 +98,7 @@ export const FindMovie = (
               type="button"
               className="button is-primary"
               onClick={() => addMovieHandler(foundMovie)}
+              disabled={!foundMovie}
             >
               Add to the list
             </button>

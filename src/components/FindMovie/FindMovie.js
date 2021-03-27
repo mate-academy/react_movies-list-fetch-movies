@@ -10,7 +10,7 @@ export const FindMovie = ({ addMovie, movies }) => {
   const [newMovie, setNewMovie] = useState('');
   const [buttonVisible, setButtonVisible] = useState(true);
   const [title, setTitle] = useState('');
-  const [error, setError] = useState(true);
+  const [error, setError] = useState(false);
 
   const findMovie = async() => {
     const movie = await request(title);

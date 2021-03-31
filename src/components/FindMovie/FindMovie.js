@@ -32,7 +32,15 @@ export const FindMovie = (props) => {
     }
   };
 
-  const addFilmToList = () => props.addFilm(foundFilm);
+  const addFilmToList = () => {
+    const isCopy = !![...movies].find(
+      movie => movie.imdbId === foundFilm.imdbId,
+    );
+
+    if (!isCopy) {
+      props.addFilm(foundFilm);
+    }
+  };
 
   return (
     <>

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import PropTypes from 'prop-types';
 
 import { MovieCard } from '../MovieCard';
 import movies from '../../api/movies.json';
 
-export const FindMovie = () => {
+export const FindMovie = (props) => {
   const [searchText, searchingText] = useState('');
   const [foundFilm, setFoundFilm] = useState(movies[0]);
   const [findingError, setError] = useState(false);
@@ -31,17 +32,7 @@ export const FindMovie = () => {
     }
   };
 
-  const addFilmToList = () => {
-    if (movies.find(movie => movie.title === foundFilm.title)) {
-      fetch('../../api/movies', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify(foundFilm),
-      }).then(response => response.json());
-    }
-  };
+  const addFilmToList = () => props.addFilm(foundFilm);
 
   return (
     <>
@@ -97,4 +88,8 @@ export const FindMovie = () => {
       </div>
     </>
   );
+};
+
+FindMovie.propTypes = {
+  addFilm: PropTypes.func.isRequired,
 };

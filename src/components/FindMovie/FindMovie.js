@@ -9,6 +9,7 @@ export const FindMovie = (props) => {
   const [searchText, searchingText] = useState('');
   const [foundFilm, setFoundFilm] = useState(movies[0]);
   const [findingError, setError] = useState(false);
+
   const setSearchText = (e) => {
     searchingText(e.target.value);
     setError(false);
@@ -33,7 +34,7 @@ export const FindMovie = (props) => {
   };
 
   const addFilmToList = () => {
-    const isCopy = !![...movies].find(
+    const isCopy = !![...props.movies].find(
       movie => movie.imdbId === foundFilm.imdbId,
     );
 
@@ -100,4 +101,5 @@ export const FindMovie = (props) => {
 
 FindMovie.propTypes = {
   addFilm: PropTypes.func.isRequired,
+  movies: PropTypes.arrayOf().isRequired,
 };

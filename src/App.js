@@ -26,6 +26,7 @@ export class App extends Component {
         <div className="sidebar">
           <FindMovie
             addFilm={this.addFilmToLocalLibrary}
+            movies={movies}
           />
         </div>
       </div>

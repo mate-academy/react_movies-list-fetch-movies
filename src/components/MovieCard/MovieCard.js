@@ -1,10 +1,9 @@
 import React from 'react';
 import './MovieCard.scss';
-import PropTypes from 'prop-types';
 
 export const MovieCard = ({
   title,
-  description = '',
+  description,
   imgUrl,
   imdbUrl,
   Plot,
@@ -43,23 +42,3 @@ export const MovieCard = ({
     </div>
   </div>
 );
-
-MovieCard.propTypes = {
-  title: PropTypes.string,
-  description: PropTypes.string,
-  imgUrl: PropTypes.string,
-  imdbUrl: PropTypes.string,
-  Plot: PropTypes.string,
-  Title: PropTypes.string,
-  Poster: PropTypes.string,
-};
-
-MovieCard.defaultProps = {
-  title: '',
-  description: '',
-  imgUrl: '',
-  imdbUrl: '',
-  Plot: '',
-  Title: '',
-  Poster: '',
-};

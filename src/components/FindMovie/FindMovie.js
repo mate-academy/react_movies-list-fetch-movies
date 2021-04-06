@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
@@ -9,10 +8,40 @@ import { getMovie } from '../../api/api';
 const getMovies = name => getMovie(name);
 
 export const FindMovie = ({ setMovie }) => {
-  const [value, setInput] = useState('');
+  const [valueInput, setInput] = useState('');
   const [preview, setPreview] = useState({});
   const [error, setError] = useState(null);
   const isNormalPreview = !!Object.keys(preview).length;
+
+  const getMovieFromServer = async() => {
+    const movieFromServer = await getMovies(valueInput);
+
+    if (movieFromServer.Response === 'False') {
+      setError(true);
+
+      return;
+    }
+
+    setError(null);
+    setPreview(movieFromServer);
+  };
+
+  const addMovieToList = () => {
+    if (isNormalPreview) {
+      setMovie((array) => {
+        const hasThisMovie = array.some(
+          elem => (elem.imdbId || elem.imdbID) === preview.imdbID,
+        );
+
+        if (hasThisMovie) {
+          return array;
+        }
+
+        return [...array, preview];
+      });
+      setPreview({});
+    }
+  };
 
   return (
     <>
@@ -26,7 +55,7 @@ export const FindMovie = ({ setMovie }) => {
             <input
               type="text"
               id="movie-title"
-              value={value}
+              value={valueInput}
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': error })}
               onChange={(event) => {
@@ -47,18 +76,7 @@ export const FindMovie = ({ setMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={async() => {
-                const movieFromServer = await getMovies(value);
-
-                if (movieFromServer.Response === 'False') {
-                  setError(true);
-
-                  return;
-                }
-
-                setError(null);
-                setPreview(movieFromServer);
-              }}
+              onClick={getMovieFromServer}
             >
               Find a movie
             </button>
@@ -68,22 +86,7 @@ export const FindMovie = ({ setMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                if (isNormalPreview) {
-                  setMovie((array) => {
-                    const hasThisMovie = array.some(
-                      elem => (elem.imdbId || elem.imdbID) === preview.imdbID,
-                    );
-
-                    if (hasThisMovie) {
-                      return array;
-                    }
-
-                    return [...array, preview];
-                  });
-                  setPreview({});
-                }
-              }}
+              onClick={addMovieToList}
             >
               Add to the list
             </button>
@@ -101,8 +104,4 @@ export const FindMovie = ({ setMovie }) => {
       </div>
     </>
   );
-};
-
-FindMovie.propTypes = {
-  setMovie: PropTypes.func.isRequired,
 };

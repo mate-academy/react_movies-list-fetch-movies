@@ -10,9 +10,14 @@ export class App extends Component {
   };
 
   addMovies = (newMovies) => {
-    this.setState(prevState => ({
-      movies: [...prevState.movies, newMovies],
-    }));
+    const isNewMovies = this.state.movies
+      .some(movie => movie.title === newMovies.title);
+
+    if (!isNewMovies) {
+      this.setState(prevState => ({
+        movies: [...prevState.movies, newMovies],
+      }));
+    }
   }
 
   render() {

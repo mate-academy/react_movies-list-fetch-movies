@@ -30,11 +30,13 @@ export const FindMovie = ({ addMovies }) => {
           imdbId: response.imdbID,
         });
         setWasMovieFound(true);
+        setInput('');
       }
     });
   };
 
   const addToTheList = () => {
+    setWasMovieFound(false);
     addMovies(movie);
   };
 

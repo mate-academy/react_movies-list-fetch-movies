@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import './FindMovie.scss';
 import ClassNames from 'classnames';
 import { MovieCard } from '../MovieCard';
-import { moviesApi } from '../../api/findMovieApi';
+import { getMovie } from '../../api/findMovieApi';
 
-export const FindMovie = ({ addMovies }) => {
+export const FindMovie = ({ addMovie }) => {
   const [input, setInput] = useState('');
   const [movie, setMovie] = useState(null);
   const [wasMovieFound, setWasMovieFound] = useState(false);
@@ -16,10 +16,9 @@ export const FindMovie = ({ addMovies }) => {
     setIsFindMovie(false);
   };
 
-  const FindMovies = () => {
-    moviesApi(input).then((response) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (response.hasOwnProperty('Error')) {
+  const addingMovie = () => {
+    getMovie(input).then((response) => {
+      if (response.Response === 'False' || input === '') {
         setIsFindMovie(true);
       } else {
         setMovie({
@@ -37,12 +36,15 @@ export const FindMovie = ({ addMovies }) => {
 
   const addToTheList = () => {
     setWasMovieFound(false);
-    addMovies(movie);
+    addMovie(movie);
   };
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={event => event.preventDefault()}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -71,7 +73,7 @@ export const FindMovie = ({ addMovies }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={FindMovies}
+              onClick={addingMovie}
             >
               Find a movie
             </button>
@@ -98,5 +100,5 @@ export const FindMovie = ({ addMovies }) => {
 };
 
 FindMovie.propTypes = {
-  addMovies: PropTypes.func.isRequired,
+  addMovie: PropTypes.func.isRequired,
 };

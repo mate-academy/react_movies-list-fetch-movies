@@ -9,6 +9,12 @@ export class App extends Component {
     movies: data,
   };
 
+  addFilmToLocalLibrary = (film) => {
+    this.setState(state => ({
+      movies: [...state.movies, film],
+    }));
+  }
+
   render() {
     const { movies } = this.state;
 
@@ -18,7 +24,10 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie
+            addFilm={this.addFilmToLocalLibrary}
+            movies={movies}
+          />
         </div>
       </div>
     );

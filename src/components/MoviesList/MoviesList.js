@@ -8,9 +8,11 @@ export const MoviesList = ({
   movies = [],
 }) => (
   <div className="movies">
-    {movies.map(movie => (
-      <MovieCard key={movie.imdbId} {...movie} />
-    ))}
+    {movies.filter((movie, index, array) => (
+      index === array.findIndex(item => (item.imdbId === movie.imdbId))))
+      .map(movie => (
+        <MovieCard key={movie.imdbId} {...movie} />
+      ))}
   </div>
 );
 

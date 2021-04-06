@@ -11,7 +11,7 @@ export const FindMovie = ({ addMovie }) => {
   const [wasMovieFound, setWasMovieFound] = useState(false);
   const [isFindMovie, setIsFindMovie] = useState(false);
 
-  const inputChangeHandler = (event) => {
+  const handleChange = (event) => {
     setInput(event.target.value);
     setIsFindMovie(false);
   };
@@ -57,7 +57,7 @@ export const FindMovie = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className={ClassNames('input', { 'is-danger': isFindMovie })}
               value={input}
-              onChange={event => inputChangeHandler(event)}
+              onChange={event => handleChange(event)}
             />
           </div>
 

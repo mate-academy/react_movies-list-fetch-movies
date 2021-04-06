@@ -9,13 +9,13 @@ export class App extends Component {
     movies: data,
   };
 
-  addMovies = (newMovies) => {
-    const isNewMovies = this.state.movies
-      .some(movie => movie.title === newMovies.title);
+  addMovie = (movie) => {
+    const isNewMovie = this.state.movies
+      .some(addedMovie => addedMovie.title === movie.title);
 
-    if (!isNewMovies) {
+    if (!isNewMovie) {
       this.setState(prevState => ({
-        movies: [...prevState.movies, newMovies],
+        movies: [...prevState.movies, movie],
       }));
     }
   }
@@ -30,7 +30,7 @@ export class App extends Component {
         </div>
         <div className="sidebar">
           <FindMovie
-            addMovies={this.addMovies}
+            addMovie={this.addMovie}
           />
         </div>
       </div>

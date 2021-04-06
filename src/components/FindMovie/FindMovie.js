@@ -8,13 +8,13 @@ import { getMovie } from '../../api/api';
 const getMovies = name => getMovie(name);
 
 export const FindMovie = ({ setMovie }) => {
-  const [valueInput, setInput] = useState('');
-  const [preview, setPreview] = useState({});
+  const [query, setQuery] = useState('');
+  const [movie, setPreview] = useState({});
   const [error, setError] = useState(null);
-  const isNormalPreview = !!Object.keys(preview).length;
+  const hasFoundMovie = !!Object.keys(movie).length;
 
   const getMovieFromServer = async() => {
-    const movieFromServer = await getMovies(valueInput);
+    const movieFromServer = await getMovies(query);
 
     if (movieFromServer.Response === 'False') {
       setError(true);
@@ -27,17 +27,17 @@ export const FindMovie = ({ setMovie }) => {
   };
 
   const addMovieToList = () => {
-    if (isNormalPreview) {
-      setMovie((array) => {
-        const hasThisMovie = array.some(
-          elem => (elem.imdbId || elem.imdbID) === preview.imdbID,
+    if (hasFoundMovie) {
+      setMovie((previousMovies) => {
+        const hasThisMovie = previousMovies.some(
+          prevMovie => (prevMovie.imdbId || prevMovie.imdbID) === movie.imdbID,
         );
 
         if (hasThisMovie) {
-          return array;
+          return previousMovies;
         }
 
-        return [...array, preview];
+        return [...previousMovies, movie];
       });
       setPreview({});
     }
@@ -55,11 +55,11 @@ export const FindMovie = ({ setMovie }) => {
             <input
               type="text"
               id="movie-title"
-              value={valueInput}
+              value={query}
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': error })}
               onChange={(event) => {
-                setInput(event.target.value);
+                setQuery(event.target.value);
               }}
             />
           </div>
@@ -95,10 +95,10 @@ export const FindMovie = ({ setMovie }) => {
       </form>
 
       <div className="container">
-        {isNormalPreview && (
+        {hasFoundMovie && (
           <>
             <h2 className="title">Preview</h2>
-            <MovieCard {...preview} />
+            <MovieCard {...movie} />
           </>
         )}
       </div>

@@ -39,6 +39,8 @@ export const FindMovie = ({ setMovies }) => {
 
       return movies;
     });
+
+    setTitle('');
   };
 
   return (

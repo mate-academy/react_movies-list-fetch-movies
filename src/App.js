@@ -7,7 +7,26 @@ import data from './api/movies.json';
 export class App extends Component {
   state = {
     movies: data,
+    newMovie: null,
   };
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.newMovie !== this.state.newMovie) {
+      this.updateMovie();
+    }
+  }
+
+  updateMovie = () => {
+    const { newMovie, movies } = this.state;
+
+    const revise = movies.find(movie => movie.imdbId === newMovie.imdbId);
+
+    if (!revise) {
+      this.setState(prevState => ({
+        movies: [...prevState.movies, prevState.newMovie],
+      }));
+    }
+  }
 
   render() {
     const { movies } = this.state;
@@ -18,7 +37,12 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addNewMovie={(newMovie) => {
+            this.setState({
+              newMovie,
+            });
+          }}
+          />
         </div>
       </div>
     );

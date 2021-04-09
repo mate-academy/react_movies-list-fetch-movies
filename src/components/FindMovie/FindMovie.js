@@ -14,6 +14,7 @@ export const FindMovie = ({ addMovie }) => {
     const { value } = event.target;
 
     setSearchTitle(value);
+    setError(false);
   };
 
   const findMovie = async() => {
@@ -61,7 +62,10 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={isError
+                ? 'input is-danger'
+                : 'input is-success'
+              }
               value={searchTitle}
               onChange={addTitle}
             />

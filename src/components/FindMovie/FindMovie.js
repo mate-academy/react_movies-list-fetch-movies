@@ -1,24 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 
-export const FindMovie = ({ addNewMovie }) => {
+export const FindMovie = ({
+  addNewMovie,
+  duplicate,
+  deleteDuplicateMessage,
+}) => {
   const [value, setValue] = useState('');
   const [movie, setMovie] = useState('');
+  const [entered, setEntered] = useState(false);
+  const [messageDuplicate, setMessageDuplicate] = useState(false);
+
+  useEffect(() => {
+    setMessageDuplicate(duplicate);
+  });
+
+  const checkForMovie = (film) => {
+    if (film && !film.Error) {
+      setEntered(false);
+    } else {
+      setEntered(true);
+    }
+
+    if (duplicate) {
+      deleteDuplicateMessage();
+    }
+  };
 
   const onFindMovie = async() => {
     const result = await getMovie(value);
 
     setMovie(result);
+
+    checkForMovie(movie);
   };
 
   const onAddMovie = () => {
-    addNewMovie(movie);
+    if (movie && !movie.Error) {
+      addNewMovie(movie);
+    }
+
     setValue('');
     setMovie('');
+    checkForMovie(movie);
   };
 
   return (
@@ -33,11 +61,16 @@ export const FindMovie = ({ addNewMovie }) => {
             <input
               type="text"
               id="movie-title"
-              placeholder="Enter a title to search"
+              placeholder={entered
+                ? 'The input field must be filled'
+                : 'Enter a title to search'
+              }
               className="input is-danger"
               value={value}
               onChange={({ target }) => {
                 setValue(target.value);
+                setEntered(false);
+                deleteDuplicateMessage();
               }}
             />
           </div>
@@ -67,17 +100,31 @@ export const FindMovie = ({ addNewMovie }) => {
         </div>
       </form>
       {movie === '' || movie.Error ? (
-        <p className="help is-danger">
-          {movie.Error
-            ? 'Can\'t find a movie with such a title'
-            : ''
+        <>
+          <p className="help is-danger">
+            {movie.Error
+              ? 'Can\'t find a movie with such a title'
+              : ''
           }
-        </p>
+          </p>
+
+          <p className="help is-danger">
+            {entered && !movie.Error
+              ? 'Find the movie first'
+              : ''
+        }
+          </p>
+        </>
       ) : (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard {...movie} />
         </div>
+      )}
+      {messageDuplicate && (
+        <p className="help is-danger">
+          This movie cannot be added to the list because it has already there
+        </p>
       )}
 
     </>
@@ -86,4 +133,6 @@ export const FindMovie = ({ addNewMovie }) => {
 
 FindMovie.propTypes = {
   addNewMovie: PropTypes.func.isRequired,
+  duplicate: PropTypes.bool.isRequired,
+  deleteDuplicateMessage: PropTypes.func.isRequired,
 };

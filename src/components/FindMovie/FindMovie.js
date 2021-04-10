@@ -70,6 +70,8 @@ export const FindMovie = ({
               onChange={({ target }) => {
                 setValue(target.value);
                 setEntered(false);
+              }}
+              onFocus={() => {
                 deleteDuplicateMessage();
               }}
             />

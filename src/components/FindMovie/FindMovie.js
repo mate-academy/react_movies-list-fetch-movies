@@ -7,8 +7,8 @@ import { request } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
   const [searchTitle, setSearchTitle] = useState('');
-  const [movie, setNewMovie] = useState(null);
-  const [isError, setError] = useState(false);
+  const [movie, setMovie] = useState(null);
+  const [error, setError] = useState(false);
 
   const addTitle = (event) => {
     const { value } = event.target;
@@ -27,7 +27,7 @@ export const FindMovie = ({ addMovie }) => {
       return;
     }
 
-    setNewMovie(newMovie);
+    setMovie(newMovie);
     setError(false);
   };
 
@@ -40,7 +40,7 @@ export const FindMovie = ({ addMovie }) => {
     }
 
     setSearchTitle('');
-    setNewMovie(null);
+    setMovie(null);
     setError(false);
 
     addMovie(movie);
@@ -62,7 +62,7 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={isError
+              className={error
                 ? 'input is-danger'
                 : 'input is-success'
               }
@@ -71,7 +71,7 @@ export const FindMovie = ({ addMovie }) => {
             />
           </div>
 
-          {isError && (
+          {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -100,7 +100,7 @@ export const FindMovie = ({ addMovie }) => {
         </div>
       </form>
 
-      {!isError && (
+      {!error && (
         <div className="container">
           <h2 className="title">Preview</h2>
           {movie && (<MovieCard movie={movie} />)}

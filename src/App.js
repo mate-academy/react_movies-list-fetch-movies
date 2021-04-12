@@ -6,12 +6,12 @@ import { FindMovie } from './components/FindMovie';
 export const App = () => {
   const [movies, setMovies] = useState([]);
 
-  const addMovie = (movie) => {
-    if (movies.some(movieFromData => movieFromData.imdbID === movie.imdbID)) {
+  const addMovie = (movieFromSearch) => {
+    if (movies.some(movie => movie.imdbID === movieFromSearch.imdbID)) {
       return;
     }
 
-    setMovies([...movies, movie]);
+    setMovies([...movies, movieFromSearch]);
   };
 
   return (

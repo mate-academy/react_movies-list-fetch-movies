@@ -5,18 +5,18 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { request } from '../../api/api';
 
-export const FindMovie = ({ addMovie, movies }) => {
+export const FindMovie = ({ setMovies, movies }) => {
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(true);
   const [query, setQuery] = useState('');
-  const [isMoviePresentInTheList, setMoviePresent] = useState(false);
+  const [isMoviePresent, setIsMoviePresent] = useState(false);
 
-  const handleSearchTitle = (event) => {
+  const handleSearchQueryChange = (event) => {
     const { value } = event.target;
 
     setQuery(value);
     setError(false);
-    setMoviePresent(false);
+    setIsMoviePresent(false);
   };
 
   const getMovieFromServer = async() => {
@@ -47,12 +47,12 @@ export const FindMovie = ({ addMovie, movies }) => {
     }
 
     if (movies.find(initialMovie => (initialMovie.title === movie.title))) {
-      setMoviePresent(true);
+      setIsMoviePresent(true);
 
       return;
     }
 
-    addMovie([...movies, movie]);
+    setMovies([...movies, movie]);
 
     setQuery('');
     setMovie(null);
@@ -77,7 +77,7 @@ export const FindMovie = ({ addMovie, movies }) => {
               placeholder="Enter a title to search"
               className="input is-danger"
               value={query}
-              onChange={handleSearchTitle}
+              onChange={handleSearchQueryChange}
             />
           </div>
 
@@ -113,7 +113,7 @@ export const FindMovie = ({ addMovie, movies }) => {
 
       {!error && (
         <div className="container">
-          {isMoviePresentInTheList
+          {isMoviePresent
             && 'This movie is already present in the list'}
           <h2 className="title">Preview</h2>
           {!error && movie && (
@@ -126,10 +126,10 @@ export const FindMovie = ({ addMovie, movies }) => {
 };
 
 FindMovie.propTypes = {
-  addMovie: PropTypes.func.isRequired,
+  setMovies: PropTypes.func.isRequired,
   movies: PropTypes.arrayOf(
     PropTypes.shape({
-      imdbId: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
 };

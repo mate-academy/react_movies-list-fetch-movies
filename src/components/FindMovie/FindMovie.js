@@ -30,7 +30,6 @@ export const FindMovie = ({ setMovies, movies }) => {
     setMovie({
       title: newMovie.Title,
       description: newMovie.Plot,
-      imbdId: newMovie.imdbID,
       imgUrl: newMovie.Poster,
       imdbID: newMovie.imdbID,
       imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,

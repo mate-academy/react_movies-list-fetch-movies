@@ -10,7 +10,7 @@ export const FindMovie = ({ addMovie }) => {
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(false);
 
-  const addTitle = (event) => {
+  const addTitleForSearch = (event) => {
     const { value } = event.target;
 
     setSearchTitle(value);
@@ -67,7 +67,7 @@ export const FindMovie = ({ addMovie }) => {
                 : 'input is-success'
               }
               value={searchTitle}
-              onChange={addTitle}
+              onChange={addTitleForSearch}
             />
           </div>
 

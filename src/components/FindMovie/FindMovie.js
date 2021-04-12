@@ -6,23 +6,23 @@ import { MovieCard } from '../MovieCard';
 import { request } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
-  const [searchTitle, setSearchTitle] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(false);
 
-  const addTitleForSearch = (event) => {
+  const handleSearchQuery = (event) => {
     const { value } = event.target;
 
-    setSearchTitle(value);
+    setSearchQuery(value);
     setError(false);
   };
 
   const findMovie = async() => {
-    const newMovie = await request(searchTitle);
+    const newMovie = await request(searchQuery);
 
     if (newMovie.Response === 'False') {
       setError(true);
-      setSearchTitle('');
+      setSearchQuery('');
 
       return;
     }
@@ -39,7 +39,7 @@ export const FindMovie = ({ addMovie }) => {
       return;
     }
 
-    setSearchTitle('');
+    setSearchQuery('');
     setMovie(null);
     setError(false);
 
@@ -66,8 +66,8 @@ export const FindMovie = ({ addMovie }) => {
                 ? 'input is-danger'
                 : 'input is-success'
               }
-              value={searchTitle}
-              onChange={addTitleForSearch}
+              value={searchQuery}
+              onChange={handleSearchQuery}
             />
           </div>
 

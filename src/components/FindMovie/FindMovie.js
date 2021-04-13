@@ -7,11 +7,11 @@ import { request } from '../../api/api';
 
 export const FindMovie = ({ setMovies, movies }) => {
   const [movie, setMovie] = useState(null);
-  const [error, setError] = useState(true);
-  const [input, setInput] = useState('');
+  const [isError, setError] = useState(false);
+  const [query, setInput] = useState('');
   const [isMovieExist, setIsMovieExist] = useState(false);
 
-  const handleChange = (event) => {
+  const handleChangeQuery = (event) => {
     const { value } = event.target;
 
     setInput(value);
@@ -19,7 +19,7 @@ export const FindMovie = ({ setMovies, movies }) => {
   };
 
   const findMovie = async() => {
-    const newMovie = await request(input);
+    const newMovie = await request(query);
 
     if (newMovie.Response === 'False') {
       setError(true);
@@ -56,7 +56,7 @@ export const FindMovie = ({ setMovies, movies }) => {
     setMovies([...movies, movie]);
 
     setMovie(null);
-    setError(true);
+    setError(false);
     setInput('');
   };
 
@@ -72,25 +72,22 @@ export const FindMovie = ({ setMovies, movies }) => {
             <input
               type="text"
               id="movie-title"
-              value={input}
+              value={query}
               placeholder="Enter a title to search"
               className={
-                error
+                isError
                   ? 'input is-danger'
                   : 'input is-success'
               }
-              onChange={handleChange}
+              onChange={handleChangeQuery}
             />
           </div>
 
-          {error
-            ? (
-              <p className="help is-danger">
-                Can&apos;t find a movie with such a title
-              </p>
-            )
-            : ''
-          }
+          {isError && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -121,7 +118,7 @@ export const FindMovie = ({ setMovies, movies }) => {
         </h2>
       )}
 
-      {!error && movie && !isMovieExist && (
+      {!isError && movie && !isMovieExist && (
         <div className="container">
           <h2 className="title">
             Preview

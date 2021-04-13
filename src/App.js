@@ -1,26 +1,28 @@
-import React, { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-export class App extends Component {
-  state = {
-    movies: data,
-  };
+export const App = () => {
+  const [movies, setMovies] = useState(data);
 
-  render() {
-    const { movies } = this.state;
+  const addMovie = useCallback((newMovie) => {
+    if (movies.some(movie => movie.imdbId === newMovie.imdbId)) {
+      return;
+    }
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+    setMovies([...movies, newMovie]);
+  }, [movies]);
+
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie onAddMovie={addMovie} />
+      </div>
+    </div>
+  );
+};

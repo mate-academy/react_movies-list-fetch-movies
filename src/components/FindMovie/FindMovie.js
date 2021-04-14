@@ -7,22 +7,22 @@ import { request } from '../../api/api';
 
 export const FindMovie = ({ setMovies, movies }) => {
   const [movie, setMovie] = useState(null);
-  const [isError, setError] = useState(false);
-  const [query, setInput] = useState('');
+  const [hasError, setHasError] = useState(false);
+  const [query, setQuery] = useState('');
   const [isMovieExist, setIsMovieExist] = useState(false);
 
   const handleChangeQuery = (event) => {
     const { value } = event.target;
 
-    setInput(value);
-    setError(false);
+    setQuery(value);
+    setHasError(false);
   };
 
   const findMovie = async() => {
     const newMovie = await request(query);
 
     if (newMovie.Response === 'False') {
-      setError(true);
+      setHasError(true);
 
       return;
     }
@@ -34,7 +34,7 @@ export const FindMovie = ({ setMovies, movies }) => {
       imdbID: newMovie.imdbID,
       imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
     });
-    setError(false);
+    setHasError(false);
     setIsMovieExist(false);
   };
 
@@ -42,7 +42,7 @@ export const FindMovie = ({ setMovies, movies }) => {
     event.preventDefault();
 
     if (!movie) {
-      setError(true);
+      setHasError(true);
 
       return;
     }
@@ -56,8 +56,8 @@ export const FindMovie = ({ setMovies, movies }) => {
     setMovies([...movies, movie]);
 
     setMovie(null);
-    setError(false);
-    setInput('');
+    setHasError(false);
+    setQuery('');
   };
 
   return (
@@ -75,7 +75,7 @@ export const FindMovie = ({ setMovies, movies }) => {
               value={query}
               placeholder="Enter a title to search"
               className={
-                isError
+                hasError
                   ? 'input is-danger'
                   : 'input is-success'
               }
@@ -83,7 +83,7 @@ export const FindMovie = ({ setMovies, movies }) => {
             />
           </div>
 
-          {isError && (
+          {hasError && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -118,7 +118,7 @@ export const FindMovie = ({ setMovies, movies }) => {
         </h2>
       )}
 
-      {!isError && movie && !isMovieExist && (
+      {!hasError && movie && !isMovieExist && (
         <div className="container">
           <h2 className="title">
             Preview

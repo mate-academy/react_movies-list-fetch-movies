@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -9,8 +9,8 @@ export const App = () => {
   const [duplicate, setDuplicate] = useState(false);
   const [storedTheme, setTheme] = useLocalStorage('value', [...data]);
 
-  const findId = (prevMovie, movie) => prevMovie
-    .every(item => item.imdbID !== movie.imdbID) && movie.imdbID;
+  const findId = useCallback((prevMovie, movie) => prevMovie
+    .every(item => item.imdbID !== movie.imdbID) && movie.imdbID, []);
 
   const addNewMovie = (movie) => {
     setTheme((prevMovie) => {

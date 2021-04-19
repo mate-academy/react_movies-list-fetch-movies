@@ -35,18 +35,18 @@ export const FindMovie = ({ onAddMovie }) => {
     }
   };
 
-  const handleSubmit = (clickEvent) => {
-    clickEvent.preventDefault();
-
-    findMovie();
-  };
-
   const addNewMovie = () => {
     if (!movieWasNotFound && movie) {
       onAddMovie(movie);
       setQuery('');
       setMovie(null);
     }
+  };
+
+  const handleSubmit = (clickEvent) => {
+    clickEvent.preventDefault();
+
+    addNewMovie();
   };
 
   return (
@@ -63,6 +63,7 @@ export const FindMovie = ({ onAddMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
+              value={query}
               onChange={handleChange}
             />
           </div>
@@ -77,8 +78,9 @@ export const FindMovie = ({ onAddMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-light"
+              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -86,9 +88,8 @@ export const FindMovie = ({ onAddMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={addNewMovie}
             >
               Add to the list
             </button>

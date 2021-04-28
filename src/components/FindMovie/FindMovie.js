@@ -11,6 +11,7 @@ export const FindMovie = ({ movies, setMovies }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState(null);
   const [help, setHelp] = useState('');
+  const [isInputFilledСorrectly, setIsInputFilledСorrectly] = useState(true);
 
   return (
     <>
@@ -25,7 +26,10 @@ export const FindMovie = ({ movies, setMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={isInputFilledСorrectly
+                ? 'input'
+                : 'input is-danger'
+              }
               value={title}
               onChange={event => setTitle(event.target.value)}
             />
@@ -42,6 +46,7 @@ export const FindMovie = ({ movies, setMovies }) => {
               title={title}
               setMovie={setMovie}
               setHelp={setHelp}
+              setIsInputFilledСorrectly={setIsInputFilledСorrectly}
             />
           </div>
 
@@ -58,15 +63,14 @@ export const FindMovie = ({ movies, setMovies }) => {
         </div>
       </form>
 
-      {movie
-        ? (
-          <div className="container">
-            <h2 className="title">Preview</h2>
-            <MovieCard
-              {...movie}
-            />
-          </div>
-        ) : ''
+      {movie && (
+      <div className="container">
+        <h2 className="title">Preview</h2>
+        <MovieCard
+          {...movie}
+        />
+      </div>
+      )
       }
     </>
   );

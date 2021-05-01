@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
 import { MovieCard, MovieCardType } from '../MovieCard';
+import { InputFindMovie } from '../InputFindMovie';
+import { getMovie } from '../../api';
 
 export const FindMovie = ({ addMovie, movies }) => {
   const [title, setTitle] = useState('');
@@ -17,11 +19,6 @@ export const FindMovie = ({ addMovie, movies }) => {
   const [hiddenPreview, setPreview] = useState(true);
   const [hiddenErMovieRepeat, setHiddenErMovieRepeat] = useState('hidden');
   const [submitDisabled, setSubmitDisabled] = useState(true);
-
-  function getMovie() {
-    return fetch(`https://www.omdbapi.com/?apikey=6e3cbe75&t=${title}`)
-      .then(response => response.json());
-  }
 
   const findMovie = async() => {
     const newMovie = await getMovie(title);
@@ -45,7 +42,7 @@ export const FindMovie = ({ addMovie, movies }) => {
       setHiddenErMovieRepeat('hidden');
     }
 
-    if (newMovie.Title === undefined) {
+    if (!newMovie.Title) {
       setHiddenError('help is-danger');
       setPreview(true);
     } else {
@@ -64,57 +61,15 @@ export const FindMovie = ({ addMovie, movies }) => {
 
   return (
     <>
-      <form
-        className="find-movie"
-        onSubmit={e => handleSubmit(e)}
-      >
-        <div className="field">
-          <label className="label" htmlFor="movie-title">
-            Movie title
-          </label>
-
-          <div className="control">
-            <input
-              type="text"
-              id="movie-title"
-              value={title}
-              onChange={(e) => {
-                setHiddenError('hidden');
-                setTitle(e.target.value);
-              }}
-              placeholder="Enter a title to search"
-              className="input"
-            />
-          </div>
-
-          <p className={hiddenError}>
-            Can&apos;t find a movie with such a title
-          </p>
-        </div>
-
-        <div className="field is-grouped">
-          <div className="control">
-            <button
-              type="button"
-              className="button is-light"
-              onClick={() => findMovie()}
-            >
-              Find a movie
-            </button>
-          </div>
-
-          <div className="control">
-            <button
-              type="submit"
-              className="button is-primary"
-              disabled={submitDisabled}
-            >
-              Add to the list
-            </button>
-          </div>
-        </div>
-      </form>
-
+      <InputFindMovie
+        handleSubmit={handleSubmit}
+        findMovie={findMovie}
+        title={title}
+        setTitle={setTitle}
+        hiddenError={hiddenError}
+        setHiddenError={setHiddenError}
+        submitDisabled={submitDisabled}
+      />
       <div className="container">
         <p className={hiddenErMovieRepeat}>
           We have such movie!

@@ -9,7 +9,7 @@ export const App = () => {
   const [hiddenErMovieRepeat, setHiddenErMovieRepeat] = useState(true);
 
   const addMovie = (movie) => {
-    if (movie.title === undefined) {
+    if (!movie.title) {
       setHiddenErMovieRepeat(false);
 
       return;

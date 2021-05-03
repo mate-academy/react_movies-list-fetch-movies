@@ -18,28 +18,32 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const findMovie = async() => {
-    if (title) {
-      const foundMovie = await getMovie(title);
-
-      if (foundMovie.Error) {
-        setError(foundMovie.Error);
-        setMovie(null);
-      } else {
-        const newMovie = {
-          title: foundMovie.Title,
-          description: foundMovie.Plot,
-          imgUrl: foundMovie.Poster,
-          imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
-          imdbId: foundMovie.imdbID,
-        };
-
-        setMovie(newMovie);
-        setError('');
-      }
-    } else {
+    if (!title) {
       setMovie(null);
       setError('Not title entered');
+
+      return;
     }
+
+    const foundMovie = await getMovie(title);
+
+    if (foundMovie.Error) {
+      setError(foundMovie.Error);
+      setMovie(null);
+
+      return;
+    }
+
+    const newMovie = {
+      title: foundMovie.Title,
+      description: foundMovie.Plot,
+      imgUrl: foundMovie.Poster,
+      imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
+      imdbId: foundMovie.imdbID,
+    };
+
+    setMovie(newMovie);
+    setError('');
   };
 
   const addToList = () => {
@@ -100,7 +104,7 @@ export const FindMovie = ({ addMovie }) => {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
+        {movie && <h2 className="title">Preview</h2>}
         {movie && <MovieCard {...movie} />}
         {error && <div>{error}</div>}
       </div>

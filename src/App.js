@@ -1,39 +1,37 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-export class App extends Component {
-  state = {
-    movies: data,
-  };
+export const App = () => {
+  const [movies, setMovies] = useState([]);
 
-  addMovie = (newMovie) => {
+  useEffect(() => {
+    setMovies(data);
+  }, []);
+
+  const addMovie = (newMovie) => {
     if (newMovie) {
-      this.setState((state) => {
-        const exists = state.movies
+      setMovies((prevMovies) => {
+        const exists = prevMovies
           .find(movie => movie.imdbId === newMovie.imdbId);
 
         return !exists
-          ? { movies: [...state.movies, newMovie] }
-          : { movies: state.movies };
+          ? [...prevMovies, newMovie]
+          : prevMovies;
       });
     }
-  }
+  };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie addMovie={this.addMovie} />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie addMovie={addMovie} />
+      </div>
+    </div>
+  );
+};

@@ -8,17 +8,17 @@ import { getMovie } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addMovie }) => {
-  const [movieTitle, setMovie] = useState('');
-  const [wrongTitle, showWarning] = useState(false);
-  const [movie, showMovie] = useState({});
+  const [title, setTitle] = useState('');
+  const [wrongTitle, setWarning] = useState(false);
+  const [movie, setMovie] = useState({});
 
   const isFoundMovie = !!Object.keys(movie).length;
 
   const getMovieFromServer = async() => {
-    const movieData = await getMovie(movieTitle);
+    const movieData = await getMovie(title);
 
     if (movieData.Response === 'False') {
-      showWarning(true);
+      setWarning(true);
 
       return;
     }
@@ -32,15 +32,15 @@ export const FindMovie = ({ addMovie }) => {
       imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
     };
 
-    showWarning(false);
-    showMovie(foundMovie);
+    setWarning(false);
+    setMovie(foundMovie);
   };
 
   const addMovieToList = () => {
     if (isFoundMovie) {
       addMovie(movie);
-      setMovie('');
-      showMovie({});
+      setTitle('');
+      setMovie({});
     }
   };
 
@@ -58,9 +58,9 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={wrongTitle ? 'input is-danger' : 'input'}
-              value={movieTitle}
+              value={title}
               onChange={(e) => {
-                setMovie(e.target.value);
+                setTitle(e.target.value);
               }}
             />
           </div>

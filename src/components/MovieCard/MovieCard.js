@@ -7,6 +7,7 @@ export const MovieCard = ({
   description = '',
   imgUrl,
   imdbUrl,
+  imdbId,
 }) => (
   <div className="card">
     <div className="card-image">
@@ -46,4 +47,5 @@ MovieCard.propTypes = {
   description: PropTypes.string.isRequired,
   imgUrl: PropTypes.string.isRequired,
   imdbUrl: PropTypes.string.isRequired,
+  imdbId: PropTypes.string.isRequired,
 };

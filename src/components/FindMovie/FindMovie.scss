@@ -1,3 +1,13 @@
 .find-movie {
   margin-bottom: 20px;
+
+  &__error-message {
+    max-height: 2em;
+    overflow: hidden;
+    transition-property: max-height;
+    transition-duration: 0.3s;
+    &--is-hidden {
+      max-height: 0;
+    }
+  }
 }

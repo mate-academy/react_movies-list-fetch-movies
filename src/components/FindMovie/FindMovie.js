@@ -14,17 +14,22 @@ export const FindMovie = ({ addMovie, movies }) => {
   const [sameFilm, setSameFilm] = useState(false);
   const [errorLoad, setErrorLoad] = useState(false);
 
-  const request = async() => {
+  const clearForm = () => {
+    setTitle('');
+    setDescription('');
+    setImgUrl('');
+    setImdbId('');
+    setImdbUrl('');
+    setSearchingTitle('');
+  };
+
+  const loadFilm = async() => {
     const url = `${API_URL}${searchingTitle}`;
     const film = await fetch(url).then(response => response.json());
 
     if (film.Response === 'False') {
       setErrorLoad(true);
-      setTitle('');
-      setDescription('');
-      setImgUrl('');
-      setImdbId('');
-      setImdbUrl('');
+      clearForm();
     } else {
       setErrorLoad(false);
       setTitle(film.Title);
@@ -57,6 +62,9 @@ export const FindMovie = ({ addMovie, movies }) => {
 
         return arr;
       });
+      clearForm();
+      setErrorLoad(false);
+      setSameFilm(false);
     }
   };
 
@@ -95,7 +103,7 @@ export const FindMovie = ({ addMovie, movies }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={request}
+              onClick={loadFilm}
             >
               Find a movie
             </button>

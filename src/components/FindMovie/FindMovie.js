@@ -8,7 +8,7 @@ import { getMoviesFromApi } from '../../api/api';
 export const FindMovie = ({ addMovie }) => {
   const [value, setValue] = useState('');
   const [movie, setMovie] = useState(null);
-  const [foundMovie, setFound] = useState(false);
+  const [foundMovie, setFound] = useState(true);
 
   const getMovie = async() => {
     const data = await getMoviesFromApi(value);

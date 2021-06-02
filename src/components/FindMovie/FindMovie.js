@@ -6,64 +6,64 @@ import { MovieCard } from '../MovieCard';
 export const FindMovie = ({ addMovie, movies }) => {
   const API_URL = `https://www.omdbapi.com/?apikey=dfe9f484&t=`;
   const [searchingTitle, setSearchingTitle] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [imgUrl, setImgUrl] = useState('');
-  const [imdbUrl, setImdbUrl] = useState('');
-  const [imdbId, setImdbId] = useState('');
+  const [newMovie, setNewMovie] = useState({
+    title: '',
+    description: '',
+    imgUrl: '',
+    imdbUrl: '',
+    imdbId: '',
+  });
   const [sameFilm, setSameFilm] = useState(false);
   const [errorLoad, setErrorLoad] = useState(false);
+  const [emptyForm, setEmptyForm] = useState(false);
 
   const clearForm = () => {
-    setTitle('');
-    setDescription('');
-    setImgUrl('');
-    setImdbId('');
-    setImdbUrl('');
+    setNewMovie({
+      title: '',
+      description: '',
+      imgUrl: '',
+      imdbUrl: '',
+      imdbId: '',
+    });
     setSearchingTitle('');
   };
 
   const loadFilm = async() => {
+    setEmptyForm(false);
     const url = `${API_URL}${searchingTitle}`;
     const film = await fetch(url).then(response => response.json());
+    const { Title, Plot, imdbID } = film;
+    let { Poster } = film;
+
+    Poster = (Poster === 'N/A')
+      ? `https://bytes.ua/wp-content/uploads/2017/08/no-image.png`
+      : Poster;
 
     if (film.Response === 'False') {
       setErrorLoad(true);
       clearForm();
     } else {
       setErrorLoad(false);
-      setTitle(film.Title);
-      setDescription(film.Plot);
-      if (film.Poster !== 'N/A') {
-        setImgUrl(film.Poster);
-      } else {
-        setImgUrl(`https://bytes.ua/wp-content/uploads/2017/08/no-image.png`);
-      }
-
-      setImdbId(film.imdbID);
-      setImdbUrl(`https://www.imdb.com/title/${film.imdbID}`);
+      setNewMovie({
+        title: Title,
+        description: Plot,
+        imgUrl: Poster,
+        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+        imdbId: imdbID,
+      });
     }
   };
 
   const onAddMovie = () => {
-    if (movies.some(movie => movie.imdbId === imdbId)) {
+    setErrorLoad(false);
+    if (searchingTitle === '') {
+      setEmptyForm(true);
+    } else if (movies.some(movie => movie.imdbId === newMovie.imdbId)) {
       setSameFilm(true);
     } else {
-      addMovie((prev) => {
-        const arr = [...prev];
-
-        arr.push({
-          title,
-          description,
-          imgUrl,
-          imdbUrl,
-          imdbId,
-        });
-
-        return arr;
-      });
+      addMovie(prev => (
+        [...prev, newMovie]));
       clearForm();
-      setErrorLoad(false);
       setSameFilm(false);
     }
   };
@@ -96,6 +96,11 @@ export const FindMovie = ({ addMovie, movies }) => {
               Can&apos;t find a movie with such a title
             </p>
           )}
+          {emptyForm && (
+            <p className="help is-danger">
+              Search film before adding
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -120,7 +125,7 @@ export const FindMovie = ({ addMovie, movies }) => {
           </div>
         </div>
       </form>
-      {imdbId !== '' && (
+      {newMovie.imdbId !== '' && (
       <div className="container">
         <h2 className="title">
           Preview
@@ -137,11 +142,11 @@ export const FindMovie = ({ addMovie, movies }) => {
           )}
         </h2>
         <MovieCard
-          title={title}
-          description={description}
-          imgUrl={imgUrl}
-          imdbUrl={imdbUrl}
-          imdbId={imdbId}
+          title={newMovie.title}
+          description={newMovie.description}
+          imgUrl={newMovie.imgUrl}
+          imdbUrl={newMovie.imdbUrl}
+          imdbId={newMovie.imdbId}
         />
       </div>
       )}

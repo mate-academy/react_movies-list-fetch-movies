@@ -11,7 +11,7 @@ export const App = () => {
       return;
     }
 
-    if (movies.findIndex(elem => elem.imdbId === movie.imdbId) < 0) {
+    if (!movies.some(elem => elem.imdbId === movie.imdbId)) {
       setMovies(() => [...movies, movie]);
     }
   };

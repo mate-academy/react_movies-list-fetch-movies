@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './FindMovie.scss';
 import PropTypes from 'prop-types';
+import Classnames from 'classnames';
 import { getData } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 
@@ -56,7 +57,9 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={Classnames('input', {
+                'input is-danger': error,
+              })}
               value={title}
               onChange={(event) => {
                 setTitle(event.target.value);

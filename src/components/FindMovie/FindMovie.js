@@ -33,6 +33,10 @@ export const FindMovie = ({ addMovie }) => {
 
   const onFormSubmit = (event) => {
     event.preventDefault();
+    if (Object.values(movieForCard).some(value => value === undefined)) {
+      return;
+    }
+
     addMovie(movieForCard);
   };
 

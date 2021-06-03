@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
-// import movies from '../../api/movies.json';
 
 export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');

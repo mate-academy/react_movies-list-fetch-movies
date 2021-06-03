@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=160d8ba';
+const BASE_URL = 'https://www.omdbapi.com/?i=tt3896198&apikey=160d8ba';
 
 export function getMoviesFromApi(title) {
   return fetch(`${BASE_URL}&t=${title}`)

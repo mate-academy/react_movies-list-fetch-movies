@@ -1,15 +1,15 @@
 import React from 'react';
-
-import './MoviesList.scss';
 import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
+import './MoviesList.scss';
 
-export const MoviesList = ({
-  movies = [],
-}) => (
+export const MoviesList = ({ movies }) => (
   <div className="movies">
     {movies.map(movie => (
-      <MovieCard key={movie.imdbId} {...movie} />
+      <MovieCard
+        key={movie.imdbId}
+        movie={movie}
+      />
     ))}
   </div>
 );

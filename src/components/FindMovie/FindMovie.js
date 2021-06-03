@@ -6,7 +6,7 @@ import { MovieCard } from '../MovieCard';
 import { request } from '../../api/request';
 
 export const FindMovie = ({ addMovie }) => {
-  const [film, requestFilm] = useState({});
+  const [film, setFilm] = useState({});
   const [title, setTitle] = useState('interstellar');
   const [hasError, findError] = useState(false);
   const [input, changeInput] = useState('');
@@ -17,19 +17,17 @@ export const FindMovie = ({ addMovie }) => {
         if (response.Response === 'False') {
           findError(true);
         } else {
-          requestFilm(response);
+          setFilm({
+            title: response.Title,
+            description: response.Plot,
+            imgUrl: response.Poster,
+            imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
+            imdbId: response.imdbID,
+          });
           findError(false);
         }
       });
   }, [title]);
-
-  const filmRed = {
-    title: film.Title,
-    description: film.Plot,
-    imgUrl: film.Poster,
-    imdbUrl: `https://www.imdb.com/title/${film.imdbID}/`,
-    imdbId: film.imdbID,
-  };
 
   const searchFormHandler = (event) => {
     setTitle(event.target.title.value);
@@ -38,7 +36,7 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const addMovieFormHandler = (event) => {
-    addMovie(filmRed);
+    addMovie(film);
     event.preventDefault();
   };
 
@@ -95,7 +93,7 @@ export const FindMovie = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        <MovieCard {...filmRed} />
+        <MovieCard {...film} />
       </div>
     </>
   );

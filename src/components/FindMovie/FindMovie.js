@@ -29,6 +29,7 @@ export const FindMovie = ({
     setTitleError({
       staus: false,
       message: '',
+      about: '',
     });
     resetMovieAlreadyInList();
   };
@@ -45,6 +46,7 @@ export const FindMovie = ({
     setTitleError({
       staus: false,
       message: '',
+      about: '',
     });
   };
 
@@ -63,14 +65,16 @@ export const FindMovie = ({
         } else {
           setTitleError({
             status: true,
-            message: Error,
+            message: 'Incorrect title',
+            about: Error,
           });
         }
       })
       .catch((err) => {
         setTitleError({
           status: true,
-          message: err.message,
+          message: 'Failed to load the movie',
+          about: err.message,
         });
       });
   };
@@ -100,18 +104,17 @@ export const FindMovie = ({
             />
           </div>
 
-          {titleError && (
+          {titleError.status && (
             <p className="help is-danger">
               {titleError.message}
             </p>
           )}
 
-          { isNewMovieAlreadyInList && (
+          {isNewMovieAlreadyInList && (
             <p className="help is-danger">
               Movie is already in the list
             </p>
-          )
-          }
+          )}
         </div>
 
         <div className="field is-grouped">

@@ -7,20 +7,31 @@ import data from './api/movies.json';
 export class App extends Component {
   state = {
     movies: data,
+    isNewMovieAlreadyInList: false,
   };
+
+  resetMovieAlreadyInList = () => {
+    this.setState({ isNewMovieAlreadyInList: false });
+  }
 
   addMovie = (newMovie) => {
     const { movies } = this.state;
 
-    if (!movies.find(movie => movie.imdbId === newMovie.imdbId)) {
-      this.setState(state => ({
-        movies: state.movies.concat(newMovie),
-      }));
+    if (movies.find(movie => movie.imdbId === newMovie.imdbId)) {
+      this.setState({ isNewMovieAlreadyInList: true });
+
+      return;
     }
+
+    this.setState(state => ({
+      movies: state.movies.concat(newMovie),
+    }));
+
+    this.resetMovieAlreadyInList();
   }
 
   render() {
-    const { movies } = this.state;
+    const { movies, isNewMovieAlreadyInList } = this.state;
 
     return (
       <div className="page">
@@ -28,7 +39,11 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie addMovie={this.addMovie} />
+          <FindMovie
+            addMovie={this.addMovie}
+            resetMovieAlreadyInList={this.resetMovieAlreadyInList}
+            isNewMovieAlreadyInList={isNewMovieAlreadyInList}
+          />
         </div>
       </div>
     );

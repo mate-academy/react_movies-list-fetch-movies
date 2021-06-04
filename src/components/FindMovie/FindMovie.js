@@ -5,7 +5,11 @@ import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
 import { requestByTitle } from '../../api/requests';
 
-export const FindMovie = ({ addMovie }) => {
+export const FindMovie = ({
+  addMovie,
+  resetMovieAlreadyInList,
+  isNewMovieAlreadyInList,
+}) => {
   const [title, setTitle] = useState('');
 
   const [movie, setMovie] = useState({
@@ -22,6 +26,22 @@ export const FindMovie = ({ addMovie }) => {
 
   const titleChangeHandler = ({ value }) => {
     setTitle(value);
+    setTitleError({
+      staus: false,
+      message: '',
+    });
+    resetMovieAlreadyInList();
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    addMovie(movie);
+    setMovie({
+      title: '',
+      description: '',
+      imgUrl: '',
+      imdbUrl: '',
+    });
     setTitleError({
       staus: false,
       message: '',
@@ -59,10 +79,7 @@ export const FindMovie = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          addMovie(movie);
-        }}
+        onSubmit={submitHandler}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -88,6 +105,13 @@ export const FindMovie = ({ addMovie }) => {
               {titleError.message}
             </p>
           )}
+
+          { isNewMovieAlreadyInList && (
+            <p className="help is-danger">
+              Movie is already in the list
+            </p>
+          )
+          }
         </div>
 
         <div className="field is-grouped">
@@ -125,4 +149,6 @@ export const FindMovie = ({ addMovie }) => {
 
 FindMovie.propTypes = {
   addMovie: PropTypes.func.isRequired,
+  resetMovieAlreadyInList: PropTypes.func.isRequired,
+  isNewMovieAlreadyInList: PropTypes.bool.isRequired,
 };

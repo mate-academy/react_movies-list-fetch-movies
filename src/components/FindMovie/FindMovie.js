@@ -15,7 +15,7 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const onFindMovie = () => {
-    const url = `http://www.omdbapi.com/?t=${title}&apikey=8de92ae6`;
+    const url = `https://www.omdbapi.com/?t=${title}&apikey=8de92ae6`;
 
     fetch(url)
       .then(movieFromServer => movieFromServer.json())

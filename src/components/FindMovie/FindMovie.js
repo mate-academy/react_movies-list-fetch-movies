@@ -89,7 +89,9 @@ export const FindMovie = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        <MovieCard {...film} />
+        {!(hasError || title === '') && (
+          <MovieCard {...film} />
+        )}
       </div>
     </>
   );

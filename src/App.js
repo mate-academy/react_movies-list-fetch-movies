@@ -1,26 +1,43 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+
 import './App.scss';
+
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-export class App extends Component {
-  state = {
-    movies: data,
+export const App = () => {
+  const [movies, setMovies] = useState(data);
+  const [isNewMovieAlreadyInList, setNewMovieAlreadyInList] = useState(false);
+
+  const resetMovieAlreadyInList = () => {
+    setNewMovieAlreadyInList(false);
   };
 
-  render() {
-    const { movies } = this.state;
+  const addMovie = (newMovie) => {
+    if (movies.find(movie => movie.imdbId === newMovie.imdbId)) {
+      setNewMovieAlreadyInList(true);
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+      return;
+    }
+
+    setMovies(movies.concat(newMovie));
+
+    resetMovieAlreadyInList();
+  };
+
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          addMovie={addMovie}
+          resetMovieAlreadyInList={resetMovieAlreadyInList}
+          isNewMovieAlreadyInList={isNewMovieAlreadyInList}
+        />
+      </div>
+    </div>
+  );
+};

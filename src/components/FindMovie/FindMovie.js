@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import className from 'classnames';
 import PropTypes from 'prop-types';
 
-import { getMivieFromServer } from '../../api/getMovieFromServer';
+import { getMovieFromServer } from '../../api/getMovieFromServer';
 
 import './FindMovie.scss';
 
@@ -14,7 +14,7 @@ export const FindMovie = ({ addMovie }) => {
   const [searchError, setSearchError] = useState(false);
 
   const sendRequest = () => {
-    getMivieFromServer(title)
+    getMovieFromServer(title)
       // eslint-disable-next-line consistent-return
       .then((result) => {
         if (result.Response === 'False') {

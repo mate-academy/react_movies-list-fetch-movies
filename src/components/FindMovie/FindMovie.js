@@ -78,7 +78,10 @@ export const FindMovie = ({ onAddMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => onAddMovie(movie)}
+              onClick={() => {
+                onAddMovie(movie);
+                setQuery('');
+              }}
             >
               Add to the list
             </button>

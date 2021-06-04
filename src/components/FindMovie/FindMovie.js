@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
@@ -7,14 +7,16 @@ import { request } from '../../api/request';
 
 export const FindMovie = ({ addMovie }) => {
   const [film, setFilm] = useState({});
-  const [title, setTitle] = useState('interstellar');
-  const [hasError, findError] = useState(false);
+  const [title, setTitle] = useState('');
+  const [hasError, setError] = useState(false);
 
-  useEffect(() => {
+  const submitHandler = (event) => {
+    setTitle(event.target.title.value);
+
     request(title)
       .then((response) => {
-        if (response.Response === 'False') {
-          findError(true);
+        if (response.Response === 'False' && title !== '') {
+          setError(true);
         } else {
           setFilm({
             title: response.Title,
@@ -23,24 +25,22 @@ export const FindMovie = ({ addMovie }) => {
             imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
             imdbId: response.imdbID,
           });
-          findError(false);
+          setError(false);
         }
       });
-  }, [title]);
 
-  const searchFormHandler = (event) => {
-    setTitle(event.target.title.value);
     event.preventDefault();
   };
 
   const addMovieFormHandler = (event) => {
-    addMovie(film);
-    event.preventDefault();
+    if (!hasError && title !== '') {
+      addMovie(film);
+    }
   };
 
   return (
     <>
-      <form className="find-movie" onSubmit={searchFormHandler}>
+      <form className="find-movie" onSubmit={submitHandler}>
         <div className="field">
 
           <label className="label" htmlFor="movie-title">
@@ -52,7 +52,7 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${hasError && 'is-danger'}`}
               name="title"
             />
           </div>

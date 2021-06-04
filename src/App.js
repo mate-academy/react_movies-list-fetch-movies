@@ -1,13 +1,34 @@
 import React, { Component } from 'react';
+
 import './App.scss';
+
+import data from './api/movies.json';
+
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import data from './api/movies.json';
 
 export class App extends Component {
   state = {
     movies: data,
   };
+
+  addMovie = (newMovie) => {
+    if (!newMovie) {
+      return;
+    }
+
+    if (!newMovie.imdbId) {
+      return;
+    }
+
+    if (this.state.movies.some(({ imdbId }) => imdbId === newMovie.imdbId)) {
+      return;
+    }
+
+    this.setState(state => ({
+      movies: [...state.movies, newMovie],
+    }));
+  }
 
   render() {
     const { movies } = this.state;
@@ -18,7 +39,7 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie onAddMovie={this.addMovie} />
         </div>
       </div>
     );

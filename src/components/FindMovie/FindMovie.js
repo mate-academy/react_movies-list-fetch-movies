@@ -9,7 +9,6 @@ export const FindMovie = ({ addMovie }) => {
   const [film, setFilm] = useState({});
   const [title, setTitle] = useState('interstellar');
   const [hasError, findError] = useState(false);
-  const [input, changeInput] = useState('');
 
   useEffect(() => {
     request(title)
@@ -31,7 +30,6 @@ export const FindMovie = ({ addMovie }) => {
 
   const searchFormHandler = (event) => {
     setTitle(event.target.title.value);
-    changeInput('');
     event.preventDefault();
   };
 
@@ -42,34 +40,22 @@ export const FindMovie = ({ addMovie }) => {
 
   return (
     <>
-      <form onSubmit={searchFormHandler}>
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-            name="title"
-            value={input}
-            onChange={event => changeInput(event.target.value)}
-          />
-        </div>
-
-        <div className="control">
-          <button
-            type="submit"
-            className="button is-light"
-          >
-            Find a movie
-          </button>
-        </div>
-      </form>
-
-      <form className="find-movie" onSubmit={addMovieFormHandler}>
+      <form className="find-movie" onSubmit={searchFormHandler}>
         <div className="field">
+
           <label className="label" htmlFor="movie-title">
             Movie title
           </label>
+
+          <div className="control">
+            <input
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className="input is-danger"
+              name="title"
+            />
+          </div>
 
           {hasError && (
           <p className="help is-danger">
@@ -83,7 +69,17 @@ export const FindMovie = ({ addMovie }) => {
           <div className="control">
             <button
               type="submit"
+              className="button is-light"
+            >
+              Find a movie
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="button"
               className="button is-primary"
+              onClick={addMovieFormHandler}
             >
               Add to the list
             </button>

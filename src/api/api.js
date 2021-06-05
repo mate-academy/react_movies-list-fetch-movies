@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?apikey=6884881&t=';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=6884881&t=';
 
 export function request(filmTitle) {
   return fetch(`${BASE_URL}${filmTitle}`)

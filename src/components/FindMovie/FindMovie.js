@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 
@@ -7,33 +7,36 @@ import { request } from '../../api/request';
 
 export const FindMovie = ({ addMovie }) => {
   const [film, setFilm] = useState({});
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(' ');
   const [hasError, setError] = useState(false);
 
   const submitHandler = (event) => {
     setTitle(event.target.title.value);
-
-    request(title)
-      .then((response) => {
-        if (response.Response === 'False' && title !== '') {
-          setError(true);
-        } else {
-          setFilm({
-            title: response.Title,
-            description: response.Plot,
-            imgUrl: response.Poster,
-            imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
-            imdbId: response.imdbID,
-          });
-          setError(false);
-        }
-      });
-
     event.preventDefault();
   };
 
+  useEffect(() => {
+    if (title !== ' ') {
+      request(title)
+        .then((response) => {
+          if (response.Response === 'False' || title === '') {
+            setError(true);
+          } else {
+            setFilm({
+              title: response.Title,
+              description: response.Plot,
+              imgUrl: response.Poster,
+              imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
+              imdbId: response.imdbID,
+            });
+            setError(false);
+          }
+        });
+    }
+  }, [title]);
+
   const addMovieFormHandler = (event) => {
-    if (!hasError && title !== '') {
+    if (!hasError || title !== '') {
       addMovie(film);
     }
   };
@@ -89,7 +92,7 @@ export const FindMovie = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {!(hasError || title === '') && (
+        {!(hasError || title === ' ') && (
           <MovieCard {...film} />
         )}
       </div>

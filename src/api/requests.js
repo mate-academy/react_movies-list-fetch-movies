@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?apikey=f353cda5&t=';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=f353cda5&t=';
 
 export const getFilm = async(searchQuery) => {
   const URL = BASE_URL + (searchQuery.toLowerCase().split(' ').join('+'));

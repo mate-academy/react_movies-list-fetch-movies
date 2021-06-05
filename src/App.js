@@ -26,7 +26,7 @@ export const App = () => {
       title: movieToAdd.Title,
       description: movieToAdd.Plot,
       imgUrl: movieToAdd.Poster,
-      imdbUrl: 'https://www.imdb.com/title/tt1375666',
+      imdbUrl: `https://www.imdb.com/title/${movieToAdd.imdbID}`,
       imdbId: movieToAdd.imdbID,
     };
 

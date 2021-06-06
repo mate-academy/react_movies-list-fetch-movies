@@ -7,17 +7,17 @@ import { MovieCard } from '../MovieCard';
 import { getFilmByTitle } from '../api/api';
 
 export const FindMovie = ({ onAddMovie }) => {
-  const [find, setFind] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [findError, setFindError] = useState(false);
   const [film, setFilm] = useState(null);
 
   const findMovie = async() => {
     try {
-      const newFilm = await getFilmByTitle(find);
+      const newFilm = await getFilmByTitle(searchQuery);
 
       setFindError(false);
       setFilm(newFilm);
-      setFind('');
+      setSearchQuery('');
     } catch (error) {
       setFindError(true);
       setFilm(null);
@@ -25,18 +25,22 @@ export const FindMovie = ({ onAddMovie }) => {
   };
 
   const findHandler = (event) => {
-    setFind(event.target.value);
+    setSearchQuery(event.target.value);
     setFindError(false);
   };
 
-  const addMovieHandler = () => {
+  const addMovieHandler = (event) => {
+    event.preventDefault();
     onAddMovie(film);
     setFilm(null);
   };
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={addMovieHandler}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -47,12 +51,12 @@ export const FindMovie = ({ onAddMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-            // className="input is-danger"
+              // className="input is-danger"
               className={classNames(
                 'input',
                 { 'is-danger': findError },
               )}
-              value={find}
+              value={searchQuery}
               onChange={findHandler}
             />
           </div>
@@ -70,7 +74,7 @@ export const FindMovie = ({ onAddMovie }) => {
             <button
               type="button"
               className="button is-light"
-              disabled={!find}
+              disabled={!searchQuery}
               onClick={findMovie}
             >
               Find a movie
@@ -79,10 +83,9 @@ export const FindMovie = ({ onAddMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
               disabled={!film}
-              onClick={addMovieHandler}
             >
               Add to the list
             </button>
@@ -91,14 +94,12 @@ export const FindMovie = ({ onAddMovie }) => {
       </form>
 
       <div className="container">
-        {film
-        && (
-        <>
-          <h2 className="title">Preview</h2>
-          <MovieCard {...film} />
-        </>
-        )
-      }
+        {film && (
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard {...film} />
+          </>
+        )}
       </div>
     </>
   );

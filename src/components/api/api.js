@@ -7,7 +7,7 @@ export const getFilmByTitle = title => (
   request(`&t=${title}`)
     // eslint-disable-next-line max-len
     .then(data => (data.Response === 'False' ? Promise.reject(data.Error) : data))
-    .then(film => normalizeFilmKey(film))
+    .then(normalizeFilmKey)
 );
 
 function normalizeFilmKey(obj) {

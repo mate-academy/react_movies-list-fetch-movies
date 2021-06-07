@@ -1,26 +1,46 @@
-import React, { Component } from 'react';
-import './App.scss';
-import { MoviesList } from './components/MoviesList';
-import { FindMovie } from './components/FindMovie';
+import React, { useState } from 'react';
+
 import data from './api/movies.json';
 
-export class App extends Component {
-  state = {
-    movies: data,
+import './App.scss';
+
+import { MoviesList } from './components/MoviesList';
+import { FindMovie } from './components/FindMovie';
+
+export const App = () => {
+  const [movies, setData] = useState(data);
+
+  const addMovie = (movieToAdd) => {
+    if (!movieToAdd) {
+      return;
+    }
+
+    // eslint-disable-next-line
+    for (const movie of movies) {
+      if (movie.imdbId === movieToAdd.imdbID) {
+        return;
+      }
+    }
+
+    const newMovie = {
+      title: movieToAdd.Title,
+      description: movieToAdd.Plot,
+      imgUrl: movieToAdd.Poster,
+      imdbUrl: `https://www.imdb.com/title/${movieToAdd.imdbID}`,
+      imdbId: movieToAdd.imdbID,
+    };
+
+    setData(currentMovies => [...currentMovies, newMovie]);
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie addMovie={addMovie} />
+      </div>
+    </div>
+  );
+};

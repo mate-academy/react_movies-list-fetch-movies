@@ -44,6 +44,9 @@ export const FindMovie = ({ addMovie }) => {
         return movies;
       }
 
+      setNewMovie(null);
+      setsearchQuery('');
+
       return [...movies, newMovie];
     });
   };

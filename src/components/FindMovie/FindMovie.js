@@ -40,6 +40,10 @@ export const FindMovie = ({ addMovie }) => {
         return movies;
       }
 
+      if (movies.find(movie => movie.title === newMovie.title) !== undefined) {
+        return movies;
+      }
+
       return [...movies, newMovie];
     });
   };

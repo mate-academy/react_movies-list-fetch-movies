@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
+import classNames from 'classnames';
 
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../api/api';
@@ -13,8 +14,9 @@ export const FindMovie = ({ addMovie }) => {
   const searchFilm = () => {
     getMovie(title)
       .then((foundedMovie) => {
-        if (foundedMovie.Responce === 'False') {
+        if (foundedMovie.Response === 'False') {
           setError('true');
+          setMovie(null);
 
           return;
         }
@@ -44,7 +46,9 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames(
+                'input', { 'is-danger': error },
+              )}
               value={title}
               onChange={(event) => {
                 setTitle(event.target.value);

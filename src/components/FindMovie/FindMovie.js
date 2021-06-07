@@ -17,6 +17,10 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const findMovie = () => {
+    if (query === '' || query.length === 0) {
+      return;
+    }
+
     loadMovie(query).then((response) => {
       if (response.Response === 'False') {
         setIsFindMovie(true);

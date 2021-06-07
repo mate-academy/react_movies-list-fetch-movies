@@ -9,36 +9,37 @@ import { loadMovie } from '../../api/api';
 export const FindMovie = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState(null);
-  const [isFindMovie, setIsFindMovie] = useState(false);
+  const [isMovieNotFound, setIsMovieNotFound] = useState(false);
 
   const handleChange = (event) => {
     setQuery(event.target.value);
-    setIsFindMovie(false);
+    setIsMovieNotFound(false);
   };
 
   const findMovie = () => {
-    if (query === '' || query.length === 0) {
+    if (!query) {
       return;
     }
 
-    loadMovie(query).then((response) => {
-      if (response.Response === 'False') {
-        setIsFindMovie(true);
-        setMovie(null);
+    loadMovie(query)
+      .then((response) => {
+        if (response.Response === 'False') {
+          setIsMovieNotFound(true);
+          setMovie(null);
 
-        return;
-      }
+          return;
+        }
 
-      setMovie({
-        title: response.Title,
-        description: response.Plot,
-        imgUrl: response.Poster,
-        imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-        imdbId: response.imdbID,
+        setMovie({
+          title: response.Title,
+          description: response.Plot,
+          imgUrl: response.Poster,
+          imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+          imdbId: response.imdbID,
+        });
+
+        setQuery('');
       });
-
-      setQuery('');
-    });
   };
 
   const addToMovies = () => {
@@ -62,13 +63,13 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames('input', { 'is-danger': isFindMovie })}
+              className={classNames('input', { 'is-danger': isMovieNotFound })}
               value={query}
               onChange={event => handleChange(event)}
             />
           </div>
 
-          {isFindMovie && (
+          {isMovieNotFound && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

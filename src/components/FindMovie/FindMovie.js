@@ -65,9 +65,9 @@ export const FindMovie = ({ addMovie }) => {
           </div>
 
           {isFindMovie && (
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
           )}
         </div>
 

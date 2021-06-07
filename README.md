@@ -8,7 +8,7 @@ Implement `FindMovie` component to load movies from [OMDb API](http://www.omdbap
 
 > Don't use class components. Use React Hooks instead.
 
-1. When user enters a movie title and clicks a search button, send a request to `https://www.omdbapi.com/?apikey=[yourkey]&t=[title]`.
+1. When user enters a movie title and clicks a search button, send a request to `http://www.omdbapi.com/?apikey=1aef6206&t=[title]`.
 1. If film is not found show an error message below the input. Hide the error after changing a title.
 1. If a film has been found show the preview as a `MovieCard`.
 1. Add a movie to the list after submitting a form and clear the input.

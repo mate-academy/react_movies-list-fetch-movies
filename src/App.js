@@ -8,13 +8,15 @@ import { request } from './api/api';
 export const App = () => {
   const [movies, setMovies] = useState(data);
   const [query, setQuery] = useState('');
-  const [film, findFilm] = useState(0);
+  const [film, findFilm] = useState(null);
   const [error, findError] = useState(false);
 
   const handleSearch = () => {
     request(query)
       .then((result) => {
         if (result.Response === 'False') {
+          findFilm(null);
+
           return findError(true);
         }
 
@@ -28,21 +30,29 @@ export const App = () => {
   };
 
   const addFilm = (movie) => {
+    if (!movie) {
+      return findError(true);
+    }
+
     if (movies.some(cinema => cinema.imdbId === movie.imdbID) === true) {
       setQuery('');
-    } else {
-      const { Title, Plot, Poster, imdbID } = movie;
-      const result = {
-        title: Title,
-        description: Plot,
-        imgUrl: Poster,
-        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-        imdbId: imdbID,
-      };
 
-      setMovies(array => [...array, result]);
-      setQuery('');
+      return findFilm(null);
     }
+
+    const { Title, Plot, Poster, imdbID } = movie;
+    const result = {
+      title: Title,
+      description: Plot,
+      imgUrl: Poster,
+      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+      imdbId: imdbID,
+    };
+
+    setMovies(array => [...array, result]);
+    setQuery('');
+
+    return findFilm(null);
   };
 
   return (

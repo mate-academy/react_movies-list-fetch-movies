@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import data from './api/movies.json';
 
-// key: ff1edd93
+import data from './api/movies.json';
 
 export class App extends Component {
   state = {
@@ -28,7 +27,6 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
           <FindMovie addMovie={this.addMovie} />
         </div>
       </div>

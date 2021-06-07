@@ -27,10 +27,17 @@ export const FindMovie = ({ addMovie }) => {
       });
   };
 
+  const onSubmitHandle = (event) => {
+    event.preventDefault();
+    addMovie(movieFromServer);
+    setSearchField('');
+  };
+
   return (
     <>
       <form
         className="find-movie"
+        onSubmit={onSubmitHandle}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -72,12 +79,8 @@ export const FindMovie = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={() => {
-                addMovie(movieFromServer);
-                setSearchField('');
-              }}
             >
               Add to the list
             </button>

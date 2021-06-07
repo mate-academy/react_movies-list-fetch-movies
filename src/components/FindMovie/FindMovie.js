@@ -12,6 +12,34 @@ export const FindMovie = ({ onAdd }) => {
   const [movie, setMovie] = useState(null);
   const [notFound, setNotFound] = useState(false);
 
+  const findMovie = () => {
+    getMovie(query)
+      .then((result) => {
+        if (result.Response === 'False') {
+          setNotFound(true);
+
+          return;
+        }
+
+        const {
+          Title: title,
+          Plot: description,
+          Poster: imgUrl,
+          imdbID: imdbId,
+        } = result;
+
+        const imdbUrl = `https://www.imdb.com/title/${imdbId}`;
+
+        setMovie({
+          title,
+          description,
+          imgUrl,
+          imdbUrl,
+          imdbId,
+        });
+      });
+  };
+
   return (
     <>
       <form
@@ -56,33 +84,7 @@ export const FindMovie = ({ onAdd }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => {
-                getMovie(query)
-                  .then((result) => {
-                    if (result.Response === 'False') {
-                      setNotFound(true);
-
-                      return;
-                    }
-
-                    const {
-                      Title: title,
-                      Plot: description,
-                      Poster: imgUrl,
-                      imdbID: imdbId,
-                    } = result;
-
-                    const imdbUrl = `https://www.imdb.com/title/${imdbId}`;
-
-                    setMovie({
-                      title,
-                      description,
-                      imgUrl,
-                      imdbUrl,
-                      imdbId,
-                    });
-                  });
-              }}
+              onClick={findMovie}
             >
               Find a movie
             </button>

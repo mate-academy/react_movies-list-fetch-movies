@@ -1,6 +1,6 @@
 # Movies list - Fetch movies
 - Replace `<your_account>` with your Github username in the
- [DEMO LINK](https://<your_account>.github.io/react_movies-list-fetch-movies/)
+ [DEMO LINK](https://leonid-vegera.github.io/react_movies-list-fetch-movies/)
 - Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
 
 ## Task

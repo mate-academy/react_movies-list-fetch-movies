@@ -25,7 +25,6 @@ export const FindMovie = ({ addedMovie }) => {
       };
 
       setMovie(movie);
-      setTitle('');
     } else {
       setMovie(null);
       setTitle('');
@@ -74,7 +73,10 @@ export const FindMovie = ({ addedMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addedMovie(newMovie)}
+              onClick={() => {
+                addedMovie(newMovie);
+                setTitle('');
+              }}
               disabled={newMovie ? 0 : 1}
             >
               Add to the list

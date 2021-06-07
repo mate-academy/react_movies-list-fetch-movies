@@ -6,10 +6,12 @@ import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
 export const App = () => {
-  const [allMovies, setAllMovies] = useState(data);
+  const [allMovies, setAllMovies] = useState([...data]);
 
   const addMovie = (movie) => {
-    if (movie) {
+    const includedMovie = allMovies.find(el => el.imdbId === movie.imdbId);
+
+    if (includedMovie === undefined) {
       setAllMovies([...allMovies, movie]);
     }
   };

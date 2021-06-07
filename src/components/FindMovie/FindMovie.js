@@ -6,14 +6,14 @@ import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
 import { request } from '../../api/request';
 
-export const FindMovie = ({ addMovie }) => {
+export const FindMovie = ({ isAlreadyInList }) => {
   const [film, setFilm] = useState({});
   const [title, setTitle] = useState(' ');
   const [hasError, setError] = useState(false);
 
   const submitHandler = (event) => {
-    setTitle(event.target.title.value);
     event.preventDefault();
+    setTitle(event.target.title.value.trim());
   };
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const FindMovie = ({ addMovie }) => {
 
   const addMovieFormHandler = (event) => {
     if (!hasError || title !== '') {
-      addMovie(film);
+      isAlreadyInList(film);
     }
   };
 
@@ -100,5 +100,5 @@ export const FindMovie = ({ addMovie }) => {
 };
 
 FindMovie.propTypes = {
-  addMovie: PropTypes.func.isRequired,
+  isAlreadyInList: PropTypes.func.isRequired,
 };

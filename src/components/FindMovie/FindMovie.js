@@ -7,11 +7,11 @@ import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState({ Response: 'Changing' });
+  const [movie, setMovie] = useState({});
 
   const inputHandler = (event) => {
     setTitle(event.target.value);
-    setMovie({ Response: 'Changing' });
+    setMovie({});
   };
 
   const onFindMovie = () => {
@@ -22,6 +22,7 @@ export const FindMovie = ({ addMovie }) => {
       .then(movieFromServer => setMovie(movieFromServer));
   };
 
+  const responseFromServer = movie.Response;
   const movieForCard = {
     title: movie.Title,
     description: movie.Plot,
@@ -32,7 +33,8 @@ export const FindMovie = ({ addMovie }) => {
 
   const onFormSubmit = (event) => {
     event.preventDefault();
-    if (Object.values(movieForCard).some(value => value === undefined)) {
+
+    if (responseFromServer !== 'True') {
       return;
     }
 
@@ -43,7 +45,7 @@ export const FindMovie = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={event => onFormSubmit(event)}
+        onSubmit={onFormSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -56,7 +58,7 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is-danger': movie.Response === 'False',
+                'is-danger': responseFromServer === 'False',
               })}
               value={title}
               onChange={event => inputHandler(event)}
@@ -64,7 +66,7 @@ export const FindMovie = ({ addMovie }) => {
           </div>
 
           {
-            movie.Response === 'False' && (
+            responseFromServer === 'False' && (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title
               </p>
@@ -95,7 +97,7 @@ export const FindMovie = ({ addMovie }) => {
         </div>
       </form>
 
-      {movie.Response === 'True' ? (
+      {responseFromServer === 'True' ? (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard {...movieForCard} />

@@ -34,7 +34,13 @@ export const FindMovie = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          searchMovie();
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -65,9 +71,8 @@ export const FindMovie = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={searchMovie}
             >
               Find a movie
             </button>

@@ -1,4 +1,4 @@
-const URL = 'http://www.omdbapi.com/?apikey=c501a498&t=';
+const URL = 'https://www.omdbapi.com/?apikey=c501a498&t=';
 
 const getMovieFromServer = async Title => fetch(`${URL}${Title}`)
   .then(response => response.json())

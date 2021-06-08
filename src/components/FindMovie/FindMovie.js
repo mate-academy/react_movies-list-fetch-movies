@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 
 import './FindMovie.scss';
 
@@ -7,7 +8,7 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 // import movies from '../../api/movies.json';
 
-export const FindMovie = () => {
+export const FindMovie = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(false);
@@ -81,7 +82,10 @@ export const FindMovie = () => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {}}
+              onClick={() => {
+                addMovie(movie);
+                setMovie(null);
+              }}
             >
               Add to the list
             </button>
@@ -95,4 +99,8 @@ export const FindMovie = () => {
       </div>
     </>
   );
+};
+
+FindMovie.propTypes = {
+  addMovie: PropTypes.func.isRequired,
 };

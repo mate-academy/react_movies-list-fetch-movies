@@ -10,7 +10,7 @@ export class App extends Component {
   };
 
   addFilmHandler = (film) => {
-    const addFilmInList = this.state.movies.every(
+    const addFilmInList = this.state.movies.some(
       item => item.imdbId === film.imdbId,
     );
 

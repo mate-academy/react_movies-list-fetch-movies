@@ -1,4 +1,4 @@
-const API_URL = 'http://www.omdbapi.com/?apikey=77e39eb1&t=';
+const API_URL = 'https://www.omdbapi.com/?apikey=77e39eb1&t=';
 
 export const getConnect = title => (
   fetch(`${API_URL}${title}`)

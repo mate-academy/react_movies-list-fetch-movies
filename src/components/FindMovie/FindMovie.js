@@ -15,7 +15,6 @@ export const FindMovie = ({ onFindFilm }) => {
 
     getConnect(nameFilm).then((response) => {
       if (response.Response === 'False') {
-        setTitle('');
         setFilm('');
 
         return;
@@ -34,6 +33,10 @@ export const FindMovie = ({ onFindFilm }) => {
   };
 
   const addFilmHandler = () => {
+    if (!film) {
+      return;
+    }
+
     onFindFilm(film);
     setFilm('');
   };

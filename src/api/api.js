@@ -1,4 +1,4 @@
-const baseUrl = 'http://www.omdbapi.com/?apikey=a15109cc&t=';
+const baseUrl = 'https://www.omdbapi.com/?apikey=a15109cc&t=';
 
 export function getMovie(title) {
   return fetch(`${baseUrl}${title}`)

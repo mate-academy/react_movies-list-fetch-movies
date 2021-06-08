@@ -86,6 +86,7 @@ export const FindMovie = ({ addMovie }) => {
               className="button is-primary"
               onClick={() => {
                 addMovie(movie);
+                setMovie(null);
               }}
             >
               Add to the list

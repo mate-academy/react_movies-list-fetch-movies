@@ -8,7 +8,7 @@ import { request } from '../../api/request';
 
 export const FindMovie = ({ isAlreadyInList }) => {
   const [film, setFilm] = useState({});
-  const [title, setTitle] = useState(' ');
+  const [title, setTitle] = useState('');
   const [hasError, setError] = useState(false);
 
   const submitHandler = (event) => {
@@ -17,7 +17,7 @@ export const FindMovie = ({ isAlreadyInList }) => {
   };
 
   useEffect(() => {
-    if (title !== ' ') {
+    if (title) {
       request(title)
         .then((response) => {
           if (response.Response === 'False' || title === '') {
@@ -37,7 +37,7 @@ export const FindMovie = ({ isAlreadyInList }) => {
   }, [title]);
 
   const addMovieFormHandler = (event) => {
-    if (!hasError || title !== '') {
+    if (!hasError || !title) {
       isAlreadyInList(film);
     }
   };
@@ -91,7 +91,7 @@ export const FindMovie = ({ isAlreadyInList }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {!(hasError || title === ' ') && (
+        {!(hasError || !title) && (
           <MovieCard {...film} />
         )}
       </div>

@@ -46,10 +46,12 @@ export const FindMovie = ({ addMovie }) => {
     addMovie(film);
   };
 
-  const handleClickFindMovie = async() => {
+  const handleSubmitFindMovie = async(event) => {
     if (query === '') {
       return;
     }
+
+    event.preventDefault();
 
     const movie = await getFilm(query);
     const { Title, Plot, Poster, imdbID, Response } = movie;
@@ -72,7 +74,10 @@ export const FindMovie = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie" onChange={event => event.preventDefault()}>
+      <form
+        className="find-movie"
+        onSubmit={handleSubmitFindMovie}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -99,9 +104,8 @@ export const FindMovie = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={handleClickFindMovie}
             >
               Find a movie
             </button>

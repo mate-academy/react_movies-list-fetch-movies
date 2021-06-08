@@ -9,6 +9,18 @@ export class App extends Component {
     movies: data,
   };
 
+  addFilmHandler = (film) => {
+    const addFilmInList = this.state.movies.every(
+      item => item.imdbId === film.imdbId,
+    );
+
+    if (!addFilmInList) {
+      this.setState(state => ({
+        movies: [...state.movies, film],
+      }));
+    }
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -18,7 +30,7 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie onFindFilm={this.addFilmHandler} />
         </div>
       </div>
     );

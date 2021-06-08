@@ -7,10 +7,20 @@ import data from './api/movies.json';
 export const App = () => {
   const [movies, setMovies] = useState(data);
 
-  const addMovie = movie => setMovies([
-    ...movies,
-    movie,
-  ]);
+  const addMovie = (movie) => {
+    if (!movie.imgUrl) {
+      return;
+    }
+
+    const check = movies.some(film => film.imdbId === movie.imdbId);
+
+    if (!check) {
+      setMovies([
+        ...movies,
+        movie,
+      ]);
+    }
+  };
 
   return (
     <div className="page">

@@ -8,15 +8,14 @@ import { MovieCard } from '../MovieCard';
 export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [error, setError] = useState(false);
-  const [check, setCheck] = useState(false);
   const [searchMovie, setMovie] = useState({});
 
   const newMovie = {
     title: searchMovie.Title,
     description: searchMovie.Plot,
     imgUrl: searchMovie.Poster,
-    imdbId: Math.random().toString(),
-    imdbUrl: Math.random().toString(),
+    imdbId: searchMovie.imdbID,
+    imdbUrl: `https://www.imdb.com/title/${searchMovie.imdbID}`,
   };
 
   const request = () => {
@@ -25,7 +24,6 @@ export const FindMovie = ({ addMovie }) => {
       .then((movie) => {
         setMovie(movie);
         setError(movie.Response !== 'True');
-        setCheck(movie.Response === 'True');
       });
   };
 
@@ -76,12 +74,9 @@ export const FindMovie = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
-                setCheck(false);
                 setMovie({});
                 setTitle('');
-                if (check) {
-                  addMovie(newMovie);
-                }
+                addMovie(newMovie);
               }}
             >
               Add to the list

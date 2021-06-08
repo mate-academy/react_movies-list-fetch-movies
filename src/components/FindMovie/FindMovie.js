@@ -52,14 +52,11 @@ export const FindMovie = ({ onAddMovie }) => {
             />
           </div>
 
-          {
-            error
-            && (
+          {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
-            )
-          }
+          )}
 
         </div>
 
@@ -81,6 +78,7 @@ export const FindMovie = ({ onAddMovie }) => {
               onClick={() => {
                 onAddMovie(movie);
                 setQuery('');
+                setMovie(null);
               }}
             >
               Add to the list

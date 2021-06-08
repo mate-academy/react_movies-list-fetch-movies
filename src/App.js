@@ -12,7 +12,7 @@ export const App = () => {
       return;
     }
 
-    if (movies.some(el => el.imdbId !== movie.imdbId)) {
+    if (!movies.some(el => el.imdbId === movie.imdbId)) {
       setMovie(() => [...movies, movie]);
     }
   };

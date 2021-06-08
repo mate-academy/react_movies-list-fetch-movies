@@ -12,7 +12,7 @@ export class App extends Component {
   addMovie = (newMovie) => {
     const { movies } = this.state;
 
-    if (movies.includes(movie => movie.imdbId === newMovie.imdbId)) {
+    if (movies.find(movie => movie.imdbId === newMovie.imdbId)) {
       return;
     }
 

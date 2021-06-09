@@ -61,9 +61,7 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => {
-                request();
-              }}
+              onClick={() => request()}
             >
               Find a movie
             </button>
@@ -76,7 +74,10 @@ export const FindMovie = ({ addMovie }) => {
               onClick={() => {
                 setMovie({});
                 setTitle('');
-                addMovie(newMovie);
+
+                if (searchMovie.Response) {
+                  addMovie(newMovie);
+                }
               }}
             >
               Add to the list

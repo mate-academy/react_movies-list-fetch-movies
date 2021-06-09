@@ -7,13 +7,15 @@ import data from './api/movies.json';
 export const App = () => {
   const [movies, setMovies] = useState(data);
 
-  const addMovie = (neMovie) => {
-    const check = movies.some(movie => movie.imdbId === neMovie.imdbId);
+  const addMovie = (newMovie) => {
+    const isUniqueMovie = !movies.some(
+      movie => movie.imdbId === newMovie.imdbId,
+    );
 
-    if (!check) {
+    if (isUniqueMovie) {
       setMovies([
         ...movies,
-        neMovie,
+        newMovie,
       ]);
     }
   };

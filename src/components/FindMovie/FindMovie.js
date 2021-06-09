@@ -75,7 +75,7 @@ export const FindMovie = ({ addMovie }) => {
                 setMovie({});
                 setTitle('');
 
-                if (searchMovie.Response) {
+                if (searchMovie.Response === 'True') {
                   addMovie(newMovie);
                 }
               }}

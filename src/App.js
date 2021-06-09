@@ -13,7 +13,7 @@ export const App = () => {
     );
 
     if (!addFilmToList) {
-      setMovies(state => [...state, film]);
+      setMovies(currentMovies => [...currentMovies, film]);
     }
   };
 

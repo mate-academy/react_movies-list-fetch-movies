@@ -1,6 +1,6 @@
 const API_URL = 'https://www.omdbapi.com/?apikey=77e39eb1&t=';
 
-export const getConnect = title => (
+export const getMovie = (title) => {
   fetch(`${API_URL}${title}`)
     .then((response) => {
       if (!response.ok) {
@@ -8,5 +8,5 @@ export const getConnect = title => (
       }
 
       return response.json();
-    })
-);
+    });
+};

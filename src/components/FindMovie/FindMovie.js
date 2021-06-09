@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
-import { getConnect } from '../../api/goods';
+import { getMovie } from '../../api/goods';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ onFindFilm }) => {
@@ -10,30 +10,31 @@ export const FindMovie = ({ onFindFilm }) => {
   const [film, setFilm] = useState('');
   const [error, setError] = useState(false);
 
-  const findHandlerMovie = (nameFilm) => {
-    if (nameFilm === '') {
+  const findMovieHandler = (filmName) => {
+    if (!filmName) {
       return;
     }
 
-    getConnect(nameFilm).then((response) => {
-      if (response.Response === 'False') {
-        setFilm('');
-        setError(true);
+    getMovie(filmName)
+      .then((response) => {
+        if (response.Response === 'False') {
+          setFilm('');
+          setError(true);
 
-        return;
-      }
+          return;
+        }
 
-      setFilm({
-        title: response.Title,
-        description: response.Plot,
-        imgUrl: response.Poster,
-        imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
-        imdbId: response.imdbID,
+        setFilm({
+          title: response.Title,
+          description: response.Plot,
+          imgUrl: response.Poster,
+          imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
+          imdbId: response.imdbID,
+        });
+
+        setTitle('');
+        setError(false);
       });
-
-      setTitle('');
-      setError(false);
-    });
   };
 
   const addFilmHandler = () => {
@@ -84,7 +85,7 @@ export const FindMovie = ({ onFindFilm }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => findHandlerMovie(title)}
+              onClick={() => findMovieHandler(title)}
             >
               Find a movie
             </button>

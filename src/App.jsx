@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -11,7 +11,7 @@ export const App = () => {
       return;
     }
 
-    if (!data.some(film => film.imdbId === movie.imdbId)) {
+    if (!movies.some(film => film.imdbId === movie.imdbId)) {
       setMovies([...movies, movie]);
     }
   };

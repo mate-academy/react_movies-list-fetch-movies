@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
 import { getConnect } from '../../api/goods';
@@ -7,8 +8,9 @@ import { MovieCard } from '../MovieCard';
 export const FindMovie = ({ onFindFilm }) => {
   const [title, setTitle] = useState('');
   const [film, setFilm] = useState('');
+  const [error, setError] = useState(false);
 
-  const findMovieHandler = (nameFilm) => {
+  const findHandlerMovie = (nameFilm) => {
     if (nameFilm === '') {
       return;
     }
@@ -16,6 +18,7 @@ export const FindMovie = ({ onFindFilm }) => {
     getConnect(nameFilm).then((response) => {
       if (response.Response === 'False') {
         setFilm('');
+        setError(true);
 
         return;
       }
@@ -29,6 +32,7 @@ export const FindMovie = ({ onFindFilm }) => {
       });
 
       setTitle('');
+      setError(false);
     });
   };
 
@@ -60,7 +64,7 @@ export const FindMovie = ({ onFindFilm }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', { 'is-danger': error })}
               value={title}
               onChange={(event) => {
                 setTitle(event.target.value);
@@ -68,7 +72,7 @@ export const FindMovie = ({ onFindFilm }) => {
             />
           </div>
 
-          {!film && (
+          {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -80,7 +84,7 @@ export const FindMovie = ({ onFindFilm }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => findMovieHandler(title)}
+              onClick={() => findHandlerMovie(title)}
             >
               Find a movie
             </button>

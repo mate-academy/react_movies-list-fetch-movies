@@ -6,9 +6,16 @@ import data from './api/movies.json';
 
 export const App = () => {
   const [movies, setMovies] = useState(data);
-  const isAlreadyInList = (movie) => {
-    if (!movies.some(film => film.imdbId === movie.imdbId)) {
-      setMovies(prevState => [...prevState, movie]);
+
+  const addMovie = (newMovie) => {
+    if (!newMovie) {
+      return;
+    }
+
+    const sameMovie = movies.some(movie => movie.imdbId === newMovie.imdbId);
+
+    if (!sameMovie) {
+      setMovies(prevMovies => [...prevMovies, newMovie]);
     }
   };
 
@@ -18,7 +25,7 @@ export const App = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie isAlreadyInList={isAlreadyInList} />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );

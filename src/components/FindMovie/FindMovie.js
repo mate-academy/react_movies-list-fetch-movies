@@ -1,50 +1,49 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState } from 'react';
 import './FindMovie.scss';
 
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
+
 import { MovieCard } from '../MovieCard';
-import { request } from '../../api/request';
+import { getMovie } from '../../api/request';
 
-export const FindMovie = ({ isAlreadyInList }) => {
-  const [film, setFilm] = useState({});
+export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
-  const [hasError, setError] = useState(false);
+  const [movie, setMovie] = useState(null);
+  const [searchError, setError] = useState(false);
 
-  const submitHandler = (event) => {
-    event.preventDefault();
-    setTitle(event.target.title.value.trim());
-  };
+  const sendRequest = () => {
+    getMovie(title)
+      .then((result) => {
+        if (result.Response === 'False') {
+          setError(true);
+          setMovie(null);
 
-  useEffect(() => {
-    if (title) {
-      request(title)
-        .then((response) => {
-          if (response.Response === 'False' || title === '') {
-            setError(true);
-          } else {
-            setFilm({
-              title: response.Title,
-              description: response.Plot,
-              imgUrl: response.Poster,
-              imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
-              imdbId: response.imdbID,
-            });
-            setError(false);
-          }
+          return;
+        }
+
+        const {
+          Title,
+          Plot,
+          Poster,
+          imdbID,
+        } = result;
+
+        setMovie({
+          title: Title,
+          description: Plot,
+          imgUrl: Poster,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          imdbId: imdbID,
         });
-    }
-  }, [title]);
-
-  const addMovieFormHandler = (event) => {
-    if (!hasError || !title) {
-      isAlreadyInList(film);
-    }
+        setError(false);
+        setTitle('');
+      });
   };
 
   return (
     <>
-      <form className="find-movie" onSubmit={submitHandler}>
+      <form className="find-movie">
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -55,23 +54,27 @@ export const FindMovie = ({ isAlreadyInList }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${hasError && 'is-danger'}`}
-              name="title"
+              className={classnames('input', { 'is-danger': searchError })}
+              value={title}
+              onChange={(event) => {
+                setTitle(event.target.value);
+                setError(false);
+              }}
             />
           </div>
 
-          {hasError && (
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
+          { searchError && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
           )}
         </div>
         <div className="field is-grouped">
-
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-light"
+              onClick={sendRequest}
             >
               Find a movie
             </button>
@@ -81,7 +84,10 @@ export const FindMovie = ({ isAlreadyInList }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={addMovieFormHandler}
+              onClick={() => {
+                addMovie(movie);
+                setMovie(null);
+              }}
             >
               Add to the list
             </button>
@@ -90,9 +96,11 @@ export const FindMovie = ({ isAlreadyInList }) => {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
-        {!(hasError || !title) && (
-          <MovieCard {...film} />
+        {movie && (
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard {...movie} />
+          </>
         )}
       </div>
     </>
@@ -100,5 +108,5 @@ export const FindMovie = ({ isAlreadyInList }) => {
 };
 
 FindMovie.propTypes = {
-  isAlreadyInList: PropTypes.func.isRequired,
+  addMovie: PropTypes.func.isRequired,
 };

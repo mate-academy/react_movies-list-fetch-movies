@@ -11,7 +11,7 @@ export const App = () => {
   const addMovie = (movie) => {
     const includedMovie = allMovies.find(el => el.imdbId === movie.imdbId);
 
-    if (includedMovie === undefined) {
+    if (!includedMovie) {
       setAllMovies([...allMovies, movie]);
     }
   };

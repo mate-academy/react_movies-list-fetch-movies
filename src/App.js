@@ -9,7 +9,7 @@ export const App = () => {
   const [allMovies, setAllMovies] = useState([...data]);
 
   const addMovie = (movie) => {
-    const includedMovie = allMovies.find(el => el.imdbId === movie.imdbId);
+    const includedMovie = allMovies.some(el => el.imdbId === movie.imdbId);
 
     if (!includedMovie) {
       setAllMovies([...allMovies, movie]);

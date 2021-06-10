@@ -9,8 +9,8 @@ import { request } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addedMovie }) => {
-  const [foundTitle, setTitle] = useState(null);
-  const [newMovie, setMovie] = useState();
+  const [foundTitle, setTitle] = useState('');
+  const [newMovie, setMovie] = useState(null);
   const [isDanger, setDanger] = useState(false);
 
   const getMovie = async() => {
@@ -22,7 +22,7 @@ export const FindMovie = ({ addedMovie }) => {
         title: Title,
         description: Plot,
         imgUrl: Poster,
-        imdbUrl: `https://www.omdbapi.com/?apikey=e8bbd6b8&t=${foundTitle}`,
+        imdbUrl: `https://www.imdb.com/title/${imdbID}/`,
         imdbId: imdbID,
       };
 
@@ -37,7 +37,13 @@ export const FindMovie = ({ addedMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          getMovie();
+        }}
+        className="find-movie"
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -50,15 +56,18 @@ export const FindMovie = ({ addedMovie }) => {
               placeholder="Enter a title to search"
               className={classNames(
                 'input', {
-                  'is-danger': isDanger ? 1 : 0,
+                  'is-danger': isDanger,
                 },
               )}
               value={foundTitle}
-              onChange={event => setTitle(event.target.value)}
+              onChange={(event) => {
+                setTitle(event.target.value);
+                setDanger(false);
+              }}
             />
           </div>
 
-          {newMovie === null && (
+          {isDanger && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -69,9 +78,8 @@ export const FindMovie = ({ addedMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={getMovie}
             >
               Find a movie
             </button>
@@ -81,11 +89,11 @@ export const FindMovie = ({ addedMovie }) => {
             <button
               type="button"
               className="button is-primary"
+              disabled={!newMovie}
               onClick={() => {
                 addedMovie(newMovie);
                 setTitle('');
               }}
-              disabled={newMovie ? 0 : 1}
             >
               Add to the list
             </button>

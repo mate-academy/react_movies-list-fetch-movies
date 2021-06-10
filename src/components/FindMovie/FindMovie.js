@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 import './FindMovie.scss';
+import classNames from 'classnames';
 
 import { request } from '../../api/api';
 
@@ -10,6 +11,7 @@ import { MovieCard } from '../MovieCard';
 export const FindMovie = ({ addedMovie }) => {
   const [foundTitle, setTitle] = useState(null);
   const [newMovie, setMovie] = useState();
+  const [isDanger, setDanger] = useState(false);
 
   const getMovie = async() => {
     const movieFromServer = await request(`${foundTitle}`);
@@ -25,9 +27,11 @@ export const FindMovie = ({ addedMovie }) => {
       };
 
       setMovie(movie);
+      setDanger(false);
     } else {
       setMovie(null);
-      setTitle('');
+      setTitle(foundTitle);
+      setDanger(true);
     }
   };
 
@@ -44,13 +48,17 @@ export const FindMovie = ({ addedMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames(
+                'input', {
+                  'is-danger': isDanger ? 1 : 0,
+                },
+              )}
               value={foundTitle}
               onChange={event => setTitle(event.target.value)}
             />
           </div>
 
-          {newMovie === null && foundTitle === '' && (
+          {newMovie === null && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

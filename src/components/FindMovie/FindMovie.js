@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import PropTypes from 'prop-types';
-import classnames from 'classnames';
 import { getMovie } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ movies, onAdd }) => {
-  const moviePattern = {
-    title: '',
-    description: '',
-    imgUrl: '',
-    imdbUrl: '',
-    imdbId: '',
-  };
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState(moviePattern);
-  const [isMovieCard, setIsMovieCard] = useState(false);
+  const [movie, setMovie] = useState(null);
   const [error, setError] = useState('');
 
   const searchMovie = async() => {
@@ -25,12 +16,15 @@ export const FindMovie = ({ movies, onAdd }) => {
 
     const movieFromServer = await getMovie(title);
 
-    if (movieFromServer !== null) {
-      setIsMovieCard(true);
+    if (movieFromServer.Response !== 'False') {
       setError('');
 
-      // eslint-disable-next-line
-      const { Title: movieTitle, Plot: description, Poster: imgUrl, imdbID: imdbId } = movieFromServer;
+      const {
+        Title: movieTitle,
+        Plot: description,
+        Poster: imgUrl,
+        imdbID: imdbId,
+      } = movieFromServer;
 
       setMovie({
         title: movieTitle,
@@ -71,8 +65,7 @@ export const FindMovie = ({ movies, onAdd }) => {
 
   const clearState = () => {
     setTitle('');
-    setMovie(moviePattern);
-    setIsMovieCard(false);
+    setMovie(null);
     setError('');
   };
 
@@ -95,15 +88,11 @@ export const FindMovie = ({ movies, onAdd }) => {
             />
           </div>
 
-          <p className={classnames({
-            help: true,
-            's-danger': true,
-            hide: error.length === 0,
-          })}
-          >
-            {error}
-          </p>
-
+          {error && (
+            <p className="help s-danger">
+              {error}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -116,31 +105,25 @@ export const FindMovie = ({ movies, onAdd }) => {
               Find a movie
             </button>
           </div>
-
-          <div className="control">
-            <button
-              type="button"
-              className={classnames({
-                button: true,
-                'is-primary': true,
-                hide: !isMovieCard,
-              })}
-              onClick={addMovieToList}
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                type="button"
+                className="button is-primary"
+                onClick={addMovieToList}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
-
-      <div className={classnames({
-        container: true,
-        hide: error.length > 0 || !isMovieCard,
-      })}
-      >
-        <h2 className="title">Preview</h2>
-        <MovieCard {...movie} />
-      </div>
+      {(!error && movie) && (
+        <div className="container">
+          <h2 className="title">Preview</h2>
+          <MovieCard {...movie} />
+        </div>
+      )}
     </>
   );
 };

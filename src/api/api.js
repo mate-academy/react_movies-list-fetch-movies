@@ -1,24 +1,11 @@
 const BASE_URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=6811da81&';
 
-// eslint-disable-next-line
-const getData = (param) => {
-  return fetch(`${BASE_URL}${param}`)
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
-      }
+const getData = param => (fetch(`${BASE_URL}${param}`).then((response) => {
+  if (!response.ok) {
+    throw new Error(`${response.status}: ${response.statusText}`);
+  }
 
-      throw new Error(`${response.status}: ${response.statusText}`);
-    })
-    .then((response) => {
-      const isError = response?.Error;
-
-      if (!isError) {
-        return response;
-      }
-
-      return null;
-    });
-};
+  return response.json();
+}));
 
 export const getMovie = title => getData(`t=${title}`);

@@ -18,6 +18,12 @@ export const FindMovie = ({ addMovie }) => {
   };
 
   const findMovie = () => {
+    if (!title || !title.trim()) {
+      setError(true);
+
+      return;
+    }
+
     getMovie(title)
       .then((result) => {
         if (result.Response === 'False') {

@@ -36,7 +36,7 @@ export const FindMovie = ({ addMovie }) => {
           title: result.Title,
           description: result.Plot,
           imgUrl: result.Poster,
-          imdbUrl: `http://www.imdb.com/title//${result.imdbID}/`,
+          imdbUrl: `http://www.imdb.com/title/${result.imdbID}`,
           imdbId: result.imdbID,
         });
 

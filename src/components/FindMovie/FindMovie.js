@@ -7,23 +7,19 @@ import getMovieFromServer from '../../api';
 
 export const FindMovie = ({ addMovie, movies }) => {
   const [movie, setMovie] = useState(null);
-  const [Title, setTitle] = useState('');
-  const [hasMovie, setHasMovie] = useState(false);
+  const [title, setTitle] = useState('');
   const [cantFind, setCantFind] = useState(false);
 
   const handleFindMovie = async() => {
-    const newMovie = await getMovieFromServer(Title);
+    const newMovie = await getMovieFromServer(title);
 
-    // eslint-disable-next-line
-    if (newMovie.hasOwnProperty('Error')) {
-      setHasMovie(false);
+    if (newMovie.Response === 'False') {
       setCantFind(true);
 
       return;
     }
 
     setCantFind(false);
-    setHasMovie(true);
     setMovie(newMovie);
   };
 
@@ -32,14 +28,9 @@ export const FindMovie = ({ addMovie, movies }) => {
       return;
     }
 
-    if (movies.some(film => film.imdbID === movie.imdbID)) {
-      return;
-    }
-
     addMovie(movie);
     setTitle('');
     setMovie(null);
-    setHasMovie(false);
   };
 
   return (
@@ -48,6 +39,7 @@ export const FindMovie = ({ addMovie, movies }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
+          handleFindMovie();
         }}
       >
         <div className="field">
@@ -61,26 +53,26 @@ export const FindMovie = ({ addMovie, movies }) => {
               id="movie-Title"
               placeholder="Enter a Title to search"
               className={`input ${cantFind && 'is-danger'}`}
-              value={Title}
+              value={title}
               onChange={(event) => {
                 setTitle(event.target.value);
+                setCantFind(false);
               }}
             />
           </div>
 
           {cantFind && (
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a Title
-          </p>
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a Title
+            </p>
           )}
         </div>
 
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={handleFindMovie}
             >
               Find a movie
             </button>
@@ -100,7 +92,7 @@ export const FindMovie = ({ addMovie, movies }) => {
 
       <div className="container">
 
-        {hasMovie
+        {movie
           && (
           <>
             <h2 className="Title">Preview</h2>

@@ -10,6 +10,10 @@ export class App extends Component {
   };
 
   addMovie = (newMovie) => {
+    if (this.state.movies.some(movie => movie.imdbID === newMovie.imdbID)) {
+      return;
+    }
+
     this.setState(state => (
       { movies: [...state.movies, newMovie] }
     ));

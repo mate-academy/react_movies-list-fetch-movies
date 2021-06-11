@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const URL = 'https://www.omdbapi.com/?apikey=c501a498&t=';
 
 const getMovieFromServer = Title => fetch(`${URL}${Title}`)

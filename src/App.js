@@ -8,8 +8,8 @@ export const App = () => {
   const [movies, setMovies] = useState(data);
 
   const addMovie = (newMovie) => {
-    const { imbrUrl } = newMovie;
-    const isSearchSuccessful = movies.some(movie => movie.imdbUrl === imbrUrl);
+    const { imdbId } = newMovie;
+    const isSearchSuccessful = movies.some(movie => movie.imdbId === imdbId);
 
     if (!isSearchSuccessful) {
       setMovies(currentMovies => [

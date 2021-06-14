@@ -7,38 +7,45 @@ import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState({});
+  const [movie, setMovie] = useState(null);
+  const [responseWithMovie, setResponseWithMovie] = useState(true);
 
   const inputHandler = (event) => {
     setTitle(event.target.value);
-    setMovie({});
+    setMovie(null);
+    setResponseWithMovie(true);
   };
 
   const onFindMovie = () => {
     const url = `https://www.omdbapi.com/?t=${title}&apikey=8de92ae6`;
 
     fetch(url)
-      .then(movieFromServer => movieFromServer.json())
-      .then(movieFromServer => setMovie(movieFromServer));
-  };
+      .then(response => response.json())
+      .then((movieFromServer) => {
+        if (movieFromServer.Response === 'False') {
+          setResponseWithMovie(false);
 
-  const responseFromServer = movie.Response;
-  const movieForCard = {
-    title: movie.Title,
-    description: movie.Plot,
-    imgUrl: movie.Poster,
-    imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-    imdbId: movie.imdbID,
+          return;
+        }
+
+        setMovie({
+          title: movieFromServer.Title,
+          description: movieFromServer.Plot,
+          imgUrl: movieFromServer.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
+          imdbId: movieFromServer.imdbID,
+        });
+      });
   };
 
   const onFormSubmit = (event) => {
     event.preventDefault();
 
-    if (responseFromServer !== 'True') {
+    if (!responseWithMovie) {
       return;
     }
 
-    addMovie(movieForCard);
+    addMovie(movie);
   };
 
   return (
@@ -58,15 +65,15 @@ export const FindMovie = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is-danger': responseFromServer === 'False',
+                'is-danger': !responseWithMovie,
               })}
               value={title}
-              onChange={event => inputHandler(event)}
+              onChange={inputHandler}
             />
           </div>
 
           {
-            responseFromServer === 'False' && (
+            !responseWithMovie && (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title
               </p>
@@ -97,10 +104,10 @@ export const FindMovie = ({ addMovie }) => {
         </div>
       </form>
 
-      {responseFromServer === 'True' ? (
+      {movie ? (
         <div className="container">
           <h2 className="title">Preview</h2>
-          <MovieCard {...movieForCard} />
+          <MovieCard {...movie} />
         </div>
       ) : (
         <span>Type movie title</span>

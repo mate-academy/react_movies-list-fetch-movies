@@ -5,43 +5,49 @@ import classNames from 'classnames';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
-  const [value, setSearchTerm] = useState('');
-  const [results, setSearchResults] = useState({
+  const [value, setValue] = useState('');
+  const [results, setResults] = useState({
     title: '',
     description: '',
     imgUrl: '',
     imdbUrl: '',
     imdbId: '',
   });
-  const [filmNotFound, setNotFound] = useState(false);
+  const [filmFound, setFilmFound] = useState(false);
 
   const handleChange = (event) => {
-    event.preventDefault();
-    setSearchTerm(event.target.value);
-    setNotFound(true);
+    setFilmFound(false);
+    setValue(event.target.value);
   };
 
   const findMovie = () => {
-    const API_URL = `https://www.omdbapi.com/?apikey=1e23943c&t=`;
+    getMovie(value)
+      .then((movies) => {
+        if (movies.Response === 'False') {
+          return Promise.reject(setResults({
+            title: '',
+            description: '',
+            imgUrl: '',
+            imdbUrl: '',
+            imdbId: '',
+          }));
+        }
 
-    const result = () => fetch(`${API_URL}${value}`)
-      .then(response => response.json());
+        setResults({
+          title: movies.Title,
+          description: movies.Plot,
+          imgUrl: movies.Poster,
+          imdbUrl: movies.ImdbUrl,
+          imdbId: movies.imdbID,
+        });
+        setValue('');
 
-    result().then(movies => setSearchResults({
-      title: movies.Title,
-      description: movies.Plot,
-      imgUrl: movies.Poster,
-      imdbUrl: movies.ImdbUrl,
-      imdbId: movies.imdbID,
-    }));
-
-    if (value === '') {
-      setNotFound(false);
-    }
-
-    setSearchTerm('');
+        return Promise.resolve(setFilmFound(false));
+      })
+      .catch(() => setFilmFound(true));
   };
 
   return (
@@ -57,14 +63,14 @@ export const FindMovie = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames(`input`, { 'is-danger': !filmNotFound })}
+              className={classNames(`input`, { 'is-danger': filmFound })}
               value={value}
               onChange={handleChange}
             />
           </div>
 
           <p className="help is-danger">
-            { !filmNotFound && `Can't find a movie with such a title`}
+            { filmFound && `Can't find a movie with such a title`}
           </p>
         </div>
 

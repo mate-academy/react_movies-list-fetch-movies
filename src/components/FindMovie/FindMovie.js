@@ -7,7 +7,7 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 
 export const FindMovie = ({ addMovie }) => {
-  const [movie, setMovie] = useState([]);
+  const [movie, setMovie] = useState([null]);
   const [title, setTitle] = useState('');
   const [error, setError] = useState(false);
 
@@ -70,7 +70,7 @@ export const FindMovie = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
               onClick={() => movieSearch(title)}
             >
@@ -80,7 +80,7 @@ export const FindMovie = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-primary"
             >
               Add to the list

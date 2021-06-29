@@ -37,6 +37,10 @@ export const FindMovie = ({ addMovie }) => {
   return (
     <>
       <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          findMovie();
+        }}
         className="find-movie"
       >
         <div className="field">

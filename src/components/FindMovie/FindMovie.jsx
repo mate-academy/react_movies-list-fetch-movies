@@ -2,51 +2,17 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { TextField } from '@material-ui/core';
 import { Popup } from '../Popup';
+import { getMoviesFromServer } from '../../helpers';
 import './FindMovie.scss';
-
-const BASE_URL = 'https://www.omdbapi.com/?apikey=b8cd40cf&s=';
-
-const getMoviesFromServer = async(title, setTitle, handleAdd, handleError) => {
-  const response = await fetch(`${BASE_URL}${title}`);
-
-  if (!response.ok) {
-    return false;
-  }
-
-  const resultObject = await response.json();
-
-  if (resultObject.Error) {
-    handleError(resultObject.Error);
-
-    return false;
-  }
-
-  const moviesFromServer = await resultObject.Search;
-  const moviesList = await Promise.all(moviesFromServer.map(movie => (
-    fetch(`https://www.omdbapi.com/?apikey=b8cd40cf&i=${movie.imdbID}`)
-      .then(r => r.json()))));
-
-  handleAdd(moviesList.map(movie => ({
-    title: movie.Title,
-    description: movie.Plot,
-    movie: movie.imdbID,
-    imgUrl: movie.Poster,
-    imdbId: movie.imdbID,
-  })));
-
-  setTitle('');
-
-  return true;
-};
 
 export const FindMovie = React.memo(({ moviesIds, addNewMovies }) => {
   const [title, setTitle] = useState('');
-  const [moviesFromServer, handleChange] = useState([]);
-  const [error, handleError] = useState('');
+  const [moviesFromServer, setMoviesList] = useState([]);
+  const [error, setError] = useState('');
 
   const handleUserChoise = (list) => {
     addNewMovies(list);
-    handleChange([]);
+    setMoviesList([]);
   };
 
   return (
@@ -62,7 +28,7 @@ export const FindMovie = React.memo(({ moviesIds, addNewMovies }) => {
           value={title}
           onChange={(event) => {
             setTitle(event.target.value);
-            handleError('');
+            setError('');
           }}
         />
         <button
@@ -70,7 +36,7 @@ export const FindMovie = React.memo(({ moviesIds, addNewMovies }) => {
           className="button"
           disabled={title.length < 3}
           onClick={() => {
-            getMoviesFromServer(title, setTitle, handleChange, handleError);
+            getMoviesFromServer(title, setTitle, setMoviesList, setError);
           }}
         >
           Find Movie
@@ -81,14 +47,13 @@ export const FindMovie = React.memo(({ moviesIds, addNewMovies }) => {
         role="link"
         styling="link"
         tabIndex={0}
-        className="popup"
-        style={{ visibility: moviesFromServer.length ? 'visible' : 'hidden' }}
+        className={`popup ${!moviesFromServer.length && 'is-hidden'}`}
         onClick={(event) => {
           if (event.currentTarget === event.target) {
-            handleChange([]);
+            setMoviesList([]);
           }
         }}
-        onKeyDown={() => { }}
+        aria-hidden
       >
         {
           !!moviesFromServer.length
@@ -98,7 +63,7 @@ export const FindMovie = React.memo(({ moviesIds, addNewMovies }) => {
               moviesIds={moviesIds}
               moviesFromServer={moviesFromServer}
               callBack={handleUserChoise}
-              closePopup={handleChange}
+              closePopup={setMoviesList}
             />
           )
         }

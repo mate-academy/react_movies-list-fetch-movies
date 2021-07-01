@@ -1,13 +1,16 @@
-
 .wrapper span {
   position: relative;
-  margin: auto,;
+  margin: auto, ;
 }
 
-.card:active {
-  .movie {
-    height: 440px;
-    width: 280px;
+.card {
+  cursor: pointer;
+
+  &:active {
+    .movie {
+      height: 440px;
+      width: 280px;
+    }
   }
 }
 
@@ -17,8 +20,6 @@
   width: 100%;
   top: 0;
   left: 0;
-
-  
 
   &__content {
     position: relative;
@@ -51,12 +52,12 @@
 }
 
 .is-in-list {
+  cursor: default;
   opacity: 0.4;
   border-radius: 10px;
 }
 
 .is-choisen {
   visibility: visible;
-  cursor: not-allowed;
   opacity: 0.4;
 }

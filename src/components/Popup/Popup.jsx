@@ -4,34 +4,34 @@ import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 import './Popup.scss';
 
-export const Popup = ({ error,
+export const Popup = ({
+  error,
   moviesFromServer,
   moviesIds,
   callBack,
-  closePopup }) => {
-  const [choisenMoviesList, handleChange] = useState([]);
+  closePopup,
+}) => {
+  const [moviesObject, setMovies] = useState({});
 
   const handleUserChoise = (choisenMovie) => {
-    if (!choisenMoviesList.includes(choisenMovie)) {
-      handleChange(movies => [...movies, choisenMovie]);
+    if (!moviesObject[choisenMovie]) {
+      setMovies(movies => ({
+        ...movies, [choisenMovie.imdbId]: choisenMovie,
+      }));
     } else {
-      handleChange(movies => movies.filter(movie => movie !== choisenMovie));
+      delete moviesObject[choisenMovie.imdbId];
+      setMovies(moviesObject);
     }
   };
 
   return (
     <>
-
       <div className="popup__content">
-        {/* <div className="popup__controlers-block"> */}
-
         <button
           className="btn-add"
           type="button"
-          onClick={() => {
-            callBack(choisenMoviesList);
-          }}
-          disabled={!choisenMoviesList.length}
+          onClick={() => callBack(Object.values(moviesObject))}
+          disabled={!Object.keys(moviesObject).length}
         >
           ADD
         </button>
@@ -44,8 +44,6 @@ export const Popup = ({ error,
           X
         </button>
 
-        {/* </div> */}
-
         {
           !error && moviesFromServer.map(movie => (
             <li
@@ -56,14 +54,11 @@ export const Popup = ({ error,
                 role="button"
                 styling="link"
                 tabIndex={0}
-                style={{
-                  cursor: !moviesIds.includes(movie.imdbId) && 'pointer',
-                }}
                 className={classNames(
                   'card',
                   {
                     'is-in-list': moviesIds.includes(movie.imdbId),
-                    'is-choisen': choisenMoviesList.includes(movie),
+                    'is-choisen': !!moviesObject[movie.imdbId],
                   },
                 )}
                 onClick={() => {
@@ -71,8 +66,7 @@ export const Popup = ({ error,
                     handleUserChoise(movie);
                   }
                 }}
-
-                onKeyDown={() => { }}
+                aria-hidden
               >
                 <MovieCard
                   {...movie}

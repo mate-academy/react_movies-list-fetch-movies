@@ -25,9 +25,3 @@ MoviesList.propTypes = {
     }).isRequired,
   ).isRequired,
 };
-
-// <div className="movies">
-//   {movies.map(movie => (
-//     <MovieCard key={movie.imdbId} {...movie} />
-//   ))}
-// </div>

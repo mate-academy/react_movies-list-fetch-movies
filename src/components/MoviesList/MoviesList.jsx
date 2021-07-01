@@ -1,5 +1,4 @@
 import React from 'react';
-
 import './MoviesList.scss';
 import PropTypes from 'prop-types';
 import { MovieCard } from '../MovieCard';
@@ -7,11 +6,16 @@ import { MovieCard } from '../MovieCard';
 export const MoviesList = ({
   movies = [],
 }) => (
-  <div className="movies">
-    {movies.map(movie => (
-      <MovieCard key={movie.imdbId} {...movie} />
-    ))}
-  </div>
+
+  <ul className="movies-list">
+    {
+      movies.map(movie => (
+        <li className="wrapper" key={movie.imdbId}>
+          <MovieCard {...movie} />
+        </li>
+      ))
+    }
+  </ul>
 );
 
 MoviesList.propTypes = {
@@ -21,3 +25,9 @@ MoviesList.propTypes = {
     }).isRequired,
   ).isRequired,
 };
+
+// <div className="movies">
+//   {movies.map(movie => (
+//     <MovieCard key={movie.imdbId} {...movie} />
+//   ))}
+// </div>

@@ -1,15 +1,43 @@
-.page {
-  display: grid;
-  grid-template: auto / 1fr 400px;
-  column-gap: 20px;
-  min-height: 100vh;
+li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.page-content {
-  padding: 20px;
+.App {
+  padding: 0 40px;
+  min-width: 1000px;
 }
 
-.sidebar {
-  padding: 20px;
-  border-left: 1px solid lightgray;
+.header {
+  margin-left: 40px;
+  display: flex;
+  background-color: white;
+  justify-content: space-between;
+  top: -50px;
+  height: 150px;
+  border-bottom: 1px solid rgb(194, 192, 192);
+  padding: 20px 0 10px;
+  margin-bottom: 30px;
+}
+
+.title {
+
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  font-size: 60px;
+}
+
+.controlers {
+  display: flex;
+  gap: 20px;
+  align-self: center;
+
+}
+
+.button {
+  width: 150px;
+  height: 56px;
 }

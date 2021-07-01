@@ -1,3 +1,10 @@
 .find-movie {
-  margin-bottom: 20px;
+  height: 56px;
+  flex-grow: 1;
+  display: flex;
+  gap: 30px;
+}
+
+.controlers-block {
+  margin-top: 50px;
 }

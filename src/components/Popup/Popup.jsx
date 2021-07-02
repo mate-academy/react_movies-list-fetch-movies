@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
@@ -14,13 +14,13 @@ export const Popup = ({
   const [moviesObject, setMovies] = useState({});
 
   const handleUserChoise = (choisenMovie) => {
-    if (!moviesObject[choisenMovie]) {
+    if (!moviesObject[choisenMovie.imdbId]) {
       setMovies(movies => ({
         ...movies, [choisenMovie.imdbId]: choisenMovie,
       }));
     } else {
       delete moviesObject[choisenMovie.imdbId];
-      setMovies(moviesObject);
+      setMovies({moviesObject});
     }
   };
 
@@ -53,7 +53,7 @@ export const Popup = ({
               <span
                 role="button"
                 styling="link"
-                tabIndex={0}
+                // tabIndex={0}
                 className={classNames(
                   'card',
                   {

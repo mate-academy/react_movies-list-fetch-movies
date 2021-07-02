@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
@@ -20,7 +20,7 @@ export const Popup = ({
       }));
     } else {
       delete moviesObject[choisenMovie.imdbId];
-      setMovies({moviesObject});
+      setMovies({ ...moviesObject });
     }
   };
 

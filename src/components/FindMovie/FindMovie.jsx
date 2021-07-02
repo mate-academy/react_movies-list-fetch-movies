@@ -35,8 +35,17 @@ export const FindMovie = React.memo(({ moviesIds, addNewMovies }) => {
           type="button"
           className="button"
           disabled={title.length < 3}
-          onClick={() => {
-            getMoviesFromServer(title, setTitle, setMoviesList, setError);
+          onClick={async() => {
+            const movies = await getMoviesFromServer(title, setTitle);
+
+            if (movies.message) {
+              setError(movies.message);
+
+              return;
+            }
+
+            setMoviesList(movies);
+            setTitle('');
           }}
         >
           Find Movie

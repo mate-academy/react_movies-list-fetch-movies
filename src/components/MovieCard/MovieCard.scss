@@ -1,3 +1,74 @@
-.card-image img {
-  object-fit: contain;
+.wrapper {
+  display: flex;
+  width: 350px;
+  height: 460px;
+}
+
+.movie {
+  margin: auto;
+  height: 400px;
+  width: 250px;
+  overflow: hidden;
+  border-radius: 10px;
+  border: 2px solid rgb(255, 255, 255);
+  box-shadow: 0 0 20px #000;
+  transition: 0.2s ease-in;
+
+  &__poster {
+    height: 100%;
+    width: 100%;
+    transition: 0.2s linear;
+  }
+
+  &__title-box {
+    display: flex;
+    padding-left: 20px;
+    height: 60px;
+  }
+
+  &__title {
+    padding: 5px;
+    margin: auto;
+    color: #000;
+    font-weight: 700;
+    text-align: center;
+
+    &:hover {
+      color: grey;
+    }
+  }
+
+  &__description {
+    margin: 0 10px;
+    text-indent: 10px;
+    text-align: justify;
+  }
+
+  &__info {
+    visibility: hidden;
+    opacity: 0;
+    text-overflow: ellipsis;
+  }
+
+  &:hover {
+    height: 450px;
+    width: 290px;
+    box-shadow: 0 0 10px #000;
+    transition: 0.2s linear;
+
+    .movie__poster {
+      margin-top: -70%;
+    }
+
+    .movie__info {
+      visibility: visible;
+      opacity: 1;
+      transition: 0.7s linear;
+    }
+  }
+}
+
+.imdb-logo {
+  width: 48px;
+  height: 48px;
 }

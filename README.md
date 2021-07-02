@@ -1,6 +1,6 @@
 # Movies list - Fetch movies
 - Replace `<your_account>` with your Github username in the
- [DEMO LINK](https://<your_account>.github.io/react_movies-list-fetch-movies/)
+ [DEMO LINK](https://andriypt82.github.io/react_movies-list-fetch-movies/)
 - Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
 
 ## Task
@@ -13,3 +13,4 @@ Implement `FindMovie` component to load movies from [OMDb API](http://www.omdbap
 1. If a film has been found show the preview as a `MovieCard`.
 1. Add a movie to the list after submitting a form and clear the input.
 1. Don't add the same film to the list twice (compare by `imdbId`).
+

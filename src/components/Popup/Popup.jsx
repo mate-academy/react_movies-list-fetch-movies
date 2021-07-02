@@ -53,7 +53,7 @@ export const Popup = ({
               <span
                 role="button"
                 styling="link"
-                // tabIndex={0}
+                tabIndex={0}
                 className={classNames(
                   'card',
                   {

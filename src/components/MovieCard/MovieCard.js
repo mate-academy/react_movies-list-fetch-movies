@@ -2,17 +2,19 @@ import React from 'react';
 import './MovieCard.scss';
 import PropTypes from 'prop-types';
 
-export const MovieCard = ({
-  title,
-  description = '',
-  imgUrl,
-  imdbUrl,
+export const MovieCard = React.memo(({
+  Title,
+  Plot,
+  Poster,
+  imdbID,
+  Year,
+  imdbRating,
 }) => (
   <div className="card">
     <div className="card-image">
       <figure className="image is-4by3">
         <img
-          src={imgUrl}
+          src={Poster}
           alt="Film logo"
         />
       </figure>
@@ -28,22 +30,38 @@ export const MovieCard = ({
           </figure>
         </div>
         <div className="media-content">
-          <p className="title is-8">{title}</p>
+          <p className="title is-8">
+            {Title}
+          </p>
+          <span>
+            {`(${Year}) Rating: ${imdbRating}`}
+          </span>
         </div>
       </div>
 
       <div className="content">
-        {description}
+        {Plot}
         <br />
-        <a href={imdbUrl}>IMDB</a>
+        <a href={`https://www.imdb.com/title/${imdbID}/`}>IMDB</a>
       </div>
     </div>
   </div>
-);
+));
 
 MovieCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  imgUrl: PropTypes.string.isRequired,
-  imdbUrl: PropTypes.string.isRequired,
+  Title: PropTypes.string,
+  Plot: PropTypes.string,
+  Poster: PropTypes.string,
+  imdbID: PropTypes.string,
+  Year: PropTypes.string,
+  imdbRating: PropTypes.string,
+};
+
+MovieCard.defaultProps = {
+  Title: '',
+  Plot: '',
+  Poster: '',
+  imdbID: '',
+  Year: '',
+  imdbRating: '',
 };

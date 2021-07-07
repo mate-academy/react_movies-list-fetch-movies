@@ -1,3 +1,30 @@
 .card-image img {
   object-fit: contain;
 }
+
+.card {
+  background-color: rgba(45, 45, 46, 0.897);
+
+  &__empty {
+    background-color: rgb(4, 2, 16);
+    color: #e12154;
+  }
+}
+
+.title, .description {
+  color: rgb(245, 238, 238);
+}
+
+.IMDB {
+  border-radius: 8px;
+  font-weight: 700;
+  color: rgb(119, 234, 247);
+  padding-top: 4px;
+  padding-bottom: 4px;;
+  padding-right: 10px;
+  padding-left: 10px;
+
+  &:hover {
+    color: #2aaeb3;
+  }
+}

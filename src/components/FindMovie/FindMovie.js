@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
@@ -10,7 +11,9 @@ export const FindMovie = ({ onAdd }) => {
   const [movie, setMovie] = useState('');
   const [error, setError] = useState('');
 
-  const searchMovie = () => {
+  const searchMovie = (event) => {
+    event.preventDefault();
+
     getMovie(search)
       .then((film) => {
         if (film.Response === 'True') {
@@ -31,9 +34,22 @@ export const FindMovie = ({ onAdd }) => {
     return setSearch('');
   };
 
+  const handleChange = (event) => {
+    setSearch(event.target.value);
+    setError('');
+  };
+
+  const addFilm = () => {
+    onAdd(movie);
+    setMovie('');
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={searchMovie}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -44,12 +60,11 @@ export const FindMovie = ({ onAdd }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${error.length !== 0 ? 'is-danger' : ''}`}
+              className={classNames('input', {
+                'is-danger': error.length !== 0,
+              })}
               value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setError('');
-              }}
+              onChange={handleChange}
             />
           </div>
 
@@ -61,9 +76,8 @@ export const FindMovie = ({ onAdd }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={searchMovie}
             >
               Find a movie
             </button>
@@ -73,10 +87,7 @@ export const FindMovie = ({ onAdd }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                onAdd(movie);
-                setMovie('');
-              }}
+              onClick={addFilm}
             >
               Add to the list
             </button>

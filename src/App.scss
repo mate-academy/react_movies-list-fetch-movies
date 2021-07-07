@@ -13,3 +13,18 @@
   padding: 20px;
   border-left: 1px solid lightgray;
 }
+
+.error {
+  display: flex;
+  position: absolute;
+  transform: translateX(-50%);
+  left: 50%;
+  top: 40%;
+  padding: 25px ;
+  border-radius: 10px;
+  font-weight: bold;
+  color: lightcoral;
+  font-size: 30px;
+  background: #fff082;
+  z-index: 2;
+}

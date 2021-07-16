@@ -8,10 +8,29 @@ import { getMovies } from '../../api/api';
 
 export const FindMovie = ({ addMovie, addedMovies }) => {
   const [search, setSearch] = useState('');
-  const [movie, setMovie] = useState({});
+  const [movie, setMovie] = useState(null);
   const [errorMessage, seterrorMessage] = useState('');
 
-  const searchMovie = () => {
+  const setDefault = () => {
+    seterrorMessage('');
+    setSearch('');
+    setMovie(null);
+  };
+
+  const addMovieToList = () => {
+    const alreadyAddedMovie = addedMovies
+      .find(addedMovie => addedMovie.imdbID === movie.imdbID);
+
+    if (alreadyAddedMovie) {
+      seterrorMessage('This movie has been already added');
+    } else {
+      addMovie(movie);
+      setDefault();
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
     getMovies(search)
       .then((foundMovie) => {
         if (foundMovie.Response === 'False') {
@@ -25,6 +44,7 @@ export const FindMovie = ({ addMovie, addedMovies }) => {
           description: foundMovie.Plot,
           imgUrl: foundMovie.Poster,
           imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
+          imdbID: foundMovie.imdbID,
         };
 
         setMovie(newMovie);
@@ -32,21 +52,9 @@ export const FindMovie = ({ addMovie, addedMovies }) => {
       });
   };
 
-  const addMovieToList = () => {
-    if (addedMovies
-      .filter(addedMovie => addedMovie.imdbId === movie.imdbID).length === 0) {
-      addMovie(movie);
-      seterrorMessage('');
-      setSearch('');
-      setMovie({});
-    } else {
-      seterrorMessage('This movie has been already added');
-    }
-  };
-
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={e => handleSubmit(e)}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -75,9 +83,8 @@ export const FindMovie = ({ addMovie, addedMovies }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={searchMovie}
             >
               Find a movie
             </button>
@@ -87,7 +94,7 @@ export const FindMovie = ({ addMovie, addedMovies }) => {
             <button
               type="button"
               className="button is-primary"
-              disabled={Object.keys(movie).length === 0}
+              disabled={!movie}
               onClick={addMovieToList}
             >
               Add to the list
@@ -96,7 +103,7 @@ export const FindMovie = ({ addMovie, addedMovies }) => {
         </div>
       </form>
 
-      {Object.keys(movie).length !== 0 && (
+      {movie && (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard

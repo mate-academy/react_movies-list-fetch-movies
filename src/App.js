@@ -9,6 +9,17 @@ export class App extends Component {
     movies: data,
   };
 
+  addMovie = (movie) => {
+    if (!this.isAlreadyInTheList(movie)) {
+      this.setState(state => ({
+        movies: [...state.movies, movie],
+      }));
+    }
+  };
+
+  isAlreadyInTheList = movie => this.state.movies
+    .some(film => movie.imdbId === film.imdbId)
+
   render() {
     const { movies } = this.state;
 
@@ -18,7 +29,7 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie onSubmit={this.addMovie} />
         </div>
       </div>
     );

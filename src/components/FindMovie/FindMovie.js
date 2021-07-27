@@ -9,8 +9,39 @@ const BASE_URL = 'https://www.omdbapi.com/?apikey=97f17f88&t=';
 
 export const FindMovie = ({ onSubmit }) => {
   const [title, setTitle] = useState('');
-  const [wasFilmFound, setSearchResult] = useState(true);
-  const [film, setFoundFilm] = useState(null);
+  const [searchResult, setSearchResult] = useState(true);
+  const [foundFilm, setFoundFilm] = useState(null);
+
+  const findFilm = () => {
+    if (title === '') {
+      setSearchResult(false);
+      setFoundFilm(null);
+
+      return;
+    }
+
+    fetch(BASE_URL + title)
+      .then(response => response.json())
+      .then((movie) => {
+        if (movie.Response === 'False') {
+          setFoundFilm(null);
+          setSearchResult(false);
+
+          return;
+        }
+
+        const film = {
+          title: movie.Title,
+          description: movie.Plot,
+          imgUrl: movie.Poster,
+          imdbId: movie.imdbID,
+          imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+        };
+
+        setFoundFilm(film);
+        setSearchResult(true);
+      });
+  };
 
   return (
     <>
@@ -26,12 +57,8 @@ export const FindMovie = ({ onSubmit }) => {
               id="movie-title"
               value={title}
               placeholder="Enter a title to search"
-              className={classnames(
-                'input',
-                {
-                  'is-danger': !wasFilmFound,
-                },
-              )}
+              className={classnames('input',
+                { 'is-danger': !searchResult })}
               onChange={({ target }) => {
                 setTitle(target.value);
                 setSearchResult(true);
@@ -39,7 +66,7 @@ export const FindMovie = ({ onSubmit }) => {
             />
           </div>
 
-          {!wasFilmFound
+          {!searchResult
           && (
           <p className="help is-danger">
             Can&apos;t find a movie with such a title
@@ -52,36 +79,7 @@ export const FindMovie = ({ onSubmit }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => {
-                if (title === '') {
-                  setSearchResult(false);
-                  setFoundFilm(null);
-
-                  return;
-                }
-
-                fetch(BASE_URL + title)
-                  .then(response => response.json())
-                  .then((movie) => {
-                    if (movie.Response === 'False') {
-                      setFoundFilm(null);
-                      setSearchResult(false);
-
-                      return;
-                    }
-
-                    const foundFilm = {
-                      title: movie.Title,
-                      description: movie.Plot,
-                      imgUrl: movie.Poster,
-                      imdbId: movie.imdbID,
-                      imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-                    };
-
-                    setFoundFilm(foundFilm);
-                    setSearchResult(true);
-                  });
-              }}
+              onClick={findFilm}
             >
               Find a movie
             </button>
@@ -92,11 +90,11 @@ export const FindMovie = ({ onSubmit }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
-                if (!film) {
+                if (!foundFilm) {
                   return;
                 }
 
-                onSubmit(film);
+                onSubmit(foundFilm);
 
                 setTitle('');
                 setFoundFilm(null);
@@ -110,7 +108,7 @@ export const FindMovie = ({ onSubmit }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {film && <MovieCard {...film} />}
+        {foundFilm && <MovieCard {...foundFilm} />}
       </div>
     </>
   );

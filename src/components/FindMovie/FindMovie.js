@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
@@ -63,7 +64,7 @@ export const FindMovie = ({ onClick }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', { 'is-danger': !titleValidation })}
             />
           </div>
 

@@ -81,6 +81,7 @@ export const FindMovie = ({ onMovieAdd }) => {
               onChange={(event) => {
                 onTitleChange(event.target.value);
                 onFilmFound(null);
+                onLoadingSuccess(null);
               }}
             />
           </div>
@@ -106,7 +107,8 @@ export const FindMovie = ({ onMovieAdd }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={isFilmFound && addFilm}
+              disabled={!isFilmFound}
+              onClick={addFilm}
             >
               Add to the list
             </button>

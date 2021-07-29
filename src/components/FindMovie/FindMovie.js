@@ -25,28 +25,26 @@ export const FindMovie = ({ onClick }) => {
     setIsMovie(false);
   };
 
-  const findMovie = async() => {
-    try {
-      const response = await fetch(api + value);
-      const movie = await response.json();
+  async function getData() {
+    return fetch(api + value)
+      .then(response => response.json())
+      .then(movie => findMovie(movie))
+      .catch(error => error);
+  }
 
-      if (movie.Response === 'True') {
-        setNewMovie({
-          title: movie.Title,
-          description: movie.Plot,
-          imgUrl: movie.Poster,
-          imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-          imdbId: movie.imdbID,
-        });
-        setIsMovie(true);
-      } else {
-        setTitleValidation(false);
-      }
-    } catch {
-      return 'ERROR';
+  const findMovie = (movie) => {
+    if (movie.Response === 'True') {
+      setNewMovie({
+        title: movie.Title,
+        description: movie.Plot,
+        imgUrl: movie.Poster,
+        imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+        imdbId: movie.imdbID,
+      });
+      setIsMovie(true);
+    } else {
+      setTitleValidation(false);
     }
-
-    return 'all working';
   };
 
   return (
@@ -79,7 +77,7 @@ export const FindMovie = ({ onClick }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              onClick={findMovie}
+              onClick={getData}
               type="button"
               className="button is-light"
             >

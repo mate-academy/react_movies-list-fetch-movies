@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import './FindMovie.scss';
-
+import { getMovie } from '../../api/movie';
 import { MovieCard } from '../MovieCard';
-
-const api = `https://www.omdbapi.com/?apikey=53f175f9&t=`;
 
 export const FindMovie = ({ onClick }) => {
   const [value, setValue] = useState('');
@@ -26,10 +24,9 @@ export const FindMovie = ({ onClick }) => {
   };
 
   async function getData() {
-    return fetch(api + value)
-      .then(response => response.json())
-      .then(movie => findMovie(movie))
-      .catch(error => error);
+    const movie = await getMovie(value);
+
+    findMovie(movie);
   }
 
   const findMovie = (movie) => {

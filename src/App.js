@@ -9,8 +9,20 @@ export class App extends Component {
     movies: data,
   };
 
+  addMovieToList = (movie) => {
+    const alreadyInTheLIst = this.state.movies
+      .some(filmItem => filmItem.title === movie.title);
+
+    if (!alreadyInTheLIst) {
+      this.setState(state => ({
+        movies: [...state.movies, movie],
+      }));
+    }
+  }
+
   render() {
     const { movies } = this.state;
+    const { addMovieToList } = this;
 
     return (
       <div className="page">
@@ -18,7 +30,9 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie
+            addMovieToList={addMovieToList}
+          />
         </div>
       </div>
     );

@@ -1,27 +1,36 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
-// import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import movies from '../../api/movies.json';
 import { loadMovie } from '../../api/loader';
-
 import { MovieCard } from '../MovieCard';
 
-export const FindMovie = () => {
+export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState(null);
-  const handleChange = event => setTitle(event.target.value);
+  const [loaded, setLoaded] = useState(true);
+  const handleChange = (event) => {
+    setTitle(event.target.value);
+    setLoaded(true);
+  };
 
   const getMovie = async() => {
     const movieFromServer = await loadMovie(title);
-    const movieToAdd = {
-      title: movieFromServer.Title,
-      description: movieFromServer.Plot,
-      imgUrl: movieFromServer.Poster,
-      imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
-      imdbId: movieFromServer.imdbID,
-    };
 
-    setMovie(movieToAdd);
+    if (movieFromServer.Response === 'False') {
+      setLoaded(false);
+    } else {
+      const movieToAdd = {
+        title: movieFromServer.Title,
+        description: movieFromServer.Plot,
+        imgUrl: movieFromServer.Poster,
+        imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
+        imdbId: movieFromServer.imdbID,
+      };
+
+      setLoaded(true);
+      setMovie(movieToAdd);
+    }
   };
 
   return (
@@ -39,12 +48,14 @@ export const FindMovie = () => {
               value={title}
               onChange={handleChange}
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${!loaded ? `is-danger`
+                : ''}`}
             />
           </div>
 
           <p className="help is-danger">
-            Can&apos;t find a movie with such a title
+            {!loaded ? `Can't find a movie with such a title`
+              : ''}
           </p>
         </div>
 
@@ -63,6 +74,10 @@ export const FindMovie = () => {
             <button
               type="button"
               className="button is-primary"
+              onClick={movie ? () => {
+                addMovie(movie);
+                setTitle('');
+              } : ''}
             >
               Add to the list
             </button>
@@ -76,4 +91,8 @@ export const FindMovie = () => {
       </div>
     </>
   );
+};
+
+FindMovie.propTypes = {
+  addMovie: PropTypes.func.isRequired,
 };

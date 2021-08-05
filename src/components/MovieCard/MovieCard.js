@@ -3,9 +3,9 @@ import './MovieCard.scss';
 import PropTypes from 'prop-types';
 
 export const MovieCard = ({
-  title,
-  description = '',
-  imgUrl,
+  Title: title,
+  Plot: description = '',
+  Poster: imgUrl,
   imdbUrl,
 }) => (
   <div className="card">
@@ -42,8 +42,8 @@ export const MovieCard = ({
 );
 
 MovieCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  imgUrl: PropTypes.string.isRequired,
+  Title: PropTypes.string.isRequired,
+  Plot: PropTypes.string.isRequired,
+  Poster: PropTypes.string.isRequired,
   imdbUrl: PropTypes.string.isRequired,
 };

@@ -10,16 +10,18 @@ export const FindMovie = ({ setFilm }) => {
   const [inputText, setInputText] = useState('');
   const [title, onTitleChange] = useState('');
   const [film, setCurentFilm] = useState(null);
-  const [filmFound, setSearchStatus] = useState(false);
+  const [filmFound, setFilmFound] = useState(true);
+  const [showFilm, setFilmShoving] = useState(false);
 
   const getFilm = async() => {
     const searchResult = await fetch(BASE_URL + title)
       .then(response => response.json())
       .then(result => result);
 
-    setSearchStatus(true);
+    setFilmShoving(true);
     if (searchResult.Response === 'False') {
-      setSearchStatus(false);
+      setFilmShoving(false);
+      setFilmFound(false);
     }
 
     const preparedFilm = {
@@ -46,18 +48,28 @@ export const FindMovie = ({ setFilm }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${filmFound
+                ? ''
+                : 'is-danger'
+              }`
+              }
               value={inputText}
               onChange={(event) => {
                 onTitleChange(event.target.value);
                 setInputText(event.target.value);
+                setFilmFound(true);
               }}
             />
           </div>
-
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
+          {
+            filmFound
+              ? ''
+              : (
+                <p className="help is-danger">
+                  Can&apos;t find a movie with such a title
+                </p>
+              )
+          }
         </div>
 
         <div className="field is-grouped">
@@ -77,7 +89,8 @@ export const FindMovie = ({ setFilm }) => {
               className="button is-primary"
               onClick={() => {
                 setFilm(film);
-                setSearchStatus(false);
+                setFilmShoving(false);
+                setInputText('');
               }}
             >
               Add to the list
@@ -90,9 +103,9 @@ export const FindMovie = ({ setFilm }) => {
         <h2 className="title">Preview</h2>
         {
           (
-            filmFound
+            showFilm
               ? <MovieCard {...film} />
-              : 'not found movie'
+              : ''
           )
         }
       </div>

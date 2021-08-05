@@ -9,12 +9,14 @@ export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState(null);
   const [loaded, setLoaded] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const handleChange = (event) => {
     setTitle(event.target.value);
     setLoaded(true);
   };
 
   const getMovie = async() => {
+    setLoading(true);
     const movieFromServer = await loadMovie(title);
 
     if (movieFromServer.Response === 'False') {
@@ -31,6 +33,8 @@ export const FindMovie = ({ addMovie }) => {
       setLoaded(true);
       setMovie(movieToAdd);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -87,7 +91,13 @@ export const FindMovie = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        <MovieCard {...movie || { ...movies[0] }} />
+        {isLoading ? (
+          <img
+            src="https://i.gifer.com/2cOP.gif"
+            alt="loading"
+          />
+        )
+          : <MovieCard {...movie || { ...movies[0] }} />}
       </div>
     </>
   );

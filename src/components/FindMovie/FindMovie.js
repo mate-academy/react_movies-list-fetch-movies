@@ -11,7 +11,7 @@ export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState({});
   const [moviesList, addNewMovie] = useState(movies);
-  const [wasAdd, showMessage] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const findMovie = (event) => {
     const { value } = event.target;
@@ -28,9 +28,9 @@ export const FindMovie = ({ addMovie }) => {
       addNewMovie([...moviesList, newMovie]);
       setTitle('');
       setMovie({});
-      showMessage(false);
+      setHasError(false);
     } else {
-      showMessage(true);
+      setHasError(true);
     }
   };
 
@@ -111,7 +111,7 @@ export const FindMovie = ({ addMovie }) => {
 
       <div className="container">
         {
-          wasAdd
+          hasError
             ? (
               <p className="help is-danger">
                 This movie has already been added to the list

@@ -4,18 +4,14 @@ import './FindMovie.scss';
 import PropTypes from 'prop-types';
 
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api/movies';
 import movies from '../../api/movies.json';
 
 export const FindMovie = ({ addMovie }) => {
-  const BASE_URL = 'https://www.omdbapi.com/?apikey=2dfeee8&t=';
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState({});
   const [moviesList, addNewMovie] = useState(movies);
   const [wasAdd, showMessage] = useState(false);
-
-  const getMovie = () => fetch(BASE_URL + title.toLowerCase())
-    .then(response => response.json())
-    .then(response => setMovie(response));
 
   const findMovie = (event) => {
     const { value } = event.target;
@@ -59,7 +55,7 @@ export const FindMovie = ({ addMovie }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          getMovie();
+          getMovie(title, setMovie);
         }}
       >
         <div className="field">
@@ -104,7 +100,7 @@ export const FindMovie = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addMovieToList()}
+              onClick={addMovieToList}
               disabled={!Object.prototype.hasOwnProperty.call(movie, 'Title')}
             >
               Add to the list

@@ -51,6 +51,7 @@ export const FindMovie = ({ addMovie }) => {
     addMovie(foundMovie);
     setTitle('');
     setTaskDone(true);
+    setFoundMovie(null);
   };
 
   return (

@@ -1,1 +1,1 @@
-export * from './FindMovie';
+export * from './FindMovie.jsx';

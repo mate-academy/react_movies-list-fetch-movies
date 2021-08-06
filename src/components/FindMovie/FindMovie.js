@@ -68,7 +68,6 @@ export const FindMovie = ({ addMovie }) => {
             </p>
             )}
         </div>
-
         <div className="field is-grouped">
           <div className="control">
             <button

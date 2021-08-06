@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 
-const BASE_URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=8b940388';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=8b940388';
 
 export const FindMovie = ({ addMovie }) => {
   const [title, setTitle] = useState('');
@@ -68,7 +68,6 @@ export const FindMovie = ({ addMovie }) => {
           <div className="control">
             <button
               type="button"
-              disabled={title.length === 0}
               onClick={() => {
                 handleClick();
                 setLoading(true);

@@ -55,7 +55,7 @@ export const FindMovie = ({ addMovie }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          getMovie(title, setMovie);
+          getMovie(title).then(setMovie);
         }}
       >
         <div className="field">

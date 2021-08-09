@@ -7,10 +7,27 @@ import data from './api/movies.json';
 export class App extends Component {
   state = {
     movies: data,
-  };
+  }
+
+  addMovieToList = (movie) => {
+    const { movies } = this.state;
+
+    if (!movie) {
+      return;
+    }
+
+    const isOnList = movies.some(
+      film => film.imdbId === movie.imdbId,
+    );
+
+    if (!isOnList) {
+      this.setState(state => ({ movies: [...state.movies, movie] }));
+    }
+  }
 
   render() {
     const { movies } = this.state;
+    const { addMovieToList } = this;
 
     return (
       <div className="page">
@@ -18,7 +35,7 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addMovieToList={addMovieToList} />
         </div>
       </div>
     );

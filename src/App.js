@@ -9,6 +9,14 @@ export class App extends Component {
     movies: data,
   };
 
+  addMovie = (movie) => {
+    if (movie !== null) {
+      if (!(this.state.movies.find(film => film.imdbId === movie.imdbId))) {
+        this.setState(state => ({ movies: [...state.movies, movie] }));
+      }
+    }
+  }
+
   render() {
     const { movies } = this.state;
 
@@ -18,7 +26,7 @@ export class App extends Component {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addMovie={this.addMovie} />
         </div>
       </div>
     );

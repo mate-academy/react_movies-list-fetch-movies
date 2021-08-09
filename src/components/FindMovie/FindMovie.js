@@ -5,12 +5,12 @@ import { request } from '../../api';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addMovieToTheList }) => {
-  const [value, setValue] = useState('');
+  const [nameOfMovie, setNameOfMovie] = useState('');
   const [movieFound, setMovieFound] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
 
   async function getMovie() {
-    const resultMovie = await request(value);
+    const resultMovie = await request(nameOfMovie);
 
     createMovie(resultMovie);
   }
@@ -53,9 +53,9 @@ export const FindMovie = ({ addMovieToTheList }) => {
                   ? 'input'
                   : 'input is-danger'
               }
-              value={value}
+              value={nameOfMovie}
               onChange={((event) => {
-                setValue(event.target.value);
+                setNameOfMovie(event.target.nameOfMovie);
                 setShowMessage(false);
               })}
             />
@@ -86,7 +86,7 @@ export const FindMovie = ({ addMovieToTheList }) => {
               className="button is-primary"
               onClick={(() => {
                 addMovieToTheList(movieFound);
-                setValue('');
+                setNameOfMovie('');
               })}
             >
               Add to the list

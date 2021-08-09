@@ -55,7 +55,7 @@ export const FindMovie = ({ addMovieToTheList }) => {
               }
               value={nameOfMovie}
               onChange={((event) => {
-                setNameOfMovie(event.target.nameOfMovie);
+                setNameOfMovie(event.target.value);
                 setShowMessage(false);
               })}
             />

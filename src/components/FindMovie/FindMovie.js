@@ -24,7 +24,6 @@ export const FindMovie = ({ addMovie }) => {
     if (!movieFromServer.Title) {
       setIsFound(false);
       setMovie(null);
-      setInputValue('');
 
       return;
     }
@@ -52,7 +51,10 @@ export const FindMovie = ({ addMovie }) => {
           <div className="control">
             <input
               value={inputValue}
-              onChange={event => setInputValue(event.target.value)}
+              onChange={(event) => {
+                setInputValue(event.target.value);
+                setIsFound(null);
+              }}
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"

@@ -35,7 +35,9 @@ export const MovieCard = ({
       <div className="content">
         {description}
         <br />
-        <a href={imdbUrl}>IMDB</a>
+        <a href={imdbUrl} target="blank">
+          IMDB
+        </a>
       </div>
     </div>
   </div>

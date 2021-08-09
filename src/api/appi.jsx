@@ -1,4 +1,3 @@
-
 const API_URL = 'https://www.omdbapi.com/?apikey=bdd9d5ee&t=';
 
 export function allMovies(url) {

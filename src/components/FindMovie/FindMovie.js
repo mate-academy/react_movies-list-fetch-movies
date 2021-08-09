@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -12,9 +12,6 @@ export const FindMovie = ({ movies, setMovies }) => {
   const [movie, setMovie] = useState(null);
   const [response, setResponse] = useState(true);
   const [exists, setExists] = useState(false);
-
-  useEffect(() => {
-  });
 
   const findMovie = (event) => {
     event.preventDefault();
@@ -71,7 +68,6 @@ export const FindMovie = ({ movies, setMovies }) => {
                 setExists(false);
               }}
               value={value}
-
             />
           </div>
           { exists && (

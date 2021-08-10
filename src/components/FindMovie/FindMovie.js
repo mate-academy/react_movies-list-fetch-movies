@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
-const BASE_URL = 'https://www.omdbapi.com/?i=tt3896198&apikey=75447f4c&t=';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=75447f4c&t=';
 const getMovie = title => fetch(BASE_URL + title)
   .then(response => response.json());
 

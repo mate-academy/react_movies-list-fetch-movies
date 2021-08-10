@@ -15,7 +15,7 @@ export const FindMovie = ({ addMovie }) => {
   const findMovie = () => {
     getMovie(title)
       .then((data) => {
-        if (data.Response === false) {
+        if (data.Response === 'False') {
           setІsMovieExist(false);
           setMovie(null);
 

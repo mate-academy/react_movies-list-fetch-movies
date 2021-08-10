@@ -10,11 +10,8 @@ export class App extends Component {
   };
 
   addMovie = (movie) => {
-    if (!movie) {
-      return;
-    }
-
-    if (!this.state.movies.some(film => film.imdbId === movie.imdbId)) {
+    if (movie
+      && !this.state.movies.some(film => film.imdbId === movie.imdbId)) {
       this.setState(state => ({
         movies: [...state.movies, movie],
       }));

@@ -9,18 +9,34 @@ export class App extends Component {
     movies: data,
   };
 
-  render() {
-    const { movies } = this.state;
+    addMovie = (movie) => {
+      const { movies } = this.state;
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
+      if (!movie) {
+        return;
+      }
+
+      const isList = movies.some(film => film.imdbId === movie.imdbId);
+
+      if (!isList) {
+        this.setState(state => ({
+          movies: [...state.movies, movie],
+        }));
+      }
+    };
+
+    render() {
+      const { movies } = this.state;
+
+      return (
+        <div className="page">
+          <div className="page-content">
+            <MoviesList movies={movies} />
+          </div>
+          <div className="sidebar">
+            <FindMovie addMovie={this.addMovie} />
+          </div>
         </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
-      </div>
-    );
-  }
+      );
+    }
 }

@@ -12,6 +12,14 @@ export const FindMovie = ({ onAdd }) => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const updateInput = (event) => {
+    if (error) {
+      setError('');
+    }
+
+    setInput((event.target.value));
+  };
+
   const getMovie = async() => {
     setIsLoading(true);
 
@@ -63,7 +71,7 @@ export const FindMovie = ({ onAdd }) => {
                 },
               )}
               value={input}
-              onChange={event => setInput(event.target.value)}
+              onChange={event => updateInput(event)}
             />
           </div>
           {!movieCard && (

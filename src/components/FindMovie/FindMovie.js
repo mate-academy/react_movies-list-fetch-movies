@@ -12,6 +12,7 @@ export const FindMovie = ({ addMovie }) => {
 
   const findMovie = async() => {
     const movieApi = await getMovies(title);
+    // console.log(movieApi)
 
     if (movieApi.Response !== 'False') {
       setMovie({
@@ -19,7 +20,7 @@ export const FindMovie = ({ addMovie }) => {
         description: movieApi.Plot,
         imgUrl: movieApi.Poster,
         imdbUrl: `https://www.imdb.com/title/${movieApi.imdbID}`,
-        imdbId: movieApi.imdbId,
+        imdbID: movieApi.imdbID,
       });
 
       setNotFound(false);

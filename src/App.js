@@ -11,7 +11,7 @@ export class App extends Component {
 
   addMovie = (newMovie) => {
     if (newMovie !== null
-      && !this.state.movies.find(movie => movie.imdbId === newMovie.imdbId)) {
+      && !this.state.movies.find(movie => movie.imdbID === newMovie.imdbID)) {
       this.setState(state => ({ movies: [...state.movies, newMovie] }));
     }
   }

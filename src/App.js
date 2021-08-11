@@ -14,20 +14,20 @@ export class App extends Component {
   };
 
   addMovie = (movie) => {
-    if (movie !== null) {
-      if (!this.state.movies.find(film => film.imdbId === movie.imdbId)) {
-        this.setState(state => ({
-          movies: [
-            ...state.movies,
-            movie,
-          ],
-        }),
-        () => {
-          const stringifiedMovies = JSON.stringify(this.state.movies);
+    const { movies } = this.state;
 
-          window.localStorage.setItem(moviesKey, stringifiedMovies);
-        });
-      }
+    if (movie && !movies.find(film => film.imdbId === movie.imdbId)) {
+      this.setState(state => ({
+        movies: [
+          ...state.movies,
+          movie,
+        ],
+      }),
+      () => {
+        const stringifiedMovies = JSON.stringify(movies);
+
+        window.localStorage.setItem(moviesKey, stringifiedMovies);
+      });
     }
   }
 

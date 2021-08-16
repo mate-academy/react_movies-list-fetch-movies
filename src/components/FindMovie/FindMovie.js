@@ -43,14 +43,6 @@ export const FindMovie = ({ addNewMovie }) => {
     setMovie(null);
   };
 
-  const {
-    title,
-    description,
-    imgUrl,
-    imdbUrl,
-    imdbId,
-  } = movie;
-
   return (
     <>
       <form
@@ -109,11 +101,11 @@ export const FindMovie = ({ addNewMovie }) => {
         <h2 className="title">Preview</h2>
         {movie !== null && (
           <MovieCard
-            title={title}
-            description={description}
-            imgUrl={imgUrl}
-            imdbUrl={imdbUrl}
-            imdbId={imdbId}
+            title={movie.title}
+            description={movie.description}
+            imgUrl={movie.imgUrl}
+            imdbUrl={movie.imdbUrl}
+            imdbId={movie.imdbId}
           />
         )
         }

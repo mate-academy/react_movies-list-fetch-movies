@@ -1,5 +1,5 @@
 const BASE_URL = 'http://www.omdbapi.com';
-const myKey = '512a403a';
+const myKey = 'c77ea3c8';
 
 export const getMovieByTitle = async(title) => {
   const response = await fetch(`${BASE_URL}/?apikey=${myKey}&t=${title}`);

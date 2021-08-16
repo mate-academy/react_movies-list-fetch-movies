@@ -5,14 +5,22 @@ import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
 export const App = () => {
-  const [movies, setMovies] = useState(data);
+  const moviesKey = 'movies';
+
+  const moviesFromStorage = JSON.parse(window.localStorage.getItem(moviesKey));
+
+  const [movies, setMovies] = useState(moviesFromStorage || data);
+
+  const stringifiedMovies = JSON.stringify(movies);
 
   const addNewMovie = (newMovie) => {
-    // eslint-disable-next-line no-unused-expressions
-    newMovie !== null
-    && (!movies.some(movie => movie.imdbId === newMovie.imdbId)
-      && setMovies([...movies, newMovie]));
+    if (newMovie !== null
+      && (!movies.some(movie => movie.imdbId === newMovie.imdbId))) {
+      setMovies([...movies, newMovie]);
+    }
   };
+
+  window.localStorage.setItem(moviesKey, stringifiedMovies);
 
   return (
     <div className="page">

@@ -7,7 +7,7 @@ export const request = async(url) => {
 };
 
 export const getMovieByTitle = async(title) => {
-  const movieRequest = await request(`/?apikey=75c18c0&t=${title}`);
+  const movieRequest = await request(`/?apikey=512a403a&t=${title}`);
 
   return movieRequest;
 };

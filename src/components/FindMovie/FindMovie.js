@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import cn from 'classnames';
 import { getMovieByTitle } from '../../api/api';
 import './FindMovie.scss';
 
@@ -42,6 +43,14 @@ export const FindMovie = ({ addNewMovie }) => {
     setMovie(null);
   };
 
+  const {
+    title,
+    description,
+    imgUrl,
+    imdbUrl,
+    imdbId,
+  } = movie;
+
   return (
     <>
       <form
@@ -57,7 +66,10 @@ export const FindMovie = ({ addNewMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${isMovieFound ? 'is-danger' : ''} `}
+              className={cn({
+                input: true,
+                'is-danger': isMovieFound,
+              })}
               value={queryTitle}
               onChange={handleChangeQuery}
             />
@@ -75,7 +87,7 @@ export const FindMovie = ({ addNewMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => showFoundMovie()}
+              onClick={showFoundMovie}
             >
               Find a movie
             </button>
@@ -95,8 +107,15 @@ export const FindMovie = ({ addNewMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie !== null
-          && (<MovieCard {...movie} />)
+        {movie !== null && (
+          <MovieCard
+            title={title}
+            description={description}
+            imgUrl={imgUrl}
+            imdbUrl={imdbUrl}
+            imdbId={imdbId}
+          />
+        )
         }
 
       </div>

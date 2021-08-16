@@ -8,11 +8,10 @@ export const App = () => {
   const [movies, setMovies] = useState(data);
 
   const addNewMovie = (newMovie) => {
-    if (newMovie !== null) {
-      if (!movies.some(movie => movie.imdbId === newMovie.imdbId)) {
-        setMovies([...movies, newMovie]);
-      }
-    }
+    // eslint-disable-next-line no-unused-expressions
+    newMovie !== null
+    && (!movies.some(movie => movie.imdbId === newMovie.imdbId)
+      && setMovies([...movies, newMovie]));
   };
 
   return (

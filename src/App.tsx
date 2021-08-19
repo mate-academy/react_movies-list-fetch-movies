@@ -1,11 +1,15 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-export class App extends Component {
-  state = {
+interface State {
+  movies: Movie[];
+}
+
+export class App extends Component<{}, State> {
+  state: State = {
     movies: data,
   };
 

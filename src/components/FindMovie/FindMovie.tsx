@@ -4,7 +4,7 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import movies from '../../api/movies.json';
 
-export const FindMovie = () => (
+export const FindMovie: React.FC = () => (
   <>
     <form className="find-movie">
       <div className="field">

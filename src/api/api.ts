@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?apikey=eb01c610&';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=eb01c610&';
 
 export const request = (title: string): Promise<MovieFromServer> => {
   return fetch(`${BASE_URL}&t=${title}`)

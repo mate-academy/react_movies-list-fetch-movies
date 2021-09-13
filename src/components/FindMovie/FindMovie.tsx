@@ -2,16 +2,29 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { getMovie } from '../../api/api';
 import './FindMovie.scss';
-
 import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
-  const [attempted, checkAttempt] = useState(false);
+interface Props {
+  addMovie: React.Dispatch<React.SetStateAction<Movie[]>>;
+  movies: Movie[];
+}
+
+export const FindMovie: React.FC<Props> = (props) => {
   const [query, setQuery] = useState('');
   const [title, setTitle] = useState('');
   const [plot, setPlot] = useState('');
   const [poster, setPoster] = useState('');
   const [id, setId] = useState('');
+  const newMovie = {
+    title,
+    description: plot,
+    imgUrl: poster,
+    imdbUrl: `https://www.imdb.com/title/${id}/`,
+    imdbId: id,
+  };
+  const { addMovie, movies } = props;
+  const isMovieInTheList = movies
+    .find(movie => movie.imdbId === newMovie.imdbId);
 
   return (
     <>
@@ -27,17 +40,19 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is-danger': !title && attempted && query,
+                'is-danger': !title && query,
               })}
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                setTitle(event.target.value);
+                if (!id) {
+                  setTitle(event.target.value);
+                }
               }}
             />
           </div>
 
-          {attempted && query && !title && (
+          {query && !title && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -64,8 +79,6 @@ export const FindMovie: React.FC = () => {
 
                   setId(await searchedMovie
                     .then(movie => movie.imdbID));
-
-                  checkAttempt(true);
                 }
               }}
             >
@@ -77,6 +90,11 @@ export const FindMovie: React.FC = () => {
             <button
               type="button"
               className="button is-primary"
+              disabled={!id || !!isMovieInTheList}
+              onClick={() => {
+                addMovie([newMovie, ...movies]);
+                setQuery('');
+              }}
             >
               Add to the list
             </button>
@@ -87,13 +105,7 @@ export const FindMovie: React.FC = () => {
       {id && (
         <div className="container">
           <h2 className="title">Preview</h2>
-          <MovieCard
-            title={title}
-            description={plot}
-            imgUrl={poster}
-            imdbUrl={`https://www.imdb.com/title/${id}/`}
-            imdbId={id}
-          />
+          <MovieCard {...newMovie} />
         </div>
       )}
     </>

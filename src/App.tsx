@@ -6,13 +6,13 @@ import { Film } from './types/Film';
 import data from './api/movies.json';
 
 export const App: React.FC = () => {
-  const [movies, addData] = useState<Film[]>(data);
+  const [movies, setMovies] = useState<Film[]>(data);
   const addFilm = (newFilm: Film) => {
     if (movies.some((film) => newFilm.imdbId === film.imdbId)) {
       return;
     }
 
-    addData((state) => {
+    setMovies((state) => {
       return [
         ...state,
         newFilm,
@@ -26,7 +26,7 @@ export const App: React.FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie adding={addFilm} />
+        <FindMovie addFilm={addFilm} />
       </div>
     </div>
   );

@@ -5,10 +5,10 @@ import { Film } from '../../types/Film';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  adding: (movie: Film) => void;
+  addFilm: (movie: Film) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ adding }) => {
+export const FindMovie: React.FC<Props> = ({ addFilm }) => {
   const [inputValue, setValue] = useState('');
   const [movie, setMovie] = useState<Film>({ Response: 'True' });
 
@@ -36,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({ adding }) => {
     setMovie({ ...movie, Response: 'True' });
   };
 
-  const addFilm = () => (movie.title) && (adding(movie), setValue(''));
+  const newFilm = () => (movie.title) && (addFilm(movie), setValue(''));
 
   return (
     <>
@@ -79,7 +79,7 @@ export const FindMovie: React.FC<Props> = ({ adding }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={addFilm}
+              onClick={newFilm}
             >
               Add to the list
             </button>

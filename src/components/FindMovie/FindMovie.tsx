@@ -31,6 +31,10 @@ export const FindMovie: React.FC<Props> = (props) => {
   };
 
   const checkMovieInList = () => {
+    if (!newMovie.imdbId) {
+      return true;
+    }
+
     const movieMatch = movies
       .findIndex(movie => movie.imdbId === newMovie.imdbId);
 

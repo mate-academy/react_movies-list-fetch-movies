@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
 import { getMovie } from '../../api/api';
 
 import { MovieCard } from '../MovieCard';
@@ -15,13 +16,12 @@ export const FindMovie: React.FC<Props> = (props) => {
   const { onAdd } = props;
 
   const findMovie = () => {
+    setMovie(null);
     if (query.length === 0) {
       setError(true);
 
       return;
     }
-
-    setMovie(null);
 
     getMovie(query)
       .then((result) => {
@@ -40,6 +40,9 @@ export const FindMovie: React.FC<Props> = (props) => {
         };
 
         setMovie(newMovie);
+      })
+      .catch(loadingError => {
+        throw new Error(`${loadingError}`);
       });
   };
 
@@ -72,7 +75,7 @@ export const FindMovie: React.FC<Props> = (props) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', { 'is-danger': error })}
               onChange={handleQuery}
               value={query}
             />
@@ -99,6 +102,7 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               type="submit"
               className="button is-primary"
+              disabled={error}
             >
               Add to the list
             </button>

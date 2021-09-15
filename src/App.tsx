@@ -11,7 +11,7 @@ export const App: React.FC = () => {
   ] = useState(data);
 
   const addFoundMovie = (movieThatFound: Movie) => {
-    if (movies.every(({ imdbId }) => imdbId !== movieThatFound.imdbId)) {
+    if (!movies.some(({ imdbId }) => imdbId === movieThatFound.imdbId)) {
       setMovies([...movies, movieThatFound]);
     }
   };

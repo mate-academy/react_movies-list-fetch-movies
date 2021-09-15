@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './FindMovie.scss';
+import cn from 'classnames';
 
 import { MovieCard } from '../MovieCard';
 import { getMovies } from '../../api/Api';
@@ -69,7 +70,10 @@ export const FindMovie: React.FC<Props> = ({ handleAddFoundMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn(
+                'input',
+                { 'is-danger': showMessage },
+              )}
               value={query}
               onChange={getTitle}
             />
@@ -97,7 +101,9 @@ export const FindMovie: React.FC<Props> = ({ handleAddFoundMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={addMovieThatFound}
+              onClick={() => (
+                movieThatFound.imdbId && addMovieThatFound()
+              )}
             >
               Add to the list
             </button>

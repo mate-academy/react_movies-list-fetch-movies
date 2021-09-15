@@ -13,6 +13,14 @@ export class App extends Component<{}, State> {
     movies: data,
   };
 
+  addMovie = (newMovie: Movie) => {
+    if (!this.state.movies.includes(newMovie)) {
+      this.setState(currentState => ({
+        movies: [...currentState.movies, newMovie],
+      }));
+    }
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -22,7 +30,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie onAdd={this.addMovie} />
         </div>
       </div>
     );

@@ -19,6 +19,7 @@ export const FindMovie: React.FC<Props> = (props) => {
     const { value } = event.target;
 
     setSearchMovie(value);
+    setIsMovieValid(true);
   };
 
   const fromApiMovie = async () => {

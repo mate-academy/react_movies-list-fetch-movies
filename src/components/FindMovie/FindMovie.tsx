@@ -42,7 +42,7 @@ export const FindMovie: React.FC<Props> = (props) => {
     setIsFound(true);
   };
 
-  const handleAddMovie = (event: { preventDefault: () => void; }) => {
+  const handleAddMovie = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (findedMovie && !listOfMovie.find(item => item.imdbId === findedMovie.imdbId)) {
       addMovie(findedMovie as Movie);

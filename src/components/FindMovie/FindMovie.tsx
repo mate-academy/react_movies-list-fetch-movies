@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
-// import movies from '../../api/movies.json';
 import { movieLoader } from '../../api/api';
 
 interface Props {

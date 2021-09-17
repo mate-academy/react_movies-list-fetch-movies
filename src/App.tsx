@@ -7,12 +7,14 @@ import data from './api/movies.json';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>(data);
+  const [isAdded, setAdding] = useState(false);
 
   const addMovie = (newMovie: Movie) => {
     const isMovieFound = movies.find(movie => movie.imdbId === newMovie.imdbId);
 
     if (!isMovieFound) {
-      setMovies([...movies, newMovie]);
+      setMovies([newMovie, ...movies]);
+      setAdding(true);
     }
   };
 
@@ -25,6 +27,11 @@ export const App: React.FC = () => {
         <FindMovie
           addMovie={addMovie}
         />
+        {!isAdded && (
+          <p>
+            The movie is already added to the list
+          </p>
+        )}
       </div>
     </div>
   );

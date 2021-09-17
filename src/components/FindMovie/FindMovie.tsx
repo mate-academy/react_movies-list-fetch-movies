@@ -36,6 +36,7 @@ export const FindMovie: React.FC<Props> = (props) => {
     };
 
     setMovie(newMovie);
+    setTitle('');
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,10 +108,12 @@ export const FindMovie: React.FC<Props> = (props) => {
         </div>
       </form>
 
-      <div className="container">
-        <h2 className="title">Preview</h2>
-        {movie && (<MovieCard movie={movie} />)}
-      </div>
+      {movie && (
+        <div className="container">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

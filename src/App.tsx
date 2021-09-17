@@ -13,6 +13,12 @@ export class App extends Component<{}, State> {
     movies: data,
   };
 
+  onUpdateMovies = (selectedMovie: Movie) => {
+    this.setState(state => ({
+      movies: [...state.movies, selectedMovie],
+    }) as Pick<State, keyof State>);
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -22,7 +28,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie movies={movies} onUpdateMovies={this.onUpdateMovies} />
         </div>
       </div>
     );

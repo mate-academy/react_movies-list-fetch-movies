@@ -6,4 +6,13 @@ interface Movie {
   imgUrl: string;
   imdbUrl: string;
   imdbId: string;
+  Response?: string;
+}
+
+interface MovieFromServer {
+  Title: string;
+  Plot: string;
+  Poster: string;
+  imdbID: string;
+  Response?: string;
 }

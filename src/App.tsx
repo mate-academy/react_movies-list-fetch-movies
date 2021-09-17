@@ -2,7 +2,6 @@ import { Component } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import data from './api/movies.json';
 
 interface State {
   movies: Movie[];
@@ -10,7 +9,7 @@ interface State {
 
 export class App extends Component<{}, State> {
   state: State = {
-    movies: data,
+    movies: [],
   };
 
   onUpdateMovies = (selectedMovie: Movie) => {

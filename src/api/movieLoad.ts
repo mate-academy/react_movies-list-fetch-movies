@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?apikey=de16e785';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=de16e785';
 
 export const loadMovie = (title: string) => {
   return fetch(`${BASE_URL}&t=${title}`)

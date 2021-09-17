@@ -1,8 +1,7 @@
 import React from 'react';
 import './FindMovie.scss';
 
-import { MovieCard } from '../MovieCard';
-import movies from '../../api/movies.json';
+// import { MovieCard } from '../MovieCard';
 
 export const FindMovie: React.FC = () => (
   <>
@@ -49,7 +48,7 @@ export const FindMovie: React.FC = () => (
 
     <div className="container">
       <h2 className="title">Preview</h2>
-      <MovieCard {...movies[0]} />
+      {/* <MovieCard  /> */}
     </div>
   </>
 );

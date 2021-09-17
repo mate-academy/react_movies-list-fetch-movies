@@ -6,30 +6,30 @@ import { request } from '../../api/getApi';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie = ({ addMovie, addErrorMessage, getAddError }) => {
-  const [title, getTitle] = useState('');
-  const [api, getApi] = useState('');
-  const [showErrorMessage, getErrorMessage] = useState(true);
+  const [title, setTitle] = useState('');
+  const [movie, setMovie] = useState({});
+  const [showErrorMessage, setErrorMessage] = useState(true);
 
-  async function loadApi() {
+  async function loadMovie() {
     const loadingApi = await request(title);
 
-    getApi(loadingApi);
+    setMovie(loadingApi);
     if (loadingApi.Response === 'False') {
-      getErrorMessage(false);
+      setErrorMessage(false);
     }
   }
 
-  const movie = {
-    title: api.Title,
-    description: api.Plot,
-    imgUrl: api.Poster,
-    imdbId: api.imdbID,
-    imdbUrl: `https://www.imdb.com/title/${api.imdbID}`,
+  const film = {
+    title: movie.Title,
+    description: movie.Plot,
+    imgUrl: movie.Poster,
+    imdbId: movie.imdbID,
+    imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
   };
 
   const addMovieToMoviesList = () => {
-    if (movie.title !== undefined) {
-      addMovie(movie);
+    if (film.title !== undefined) {
+      addMovie(film);
     }
   };
 
@@ -44,8 +44,8 @@ export const FindMovie = ({ addMovie, addErrorMessage, getAddError }) => {
           <div className="control">
             <input
               onChange={(event) => {
-                getTitle(event.target.value);
-                getErrorMessage(true);
+                setTitle(event.target.value);
+                setErrorMessage(true);
                 getAddError(true);
               }}
               type="text"
@@ -56,17 +56,13 @@ export const FindMovie = ({ addMovie, addErrorMessage, getAddError }) => {
                 : 'input is-danger')}
             />
           </div>
-          {showErrorMessage
-            ? ''
-            : (
+          {!showErrorMessage && (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title
               </p>
             )
           }
-          {addErrorMessage
-            ? ''
-            : (
+          {!addErrorMessage && (
               <p className="help is-danger">
                 Such a movie has already been added
               </p>
@@ -78,9 +74,7 @@ export const FindMovie = ({ addMovie, addErrorMessage, getAddError }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={title
-                ? loadApi
-                : null}
+              onClick={loadMovie}
             >
               Find a movie
             </button>
@@ -98,11 +92,11 @@ export const FindMovie = ({ addMovie, addErrorMessage, getAddError }) => {
         </div>
       </form>
       <div className="container">
-        {movie.title
+        {film.title
           && (
           <>
             <h2 className="title">Preview</h2>
-            <MovieCard {...movie} />
+            <MovieCard {...film} />
           </>
           )}
       </div>

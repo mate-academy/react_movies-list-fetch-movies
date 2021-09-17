@@ -6,12 +6,12 @@ import data from './api/movies.json';
 
 export const App = () => {
   const [movies, setMovie] = useState(data);
-  const [addErrorMessage, getAddError] = useState(true);
+  const [addErrorMessage, setAddError] = useState(true);
   const addMovie = (movie) => {
-    if (!movies.find(item => item.imdbId === movie.imdbId)) {
+    if (!movies.some(item => item.imdbId === movie.imdbId)) {
       setMovie([...movies, movie]);
     } else {
-      getAddError(false);
+      setAddError(false);
     }
   };
 
@@ -23,7 +23,7 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           addMovie={addMovie}
-          getAddError={getAddError}
+          getAddError={setAddError}
           addErrorMessage={addErrorMessage}
         />
       </div>

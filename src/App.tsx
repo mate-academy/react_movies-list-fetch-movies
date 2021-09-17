@@ -1,30 +1,36 @@
-import { Component } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState(data);
+  const [isMovie, setIsMovie] = useState(false);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: data,
+  const getMovies = (movie: Movie) => {
+    const checkMovie = movies.some(film => film.imdbID === movie.imdbID);
+
+    if (!checkMovie) {
+      setMovies([movie, ...movies]);
+      setIsMovie(false);
+    } else {
+      setIsMovie(true);
+    }
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie getMovies={getMovies} />
+
+        {isMovie && (
+          <h3>You have already added this movie</h3>
+        )}
+      </div>
+    </div>
+  );
+};

@@ -1,9 +1,18 @@
 /// <reference types="react-scripts" />
 
+// interface Movie {
+//   title: string;
+//   description: string;
+//   imgUrl: string;
+//   imdbUrl: string;
+//   imdbId: string;
+// }
+
 interface Movie {
-  title: string;
-  description: string;
-  imgUrl: string;
+  Title: string;
+  Plot: string;
+  Poster: string;
   imdbUrl: string;
-  imdbId: string;
+  imdbID: string;
+  Error?: string | undefined;
 }

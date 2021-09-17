@@ -3,7 +3,6 @@ import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import data from './api/movies.json';
-// import { loadMovie } from './api/api';
 
 interface State {
   movies: Movie[];
@@ -14,11 +13,13 @@ export class App extends Component<{}, State> {
     movies: data,
   };
 
-  // async componentDidMount() {
-  //   const data = await loadMovie('');
-
-  //   this.setState({ todos: data });
-  // }
+  addNewMovie = (newMovie: Movie) => {
+    if (newMovie && !this.state.movies.find(movie => movie.imdbId === newMovie.imdbId)) {
+      this.setState((currentState) => ({
+        movies: [...currentState.movies, newMovie],
+      }));
+    }
+  };
 
   render() {
     const { movies } = this.state;
@@ -29,7 +30,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie onAdd={this.addNewMovie} />
         </div>
       </div>
     );

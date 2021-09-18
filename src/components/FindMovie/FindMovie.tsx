@@ -14,23 +14,33 @@ export const FindMovie: React.FC<Props> = (props) => {
   const { getMovies, onSetIsMovie } = props;
   const [movie, setMovie] = useState(null as Movie | null);
   const [title, setTitle] = useState('');
-  const [errorMasage, setToggler] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    setToggler(false);
+    setError(false);
   };
 
   const getMovie = async () => {
     onSetIsMovie(false);
-    const newMovie = await loadMovies(title);
+    setLoading(true);
 
-    if (!newMovie.Error) {
-      const imdbUrl = `https://www.imdb.com/title/${newMovie.imdbID}`;
+    try {
+      const newMovie = await loadMovies(title);
 
-      setMovie({ ...newMovie, imdbUrl });
-    } else {
+      setLoading(false);
+
+      if (!newMovie.Error) {
+        const imdbUrl = `https://www.imdb.com/title/${newMovie.imdbID}`;
+
+        setMovie({ ...newMovie, imdbUrl });
+      } else {
+        setMovie(null);
+        setError(true);
+      }
+    } catch {
+      setLoading(false);
       setMovie(null);
-      setToggler(true);
     }
   };
 
@@ -57,14 +67,14 @@ export const FindMovie: React.FC<Props> = (props) => {
               className={classNames(
                 'input',
                 'is-info', {
-                  'is-danger': errorMasage,
+                  'is-danger': error,
                 },
               )}
               value={title}
               onChange={handleChange}
             />
           </div>
-          {errorMasage && (
+          {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -75,7 +85,12 @@ export const FindMovie: React.FC<Props> = (props) => {
           <div className="control">
             <button
               type="button"
-              className="button is-light"
+              className={classNames(
+                'button',
+                'is-light', {
+                  'is-loading': loading,
+                },
+              )}
               onClick={getMovie}
             >
               Find a movie
@@ -86,7 +101,7 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               type="button"
               className="button is-primary"
-              disabled={errorMasage}
+              disabled={error}
               onClick={onAddMovies}
             >
               Add to the list

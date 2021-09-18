@@ -14,6 +14,8 @@ export const App: React.FC = () => {
 
     if (!isMovieFound) {
       setMovies([newMovie, ...movies]);
+      setAdding(false);
+    } else {
       setAdding(true);
     }
   };
@@ -27,7 +29,7 @@ export const App: React.FC = () => {
         <FindMovie
           addMovie={addMovie}
         />
-        {!isAdded && (
+        {isAdded && (
           <p>
             The movie is already added to the list
           </p>

@@ -25,7 +25,7 @@ export const App: React.FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie getMovies={getMovies} />
+        <FindMovie getMovies={getMovies} onSetIsMovie={setIsMovie} />
 
         {isMovie && (
           <h3>You have already added this movie</h3>

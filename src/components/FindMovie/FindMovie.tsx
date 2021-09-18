@@ -7,19 +7,21 @@ import { MovieCard } from '../MovieCard';
 
 type Props = {
   getMovies: (movie: Movie) => void;
+  onSetIsMovie: (argument: boolean) => void;
 };
 
 export const FindMovie: React.FC<Props> = (props) => {
-  const { getMovies } = props;
+  const { getMovies, onSetIsMovie } = props;
   const [movie, setMovie] = useState(null as Movie | null);
   const [title, setTitle] = useState('');
-  const [toggler, setToggler] = useState(true);
+  const [errorMasage, setToggler] = useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    setToggler(true);
+    setToggler(false);
   };
 
   const getMovie = async () => {
+    onSetIsMovie(false);
     const newMovie = await loadMovies(title);
 
     if (!newMovie.Error) {
@@ -28,7 +30,7 @@ export const FindMovie: React.FC<Props> = (props) => {
       setMovie({ ...newMovie, imdbUrl });
     } else {
       setMovie(null);
-      setToggler(false);
+      setToggler(true);
     }
   };
 
@@ -55,14 +57,14 @@ export const FindMovie: React.FC<Props> = (props) => {
               className={classNames(
                 'input',
                 'is-info', {
-                  'is-danger': !toggler,
+                  'is-danger': errorMasage,
                 },
               )}
               value={title}
               onChange={handleChange}
             />
           </div>
-          {!toggler && (
+          {errorMasage && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -84,6 +86,7 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               type="button"
               className="button is-primary"
+              disabled={errorMasage}
               onClick={onAddMovies}
             >
               Add to the list

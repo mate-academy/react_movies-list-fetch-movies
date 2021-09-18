@@ -6,3 +6,7 @@ type Movie = {
   Plot: string;
   imdbID: string;
 };
+
+type ResponceBody = {
+  Response: string;
+} & Movie;

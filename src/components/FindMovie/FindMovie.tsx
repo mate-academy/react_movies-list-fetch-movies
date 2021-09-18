@@ -12,7 +12,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = (props) => {
   const { getMovies, onSetIsMovie } = props;
-  const [movie, setMovie] = useState(null as Movie | null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);

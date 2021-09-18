@@ -7,3 +7,11 @@ interface Movie {
   imdbUrl: string;
   imdbId: string;
 }
+
+interface FromServer {
+  Title: string;
+  Plot: string;
+  Poster: string;
+  imdbID: string;
+  Response: string;
+}

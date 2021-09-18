@@ -2,6 +2,7 @@ import { Component } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
+import { getMovie } from './api/api';
 import data from './api/movies.json';
 
 interface State {
@@ -13,6 +14,14 @@ export class App extends Component<{}, State> {
     movies: data,
   };
 
+  setMovies = (movie: Movie) => {
+    this.setState((currentState) => {
+      return ({
+        movies: [...currentState.movies, movie],
+      });
+    });
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -22,7 +31,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie onFindMovie={getMovie} setMovies={this.setMovies} movies={movies} />
         </div>
       </div>
     );

@@ -11,11 +11,11 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = (props) => {
   const { getMovies } = props;
-  const [movie, setMovie] = useState({} as Movie);
+  const [movie, setMovie] = useState(null as Movie | null);
   const [title, setTitle] = useState('');
   const [toggler, setToggler] = useState(true);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value as string);
+    setTitle(event.target.value);
     setToggler(true);
   };
 
@@ -27,14 +27,16 @@ export const FindMovie: React.FC<Props> = (props) => {
 
       setMovie({ ...newMovie, imdbUrl });
     } else {
-      setMovie(newMovie);
+      setMovie(null);
       setToggler(false);
     }
   };
 
   const onAddMovies = () => {
-    getMovies(movie);
-    setMovie({} as Movie);
+    if (movie) {
+      getMovies(movie);
+      setMovie(null);
+    }
   };
 
   return (
@@ -60,7 +62,7 @@ export const FindMovie: React.FC<Props> = (props) => {
               onChange={handleChange}
             />
           </div>
-          {movie.Error && (
+          {!toggler && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -91,12 +93,12 @@ export const FindMovie: React.FC<Props> = (props) => {
       </form>
 
       <div className="container">
-        {movie.imdbID ? (
+        {movie && (
           <>
             <h2 className="title">Preview</h2>
             <MovieCard {...movie} />
           </>
-        ) : movie.Error}
+        )}
       </div>
     </>
   );

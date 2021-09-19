@@ -5,11 +5,30 @@ import { FindMovie } from './components/FindMovie';
 
 interface State {
   movies: Movie[];
+  moviesImdbId: string[]
 }
 
 export class App extends Component<{}, State> {
   state: State = {
     movies: [],
+    moviesImdbId: [],
+  };
+
+  addMovie = (newMovie: Movie) => {
+    this.setState((currentState => {
+      const { movies, moviesImdbId } = currentState;
+
+      if (!moviesImdbId.includes(newMovie.imdbID)) {
+        return {
+          movies: [...movies, newMovie],
+          moviesImdbId: [...moviesImdbId, newMovie.imdbID],
+        };
+      }
+
+      return {
+        ...currentState,
+      };
+    }));
   };
 
   render() {
@@ -21,7 +40,9 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie
+            addMovie={this.addMovie}
+          />
         </div>
       </div>
     );

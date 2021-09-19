@@ -13,4 +13,4 @@ Implement `FindMovie` component to load movies from [OMDb API](http://www.omdbap
 1. If film is not found show an error message below the input. Hide the error after changing a title.
 1. If a film has been found show the preview as a `MovieCard`.
 1. Add a movie to the list after submitting a form and clear the input.
-1. Don't add the same film to the list twice (compare by `imdbId`).
+1. Don't add the same film to the list twice (compare by `imdbId`).   

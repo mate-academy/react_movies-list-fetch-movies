@@ -22,6 +22,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   };
 
   const getMovie = async () => {
+    setTitle('');
     onSetIsMovie(false);
     setLoading(true);
 

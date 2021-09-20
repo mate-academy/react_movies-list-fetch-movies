@@ -12,12 +12,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   const [findMovieByTitle, setMovieTitle] = useState('');
   const [isMovieFound, showMovie] = useState(false);
   const [isError, showError] = useState(false);
-  const [findMovie, setMovie] = useState({
-    Poster: '',
-    Title: '',
-    Plot: '',
-    imdbID: '',
-  });
+  const [findMovie, setMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
     showError(false);
@@ -55,7 +50,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   };
 
   const handleAddMovie = () => {
-    if (findMovie.Title.length) {
+    if (findMovie) {
       props.addMovie(findMovie);
       setMovieTitle('');
     }
@@ -113,7 +108,7 @@ export const FindMovie: React.FC<Props> = (props) => {
         {isMovieFound && (
           <>
             <h2 className="title">Preview</h2>
-            <MovieCard movie={findMovie} />
+            {findMovie && (<MovieCard movie={findMovie} />)}
           </>
         )}
       </div>

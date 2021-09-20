@@ -9,3 +9,6 @@ export const getMovies = async (title: string) => {
 
   return response.json();
 };
+
+// eslint-disable-next-line no-console
+console.log(getMovies);

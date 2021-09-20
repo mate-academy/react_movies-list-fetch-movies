@@ -12,7 +12,7 @@ interface Props {
 export const FindMovie: React.FC<Props> = (props) => {
   const { addMovie } = props;
   const [title, setTitle] = useState('');
-  const [newFilm, setNewFilm] = useState(null as Movie | null);
+  const [newFilm, setNewFilm] = useState<Movie | null>(null);
   const [isValid, setValid] = useState(true);
   const [isHasFilm, setIsHasFilm] = useState(false);
 
@@ -33,9 +33,6 @@ export const FindMovie: React.FC<Props> = (props) => {
       });
       setTitle('');
     }
-
-    // eslint-disable-next-line no-console
-    console.log(searchFilm);
 
     if (data.find(movie => movie.imdbId === searchFilm.imdbID)) {
       setIsHasFilm(true);

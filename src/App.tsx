@@ -9,11 +9,13 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState(data);
 
   const addMovie = (movie: Movie) => {
-    if (movies.find(oldMovie => oldMovie.imdbId === movie.imdbId)) {
+    const moviesEqual = movies.find(oldMovie => oldMovie.imdbId === movie.imdbId);
+
+    if (moviesEqual) {
       return;
     }
 
-    setMovies([...movies, movie]);
+    setMovies((currentMovies) => [...currentMovies, movie]);
   };
 
   return (

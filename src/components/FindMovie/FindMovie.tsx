@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isMovieValid, setIsMovieValid] = useState(true);
 
-  const fromApiMovie = async () => {
+  const loadMovie = async () => {
     const apiMovie = await getData(searchMovie);
 
     if (apiMovie.Response === 'False') {
@@ -39,7 +39,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   };
 
   const searchMovieSubmit = () => {
-    fromApiMovie();
+    loadMovie();
   };
 
   const addNewMovie = () => {

@@ -14,21 +14,17 @@ export const FindMovie: React.FC<Props> = (props) => {
   const [title, setTitle] = useState('');
   const [isCorrectTitle, setIsCorrectTitle] = useState(true);
 
-  const findMovie = (() => {
-    (
-      async () => {
-        const movieFromApi = await getMovieByTitle(title);
+  const findMovie = (async () => {
+    const movieFromApi = await getMovieByTitle(title);
 
-        if (movieFromApi?.imdbID) {
-          setMovie(movieFromApi);
-          setIsCorrectTitle(true);
-          setTitle('');
-        } else {
-          setIsCorrectTitle(false);
-          setMovie(null);
-        }
-      }
-    )();
+    if (movieFromApi?.imdbID) {
+      setMovie(movieFromApi);
+      setIsCorrectTitle(true);
+      setTitle('');
+    } else {
+      setIsCorrectTitle(false);
+      setMovie(null);
+    }
   });
 
   const changeTitleForSearch = (event: React.ChangeEvent<HTMLInputElement>) => {

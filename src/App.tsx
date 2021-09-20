@@ -7,11 +7,15 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie | null) => {
-    if (movie
-      && !movies.some(filterMovie => filterMovie.imdbID === movie.imdbID)
-    ) {
-      setMovies(moviesList => [...moviesList, movie]);
+    const isMovieInList = movies.some(filterMovie => (
+      filterMovie.imdbID === movie?.imdbID
+    ));
+
+    if (!movie || isMovieInList) {
+      return;
     }
+
+    setMovies(moviesList => [...moviesList, movie]);
   };
 
   return (

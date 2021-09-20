@@ -33,6 +33,7 @@ export const FindMovie: React.FC<Props> = (props) => {
     };
 
     setMovie(newMovie);
+    setTitle('');
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,4 +1,5 @@
 import React from 'react';
+
 import './MovieCard.scss';
 
 type Props = {
@@ -6,14 +7,19 @@ type Props = {
 };
 
 export const MovieCard: React.FC<Props> = (props) => {
-  const { movie } = props;
+  const {
+    title = '',
+    description = '',
+    imgUrl,
+    imdbUrl,
+  } = props.movie;
 
   return (
     <div className="card">
       <div className="card-image">
         <figure className="image is-4by3">
           <img
-            src={movie.Poster}
+            src={imgUrl}
             alt="Film logo"
           />
         </figure>
@@ -29,13 +35,14 @@ export const MovieCard: React.FC<Props> = (props) => {
             </figure>
           </div>
           <div className="media-content">
-            <p className="title is-8">{movie.Title}</p>
+            <p className="title is-8">{title}</p>
           </div>
         </div>
 
         <div className="content">
-          {movie.Plot}
+          {description}
           <br />
+          <a href={imdbUrl}>IMDB</a>
         </div>
       </div>
     </div>

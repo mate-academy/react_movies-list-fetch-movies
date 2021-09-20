@@ -103,7 +103,7 @@ export const FindMovie: React.FC<Props> = (props) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
             >
               Find a movie

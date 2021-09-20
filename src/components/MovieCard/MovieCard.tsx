@@ -13,7 +13,7 @@ export const MovieCard: React.FC<Props> = (props) => {
       <div className="card-image">
         <figure className="image is-4by3">
           <img
-            src={movie.Poster}
+            src={movie.imgUrl}
             alt="Film logo"
           />
         </figure>
@@ -29,12 +29,12 @@ export const MovieCard: React.FC<Props> = (props) => {
             </figure>
           </div>
           <div className="media-content">
-            <p className="title is-8">{movie.Title}</p>
+            <p className="title is-8">{movie.title}</p>
           </div>
         </div>
 
         <div className="content">
-          {movie.Plot}
+          {movie.plot}
           <br />
         </div>
       </div>

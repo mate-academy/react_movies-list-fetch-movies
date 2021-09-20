@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -7,9 +7,18 @@ interface State {
   movies: Movie[];
 }
 
-export class App extends Component<{}, State> {
+export class App extends React.Component<{}, State> {
   state: State = {
     movies: [],
+  };
+
+  addMovie = (movie: Movie) => {
+    if (!this.state.movies
+      .find(film => film.imdbId === movie.imdbId)) {
+      this.setState((currentState) => ({
+        movies: [...currentState.movies, movie],
+      }));
+    }
   };
 
   render() {
@@ -21,7 +30,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie onAdd={this.addMovie} />
         </div>
       </div>
     );

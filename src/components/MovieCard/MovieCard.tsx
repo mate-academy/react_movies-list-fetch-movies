@@ -37,8 +37,8 @@ export const MovieCard: React.FC<Props> = (props) => {
           {movie.Plot}
           <br />
           <br />
-          <strong>{'imdbID: '}</strong>
-          {movie.imdbID}
+          <strong>{'imdbRating: '}</strong>
+          {movie.imdbRating}
           <br />
         </div>
       </div>

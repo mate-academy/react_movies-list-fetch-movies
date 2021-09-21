@@ -12,7 +12,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   const { addMovie } = props;
   const [movie, setMovie] = useState<Movie | null>(null);
   const [request, setRequest] = useState<string>('');
-  const [isValid, setValid] = useState<boolean>(false);
+  const [isValid, setValid] = useState<boolean>(true);
 
   const loadMovie = async () => {
     const movieFromApi = await getMovie(request);
@@ -36,6 +36,7 @@ export const FindMovie: React.FC<Props> = (props) => {
     event.preventDefault();
 
     loadMovie();
+    setRequest('');
   };
 
   return (

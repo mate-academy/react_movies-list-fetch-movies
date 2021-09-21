@@ -17,34 +17,34 @@ export const FindMovie: React.FC<Props> = (props) => {
 
   const { addMovie } = props;
 
-  const handleFinder = () => {
+  const handleFinder = async () => {
     setMovie(null);
 
-    loadMovie(query).then(data => {
-      if (data.Response === 'False') {
-        setError('Can\'t find a movie with such a title');
-        setIsError(true);
+    const data = await loadMovie(query);
 
-        return;
-      }
+    if (data.Response === 'False') {
+      setError('Can\'t find a movie with such a title');
+      setIsError(true);
 
-      const {
-        Title,
-        Plot,
-        Poster,
-        imdbID,
-      } = data;
+      return;
+    }
 
-      const film = {
-        title: Title,
-        description: Plot,
-        imgUrl: Poster,
-        imdbUrl: `${url}&t=${Title}`,
-        imdbId: imdbID,
-      };
+    const {
+      Title,
+      Plot,
+      Poster,
+      imdbID,
+    } = data;
 
-      setMovie(film);
-    });
+    const film = {
+      title: Title,
+      description: Plot,
+      imgUrl: Poster,
+      imdbUrl: `${url}&t=${Title}`,
+      imdbId: imdbID,
+    };
+
+    setMovie(film);
   };
 
   const handleQuerier = (event: React.ChangeEvent<HTMLInputElement>) => {

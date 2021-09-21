@@ -28,16 +28,14 @@ export const FindMovie: React.FC<Props> = (props) => {
 
     setValid(true);
 
-    if (searchFilm.Response === 'True') {
-      setNewFilm({
-        title: searchFilm.Title,
-        description: searchFilm.Plot,
-        imgUrl: searchFilm.Poster,
-        imdbUrl: `https://www.imdb.com/title/${searchFilm.imdbID}/`,
-        imdbId: searchFilm.imdbID,
-      });
-      setTitle('');
-    }
+    setNewFilm({
+      title: searchFilm.Title,
+      description: searchFilm.Plot,
+      imgUrl: searchFilm.Poster,
+      imdbUrl: `https://www.imdb.com/title/${searchFilm.imdbID}/`,
+      imdbId: searchFilm.imdbID,
+    });
+    setTitle('');
 
     if (data.find(movie => movie.imdbId === searchFilm.imdbID)) {
       setIsHasFilm(true);

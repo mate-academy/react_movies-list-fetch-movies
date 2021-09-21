@@ -14,21 +14,21 @@ export const FindMovie: React.FC<Props> = (props) => {
   const [title, setTitle] = useState('');
   const [isCorrectTitle, setIsCorrectTitle] = useState(true);
 
-  const findMovie = () => {
-    getMovies(title).then(newMovie => {
-      if (title.trim() === '' || newMovie.Response === 'False') {
-        setIsCorrectTitle(false);
+  const findMovie = async () => {
+    const newMovie = await getMovies(title);
 
-        return;
-      }
+    if (title.trim() === '' || newMovie.Response === 'False') {
+      setIsCorrectTitle(false);
 
-      setMovie({
-        Title: newMovie.Title,
-        description: newMovie.Plot,
-        imgUrl: newMovie.Poster,
-        imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
-        imdbID: newMovie.imdbID,
-      });
+      return;
+    }
+
+    setMovie({
+      Title: newMovie.Title,
+      description: newMovie.Plot,
+      imgUrl: newMovie.Poster,
+      imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
+      imdbID: newMovie.imdbID,
     });
   };
 
@@ -61,7 +61,7 @@ export const FindMovie: React.FC<Props> = (props) => {
             />
           </div>
 
-          {!isCorrectTitle && (
+          {isCorrectTitle || (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

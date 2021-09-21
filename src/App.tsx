@@ -5,6 +5,7 @@ import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [isMovieOnTheList, setIsMovieOnTheList] = useState<boolean>(false);
 
   const addMovie = (anotherMovie: Movie) => {
     const moviesCopy: Movie[] = [...movies];
@@ -13,6 +14,8 @@ export const App: React.FC = () => {
       moviesCopy.push(anotherMovie);
 
       setMovies(moviesCopy);
+    } else {
+      setIsMovieOnTheList(true);
     }
   };
 
@@ -22,7 +25,11 @@ export const App: React.FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie addMovie={addMovie} />
+        <FindMovie
+          addMovie={addMovie}
+          isMovieOnTheList={isMovieOnTheList}
+          setIsMovieOnTheList={setIsMovieOnTheList}
+        />
       </div>
     </div>
   );

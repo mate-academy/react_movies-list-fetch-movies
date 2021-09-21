@@ -5,14 +5,16 @@ import { MovieCard } from '../MovieCard';
 
 type Props = {
   addMovie: (anotherMovie: Movie) => void;
+  isMovieOnTheList: boolean;
+  setIsMovieOnTheList: (value: boolean) => void;
 };
 
 export const FindMovie: React.FC<Props> = (props) => {
-  const { addMovie } = props;
+  const { addMovie, isMovieOnTheList, setIsMovieOnTheList } = props;
 
   const [title, setTitle] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isMovieFound, setMovieFound] = useState<boolean>(false);
+  const [isMovieFound, setMovieFound] = useState<boolean>(true);
 
   return (
     <>
@@ -29,9 +31,11 @@ export const FindMovie: React.FC<Props> = (props) => {
               placeholder="Enter a title to search"
               className="input is-danger"
               value={title}
-              onChange={(event) => (
-                setTitle(event.target.value)
-              )}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setTitle(event.target.value);
+                setIsMovieOnTheList(false);
+                setMovieFound(true);
+              }}
             />
           </div>
 
@@ -78,6 +82,11 @@ export const FindMovie: React.FC<Props> = (props) => {
             >
               Add to the list
             </button>
+            {isMovieOnTheList && (
+              <p className="help is-danger">
+                The movie is already on the list
+              </p>
+            )}
           </div>
         </div>
       </form>

@@ -64,7 +64,7 @@ export const FindMovie: React.FC<Props> = (props) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${!isFoundMovie && 'is-danger'}`}
               value={query}
               onChange={handleSearchForm}
             />

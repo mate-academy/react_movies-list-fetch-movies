@@ -9,35 +9,32 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = (props) => {
-  const [findMovieByTitle, setMovieTitle] = useState('');
-  const [isMovieFound, showMovie] = useState(false);
-  const [isError, showError] = useState(false);
-  const [findMovie, setMovie] = useState<Movie | null>(null);
+  const [movieTitle, setMovieTitle] = useState('');
+  const [isMovieFound, showMovie] = useState(true);
+  const [movie, setMovie] = useState<Movie | null>(null);
 
   useEffect(() => {
-    showError(false);
-  }, [findMovieByTitle]);
+    showMovie(true);
+  }, [movieTitle]);
 
   const handleMovie = async () => {
-    const response = await fetch(`https://www.omdbapi.com/?apikey=51c89ae5&t=${findMovieByTitle}`);
+    const response = await fetch(`https://www.omdbapi.com/?apikey=51c89ae5&t=${movieTitle}`);
 
-    const movie = await response.json();
+    const movieFromServer = await response.json();
 
-    if (movie.Response === 'False') {
-      showError(true);
+    if (movieFromServer.Response === 'False') {
       showMovie(false);
 
       return null;
     }
 
-    showError(false);
     showMovie(true);
 
     return {
-      Poster: movie.Poster,
-      Title: movie.Title,
-      Plot: movie.Plot,
-      imdbID: movie.imdbID,
+      Poster: movieFromServer.Poster,
+      Title: movieFromServer.Title,
+      Plot: movieFromServer.Plot,
+      imdbID: movieFromServer.imdbID,
     };
   };
 
@@ -50,9 +47,10 @@ export const FindMovie: React.FC<Props> = (props) => {
   };
 
   const handleAddMovie = () => {
-    if (findMovie) {
-      props.addMovie(findMovie);
+    if (movie) {
+      props.addMovie(movie);
       setMovieTitle('');
+      showMovie(true);
     }
   };
 
@@ -69,12 +67,18 @@ export const FindMovie: React.FC<Props> = (props) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames('input', { 'is-success': !isError, 'is-danger': isError })}
-              value={findMovieByTitle}
+              className={classNames(
+                'input',
+                {
+                  'is-success': isMovieFound,
+                  'is-danger': !isMovieFound,
+                },
+              )}
+              value={movieTitle}
               onChange={(event) => setMovieTitle(event.target.value)}
             />
           </div>
-          {isError && (
+          {!isMovieFound && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -105,10 +109,10 @@ export const FindMovie: React.FC<Props> = (props) => {
       </form>
 
       <div className="container">
-        {isMovieFound && (
+        {movie && (
           <>
             <h2 className="title">Preview</h2>
-            {findMovie && (<MovieCard movie={findMovie} />)}
+            <MovieCard movie={movie} />
           </>
         )}
       </div>

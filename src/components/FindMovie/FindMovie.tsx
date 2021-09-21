@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import cn from 'classnames';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
@@ -53,7 +54,7 @@ export const FindMovie: React.FC<Props> = (props) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn('input', { 'input is-danger': error })}
               name="title"
               value={title}
               onChange={handleChange}

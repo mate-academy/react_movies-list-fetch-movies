@@ -16,13 +16,13 @@ export const FindMovie: React.FC<Props> = (props) => {
   const [title, setTitle] = useState('');
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
     setError(false);
   };
 
   const getMovie = async () => {
-    setTitle('');
     onSetIsMovie(false);
     setLoading(true);
 

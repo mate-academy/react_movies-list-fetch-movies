@@ -17,6 +17,8 @@ export const FindMovie: React.FC<Props> = (props) => {
 
   const findMovie = async () => {
     if (title.length > 0 && title !== '') {
+      setTitle('');
+
       const movieFromApi: Movie = await getMovie(title);
 
       setMovie(movieFromApi);
@@ -39,6 +41,7 @@ export const FindMovie: React.FC<Props> = (props) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
+              value={title}
               onChange={(event) => setTitle(event.target.value)}
             />
           </div>

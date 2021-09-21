@@ -13,6 +13,3 @@ export async function getMovieByTitle(title: string): Promise<Movie | null> {
 
   return null;
 }
-
-// eslint-disable-next-line no-console
-console.log(getMovieByTitle('ass'));

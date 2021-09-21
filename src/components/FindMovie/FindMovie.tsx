@@ -39,6 +39,7 @@ export const FindMovie: React.FC<Props> = (props) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
+    setError(false);
   };
 
   return (
@@ -54,7 +55,7 @@ export const FindMovie: React.FC<Props> = (props) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn('input', { 'input is-danger': error })}
+              className={cn('input', { 'is-danger': error })}
               name="title"
               value={title}
               onChange={handleChange}

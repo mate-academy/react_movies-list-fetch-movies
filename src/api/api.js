@@ -1,12 +1,11 @@
-const BASE_URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=20bbe522&t=';
+const BASE_URL = 'https://www.omdbapi.com/?i=tt3896198&apikey=20bbe522&t=';
 
-export const getMovie = (query) => {
-  return fetch(`${BASE_URL}${query}`)
-    .then(result => {
-      if (!result.ok) {
-        throw new Error(result.statusText);
-      }
+export const getMovie = async (query) => {
+  const response = await fetch(`${BASE_URL}${query}`);
 
-      return result.json();
-    });
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+
+  return response.json();
 };

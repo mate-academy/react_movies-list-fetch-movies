@@ -10,40 +10,37 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = (props) => {
-  const [movie, setMovie] = useState(null as Movie | null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [error, setError] = useState(false);
   const { onAdd } = props;
 
   const findMovie = () => {
-    setMovie(null);
     if (query.length === 0) {
       setError(true);
 
       return;
     }
 
-    getMovie(query)
-      .then((result) => {
-        if (result.Response === 'False') {
-          setError(true);
+    (async () => {
+      const movieFromApi = await getMovie(query);
 
-          return;
-        }
+      if (movieFromApi.Response === 'False') {
+        setError(true);
 
-        const newMovie: Movie = {
-          title: result.Title,
-          description: result.Plot,
-          imgUrl: result.Poster,
-          imdbUrl: `imdb.com/title/${result.imdbID}/`,
-          imdbId: result.imdbID,
-        };
+        return;
+      }
 
-        setMovie(newMovie);
-      })
-      .catch(loadingError => {
-        throw new Error(`${loadingError}`);
-      });
+      const newMovie: Movie = {
+        title: movieFromApi.Title,
+        description: movieFromApi.Plot,
+        imgUrl: movieFromApi.Poster,
+        imdbUrl: `imdb.com/title/${movieFromApi.imdbID}/`,
+        imdbId: movieFromApi.imdbID,
+      };
+
+      setMovie(newMovie);
+    })();
   };
 
   const handleQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +54,8 @@ export const FindMovie: React.FC<Props> = (props) => {
       onAdd(movie);
       setQuery('');
     }
+
+    setMovie(null);
   };
 
   return (

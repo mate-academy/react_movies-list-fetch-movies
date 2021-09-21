@@ -14,7 +14,16 @@ export class App extends Component<{}, State> {
   };
 
   addMovie = (newMovie: Movie) => {
-    if (!this.state.movies.includes(newMovie)) {
+    const { movies } = this.state;
+    let isAlreadyAdded = false;
+
+    movies.forEach(movie => {
+      if (movie.imdbId === newMovie.imdbId) {
+        isAlreadyAdded = true;
+      }
+    });
+
+    if (!isAlreadyAdded) {
       this.setState(currentState => ({
         movies: [...currentState.movies, newMovie],
       }));

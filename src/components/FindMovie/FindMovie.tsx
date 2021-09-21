@@ -22,8 +22,13 @@ export const FindMovie: React.FC<Props> = (props) => {
     if (searchFilm.Response === 'False') {
       setNewFilm(null);
       setValid(false);
-    } else {
-      setValid(true);
+
+      return;
+    }
+
+    setValid(true);
+
+    if (searchFilm.Response === 'True') {
       setNewFilm({
         title: searchFilm.Title,
         description: searchFilm.Plot,
@@ -41,10 +46,20 @@ export const FindMovie: React.FC<Props> = (props) => {
     }
   };
 
-  const handleChange = () => {
+  const addNewFilm = () => {
     if (newFilm) {
       addMovie(newFilm);
       setNewFilm(null);
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    setValid(true);
+
+    if (title.length === 0) {
+      setValid(true);
+      setIsHasFilm(false);
     }
   };
 
@@ -68,9 +83,7 @@ export const FindMovie: React.FC<Props> = (props) => {
                 },
               )}
               value={title}
-              onChange={event => (
-                setTitle(event.target.value)
-              )}
+              onChange={handleChange}
             />
           </div>
           {isValid || (
@@ -96,7 +109,7 @@ export const FindMovie: React.FC<Props> = (props) => {
               type="button"
               className="button is-primary"
               disabled={!newFilm || isHasFilm}
-              onClick={handleChange}
+              onClick={addNewFilm}
             >
               Add to the list
             </button>

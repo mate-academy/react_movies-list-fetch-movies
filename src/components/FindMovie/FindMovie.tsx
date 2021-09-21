@@ -41,7 +41,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (movie !== null && !movies.find(m => m.imdbId === movie.imdbId)) {
+    if (movie && !movies.find(m => m.imdbId === movie.imdbId)) {
       onUpdateMovies(movie);
     }
 
@@ -105,7 +105,9 @@ export const FindMovie: React.FC<Props> = (props) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie ? <MovieCard {...movie} /> : <div>no selected</div>}
+        {movie
+          ? <MovieCard {...movie} />
+          : <div>no selected</div>}
       </div>
     </>
   );

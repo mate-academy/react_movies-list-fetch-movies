@@ -11,15 +11,16 @@ type Props = {
 export const FindMovie: React.FC<Props> = (props) => {
   const { onAdd } = props;
   const [newMovie, setNewMovie] = useState(null as Movie | null);
-  const [value, setValue] = useState('');
+  const [query, setValue] = useState('');
   const [find, setFind] = useState(true);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFind(true);
     setValue(event.target.value);
   };
 
   const getMovie = async () => {
-    const data = await loadMovie(value);
+    const data = await loadMovie(query);
 
     if (data.Response === 'False') {
       setNewMovie(null);
@@ -55,14 +56,14 @@ export const FindMovie: React.FC<Props> = (props) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={find ? 'input' : 'input is-danger'}
-              value={value}
+              value={query}
               onChange={handleChange}
               required
             />
           </div>
 
           {
-            find || (
+            (find) || (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title
               </p>
@@ -75,7 +76,9 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               type="button"
               className="button is-light"
-              onClick={getMovie}
+              onClick={() => {
+                getMovie();
+              }}
             >
               Find a movie
             </button>

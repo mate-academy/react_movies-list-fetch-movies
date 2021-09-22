@@ -10,6 +10,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [foundedMovie, setFoundedMovie] = useState<Movie | null>(null);
+  const [error, setError] = useState('');
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -20,7 +21,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     const movie = await loadMovie(title);
 
-    setFoundedMovie(movie);
+    setError('');
+    if (movie.Response !== 'False') {
+      setFoundedMovie(movie);
+    } else {
+      setError('Can\'t find a movie with such a title');
+    }
   };
 
   const handleMovieAdd = () => {
@@ -56,11 +62,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="input is-danger"
             />
           </div>
-          {!foundedMovie && (
-            <p className="help is-danger">
-              Can&apos;t find a movie with such a title
-            </p>
-          )}
+
+          <p className="help is-danger">
+            {error}
+          </p>
+
         </div>
 
         <div className="field is-grouped">

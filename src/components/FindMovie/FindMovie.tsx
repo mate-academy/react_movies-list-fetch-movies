@@ -14,6 +14,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
+    setError('');
   };
 
   const findMovie = async (e: React.FormEvent) => {
@@ -21,7 +22,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     const movie = await loadMovie(title);
 
-    setError('');
     if (movie.Response !== 'False') {
       setFoundedMovie(movie);
     } else {

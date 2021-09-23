@@ -1,5 +1,4 @@
 # Movies list - Fetch movies
-- Replace `<your_account>` with your Github username in the
  [DEMO LINK](https://dmytromykoliv.github.io/react_movies-list-fetch-movies/)
 - Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
 - Use [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript)

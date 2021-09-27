@@ -1,8 +1,9 @@
 /// <reference types="react-scripts" />
 
 type Movie = {
-  Poster: string;
-  Title: string;
-  Plot: string;
-  imdbID: string;
+  imgUrl: string;
+  title: string;
+  description: string;
+  imdbId: string;
+  imdbUrl: string,
 };

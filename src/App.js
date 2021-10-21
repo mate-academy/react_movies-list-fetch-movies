@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
@@ -6,9 +7,12 @@ import data from './api/movies.json';
 
 export const App = () => {
   const [movies, setMovie] = useState(data);
+  const [addErrorMessage, setAddError] = useState(true);
   const addMovie = (movie) => {
-    if (!movies.find(item => item.imdbId === movie.imdbId)) {
+    if (!movies.some(item => item.imdbId === movie.imdbId)) {
       setMovie([...movies, movie]);
+    } else {
+      setAddError(false);
     }
   };
 
@@ -18,7 +22,11 @@ export const App = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie addMovie={addMovie} />
+        <FindMovie
+          addMovie={addMovie}
+          getAddError={setAddError}
+          addErrorMessage={addErrorMessage}
+        />
       </div>
     </div>
   );

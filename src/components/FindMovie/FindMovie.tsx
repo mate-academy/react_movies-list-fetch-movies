@@ -70,6 +70,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
 
                   if (!imdbs.includes(movie.imdbID)) {
                     addMovie([...movies, movie]);
+                    changeValue('');
+                    changeMovie(null);
                   }
                 }
               }}

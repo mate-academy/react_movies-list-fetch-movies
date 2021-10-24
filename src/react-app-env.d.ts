@@ -5,4 +5,5 @@ type Movie = {
   Title: string;
   Plot: string;
   imdbID: string;
+  Error: string
 };

@@ -4,7 +4,7 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  addMovie: (newMovie: Movie) => void;
+  addMovie: (newMovie: Movie, setResult: (newMovie: Movie | null) => void) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
@@ -71,7 +71,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="button is-primary"
               onClick={() => {
                 if (searchResult) {
-                  addMovie(searchResult);
+                  addMovie(searchResult, SetResult);
                 }
               }}
             >

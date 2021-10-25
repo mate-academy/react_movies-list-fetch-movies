@@ -2,7 +2,6 @@ import { Component } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { loadMovies } from './api/api';
 
 interface State {
   movies: Movie[];
@@ -13,11 +12,15 @@ export class App extends Component<{}, State> {
     movies: [],
   };
 
-  async componentDidMount() {
-    const movies = await loadMovies().then(result => result.Search);
+  addMovie = (movieToAdd: Movie) => {
+    const validation = this.state.movies.some(movie => movie.imdbID === movieToAdd.imdbID);
 
-    this.setState({ movies });
-  }
+    if (!validation) {
+      this.setState(state => ({
+        movies: [...state.movies, movieToAdd],
+      }));
+    }
+  };
 
   render() {
     const { movies } = this.state;
@@ -28,7 +31,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addMovie={this.addMovie} />
         </div>
       </div>
     );

@@ -1,29 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 import { findMovie } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
-  const [query, setQuery] = useState('');
-  const [selectedMovie, selectMovie] = React.useState<Movie | null>(null);
-  const [startSearch, setStartSearch] = useState(false);
+type Props = {
+  addMovie: (movie: Movie) => void;
+};
 
-  const submitForm = async (title: string) => {
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMovie, selectMovie] = React.useState<Movie | null>(null);
+  const [isSearchLoading, setIsSearchLoading] = useState(false);
+  const [isSearchError, setSearchError] = useState(isSearchLoading && !selectedMovie);
+
+  const searchMovie = async (title: string) => {
     const result = await findMovie(title);
 
-    setStartSearch(true);
+    setIsSearchLoading(true);
     selectMovie(result);
   };
+
+  const submitForm: React.FormEventHandler = (e) => {
+    e.preventDefault();
+
+    if (selectedMovie) {
+      addMovie(selectedMovie);
+
+      selectMovie(null);
+      setSearchQuery('');
+      setIsSearchLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setSearchError(isSearchLoading && !selectedMovie);
+  }, [selectedMovie]);
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={event => {
-          event.preventDefault();
-          submitForm(query);
-        }}
+        onSubmit={submitForm}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -37,16 +55,15 @@ export const FindMovie: React.FC = () => {
                 placeholder="Enter a title to search"
                 className={classNames(
                   'input',
-                  { 'is-danger': startSearch && !selectedMovie },
+                  { 'is-danger': isSearchError },
                 )}
-                value={query}
-                onChange={event => setQuery(event.target.value)}
+                value={searchQuery}
+                onChange={event => setSearchQuery(event.target.value)}
               />
             </div>
           </label>
 
-          {(startSearch && !selectedMovie)
-          && (
+          {isSearchError && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -56,8 +73,12 @@ export const FindMovie: React.FC = () => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="submit"
+              type="button"
               className="button is-light"
+              onClick={() => {
+                searchMovie(searchQuery);
+                setSearchError(!isSearchLoading && !selectedMovie);
+              }}
             >
               Find a movie
             </button>
@@ -65,8 +86,9 @@ export const FindMovie: React.FC = () => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
+              disabled={!selectedMovie}
             >
               Add to the list
             </button>
@@ -77,7 +99,7 @@ export const FindMovie: React.FC = () => {
       <div className="container">
         <h2 className="title">Preview</h2>
         {selectedMovie && <MovieCard movie={selectedMovie} />}
-        {(!selectedMovie && !startSearch) && (<div>Start search</div>)}
+        {!isSearchLoading && (<div>Start search</div>)}
       </div>
     </>
   );

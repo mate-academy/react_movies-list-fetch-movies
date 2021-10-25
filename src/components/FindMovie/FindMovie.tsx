@@ -15,10 +15,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [isSearchError, setSearchError] = useState(isSearchLoading && !selectedMovie);
 
   const searchMovie = async (title: string) => {
-    const result = await findMovie(title);
+    const foundMovie = await findMovie(title);
 
     setIsSearchLoading(true);
-    selectMovie(result);
+    selectMovie(foundMovie);
+    setSearchError(!selectedMovie);
   };
 
   const submitForm: React.FormEventHandler = (e) => {
@@ -34,7 +35,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   useEffect(() => {
-    setSearchError(isSearchLoading && !selectedMovie);
+    setSearchError(!selectedMovie && isSearchLoading);
   }, [selectedMovie]);
 
   return (
@@ -77,7 +78,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="button is-light"
               onClick={() => {
                 searchMovie(searchQuery);
-                setSearchError(!isSearchLoading && !selectedMovie);
               }}
             >
               Find a movie

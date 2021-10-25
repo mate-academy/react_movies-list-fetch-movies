@@ -14,7 +14,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const findMovie = (query: string) => {
     if (query) {
-      fetch(`http://www.omdbapi.com/?i=tt3896198&apikey=775c7ac&t=${query}`)
+      fetch(`https://www.omdbapi.com/?i=tt3896198&apikey=775c7ac&t=${query}`)
         .then(resp => resp.json()).then(res => {
           if (res.Response === 'False') {
             SetError(true);

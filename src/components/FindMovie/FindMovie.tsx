@@ -53,7 +53,10 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
                 placeholder="Enter a title to search"
                 className={classNames('input', { 'is-danger': searchError })}
                 value={searchQuery}
-                onChange={event => setSearchQuery(event.target.value)}
+                onChange={event => {
+                  setSearchQuery(event.target.value);
+                  setSearchError(false);
+                }}
               />
             </div>
           </label>

@@ -1,29 +1,39 @@
-import { Component } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [message, setMessage] = useState('');
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const addMovieToList = (newMovie: Movie) => {
+    const index = movies.findIndex(movie => movie.Title === newMovie.Title);
+
+    if (index < 0) {
+      setMovies([newMovie, ...movies]);
+      setMessage('');
+    } else {
+      setMessage('This movie was add earlier');
+    }
   };
 
-  render() {
-    const { movies } = this.state;
+  const correctMessage = (newMessage: string) => {
+    setMessage(newMessage);
+  };
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          addMovieToList={addMovieToList}
+          message={message}
+          correctMessage={correctMessage}
+        />
+      </div>
+    </div>
+  );
+};

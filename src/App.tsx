@@ -1,56 +1,39 @@
-import { Component } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-  message: string,
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [message, setMessage] = useState('');
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
-    message: '',
-  };
-
-  addMovieToList = (newMovie: Movie) => {
-    const index = this.state.movies.findIndex(movie => movie.Title === newMovie.Title);
+  const addMovieToList = (newMovie: Movie) => {
+    const index = movies.findIndex(movie => movie.Title === newMovie.Title);
 
     if (index < 0) {
-      this.setState(state => ({
-        movies: [newMovie, ...state.movies],
-        message: '',
-      }));
+      setMovies([newMovie, ...movies]);
+      setMessage('');
     } else {
-      this.setState({
-        message: 'This movie was add earlier',
-      });
+      setMessage('This movie was add earlier');
     }
   };
 
-  correctMessage = (newMessage: string) => {
-    this.setState({
-      message: newMessage,
-    });
+  const correctMessage = (newMessage: string) => {
+    setMessage(newMessage);
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie
-            addMovieToList={this.addMovieToList}
-            message={this.state.message}
-            correctMessage={this.correctMessage}
-          />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          addMovieToList={addMovieToList}
+          message={message}
+          correctMessage={correctMessage}
+        />
+      </div>
+    </div>
+  );
+};

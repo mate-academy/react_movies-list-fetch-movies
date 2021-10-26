@@ -23,6 +23,8 @@ export const FindMovie: React.FC<Props> = ({
       .then((movieFromServer) => {
         if (movieFromServer.Response === 'False') {
           setIsFindMovie(false);
+        } else {
+          setValue('');
         }
 
         setMovie(movieFromServer);
@@ -52,7 +54,7 @@ export const FindMovie: React.FC<Props> = ({
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={isFindMovie ? 'input' : 'input is-danger'}
             />
           </div>
 

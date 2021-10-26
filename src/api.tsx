@@ -1,4 +1,4 @@
-const baseUrl = 'http://www.omdbapi.com/';
+const baseUrl = 'https://www.omdbapi.com/';
 const apikey = '6d745cec';
 
 export const getMovie = (searchedTitle: string) => {

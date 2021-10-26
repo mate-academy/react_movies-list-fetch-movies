@@ -72,6 +72,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               onClick={() => {
                 if (searchResult) {
                   addMovie(searchResult, SetResult);
+                  SetTitle('');
                 }
               }}
             >

@@ -9,5 +9,6 @@ export const findMovie = async (title: string) => {
   if (movie.Response === 'False') {
     throw new Error('Movie not found');
   }
+
   return movie;
 };

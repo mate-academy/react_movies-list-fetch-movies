@@ -78,7 +78,7 @@ export const FindMovie: React.FC<Props> = ({
 
           <div className="control">
             <button
-              onClick={() => addMovieToList(movie)}
+              onClick={() => isMovie && addMovieToList(movie)}
               type="button"
               className="button is-primary"
             >

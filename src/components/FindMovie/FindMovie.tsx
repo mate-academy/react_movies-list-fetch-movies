@@ -15,6 +15,20 @@ export const FindMovie: React.FC<Props> = (props) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
 
+  const findMovie = async () => {
+    const newMovie = await getMovie(title);
+
+    if (newMovie.Response === 'False') {
+      setMovie(null);
+      setError(true);
+
+      return;
+    }
+
+    setTitle('');
+    setMovie(newMovie);
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -47,11 +61,7 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               type="button"
               className="button is-light"
-              onClick={async () => {
-                await getMovie(title)
-                  .then(film => setMovie(film))
-                  .catch(() => setError(true));
-              }}
+              onClick={findMovie}
             >
               Find a movie
             </button>

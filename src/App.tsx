@@ -12,6 +12,16 @@ export class App extends Component<{}, State> {
     movies: [],
   };
 
+  addMovie = (movie: Movie) => {
+    const isDuplicate = this.state.movies.some(film => film.imdbID === movie.imdbID);
+
+    if (!isDuplicate) {
+      this.setState(state => ({
+        movies: [...state.movies, movie],
+      }));
+    }
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -21,7 +31,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addMovie={this.addMovie} />
         </div>
       </div>
     );

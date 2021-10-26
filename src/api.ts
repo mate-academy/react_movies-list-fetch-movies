@@ -1,5 +1,5 @@
 const key = 'f019d615';
-const API_URL = 'http://www.omdbapi.com/';
+const API_URL = 'http://www.omdbapi.com';
 const request = (url: string) => {
   return fetch(`${API_URL}${url}`)
     .then(response => {

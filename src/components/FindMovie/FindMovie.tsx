@@ -86,6 +86,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="submit"
               className="button is-primary"
+              disabled={!movie}
             >
               Add to the list
             </button>

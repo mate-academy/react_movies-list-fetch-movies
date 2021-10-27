@@ -1,27 +1,26 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
-
+import { request } from '../../api';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  addMovie: (newMovie: Movie, setResult: (newMovie: Movie | null) => void) => void;
+  addMovie: (newMovie: Movie) => null | Movie;
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, SetTitle] = useState('');
   const [errorIsVisible, SetError] = useState(false);
-  const [searchResult, SetResult] = useState<Movie | null>();
+  const [searchResult, SetResult] = useState<Movie | null>(null);
 
   const findMovie = (query: string) => {
     if (query) {
-      fetch(`https://www.omdbapi.com/?i=tt3896198&apikey=775c7ac&t=${query}`)
-        .then(resp => resp.json()).then(res => {
-          if (res.Response === 'False') {
-            SetError(true);
-          } else {
-            SetResult(res);
-          }
-        });
+      request(query).then(res => {
+        if (res.Response === 'False') {
+          SetError(true);
+        } else {
+          SetResult(res);
+        }
+      });
     }
   };
 
@@ -67,11 +66,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
+              disabled={searchResult === null}
               type="button"
               className="button is-primary"
               onClick={() => {
                 if (searchResult) {
-                  addMovie(searchResult, SetResult);
+                  SetResult(addMovie(searchResult));
                   SetTitle('');
                 }
               }}

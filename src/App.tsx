@@ -14,9 +14,9 @@ export class App extends React.Component<{}, State> {
 
   addMovie = (movieToAdd: Movie) => {
     const { movies } = this.state;
-    const validation = movies.some(movie => movie.imdbID === movieToAdd.imdbID);
+    const isDuplicated = movies.some(movie => movie.imdbID === movieToAdd.imdbID);
 
-    if (!validation) {
+    if (!isDuplicated) {
       this.setState(prevState => ({
         movies: [
           ...prevState.movies,

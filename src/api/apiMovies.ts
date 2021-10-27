@@ -1,4 +1,4 @@
-const apiUrlWithKey = 'http://www.omdbapi.com/?apikey=5f31a063';
+const apiUrlWithKey = 'https://www.omdbapi.com/?apikey=5f31a063';
 
 export const getMovieFromServer = (title: string): Promise<Movie> => (
   fetch(`${apiUrlWithKey}&t=${title}`)

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';// useEffect
+import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import { request } from '../api';
@@ -24,7 +24,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setLoading(true);
     request(title)
       .then(result => {
-        if (result.Response === 'False' ) {
+        if (result.Response === 'False') {
           setError(true);
           setLoading(false);
         } else {
@@ -50,19 +50,17 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
+            <div className="control">
+              <input
+                type="text"
+                id="movie-title"
+                value={title}
+                placeholder="Enter a title to search"
+                className={classNames('input', { 'is-danger': error })}
+                onChange={handleInput}
+              />
+            </div>
           </label>
-
-          <div className="control">
-            <input
-              type="text"
-              id="movie-title"
-              value={title}
-              placeholder="Enter a title to search"
-              className={classNames('input', { 'is-danger': error })}
-              onChange={handleInput}
-            />
-          </div>
-
           {error
           && (
             <p className="help is-danger">
@@ -97,11 +95,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
       <div className="container">
         { loading ? 'Loading...'
-          : (movie &&
-            <>
-              <h2 className="title">Preview</h2>
-              <MovieCard movie={movie} />
-            </>
+          : (movie
+            && (
+              <>
+                <h2 className="title">Preview</h2>
+                <MovieCard movie={movie} />
+              </>
+            )
           )}
       </div>
     </>

@@ -7,8 +7,9 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (newMovie: Movie): void => {
-    (movies.every(movie => movie.imdbID !== newMovie.imdbID))
-     && setMovies([newMovie, ...movies]);
+    if (movies.every(movie => movie.imdbID !== newMovie.imdbID)) {
+      setMovies([newMovie, ...movies]);
+    }
   };
 
   return (

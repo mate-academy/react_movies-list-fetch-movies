@@ -25,7 +25,7 @@ export const FindMovie: React.FC<{ addToList:(movie: Movie) => void }> = ({ addT
         return;
       }
 
-      setMovie(movie);
+      setMovie(movie1);
     });
   };
 

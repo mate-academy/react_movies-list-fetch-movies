@@ -1,4 +1,4 @@
-const MAIN_URL = 'http://www.omdbapi.com/?apikey=203a0934';
+const MAIN_URL = 'https://www.omdbapi.com/?apikey=203a0934';
 
 export function getMovies(title: string) {
   return fetch(`${MAIN_URL}&t=${title}`)

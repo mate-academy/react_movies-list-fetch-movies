@@ -12,6 +12,12 @@ export class App extends Component<{}, State> {
     movies: [],
   };
 
+  addTolist = (movie: Movie) => {
+    if (!this.state.movies.find((movie1) => movie1.imdbID === movie.imdbID)) {
+      this.setState(prevState => ({ movies: [...prevState.movies, movie] }));
+    }
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -21,7 +27,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addToList={this.addTolist} />
         </div>
       </div>
     );

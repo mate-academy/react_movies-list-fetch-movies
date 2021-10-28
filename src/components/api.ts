@@ -1,4 +1,4 @@
-const API_URL = 'http://www.omdbapi.com/?api';
+const API_URL = 'https://www.omdbapi.com/?api';
 const key = 'key=ef64fce9';
 const param = '&t=';
 

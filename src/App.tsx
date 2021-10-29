@@ -16,7 +16,7 @@ export class App extends React.Component<{}, State> {
     const { movies } = this.state;
     const Dublicate = movies.find(movie => movie.imdbID === movieAdd.imdbID);
 
-    if (Dublicate) {
+    if (!Dublicate) {
       this.setState(state => ({
         movies: [
           ...state.movies,

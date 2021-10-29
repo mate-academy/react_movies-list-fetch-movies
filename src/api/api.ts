@@ -1,6 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?apikey=f8dda38a';
-
-// const apiKey = '?i=tt3896198&apikey=f8dda38a';
+const BASE_URL = 'http://www.omdbapi.com/?apikey=c20acc57&';
 
 const request = (title: string) => {
   return fetch(`${BASE_URL}${title}`)

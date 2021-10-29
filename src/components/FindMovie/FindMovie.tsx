@@ -39,6 +39,15 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     }
   };
 
+  // const HandleAdd = () => {
+  //   if (Movie !== null) {
+  //     onAddMovie(Movie),
+  //     setQuery(''),
+  //     setError(false),
+  //     setMovie(null);
+  //   }
+  // };
+
   return (
     <>
       <form className="find-movie" onSubmit={handleFormSubmit}>
@@ -82,8 +91,8 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               type="button"
               className="button is-primary"
               onClick={() => {
-                if (Movie) {
-                  onAddMovie(Movie);
+                if (Movie){
+                  onAddMovie(Movie)
                 }
               }}
             >

@@ -1,54 +1,116 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { MovieCard } from '../MovieCard';
 
-// import { MovieCard } from '../MovieCard';
+type Props = {
+  addToApp: (user: Movie) => void
+};
 
-export const FindMovie: React.FC = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+export const FindMovie: React.FC<Props> = ({ addToApp }) => {
+  const [message, setMessage] = useState('');
+  const [failedtoLoad, setLoadIssues] = useState(false);
+  const [movie, loadMovie] = useState({
+    Poster: '',
+    Title: '',
+    Plot: '',
+    imdbID: '',
+  });
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
-        </div>
+  const searchText = (input:string) => {
+    loadMovie({
+      Poster: '',
+      Title: '',
+      Plot: '',
+      imdbID: '',
+    });
+    setLoadIssues(false);
+    setMessage(input);
+  };
 
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
-      </div>
+  const sendRequest = (name: string) => {
+    fetch(`https://www.omdbapi.com/?apikey=e45c8c40&t=${name}`)
+      .then(response => response.json())
+      .then(result => {
+        if (result.Error) {
+          setLoadIssues(true);
+        } else {
+          loadMovie({
+            Poster: result.Poster,
+            Title: result.Title,
+            Plot: result.Plot,
+            imdbID: result.imdbID,
+          });
+        }
+      });
+  };
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
+  return (
+    <>
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          sendRequest(message);
+          const target = event.target as HTMLFormElement;
+
+          target.reset();
+        }}
+      >
+        <div className="field">
+          <label
+            className="label"
+            htmlFor="movie-title"
           >
-            Find a movie
-          </button>
+            Movie title
+            <div className="control">
+              <input
+                type="text"
+                id="movie-title"
+                placeholder="Enter a title to search"
+                className={'input'.concat(failedtoLoad ? ' is-danger' : '')}
+                onChange={(event) => searchText(event.target.value.toString().trim())}
+              />
+            </div>
+          </label>
+          {failedtoLoad
+            && (
+              <p
+                className="help is-danger"
+              >
+                Can&apos;t find a movie with such a title
+              </p>
+            )}
         </div>
 
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              type="button"
+              className="button is-light"
+              onClick={() => sendRequest(message)}
+            >
+              Find a movie
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="submit"
+              className="button is-primary"
+              onClick={() => addToApp(movie)}
+            >
+              Add to the list
+            </button>
+          </div>
         </div>
+      </form>
+
+      <div className="container">
+        <h2 className="title">Preview</h2>
+        {movie.imdbID
+          ? <MovieCard movie={movie} />
+          : ''}
       </div>
-    </form>
-
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      {/* <MovieCard  /> */}
-    </div>
-  </>
-);
+    </>
+  );
+};

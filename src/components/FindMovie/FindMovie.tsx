@@ -1,54 +1,99 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import { getFilm } from '../../api';
 import './FindMovie.scss';
 
-// import { MovieCard } from '../MovieCard';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+type Props = {
+  addMovie: React.Dispatch<React.SetStateAction<Movie[]>>;
+  movies: Movie[];
+};
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
-        </div>
+export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
+  const [movieTitle, setMovieTitle] = useState('');
+  const [movie, setMovie] = useState<Movie>(null);
+  const [error, seterror] = useState(false);
 
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
-      </div>
+  const clickHandler = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+    getFilm(movieTitle)
+      .then((response) => {
+        if (!response.Error) {
+          setMovie(response);
+          seterror(false);
+        } else {
+          seterror(true);
+          setMovie(null);
+        }
+      });
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
+    setMovieTitle('');
+  };
+
+  return (
+    <>
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!movies.find(el => el?.imdbID === movie?.imdbID)) {
+            addMovie(current => [...current, movie]);
+          }
+
+          setMovie(null);
+        }}
+      >
+        <div className="field">
+
+          <div className="control">
+            <input
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className="input is-danger"
+              value={movieTitle}
+              onChange={(event) => {
+                setMovieTitle(event.target.value);
+                seterror(false);
+              }}
+            />
+          </div>
+
+          <p
+            className={classNames('help is-danger', { hidden: error === false })}
           >
-            Find a movie
-          </button>
+            Can&apos;t find a movie with such a title
+          </p>
         </div>
 
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              name="find-movie"
+              id="find-movie"
+              type="button"
+              className="button is-light"
+              onClick={clickHandler}
+            >
+              Find a movie
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="submit"
+              className="button is-primary"
+            >
+              Add to the list
+            </button>
+          </div>
         </div>
+      </form>
+
+      <div className="container">
+        {movie !== null && <MovieCard movie={movie} />}
       </div>
-    </form>
-
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      {/* <MovieCard  /> */}
-    </div>
-  </>
-);
+    </>
+  );
+};

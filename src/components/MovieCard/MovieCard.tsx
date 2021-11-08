@@ -1,4 +1,4 @@
-import React from 'react';
+import classNames from 'classnames';
 import './MovieCard.scss';
 
 type Props = {
@@ -9,11 +9,11 @@ export const MovieCard: React.FC<Props> = (props) => {
   const { movie } = props;
 
   return (
-    <div className="card">
+    <div className={classNames('card', { hidden: movie === null || undefined })}>
       <div className="card-image">
         <figure className="image is-4by3">
           <img
-            src={movie.Poster}
+            src={movie?.Poster}
             alt="Film logo"
           />
         </figure>
@@ -29,12 +29,12 @@ export const MovieCard: React.FC<Props> = (props) => {
             </figure>
           </div>
           <div className="media-content">
-            <p className="title is-8">{movie.Title}</p>
+            <p className="title is-8">{movie?.Title}</p>
           </div>
         </div>
 
         <div className="content">
-          {movie.Plot}
+          {movie?.Plot}
           <br />
         </div>
       </div>

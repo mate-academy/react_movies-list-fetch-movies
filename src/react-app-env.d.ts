@@ -5,4 +5,4 @@ type Movie = {
   Title: string;
   Plot: string;
   imdbID: string;
-};
+} | null;

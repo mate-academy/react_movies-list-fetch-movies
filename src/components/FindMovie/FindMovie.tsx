@@ -15,6 +15,22 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
   const [movie, setMovie] = useState<Movie>(null);
   const [error, seterror] = useState(false);
 
+  const clickHandler = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+    getFilm(movieTitle)
+      .then((response) => {
+        if (!response.Error) {
+          setMovie(response);
+          seterror(false);
+        } else {
+          seterror(true);
+          setMovie(null);
+        }
+      });
+
+    setMovieTitle('');
+  };
+
   return (
     <>
       <form
@@ -58,21 +74,7 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
               id="find-movie"
               type="button"
               className="button is-light"
-              onClick={(event) => {
-                event.preventDefault();
-                getFilm(movieTitle)
-                  .then((response) => {
-                    if (!response.Error) {
-                      setMovie(response);
-                      seterror(false);
-                    } else {
-                      seterror(true);
-                      setMovie(null);
-                    }
-                  });
-
-                setMovieTitle('');
-              }}
+              onClick={clickHandler}
             >
               Find a movie
             </button>

@@ -9,7 +9,7 @@ export const App: React.FC<{}> = () => {
   return (
     <div className="page">
       <div className="page-content">
-        <MoviesList movies={movies} />
+        {movies.length !== 0 && <MoviesList movies={movies} />}
       </div>
       <div className="sidebar">
         <FindMovie

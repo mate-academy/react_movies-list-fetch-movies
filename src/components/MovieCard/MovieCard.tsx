@@ -1,12 +1,31 @@
-import React from 'react';
+/* eslint-disable react/require-default-props */
+import classNames from 'classnames';
+import React, { useState } from 'react';
 import './MovieCard.scss';
 
 type Props = {
-  movie: Movie;
+  movies: Movie[],
+  movie: Movie,
+  propAddMovie?: (movie: Movie) => void,
 };
 
-export const MovieCard: React.FC<Props> = (props) => {
-  const { movie } = props;
+export const MovieCard: React.FC<Props> = ({ movies, movie, propAddMovie }) => {
+  const [isListed, setIsListed] = useState(false);
+
+  const checkListed = () => {
+    setIsListed(movies.map(each => each.imdbID)
+      .includes(movie.imdbID));
+  };
+
+  const addMovie = () => {
+    if (movie) {
+      if (propAddMovie) {
+        propAddMovie(movie);
+      }
+    }
+
+    checkListed();
+  };
 
   return (
     <div className="card">
@@ -19,7 +38,22 @@ export const MovieCard: React.FC<Props> = (props) => {
         </figure>
       </div>
       <div className="card-content">
+
+        <div className="control">
+          <button
+            type="button"
+            className={classNames(
+              'button', 'is-primary',
+              { 'is-hidden': isListed },
+            )}
+            onClick={addMovie}
+          >
+            Add to the list
+          </button>
+        </div>
+
         <div className="media">
+
           <div className="media-left">
             <figure className="image is-48x48">
               <img
@@ -28,9 +62,13 @@ export const MovieCard: React.FC<Props> = (props) => {
               />
             </figure>
           </div>
+
           <div className="media-content">
-            <p className="title is-8">{movie.Title}</p>
+            <p className="title is-4">
+              {movie.Title}
+            </p>
           </div>
+
         </div>
 
         <div className="content">

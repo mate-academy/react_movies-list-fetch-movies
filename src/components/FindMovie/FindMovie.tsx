@@ -1,9 +1,9 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 
-import { MovieCard } from '../MovieCard';
-import { request } from '../../api/api';
+import { requestArr } from '../../api/api';
 import './FindMovie.scss';
+import { FoundMovies } from '../FoundMovies/FoundMovies';
 
 type Props = {
   propAddMovie: (movie: Movie) => void,
@@ -11,20 +11,20 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ propAddMovie }) => {
   const [input, setInput] = useState('');
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [movies, setMovies] = useState<Movie[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const handleInput = (event: React.FormEvent<HTMLInputElement>) => {
-    setMovie(null);
     setIsError(false);
     setInput(event.currentTarget.value);
   };
 
-  const movieFound = (result: Movie) => {
-    setMovie(result);
+  const movieFound = (result: Movie[]) => {
+    setMovies(result);
     setIsLoading(false);
     setInput('');
+    setIsError(false);
   };
 
   const responseError = () => {
@@ -34,21 +34,13 @@ export const FindMovie: React.FC<Props> = ({ propAddMovie }) => {
 
   const searchMovie = () => {
     setIsLoading(true);
-    request(input)
+    setInput('');
+    requestArr(input)
       .then(result => (
         result.Response === 'False'
           ? responseError()
-          : movieFound(result)
+          : movieFound(result.Search)
       ));
-  };
-
-  const addMovie = () => {
-    if (movie) {
-      propAddMovie(movie);
-      setInput('');
-      setMovie(null);
-      setIsError(false);
-    }
   };
 
   return (
@@ -94,17 +86,6 @@ export const FindMovie: React.FC<Props> = ({ propAddMovie }) => {
               Find a movie
             </button>
           </div>
-
-          <div className="control">
-            <button
-              type="button"
-              className="button is-primary"
-              disabled={!movie}
-              onClick={addMovie}
-            >
-              Add to the list
-            </button>
-          </div>
         </div>
       </form>
 
@@ -112,9 +93,10 @@ export const FindMovie: React.FC<Props> = ({ propAddMovie }) => {
         <h2 className="title">
           {`Preview${isLoading ? ' ...Loading' : ''}`}
         </h2>
-        {movie && (
-          <MovieCard
-            movie={movie}
+        {movies && (
+          <FoundMovies
+            movies={movies}
+            propAddMovie={propAddMovie}
           />
         )}
       </div>

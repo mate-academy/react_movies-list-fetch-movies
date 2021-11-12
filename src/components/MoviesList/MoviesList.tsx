@@ -15,6 +15,7 @@ export const MoviesList: React.FC<Props> = (props) => {
         <MovieCard
           key={movie.imdbID}
           movie={movie}
+          movies={movies}
         />
       ))}
     </div>

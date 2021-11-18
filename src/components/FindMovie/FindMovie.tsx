@@ -27,6 +27,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleAddMovie = () => {
     addMovie(movie);
+    setTitle('');
     setMovie({} as Movie);
   };
 

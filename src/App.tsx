@@ -12,6 +12,20 @@ export class App extends Component<{}, State> {
     movies: [],
   };
 
+  isEqualMovieExist = (movie: Movie) => {
+    return this.state.movies.some(currentMovie => currentMovie.imdbID === movie.imdbID);
+  };
+
+  addMovieToList = (movie?: Movie): void => {
+    if (movie && !this.isEqualMovieExist(movie)) {
+      this.setState((prevState) => {
+        return {
+          movies: prevState.movies.concat(movie),
+        };
+      });
+    }
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -21,7 +35,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie onAdd={this.addMovieToList} />
         </div>
       </div>
     );

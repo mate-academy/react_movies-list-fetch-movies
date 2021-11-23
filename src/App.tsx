@@ -12,7 +12,7 @@ export const App: React.FC = () => {
 
   const addMovies = (movie: Movie) => {
     if (!isMovieInList(movie)) {
-      setMovies(prevState => [...prevState, movie]);
+      setMovies(previousMovies => [...previousMovies, movie]);
     }
   };
 

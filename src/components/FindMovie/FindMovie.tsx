@@ -13,8 +13,8 @@ export const FindMovie: React.FC<Props> = (props) => {
   const { addNewMovie } = props;
   const [title, setTitle] = useState('');
   const [loadedMovie, setLoadedMovie] = useState<Movie | null>(null);
-  const [searchMovieError, setSearchMovieError] = useState(false);
-  const [changedTitle, isTitleChanged] = useState(false);
+  const [hasSearchMovieError, setHasSearchMovieError] = useState(false);
+  const [hasChangedTitle, setHasTitleChanged] = useState(false);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -23,8 +23,8 @@ export const FindMovie: React.FC<Props> = (props) => {
     }
 
     setTitle('');
-    setSearchMovieError(false);
-    isTitleChanged(false);
+    setHasSearchMovieError(false);
+    setHasTitleChanged(false);
   }
 
   const loadMovie = async () => {
@@ -32,18 +32,18 @@ export const FindMovie: React.FC<Props> = (props) => {
       const movieFromServer = await getMovieByTitle(title);
 
       setLoadedMovie(movieFromServer);
-      setSearchMovieError(false);
+      setHasSearchMovieError(false);
     } catch {
       setLoadedMovie(null);
-      setSearchMovieError(true);
-      isTitleChanged(false);
+      setHasSearchMovieError(true);
+      setHasTitleChanged(false);
     }
   };
 
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
-    isTitleChanged(true);
+    setHasTitleChanged(true);
 
     return setTitle(value);
   };
@@ -64,14 +64,14 @@ export const FindMovie: React.FC<Props> = (props) => {
                 placeholder="Enter a title to search"
                 className={cn(
                   'input',
-                  { 'is-danger': (searchMovieError && !changedTitle) },
+                  { 'is-danger': (hasSearchMovieError && !hasChangedTitle) },
                 )}
                 value={title}
                 onChange={inputHandler}
               />
             </div>
           </label>
-          {(searchMovieError && !changedTitle) && (
+          {(hasSearchMovieError && !hasChangedTitle) && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

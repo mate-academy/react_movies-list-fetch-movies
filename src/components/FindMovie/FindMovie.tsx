@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
 
 import { MovieCard } from '../MovieCard';
 import { findMovieByTitle } from '../api';
@@ -65,19 +66,18 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 type="text"
                 id="movie-title"
                 placeholder="Enter a title to search"
-                className="input is-danger"
+                className={classNames('input', { 'is-danger': movieNotFound })}
                 value={title}
                 onChange={handleChange}
               />
             </div>
           </label>
+          {movieNotFound && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such title
+            </p>
+          )}
         </div>
-
-        {movieNotFound && (
-          <p className="help is-danger">
-            Can&apos;t find a movie with such title
-          </p>
-        )}
 
         <div className="field is-grouped">
           <div className="control">

@@ -9,9 +9,9 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie>();
-  const [warn, setWarn] = useState<boolean>(false);
+  const [warn, setWarn] = useState(false);
 
   async function getMovie() {
     const response = await getMovieByTitle(query);
@@ -38,7 +38,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(event) => setQuery(event.target.value)}
             />
           </div>
 

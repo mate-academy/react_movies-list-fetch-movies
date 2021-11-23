@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { Component } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
@@ -12,6 +13,22 @@ export class App extends Component<{}, State> {
     movies: [],
   };
 
+  addMovieToList = (movie:Movie | undefined) => {
+    if (movie === undefined) {
+      return;
+    }
+
+    if (this.state.movies.find((e) => e.imdbID === movie.imdbID)) {
+      return;
+    }
+
+    this.setState(prevState => (
+      {
+        movies: [...prevState.movies, movie],
+      }
+    ));
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -21,7 +38,10 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addMovieToList={(movie) => {
+            this.addMovieToList(movie);
+          }}
+          />
         </div>
       </div>
     );

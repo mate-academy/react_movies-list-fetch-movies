@@ -26,7 +26,14 @@ export const FindMovie: React.FC<Props> = ({ setMovieList }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          addMovie();
+          setMovie(null);
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -64,9 +71,8 @@ export const FindMovie: React.FC<Props> = ({ setMovieList }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={addMovie}
             >
               Add to the list
             </button>

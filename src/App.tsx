@@ -10,7 +10,7 @@ export const App: React.FC = () => {
     const couldGetMovie = movie && movies.find(currMovie => currMovie.imdbID === movie.imdbID);
 
     if (!couldGetMovie) {
-      setMovieList(prevMovie => [...prevMovie, movie]);
+      setMovieList(prevMovies => [...prevMovies, movie]);
     }
   };
 

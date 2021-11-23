@@ -10,13 +10,13 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
-  const [value, setValue] = useState('');
+  const [searchText, setSearchText] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isTitleInput, setIsTitleInput] = useState(true);
   const [isMovieFound, setIsMovieFound] = useState(true);
 
   const getMovie = async () => {
-    const foundedMovie = await getMovies(value);
+    const foundedMovie = await getMovies(searchText);
 
     if (foundedMovie.Response === 'False') {
       setIsMovieFound(false);
@@ -28,7 +28,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+    setSearchText(event.target.value);
     setIsTitleInput(true);
   };
 
@@ -49,7 +49,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 placeholder="Enter a title to search"
                 className={classNames('input',
                   { 'is-danger': !isMovieFound })}
-                value={value}
+                value={searchText}
                 onChange={handleInput}
               />
             </div>
@@ -80,7 +80,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="button is-primary"
               onClick={() => {
                 addMovie(movie);
-                setValue('');
+                setSearchText('');
               }}
             >
               Add to the list

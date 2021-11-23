@@ -10,7 +10,7 @@ export const App: FC = () => {
     const isMovieInList = movies.some(({ imdbID }) => movie.imdbID === imdbID);
 
     if (!isMovieInList) {
-      setMovies(current => [...current, movie]);
+      setMovies(currentMovies => [...currentMovies, movie]);
     }
   };
 

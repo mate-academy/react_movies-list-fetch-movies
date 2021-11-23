@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import { FC, useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
@@ -38,28 +37,30 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     }
   };
 
+  const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    setError(true);
+
+    return setTitle(value);
+  };
+
   return (
     <>
       <form className="find-movie" onSubmit={submitForm}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
-          </label>
-
-          <div className="control">
             <input
               value={title}
+              id="movie-title"
               className={classNames('input',
                 { 'is-danger': error })}
-              onChange={event => {
-                setTitle(event.target.value);
-                setError(false);
-              }}
+              onChange={inputHandler}
               type="text"
-              id="movie-title"
               placeholder="Enter a title to search"
             />
-          </div>
+          </label>
 
           {error && (
             <p className="help is-danger">

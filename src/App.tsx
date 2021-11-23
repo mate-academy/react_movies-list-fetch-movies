@@ -1,43 +1,30 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const isEqualMovieExist = (movie: Movie) => {
+    return movies.some(currentMovie => currentMovie.imdbID === movie.imdbID);
   };
 
-  isEqualMovieExist = (movie: Movie) => {
-    return this.state.movies.some(currentMovie => currentMovie.imdbID === movie.imdbID);
-  };
-
-  addMovieToList = (movie?: Movie): void => {
-    if (movie && !this.isEqualMovieExist(movie)) {
-      this.setState((prevState) => {
-        return {
-          movies: prevState.movies.concat(movie),
-        };
-      });
+  const addMovieToList = (movie?: Movie): void => {
+    if (movie && !isEqualMovieExist(movie)) {
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      setMovies((movies) => movies.concat(movie));
     }
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie onAdd={this.addMovieToList} />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie onAdd={addMovieToList} />
+      </div>
+    </div>
+  );
+};

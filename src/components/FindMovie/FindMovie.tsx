@@ -54,7 +54,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             </div>
           </label>
 
-          {movie === null && isShowError && (
+          {!movie && isShowError && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

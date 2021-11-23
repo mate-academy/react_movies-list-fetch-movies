@@ -7,7 +7,7 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie | null) => {
-    if (movie !== null && !movies.some(item => item.imdbID === movie.imdbID)) {
+    if (movie && !movies.some(item => item.imdbID === movie.imdbID)) {
       setMovies(prevMovies => [...prevMovies, movie]);
     }
   };

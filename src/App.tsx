@@ -1,29 +1,29 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App = () => {
+  const [moviesStack, setMoviesStack] = useState<Movie[]>([]);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const isEqualMovieExist = (movie: Movie) => {
+    return moviesStack.some(currentMovie => currentMovie.imdbID === movie.imdbID);
   };
 
-  render() {
-    const { movies } = this.state;
+  const addMovieToList = (movie?: Movie): void => {
+    if (movie && !isEqualMovieExist(movie)) {
+      setMoviesStack((movies) => [...movies, movie]);
+    }
+  };
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={moviesStack} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie onAdd={addMovieToList} />
+      </div>
+    </div>
+  );
+};

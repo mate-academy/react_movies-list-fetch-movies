@@ -1,29 +1,35 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movieAdded, setMovieAdded] = useState<boolean>(false);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const isMovieInList = (movieId: string): boolean => movies
+    .some(movieFromList => movieFromList.imdbID === movieId);
+
+  const addMovie = (movie: Movie) => {
+    if (!isMovieInList(movie.imdbID)) {
+      setMovies([...movies, movie]);
+      setMovieAdded(false);
+    }
+
+    if (isMovieInList(movie.imdbID)) {
+      setMovies([...movies]);
+      setMovieAdded(true);
+    }
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie addMovie={addMovie} movieAdded={movieAdded} />
+      </div>
+    </div>
+  );
+};

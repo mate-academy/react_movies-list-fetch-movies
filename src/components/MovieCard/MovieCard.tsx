@@ -2,11 +2,15 @@ import React from 'react';
 import './MovieCard.scss';
 
 type Props = {
-  movie: Movie;
+  movie: Movie | null;
 };
 
 export const MovieCard: React.FC<Props> = (props) => {
   const { movie } = props;
+
+  if (movie === null) {
+    return null;
+  }
 
   return (
     <div className="card">

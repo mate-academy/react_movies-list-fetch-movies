@@ -36,7 +36,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => event.preventDefault()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          addMovie(movie);
+          setSearchText('');
+        }}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -76,12 +80,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={() => {
-                addMovie(movie);
-                setSearchText('');
-              }}
             >
               Add to the list
             </button>

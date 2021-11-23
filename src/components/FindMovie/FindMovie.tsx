@@ -40,9 +40,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
-    setError(true);
-
-    return setTitle(value);
+    setError(false);
+    setTitle(value);
   };
 
   return (

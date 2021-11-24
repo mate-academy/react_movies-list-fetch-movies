@@ -7,10 +7,10 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie): void => {
-    const includesInList = movies.some(({ imdbID }) => movie.imdbID !== imdbID);
+    const includesInList = movies.some(({ imdbID }) => movie.imdbID === imdbID);
 
     if (!includesInList) {
-      setMovies(prevMovie => [...prevMovie, movie]);
+      setMovies(prevMovies => [...prevMovies, movie]);
     }
   };
 

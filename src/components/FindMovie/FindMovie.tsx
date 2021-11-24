@@ -26,7 +26,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       });
   };
 
-  const handleMovie: React.FormEventHandler = (event) => {
+  const handleSubmit: React.FormEventHandler = (event) => {
     event.preventDefault();
 
     if (movie) {
@@ -36,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
   };
 
-  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
     setError(false);
@@ -45,7 +45,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        onSubmit={handleSubmit}
+        className="find-movie"
+      >
         <div className="field">
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label className="label" htmlFor="movie-title">
@@ -55,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           <div className="control">
             <input
               value={title}
-              onChange={(event) => handleInput(event)}
+              onChange={handleInputChange}
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
@@ -85,9 +88,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={handleMovie}
             >
               Add to the list
             </button>

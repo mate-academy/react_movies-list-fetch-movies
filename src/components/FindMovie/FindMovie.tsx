@@ -14,7 +14,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movieAdded }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isFound, setFound] = useState<boolean>(true);
 
-  const isMovie = async () => {
+  const hasMovieFound = async () => {
     const result = await getMovie(movieTitle);
 
     if (result.Response === 'False') {
@@ -32,7 +32,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movieAdded }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          getMovie(movieTitle);
         }}
       >
         <div className="field">
@@ -64,7 +63,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movieAdded }) => {
               type="submit"
               className="button is-light"
               onClick={async () => {
-                await isMovie();
+                await hasMovieFound();
                 if (isFound) {
                   setMovie(await getMovie(movieTitle));
                 }

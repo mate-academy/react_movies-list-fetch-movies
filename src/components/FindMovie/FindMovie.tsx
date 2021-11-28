@@ -10,7 +10,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState({} as Movie);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState('');
 
   const loadMovie = async () => {
@@ -20,15 +20,17 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
       setMovie(newMovie);
       setError('');
     } else {
-      setMovie({} as Movie);
+      setMovie(null);
       setError(newMovie.Error);
     }
   };
 
   const handleAddMovie = () => {
-    addNewMovie(movie);
-    setTitle('');
-    setMovie({} as Movie);
+    if (movie) {
+      addNewMovie(movie);
+      setTitle('');
+      setMovie(null);
+    }
   };
 
   return (
@@ -62,7 +64,7 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => loadMovie()}
+              onClick={loadMovie}
             >
               Find a movie
             </button>
@@ -71,8 +73,8 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => handleAddMovie()}
-              disabled={!movie.Title}
+              onClick={handleAddMovie}
+              disabled={!movie?.Title}
             >
               Add to the list
             </button>
@@ -81,7 +83,7 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
       </form>
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie.Title && (
+        {movie?.Title && (
           <MovieCard movie={movie} />
         )}
       </div>

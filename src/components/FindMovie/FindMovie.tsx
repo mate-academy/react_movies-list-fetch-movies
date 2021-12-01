@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import { getFilms } from '../../api/server';
 import './FindMovie.scss';
@@ -53,20 +52,20 @@ export const FindMovie: React.FC<Props> = ({
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
-          </label>
 
-          <div className="control">
-            <input
-              type="text"
-              id="movie-title"
-              placeholder="Enter a title to search"
-              className="input"
-              value={film}
-              onChange={(event) => {
-                setFilm(event.target.value);
-              }}
-            />
-          </div>
+            <div className="control">
+              <input
+                type="text"
+                id="movie-title"
+                placeholder="Enter a title to search"
+                className="input"
+                value={film}
+                onChange={(event) => {
+                  setFilm(event.target.value);
+                }}
+              />
+            </div>
+          </label>
           {hasLoadingError && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Component } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
@@ -16,9 +15,6 @@ export class App extends Component<{}, State> {
   };
 
   loadFilm = (nameFilm: Movie) => {
-    console.log(this.state.movies);
-    console.log(nameFilm);
-
     if (this.state.movies.includes(nameFilm)) {
       return 0;
     }

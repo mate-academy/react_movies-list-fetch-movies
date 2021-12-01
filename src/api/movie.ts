@@ -1,7 +1,7 @@
 import { Movie } from '../types/Movie';
 
 const OMDB_KEY = 'ddb8cda1';
-const BASE_URL = `http://www.omdbapi.com/?i=tt3896198&apikey=${OMDB_KEY}&`;
+const BASE_URL = `https://www.omdbapi.com/?i=tt3896198&apikey=${OMDB_KEY}&`;
 
 const request = async <T>(urlParam: string): Promise<T> => {
   const response = await fetch(`${BASE_URL}${urlParam}`);

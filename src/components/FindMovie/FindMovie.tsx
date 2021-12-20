@@ -78,6 +78,7 @@ export const FindMovie: React.FC<Props> = ({ callback }) => {
               onClick={() => {
                 if (movie.Title) {
                   callback(movie);
+                  setValue('');
                 }
               }}
             >

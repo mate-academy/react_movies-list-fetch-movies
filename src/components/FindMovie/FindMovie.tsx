@@ -52,7 +52,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={(event) => event.preventDefault()}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title

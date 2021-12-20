@@ -15,6 +15,8 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [film, setFilm] = useState(null);
 
   const findMovie = () => {
+    setFilm(null);
+
     try {
       fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&t=${title}`)
         .then(response => response.json())

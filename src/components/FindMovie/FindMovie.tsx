@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import classnames from 'classnames';
 import { MovieCard } from '../MovieCard';
+import { getData } from '../../api/movies';
 
 type Props = {
   callback: (movie: Movie) => void,
@@ -20,16 +21,15 @@ export const FindMovie: React.FC<Props> = ({ callback }) => {
   const [movie, setMovie] = useState(film);
   const [errorMessage, setError] = useState('');
 
-  const getData = async () => {
+  const getMovie = async () => {
     try {
-      const response = await fetch(`http://www.omdbapi.com/?i=tt3896198&apikey=9f56fe16&t=${title}`);
-      const movieOb = await response.json();
+      const response = await getData(title);
 
-      if (movieOb.Error) {
+      if (response.Response === 'False') {
         throw new Error('err');
       }
 
-      setMovie(movieOb);
+      setMovie(response);
     } catch (error) {
       setMovie(film);
       setError('Can\'t find a movie with such a title');
@@ -65,7 +65,7 @@ export const FindMovie: React.FC<Props> = ({ callback }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={getData}
+              onClick={getMovie}
             >
               Find a movie
             </button>

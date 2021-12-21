@@ -22,7 +22,7 @@ export class App extends Component<{}, State> {
         };
       }
 
-      return { movies: state.movies };
+      return state;
     });
   };
 

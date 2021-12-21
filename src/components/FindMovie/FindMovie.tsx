@@ -9,16 +9,14 @@ type Props = {
   addMovie: (movie: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = (props) => {
-  const { addMovie } = props;
-
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [foundMovie, showMovie] = useState<Movie | null>(null);
-  const [foundStatus, setFoundStatus] = useState(true);
+  const [isFound, setIsFound] = useState(true);
 
   const findMovie = async () => {
     if (!title.trim()) {
-      setFoundStatus(false);
+      setIsFound(false);
 
       return;
     }
@@ -28,14 +26,14 @@ export const FindMovie: React.FC<Props> = (props) => {
 
       if (movie.Response === 'False') {
         showMovie(null);
-        setFoundStatus(false);
+        setIsFound(false);
       } else {
         showMovie(movie);
-        setFoundStatus(true);
+        setIsFound(true);
       }
     } catch (error) {
       showMovie(null);
-      setFoundStatus(false);
+      setIsFound(false);
     }
   };
 
@@ -65,16 +63,16 @@ export const FindMovie: React.FC<Props> = (props) => {
                 type="text"
                 id="movie-title"
                 placeholder="Enter a title to search"
-                className={classNames('input', { 'is-danger': !foundStatus })}
+                className={classNames('input', { 'is-danger': !isFound })}
                 value={title}
                 onChange={(event) => {
-                  setFoundStatus(true);
+                  setIsFound(true);
                   setTitle(event.target.value);
                 }}
               />
             </div>
           </label>
-          {!foundStatus && (
+          {!isFound && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

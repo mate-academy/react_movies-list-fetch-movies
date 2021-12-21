@@ -17,6 +17,12 @@ export const FindMovie: React.FC<Props> = (props) => {
   const [foundStatus, setFoundStatus] = useState(true);
 
   const findMovie = async () => {
+    if (!title.trim()) {
+      setFoundStatus(false);
+
+      return;
+    }
+
     try {
       const movie = await getMovies(title);
 
@@ -91,6 +97,7 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               type="submit"
               className="button is-primary"
+              disabled={!foundMovie}
             >
               Add to the list
             </button>

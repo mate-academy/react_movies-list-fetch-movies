@@ -1,29 +1,57 @@
-import { Component } from 'react';
-import './App.scss';
+/* eslint-disable no-console */
+import { useState } from 'react';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
+import { getMovie } from './api/movieApi';
+import './App.scss';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
+  const [isMovieFound, setIsMovieFound] = useState(true);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const searchMovieTitle = async (title:string) => {
+    try {
+      const movie = await getMovie(title);
+
+      if (movie.Response === 'True') {
+        setFoundMovie(movie);
+        setIsMovieFound(true);
+      } else {
+        setIsMovieFound(false);
+      }
+    } catch (error) {
+      console.error(
+        'An error has occurred',
+      );
+    }
   };
 
-  render() {
-    const { movies } = this.state;
+  const addToList = () => {
+    if (!foundMovie) {
+      return;
+    }
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+    if (movies.find(movie => movie.imdbID === foundMovie.imdbID)) {
+      return;
+    }
+
+    setMovies([...movies, foundMovie]);
+  };
+
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          searchMovieTitle={searchMovieTitle}
+          isMovieFound={isMovieFound}
+          foundedMovie={foundMovie}
+          addToList={addToList}
+        />
+      </div>
+    </div>
+  );
+};

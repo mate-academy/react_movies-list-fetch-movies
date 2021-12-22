@@ -6,7 +6,7 @@ import { MovieCard } from '../MovieCard';
 
 type Props = {
   searchMovieTitle: (title:string) => void;
-  IsMovieFounded: boolean;
+  isMovieFound: boolean;
   foundedMovie: Movie | null;
   addToList: () => void;
 };
@@ -14,7 +14,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = (
   {
     searchMovieTitle,
-    IsMovieFounded,
+    isMovieFound,
     foundedMovie,
     addToList,
   },
@@ -41,10 +41,10 @@ export const FindMovie: React.FC<Props> = (
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
-              onChange={e => handleInput(e)}
+              onChange={handleInput}
             />
           </div>
-          {!IsMovieFounded && (
+          {!isMovieFound && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

@@ -7,18 +7,18 @@ import './App.scss';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [foundedMovie, setFoundedMovie] = useState<Movie | null>(null);
-  const [IsMovieFounded, setIsMovieFounded] = useState(true);
+  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
+  const [isMovieFound, setIsMovieFound] = useState(true);
 
   const searchMovieTitle = async (title:string) => {
     try {
       const movie = await getMovie(title);
 
       if (movie.Response === 'True') {
-        setFoundedMovie(movie);
-        setIsMovieFounded(true);
+        setFoundMovie(movie);
+        setIsMovieFound(true);
       } else {
-        setIsMovieFounded(false);
+        setIsMovieFound(false);
       }
     } catch (error) {
       console.error(
@@ -28,17 +28,15 @@ export const App: React.FC = () => {
   };
 
   const addToList = () => {
-    if (!foundedMovie) {
+    if (!foundMovie) {
       return;
     }
 
-    if (movies.length) {
-      if (movies.find(movie => movie.imdbID === foundedMovie.imdbID)) {
-        return;
-      }
+    if (movies.find(movie => movie.imdbID === foundMovie.imdbID)) {
+      return;
     }
 
-    setMovies([...movies, foundedMovie]);
+    setMovies([...movies, foundMovie]);
   };
 
   return (
@@ -49,8 +47,8 @@ export const App: React.FC = () => {
       <div className="sidebar">
         <FindMovie
           searchMovieTitle={searchMovieTitle}
-          IsMovieFounded={IsMovieFounded}
-          foundedMovie={foundedMovie}
+          isMovieFound={isMovieFound}
+          foundedMovie={foundMovie}
           addToList={addToList}
         />
       </div>

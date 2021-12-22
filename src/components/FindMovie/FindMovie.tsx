@@ -6,19 +6,12 @@ import { MovieCard } from '../MovieCard';
 import { getData } from '../../api/movies';
 
 type Props = {
-  callback: (movie: Movie) => void,
+  addMovie: (movie: Movie) => void | boolean,
 };
 
-export const FindMovie: React.FC<Props> = ({ callback }) => {
-  const film = {
-    Poster: '',
-    Title: '',
-    Plot: '',
-    imdbID: '',
-  };
-
-  const [title, setValue] = useState('');
-  const [movie, setMovie] = useState(film);
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+  const [title, setTitle] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [errorMessage, setError] = useState('');
 
   const getMovie = async () => {
@@ -31,8 +24,24 @@ export const FindMovie: React.FC<Props> = ({ callback }) => {
 
       setMovie(response);
     } catch (error) {
-      setMovie(film);
+      setMovie(null);
       setError('Can\'t find a movie with such a title');
+    }
+  };
+
+  const chooseMovie = (event:React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    setError('');
+  };
+
+  const addToList = () => {
+    if (movie) {
+      if (addMovie(movie) === false) {
+        setError('This movie already exist in your list');
+      }
+
+      setTitle('');
+      setMovie(null);
     }
   };
 
@@ -47,12 +56,12 @@ export const FindMovie: React.FC<Props> = ({ callback }) => {
                 type="text"
                 id="movie-title"
                 placeholder="Enter a title to search"
-                className={classnames('input', { 'is-danger': errorMessage })}
+                className={classnames(
+                  'input',
+                  { 'is-danger': errorMessage },
+                )}
                 value={title}
-                onChange={(event) => {
-                  setValue(event.target.value);
-                  setError('');
-                }}
+                onChange={chooseMovie}
               />
             </div>
           </label>
@@ -66,6 +75,7 @@ export const FindMovie: React.FC<Props> = ({ callback }) => {
               type="button"
               className="button is-light"
               onClick={getMovie}
+              disabled={errorMessage.length > 0 || !title}
             >
               Find a movie
             </button>
@@ -75,12 +85,8 @@ export const FindMovie: React.FC<Props> = ({ callback }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                if (movie.Title) {
-                  callback(movie);
-                  setValue('');
-                }
-              }}
+              onClick={addToList}
+              disabled={errorMessage.length > 0 || !title || !movie}
             >
               Add to the list
             </button>
@@ -88,7 +94,7 @@ export const FindMovie: React.FC<Props> = ({ callback }) => {
         </div>
       </form>
 
-      {movie.Title && (
+      {movie && (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import './FindMovie.scss';
@@ -21,9 +22,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
       setPreviewMovie(foundMovie);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error(
-        'An error has occurred when requesting movie from the server',
+        'Unable to get movie from server',
       );
     }
   };

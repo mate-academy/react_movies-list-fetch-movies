@@ -40,24 +40,22 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
     <>
       <form className="find-movie">
         <div className="field">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
           <label className="label" htmlFor="movie-title">
             Movie title
+            <div className="control">
+              <input
+                type="text"
+                id="movie-title"
+                placeholder="Enter a title to search"
+                className={classNames(
+                  'input',
+                  { 'is-danger': isFound },
+                )}
+                value={query}
+                onChange={changeHandler}
+              />
+            </div>
           </label>
-
-          <div className="control">
-            <input
-              type="text"
-              id="movie-title"
-              placeholder="Enter a title to search"
-              className={classNames(
-                'input',
-                { 'is-danger': isFound },
-              )}
-              value={query}
-              onChange={changeHandler}
-            />
-          </div>
 
           {!isFound || (
             <p className="help is-danger">

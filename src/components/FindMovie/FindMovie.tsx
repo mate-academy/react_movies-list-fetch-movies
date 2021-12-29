@@ -84,6 +84,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
                 if (movie !== null) {
                   onAdd(movie);
                   setTitle('');
+                  setMovie(null);
                 }
               }}
             >

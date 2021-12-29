@@ -57,6 +57,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               type="button"
               className="button is-light"
               onClick={async () => {
+                if (title === '') {
+                  return;
+                }
+
                 const foundMovie = await getMovie(title);
 
                 if (foundMovie.Error) {

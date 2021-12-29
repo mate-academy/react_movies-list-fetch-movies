@@ -16,7 +16,16 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (findMovie) {
+            addMovie(findMovie);
+            setFindMovie(null);
+          }
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -56,6 +65,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                     } else {
                       setSearchError(true);
                     }
+
+                    setSearchField('');
                   });
               }}
             >
@@ -65,14 +76,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               disabled={searchError}
               className="button is-primary"
-              onClick={() => {
-                if (findMovie) {
-                  addMovie(findMovie);
-                }
-              }}
             >
               Add to the list
             </button>

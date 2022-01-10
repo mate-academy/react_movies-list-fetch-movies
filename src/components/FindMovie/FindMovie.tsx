@@ -7,17 +7,17 @@ export const FindMovie: React.FC = () => (
   <>
     <form className="find-movie">
       <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
 
         <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
+          <label className="label" htmlFor="movie-title">
+            Movie title
+            <input
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className="input is-danger"
+            />
+          </label>
         </div>
 
         <p className="help is-danger">

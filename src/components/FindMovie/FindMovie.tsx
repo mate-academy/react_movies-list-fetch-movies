@@ -1,19 +1,14 @@
-/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
+import { getFilm } from '../../serverRequests/serverRequests';
 
 import { MovieCard } from '../MovieCard';
 
 type Props = {
   addMovie: (film: Movie) => void
 };
-
-function getFilm(title: string) {
-  return fetch(`https://www.omdbapi.com/?apikey=c2c705e9&t=${title}`)
-    .then(response => response.json());
-}
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
@@ -38,10 +33,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
   }
 
-  let classNameInputTitle = 'input';
+  function addMovieHandler() {
+    if (movie) {
+      addMovie(movie);
+    }
 
-  if (hasLoadingError) {
-    classNameInputTitle += ' is-danger';
+    setTitle('');
+    setMovie(null);
   }
 
   return (
@@ -57,7 +55,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNameInputTitle}
+              className={classNames('input', { 'is-danger': hasLoadingError })}
               value={title}
               onChange={(event) => {
                 setTitle(event.target.value);
@@ -68,7 +66,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           {loading && <p>Loading</p>}
           {hasLoadingError && (
             <p className="help is-danger">
-              `Can't find a movie with such a title`
+              `Can&apos;t find a movie with such a title`
             </p>
           )}
         </div>
@@ -89,13 +87,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               disabled={!movie}
-              onClick={() => {
-                if (movie) {
-                  addMovie(movie);
-                  setTitle('');
-                  setMovie(null);
-                }
-              }}
+              onClick={addMovieHandler}
             >
               Add to the list
             </button>

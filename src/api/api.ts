@@ -1,4 +1,4 @@
-const API_URL = 'http://www.omdbapi.com/?apikey=443fd0d5&';
+const API_URL = 'https://www.omdbapi.com/?apikey=443fd0d5&';
 
 export const getMovie = (title: string) => {
   return fetch(`${API_URL}t=${title}`)

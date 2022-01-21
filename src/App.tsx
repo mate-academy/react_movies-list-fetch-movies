@@ -4,20 +4,10 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [isMatches, setIsMatches] = useState(false);
+  const [movies, setMovies] = useState<Movie[] | []>([]);
 
-  const addMovies = (film: Movie | null) => {
-    if (film?.Response === 'True') {
-      const result = movies.some((movie) => movie.imdbID === film.imdbID);
-
-      if (!result) {
-        setMovies([...movies, film]);
-        setIsMatches(false);
-      } else {
-        setIsMatches(true);
-      }
-    }
+  const addMovies = (film: Movie) => {
+    setMovies((prevMovies) => ([...prevMovies, film]));
   };
 
   return (
@@ -27,9 +17,8 @@ export const App: React.FC = () => {
       </div>
       <div className="sidebar">
         <FindMovie
+          movies={movies}
           addMovies={addMovies}
-          isMatches={isMatches}
-          setIsMatches={setIsMatches}
         />
       </div>
     </div>

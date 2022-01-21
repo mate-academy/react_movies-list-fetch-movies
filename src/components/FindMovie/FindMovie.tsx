@@ -6,36 +6,51 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 
 type Props = {
-  addMovies: (film: Movie | null) => void,
-  isMatches: boolean,
-  setIsMatches: (arg: boolean) => void,
+  movies: Movie[] | [],
+  addMovies: (film: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovies, isMatches, setIsMatches }) => {
+export const FindMovie: React.FC<Props> = ({
+  movies,
+  addMovies,
+}) => {
   const [titleForFind, setTitleForFind] = useState('');
   const [errorHide, setErrorHide] = useState(true);
+  const [isMatches, setIsMatches] = useState(false);
 
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [newMovie, setNewMovie] = useState<Movie | null>(null);
 
   const loader = async (title: string) => {
     const downloadedMovie = await getMovie(title);
 
-    if (downloadedMovie.Response === 'False') {
+    if (!downloadedMovie) {
       setErrorHide(false);
     } else {
       setErrorHide(true);
     }
 
-    setMovie(downloadedMovie);
+    setNewMovie(downloadedMovie);
     // eslint-disable-next-line
-    console.log(movie, downloadedMovie);
+    console.log(newMovie, downloadedMovie);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    addMovies(movie);
-    setTitleForFind('');
-    setMovie(null);
+
+    if (newMovie) {
+      const result = movies.some((movie) => movie.imdbID === newMovie.imdbID);
+
+      if (!result) {
+        addMovies(newMovie);
+        setTitleForFind('');
+        setNewMovie(null);
+        setIsMatches(false);
+      } else {
+        setTitleForFind('');
+        setNewMovie(null);
+        setIsMatches(true);
+      }
+    }
   };
 
   return (
@@ -95,12 +110,10 @@ export const FindMovie: React.FC<Props> = ({ addMovies, isMatches, setIsMatches 
         </div>
       </form>
 
-      {(movie === null || movie.Response === 'False') ? (
-        false
-      ) : (
+      {(newMovie !== null) && (
         <div className="container">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={movie} />
+          <MovieCard movie={newMovie} />
         </div>
       )}
 

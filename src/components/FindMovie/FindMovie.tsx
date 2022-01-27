@@ -11,7 +11,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [searchTitle, setSearchTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isMovieFind, setFindCheck] = useState(true);
+  const [isMovieFound, setIsMovieFound] = useState(true);
 
   const searchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTitle(event.target.value);
@@ -22,9 +22,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       const movieFromServer = await getMovie(searchTitle);
 
       setMovie(movieFromServer);
+      setIsMovieFound(true);
 
       if (movieFromServer.Response === 'False') {
-        setFindCheck(false);
+        setIsMovieFound(false);
         setMovie(null);
       }
     } catch {
@@ -32,8 +33,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
   };
 
-  const addMovieToList = (movieToList: Movie) => {
-    if (movieToList) {
+  const addMovieToList = (movieToList: Movie | null) => {
+    if (movieToList && movie) {
       addMovie(movieToList);
       setMovie(null);
     }
@@ -53,11 +54,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               value={searchTitle}
               onChange={searchInput}
-              className={`input ${!isMovieFind ? 'is-danger' : ''}`}
+              className={`input ${!isMovieFound ? 'is-danger' : ''}`}
             />
           </label>
 
-          {!isMovieFind && (
+          {!isMovieFound && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -79,7 +80,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => movie && addMovieToList(movie)}
+              onClick={() => addMovieToList(movie)}
             >
               Add to the list
             </button>
@@ -88,8 +89,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       </form>
 
       <div className="container">
-        {movie && <h2 className="title">Preview</h2>}
-        {movie && <MovieCard movie={movie} />}
+        {movie && (
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={movie} />
+          </>
+        )}
       </div>
     </>
   );

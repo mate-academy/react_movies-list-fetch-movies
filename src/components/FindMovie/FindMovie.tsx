@@ -2,16 +2,17 @@ import './FindMovie.scss';
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard/MovieCard';
+import { mainRequest } from '../../api';
 
 // import { MovieCard } from '../MovieCard';
 
 type Props = {
-  addMovie: (movie: Movie) => void;
+  addMovie: (movie: Movie | null) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
-  const [showError, setShowError] = useState(false);
+  const [showError, setShowError] = useState(true);
   const [movieInfo, setMovieInfo] = useState(null);
 
   const filmNotFound = () => {
@@ -20,20 +21,21 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const request = (filmTitle: string) => {
-    return fetch(`https://www.omdbapi.com/?apikey=edc77aa9&t=${filmTitle}`).then(response => {
-      if (!response.ok) {
-        throw new Error(`${response.status} - ${response.statusText}`);
-      }
-
-      return response.json().then(movie => {
-        return movie.Response === 'False' ? filmNotFound() : setMovieInfo(movie);
-      });
+    mainRequest(filmTitle).then(movie => {
+      return movie.Response === 'False' ? filmNotFound() : setMovieInfo(movie);
     });
   };
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setTitle('');
+          addMovie(movieInfo);
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -70,13 +72,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           </div>
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={() => {
-                setTitle('');
-
-                return movieInfo ? addMovie(movieInfo) : null;
-              }}
             >
               Add to the list
             </button>

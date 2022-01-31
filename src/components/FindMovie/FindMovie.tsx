@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import { getMovieFromServer } from '../../api/api';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
@@ -12,14 +13,24 @@ export const FindMovie: React.FC<Props> = ({ add }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [errorMessage, setError] = useState('');
+  const [isValid, setValid] = useState(false);
 
   const getMovie = async () => {
     try {
-      const movieServer = await getMovieFromServer(title);
+      if (title.trim()) {
+        const movieServer = await getMovieFromServer(title);
 
-      setMovie(movieServer);
+        setValid(false);
+        setMovie(movieServer);
+        setError('');
+      } else {
+        setMovie(null);
+        setValid(true);
+        setError('Cant find a movie with such title');
+      }
     } catch (error) {
       setMovie(null);
+      setValid(true);
       setError('Cant find a movie with such title');
     }
   };
@@ -50,7 +61,7 @@ export const FindMovie: React.FC<Props> = ({ add }) => {
               placeholder="Enter a title to search"
               value={title}
               onChange={(event) => setTitle(event.target.value)}
-              className="input is-danger"
+              className={classNames('input', isValid ? 'is-danger' : '')}
             />
           </div>
 

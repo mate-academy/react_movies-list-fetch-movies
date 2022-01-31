@@ -4,7 +4,11 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[] | []>([]);
+
+  const addMovie = (movieFromServer: Movie) => {
+    setMovies(currentList => [...currentList, movieFromServer]);
+  };
 
   return (
     <div className="page">
@@ -12,7 +16,7 @@ export const App: React.FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie setMovies={setMovies} moviesList={movies} />
+        <FindMovie addMovie={addMovie} moviesList={movies} />
       </div>
     </div>
   );

@@ -4,15 +4,15 @@ import { getMovieFromServer } from '../api/movies';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
-type SetMovies = (movies: Movie[]) => void;
+type AddMovie = (movieFromServer: Movie) => void;
 
 interface Props {
-  setMovies: SetMovies;
+  addMovie: AddMovie;
   moviesList: Movie[];
 }
 
 export const FindMovie: React.FC<Props> = (props) => {
-  const { setMovies, moviesList } = props;
+  const { addMovie, moviesList } = props;
   const [input, setInput] = useState('');
   const [searchWasMade, setSearchWasMade] = useState(false);
   const [movieFromServer, setMovieFromServer] = useState<Movie>({
@@ -45,7 +45,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   };
 
   const handleAddToList = () => {
-    setMovies(currentList => [...currentList, movieFromServer]);
+    addMovie(movieFromServer);
   };
 
   const handleSubmit = (event: React.FormEvent) => {

@@ -4,14 +4,7 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
-  // const movies: Movie[] = [];
   const [movies, newMovie] = useState<Movie[]>([]);
-
-  /* const addMovie = (movie: Movie) => {
-    movies.push(movie);
-    // eslint-disable-next-line no-console
-    console.log(movies);
-  }; */
 
   const addMovie = (movie: Movie) => {
     if (movies.every(addedMovie => addedMovie.imdbID !== movie.imdbID)) {

@@ -41,6 +41,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 id="movie-title"
                 placeholder="Enter a title to search"
                 className="input is-danger"
+                value={findedMovieTitle}
                 onChange={(event) => {
                   setIsMovieValid(true);
                   setFindedMovieTitle(event.target.value);
@@ -67,7 +68,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addMovie(findedMovie)}
+              onClick={() => {
+                addMovie(findedMovie);
+                setFindedMovieTitle('');
+              }}
             >
               Add to the list
             </button>

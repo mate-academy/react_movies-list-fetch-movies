@@ -21,7 +21,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     if (!(findedMovie.Title || '').toLowerCase().includes(title.toLowerCase())) {
       const movie = await getMovie(title);
 
-      setFindedMovie(movie);
+      if (movie.Response === 'False') {
+        setIsMovieValid(false);
+      } else {
+        setFindedMovie(movie);
+      }
     }
   };
 

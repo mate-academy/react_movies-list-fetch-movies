@@ -1,4 +1,4 @@
-const URL_BASE = 'http://www.omdbapi.com/?i=tt3896198&apikey=fa576852';
+const URL_BASE = 'https://www.omdbapi.com/?i=tt3896198&apikey=fa576852';
 
 export async function getFilm(title: string) {
   try {

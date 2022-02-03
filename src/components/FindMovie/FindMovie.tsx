@@ -20,7 +20,8 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
   const [wasFound, setWasFound] = useState(true);
   const [hasPreview, setHasPreview] = useState(false);
   const [hasDuplicate, setHasDuplicate] = useState(false);
-  const [isValid, setIsValid] = useState(false);
+  const [isMovieValid, setIsMovieValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const loadMovie = async () => {
     const requestedMovie = await getMovie(title);
@@ -29,18 +30,24 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
       setWasFound(true);
       setMovie(requestedMovie);
       setHasPreview(true);
-      setIsValid(true);
+      setIsMovieValid(true);
     } else {
       setWasFound(false);
     }
+
+    setIsLoading(false);
   };
 
   const findMovie = () => {
-    if (!movie.Title.toLowerCase().includes(title.trim().toLowerCase())) {
-      loadMovie();
-    } else {
+    const isLoadedToPreview = movie.Title.toLowerCase().includes(title.trim().toLowerCase())
+    && !!title.trim();
+
+    if (isLoadedToPreview) {
       setHasPreview(true);
-      setIsValid(true);
+      setIsMovieValid(true);
+    } else if (title.trim()) {
+      setIsLoading(true);
+      loadMovie();
     }
   };
 
@@ -50,10 +57,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
     if (!isDuplicate) {
       onAdd(movie);
       setHasPreview(false);
-      setIsValid(false);
+      setIsMovieValid(false);
     } else {
       setHasDuplicate(true);
-      setIsValid(false);
+      setIsMovieValid(false);
     }
   };
 
@@ -62,6 +69,13 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
     setHasDuplicate(false);
     setHasPreview(false);
     setTitle(event.target.value);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      findMovie();
+    }
   };
 
   return (
@@ -83,6 +97,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
                 { ' is-danger': (!wasFound || hasDuplicate) },
               )}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
             />
           </div>
           {!wasFound && (
@@ -101,7 +116,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
           <div className="control">
             <button
               type="button"
-              className="button is-light"
+              className={classNames(
+                'button is-light',
+                { 'is-loading': isLoading },
+              )}
               onClick={findMovie}
             >
               Find a movie
@@ -113,7 +131,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
               type="button"
               className="button is-primary"
               onClick={addMovie}
-              disabled={!isValid}
+              disabled={!isMovieValid}
             >
               Add to the list
             </button>

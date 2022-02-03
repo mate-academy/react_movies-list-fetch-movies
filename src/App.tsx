@@ -7,10 +7,7 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (newMovie: Movie) => {
-    setMovies(current => ([
-      ...current,
-      newMovie,
-    ]));
+    setMovies([...movies, newMovie]);
   };
 
   return (
@@ -20,7 +17,7 @@ export const App: React.FC = () => {
       </div>
       <div className="sidebar">
         <FindMovie
-          addMovie={addMovie}
+          onAdd={addMovie}
           movies={movies}
         />
       </div>

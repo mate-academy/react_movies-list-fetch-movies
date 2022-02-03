@@ -1,11 +1,13 @@
-const BASE_URL = 'https://www.omdbapi.com/';
-const apiKey = 'cf4cfe8c';
+const API_URL = 'https://www.omdbapi.com/';
+const API_KEY = 'cf4cfe8c';
 
-export const getMovie = (title: string) => {
-  return fetch(`${BASE_URL}?apikey=${apiKey}&t=${title}`)
-    .then(response => response.json())
-    .catch(error => {
-      // eslint-disable-next-line no-console
-      console.warn('Error:', error);
-    });
+export const getMovie = async (title: string) => {
+  try {
+    const response = await fetch(`${API_URL}?apikey=${API_KEY}&t=${title}`);
+    const movie = await response.json();
+
+    return movie;
+  } catch (error) {
+    throw new Error(String(error));
+  }
 };

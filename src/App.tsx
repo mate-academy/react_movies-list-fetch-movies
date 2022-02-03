@@ -21,7 +21,7 @@ export const App: React.FC<Props> = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie onAdd={handleAddMovie} />
+        <FindMovie onAdd={handleAddMovie} movies={movies} />
       </div>
     </div>
   );

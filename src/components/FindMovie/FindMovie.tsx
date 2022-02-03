@@ -19,8 +19,18 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
     setHasMovieError(false);
   };
 
+  const requestIsAllowed = () => {
+    if (!movieTitle
+      || movie?.Title.toLocaleLowerCase().includes(movieTitle)
+      || hasMovieError) {
+      return false;
+    }
+
+    return true;
+  };
+
   const handleFindMovie = async () => {
-    if (!movieTitle) {
+    if (!requestIsAllowed()) {
       return;
     }
 

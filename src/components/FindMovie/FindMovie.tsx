@@ -17,7 +17,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     imdbID: '',
   } as Movie);
   const [input, setInput] = useState('');
-  const [movieExist, setExist] = useState(true);
+  const [movieExist, setMovieExist] = useState(true);
   const [card, setVisibleCard] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,16 +26,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setInput(value);
   };
 
-  const handleSearch = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+  const handleSearch = async () => {
     try {
       const movieFromServer = await searchMovie(input);
 
       setMovie(movieFromServer);
-      setExist(true);
+      setMovieExist(true);
       setVisibleCard(true);
     } catch (error) {
-      setExist(false);
+      setMovieExist(false);
     }
   };
 

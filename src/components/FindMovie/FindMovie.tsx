@@ -11,7 +11,12 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState({} as Movie);
+  const [movie, setMovie] = useState({
+    Poster: '',
+    Title: '',
+    Plot: '',
+    imdbID: '',
+  });
   const [wasFound, setWasFound] = useState(true);
   const [hasPreview, setHasPreview] = useState(false);
   const [hasDuplicate, setHasDuplicate] = useState(false);
@@ -27,6 +32,15 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
       setIsValid(true);
     } else {
       setWasFound(false);
+    }
+  };
+
+  const findMovie = () => {
+    if (!movie.Title.toLowerCase().includes(title.trim().toLowerCase())) {
+      loadMovie();
+    } else {
+      setHasPreview(true);
+      setIsValid(true);
     }
   };
 
@@ -88,7 +102,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={loadMovie}
+              onClick={findMovie}
             >
               Find a movie
             </button>

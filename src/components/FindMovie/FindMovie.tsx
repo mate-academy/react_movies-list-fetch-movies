@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
 
@@ -55,7 +56,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 type="text"
                 id="movie-title"
                 placeholder="Enter a title to search"
-                className="input is-danger"
+                className={classNames('input', { 'is-danger': hasError })}
               />
             </div>
           </label>

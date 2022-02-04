@@ -24,6 +24,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     const { value } = event.target;
 
     setInput(value);
+    setMovieExist(true);
   };
 
   const handleSearch = async () => {
@@ -39,9 +40,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const handleAdd = () => {
-    setInput('');
-    addMovie(movie);
-    setVisibleCard(false);
+    if (card) {
+      setInput('');
+      addMovie(movie);
+      setVisibleCard(false);
+    }
   };
 
   return (
@@ -92,6 +95,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               onClick={handleAdd}
+              disabled={!card}
             >
               Add to the list
             </button>

@@ -7,8 +7,8 @@ export const App: FC = () => {
   const [movies, addMovieToList] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie) => {
-    if (movies.every(movi => movi.imdbID !== movie.imdbID) && movie.imdbID) {
-      addMovieToList(current => [...current, movie]);
+    if (!movies.some(({ imdbID }) => imdbID === movie.imdbID)) {
+      addMovieToList(currentMovies => [...currentMovies, movie]);
     }
   };
 

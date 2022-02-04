@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
@@ -9,20 +10,32 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [isMovieValid, setIsMovieValid] = useState(true);
-  const [findedMovieTitle, setFindedMovieTitle] = useState('');
-  const [findedMovie, setFindedMovie] = useState({
-    Poster: '',
-    Title: '',
-    Plot: '',
-    imdbID: '',
-  });
+  const [searchingMovieTitle, setSearchingMovieTitle] = useState('');
+  const [findedMovie, setFindedMovie] = useState<Movie | null>(null);
 
-  const setMovie = async (title: string) => {
-    if (!(findedMovie.Title || '').toLowerCase().includes(title.toLowerCase())) {
-      const movie = await getMovie(title);
-
-      setFindedMovie(movie);
+  const addMovieToList = () => {
+    if (findedMovie) {
+      addMovie(findedMovie);
+      setSearchingMovieTitle('');
+      setFindedMovie(null);
+      setIsMovieValid(true);
     }
+  };
+
+  const searchMovie = async (title: string) => {
+    const movieFromServer = await getMovie(title);
+
+    if (movieFromServer.Response === 'True') {
+      setIsMovieValid(true);
+      setFindedMovie(movieFromServer);
+    } else {
+      setIsMovieValid(false);
+    }
+  };
+
+  const handleMovieTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsMovieValid(true);
+    setSearchingMovieTitle(event.target.value.trim());
   };
 
   return (
@@ -36,12 +49,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               <input
                 type="text"
                 id="movie-title"
+                value={searchingMovieTitle}
                 placeholder="Enter a title to search"
-                className="input is-danger"
-                onChange={(event) => {
-                  setIsMovieValid(true);
-                  setFindedMovieTitle(event.target.value);
-                }}
+                className={classNames({
+                  input: true,
+                  'is-danger': !isMovieValid,
+                })}
+                onChange={handleMovieTitle}
               />
             </div>
           </label>
@@ -56,7 +70,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => setMovie(findedMovieTitle)}
+              onClick={() => searchMovie(searchingMovieTitle)}
             >
               Find a movie
             </button>
@@ -66,7 +80,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addMovie(findedMovie)}
+              onClick={addMovieToList}
             >
               Add to the list
             </button>
@@ -74,7 +88,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      {findedMovie.imdbID && (
+      {findedMovie && (
         <div className="container">
           <h2 className="title">Preview</h2>
           <MovieCard movie={findedMovie} />

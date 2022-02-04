@@ -8,7 +8,7 @@ type Props = {};
 export const App: React.FC<Props> = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const handleAddMovie = (film: Movie) => {
+  const addMovie = (film: Movie) => {
     if (!movies.some(movie => movie.imdbID === film.imdbID)
       && film.imdbID) {
       setMovies(prevMovies => [...prevMovies, film]);
@@ -21,7 +21,7 @@ export const App: React.FC<Props> = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie onAdd={handleAddMovie} movies={movies} />
+        <FindMovie onAdd={addMovie} movies={movies} />
       </div>
     </div>
   );

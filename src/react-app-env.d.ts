@@ -6,3 +6,7 @@ type Movie = {
   Plot: string;
   imdbID: string;
 };
+
+interface State {
+  movies: Movie[];
+}

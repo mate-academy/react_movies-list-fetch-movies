@@ -30,6 +30,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
     }
 
     setIsLoading(false);
+    setAlreadyHave(false);
   };
 
   const clearInput = () => {
@@ -49,6 +50,15 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
     if (movie && (movies.some(film => film.imdbID === movie.imdbID))) {
       setAlreadyHave(true);
     }
+  };
+
+  const handleAddButton = () => {
+    if (movie) {
+      onAdd(movie);
+    }
+
+    doHaveFilm();
+    clearInput();
   };
 
   return (
@@ -93,34 +103,21 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
                 'is-light',
                 { 'is-loading': isLoading },
               )}
-              onClick={() => handleFindMovie()}
+              onClick={handleFindMovie}
             >
               Find a movie
             </button>
           </div>
 
           <div className="control">
-            {movie ? (
-              <button
-                type="button"
-                className="button is-primary"
-                onClick={() => {
-                  onAdd(movie);
-                  doHaveFilm();
-                  clearInput();
-                }}
-              >
-                Add to the list
-              </button>
-            ) : (
-              <button
-                type="button"
-                className="button is-primary"
-                disabled
-              >
-                Add to the list
-              </button>
-            )}
+            <button
+              type="button"
+              className="button is-primary"
+              onClick={handleAddButton}
+              disabled={!movie}
+            >
+              Add to the list
+            </button>
           </div>
         </div>
       </form>

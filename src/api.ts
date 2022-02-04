@@ -1,6 +1,6 @@
-const API_URL = 'http://www.omdbapi.com/?apikey=de6fe9cf';
+const API_URL = 'https://www.omdbapi.com/?apikey=de6fe9cf';
 
-export const getMovie = async (title: string) => {
+export const getMovie = async (title: string): Promise<Movie> => {
   try {
     const response = await fetch(`${API_URL}&t=${title}`);
 

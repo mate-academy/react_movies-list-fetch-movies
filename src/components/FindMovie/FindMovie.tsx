@@ -58,6 +58,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
       onAdd(movie);
       setHasPreview(false);
       setIsMovieValid(false);
+      setTitle('');
     } else {
       setHasDuplicate(true);
       setIsMovieValid(false);

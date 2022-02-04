@@ -13,9 +13,7 @@ export const App: React.FC = () => {
           return currentMovies;
         }
 
-        currentMovies.push(Movie);
-
-        return currentMovies;
+        return [...currentMovies, Movie];
       });
     };
   }, []);

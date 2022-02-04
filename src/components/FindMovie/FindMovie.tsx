@@ -11,9 +11,9 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = React.memo(
   ({ addMovie }) => {
-    const [Movie, setMovie] = useState<Movie>();
+    const [Movie, setMovie] = useState<Movie | null>();
 
-    const [currentTitle, setCurrentTitle] = useState('');
+    const [typedTitle, setTypedTitle] = useState('');
     const [title, setTitle] = useState('');
 
     const [isMovie, setIsMovie] = useState(true);
@@ -41,15 +41,12 @@ export const FindMovie: React.FC<Props> = React.memo(
             });
 
             setTitle('');
-            setCurrentTitle('');
+            setTypedTitle('');
           }
         });
     }, [title]);
 
     const disabled = Boolean(Movie);
-
-    // eslint-disable-next-line no-console
-    console.log('rendering', Movie);
 
     return (
       <>
@@ -62,10 +59,10 @@ export const FindMovie: React.FC<Props> = React.memo(
                   id="movie-title"
                   placeholder="Enter a title to search"
                   className={classNames('input', { 'is-danger': !isMovie })}
-                  value={currentTitle}
+                  value={typedTitle}
                   onChange={({ target }) => {
                     setIsMovie(true);
-                    setCurrentTitle(target.value);
+                    setTypedTitle(target.value);
                   }}
                 />
               </div>
@@ -84,7 +81,7 @@ export const FindMovie: React.FC<Props> = React.memo(
                 type="button"
                 className="button is-light"
                 onClick={() => {
-                  setTitle(currentTitle);
+                  setTitle(typedTitle);
                 }}
               >
                 Find a movie
@@ -99,6 +96,7 @@ export const FindMovie: React.FC<Props> = React.memo(
                 onClick={() => {
                   if (Movie) {
                     addMovie(Movie);
+                    setMovie(null);
                   }
                 }}
               >
@@ -108,7 +106,7 @@ export const FindMovie: React.FC<Props> = React.memo(
           </div>
         </form>
 
-        {Movie && isMovie && (
+        {Movie && (
           <div className="container">
             <h2 className="title">Preview</h2>
             <MovieCard

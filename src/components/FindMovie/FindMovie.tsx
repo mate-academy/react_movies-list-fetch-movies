@@ -83,12 +83,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
             </div>
           </label>
 
-          {(isErrorVisible || movieInListError) && (
-            <p className="help is-danger">
-              {movieInListError
-                ? 'The movie is already on the list'
-                : 'Can\'t find a movie with such a title'}
-            </p>
+          {isErrorVisible && (
+            <p className="help is-danger">Can&#39;t find a movie with such a title</p>
+          )}
+
+          {movieInListError && (
+            <p className="help is-danger">The movie is already on the list</p>
           )}
 
         </div>

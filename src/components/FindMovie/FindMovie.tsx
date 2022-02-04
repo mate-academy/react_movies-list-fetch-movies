@@ -37,9 +37,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
       if (movieFromServer.Title) {
         setMovie(movieFromServer);
 
-        // eslint-disable-next-line no-console
-        console.log(movieFromServer.Title);
-
         if (isMovieNotInList(movieFromServer)) {
           setMovieInListError(false);
         }

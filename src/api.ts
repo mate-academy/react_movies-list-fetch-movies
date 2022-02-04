@@ -1,9 +1,7 @@
-// const url = 'https://www.omdbapi.com/?apikey=ebc435ec&t=dark';
+const url = 'https://www.omdbapi.com/?apikey=945b7878&t=';
 
-export async function getMovie() {
-  const test = await fetch('https://www.omdbapi.com/?apikey=ebc435ec&t=dark');
-  const result = await test.json();
+export async function getMovie(title: string): Promise<Movie> {
+  const movie = await fetch(`${url}${title}`);
 
-  // eslint-disable-next-line no-console
-  console.log(result);
+  return movie.json();
 }

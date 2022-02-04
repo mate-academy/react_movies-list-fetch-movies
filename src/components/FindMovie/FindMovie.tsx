@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import './FindMovie.scss';
@@ -5,20 +6,32 @@ import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  addMovie: (movie: Movie | null) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
+  const [movieNotFound, setMovieNotFound] = useState(false);
+
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (movieNotFound) {
+      setMovieNotFound(false);
+    }
+
+    setTitle(event.target.value);
+  };
 
   const handleSearch = async () => {
-    // eslint-disable-next-line no-console
-    // console.log(getMovie('batman'));
-    const foundMovie = await getMovie();
+    const foundMovie = await getMovie(title);
 
-    // eslint-disable-next-line no-console
-    console.log(foundMovie);
-
-    setMovie(null);
-    // setTitle('');
+    if (foundMovie.hasOwnProperty('imdbID')) {
+      setMovie(foundMovie);
+      setTitle('');
+    } else {
+      setMovieNotFound(true);
+    }
   };
 
   return (
@@ -35,12 +48,12 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               value={title}
               placeholder="Enter a title to search"
-              className={classNames('input', { 'is-danger': title })}
-              onChange={(event) => setTitle(event.target.value)}
+              className={classNames('input', { 'is-danger': movieNotFound })}
+              onChange={handleInput}
             />
           </div>
 
-          {title && (
+          {movieNotFound && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -52,7 +65,7 @@ export const FindMovie: React.FC = () => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => handleSearch()}
+              onClick={handleSearch}
             >
               Find a movie
             </button>
@@ -62,6 +75,7 @@ export const FindMovie: React.FC = () => {
             <button
               type="button"
               className="button is-primary"
+              onClick={() => addMovie(movie)}
             >
               Add to the list
             </button>

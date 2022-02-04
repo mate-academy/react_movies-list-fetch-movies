@@ -23,11 +23,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const searchMovie = async (title: string) => {
-    const movieFromServer = await getMovie(title);
+    if (searchingMovieTitle) {
+      const movieFromServer = await getMovie(title.trim());
 
-    if (movieFromServer.Response === 'True') {
-      setIsMovieValid(true);
-      setFindedMovie(movieFromServer);
+      if (movieFromServer.Response === 'True') {
+        setIsMovieValid(true);
+        setFindedMovie(movieFromServer);
+      } else {
+        setIsMovieValid(false);
+      }
     } else {
       setIsMovieValid(false);
     }
@@ -35,7 +39,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleMovieTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsMovieValid(true);
-    setSearchingMovieTitle(event.target.value.trim());
+    setSearchingMovieTitle(event.target.value);
   };
 
   return (

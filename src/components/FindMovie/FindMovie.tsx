@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames';
 import { getMovies } from '../../api/api';
 import { MovieCard } from '../MovieCard';
@@ -46,7 +46,9 @@ export const FindMovie: React.FC<Props> = React.memo(
         });
     }, [title]);
 
-    const disabled = Boolean(Movie);
+    const disabled = useMemo(() => {
+      return Boolean(Movie);
+    }, [Movie]);
 
     return (
       <>

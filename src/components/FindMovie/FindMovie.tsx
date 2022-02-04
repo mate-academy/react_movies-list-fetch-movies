@@ -34,9 +34,17 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
   };
 
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    setMovie(null);
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={handleSubmit}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             {movie?.Title}
@@ -73,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
               onClick={() => addMovie(movie)}
             >

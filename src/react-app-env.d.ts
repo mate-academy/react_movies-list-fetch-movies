@@ -6,3 +6,5 @@ type Movie = {
   Plot: string;
   imdbID: string;
 };
+
+type AddMovieToList = (movie: Movie | null) => void;

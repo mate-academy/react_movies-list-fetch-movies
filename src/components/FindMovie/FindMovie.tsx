@@ -10,8 +10,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [searchMovie, setSearchMovie] = useState('');
-  const [isTitleInput, setIsTitleInput] = useState(true);
+  const [searchTitle, setSearchTitle] = useState('');
   const [isMovieFound, setIsMovieFound] = useState(true);
 
   const findMovie = async (movieTitle: string) => {
@@ -19,7 +18,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
     if (foundedMovie.Response === 'False') {
       setIsMovieFound(false);
-      setIsTitleInput(false);
     } else {
       setMovie(foundedMovie);
       setIsMovieFound(true);
@@ -27,14 +25,14 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   };
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchMovie(event.target.value);
-    setIsTitleInput(true);
+    setSearchTitle(event.target.value);
+    setMovie(null);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onAdd(movie);
-    setSearchMovie('');
+    setSearchTitle('');
   };
 
   return (
@@ -43,23 +41,23 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
+
+            <div className="control">
+              <input
+                type="text"
+                id="movie-title"
+                placeholder="Enter a title to search"
+                className={cn(
+                  'input',
+                  { 'is-danger': !isMovieFound },
+                )}
+                value={searchTitle}
+                onChange={handleInput}
+              />
+            </div>
           </label>
 
-          <div className="control">
-            <input
-              type="text"
-              id="movie-title"
-              placeholder="Enter a title to search"
-              className={cn(
-                'input',
-                { 'is-danger': !isMovieFound },
-              )}
-              value={searchMovie}
-              onChange={handleInput}
-            />
-          </div>
-
-          {!isTitleInput && (
+          {!isMovieFound && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -71,7 +69,8 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => findMovie(searchMovie)}
+              onClick={() => findMovie(searchTitle)}
+              disabled={searchTitle.trim().length < 1}
             >
               Find a movie
             </button>
@@ -81,6 +80,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
             <button
               type="submit"
               className="button is-primary"
+              disabled={!isMovieFound}
             >
               Add to the list
             </button>

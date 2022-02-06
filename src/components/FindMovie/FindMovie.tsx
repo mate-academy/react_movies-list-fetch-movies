@@ -77,6 +77,8 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               onClick={() => {
                 if (movie) {
                   onAddMovie(movie);
+                  setMovie(null);
+                  setQuerySearch('');
                 }
               }}
               type="button"

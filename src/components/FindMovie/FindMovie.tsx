@@ -20,22 +20,22 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [movieWasFound, setMovieFounded] = useState(true);
+  const [movieWasFound, setMovieFound] = useState(true);
 
   const handleTittleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    setMovieFounded(true);
+    setMovieFound(true);
   };
 
-  const FoundedMovie = async (titleNew: string) => {
+  const foundMovie = async (titleNew: string) => {
     if (title) {
       const movieFromServer = await getMovie(titleNew);
 
       if (movieFromServer.Title) {
         setMovie(movieFromServer);
-        setMovieFounded(true);
+        setMovieFound(true);
       } else {
-        setMovieFounded(false);
+        setMovieFound(false);
       }
     }
   };
@@ -75,7 +75,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => FoundedMovie(title)}
+              onClick={() => foundMovie(title)}
             >
               Find a movie
             </button>

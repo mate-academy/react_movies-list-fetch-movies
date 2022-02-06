@@ -1,28 +1,49 @@
 import React from 'react';
 import './FindMovie.scss';
 
-// import { MovieCard } from '../MovieCard';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => (
+type Props = {
+  queryInput: string;
+  setQueryInput: React.Dispatch<React.SetStateAction<string>>;
+  handleChange: () => Promise<void>;
+  movie: Movie;
+  handleSubmit: (event: React.FormEvent) => void;
+  searchError: boolean;
+};
+
+export const FindMovie: React.FC<Props> = ({
+  queryInput,
+  setQueryInput,
+  handleChange,
+  movie,
+  handleSubmit,
+  searchError,
+}) => (
   <>
-    <form className="find-movie">
+    <form
+      className="find-movie"
+      onSubmit={handleSubmit}
+    >
       <div className="field">
         <label className="label" htmlFor="movie-title">
           Movie title
+          <div className="control">
+            <input
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className={searchError ? 'input is-danger' : 'input'}
+              value={queryInput}
+              onChange={event => setQueryInput(event.target.value)}
+            />
+          </div>
         </label>
-
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
-        </div>
-
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
+        {searchError && (
+          <p className="help is-danger">
+            Can&apos;t find a movie with such a title
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
@@ -30,6 +51,7 @@ export const FindMovie: React.FC = () => (
           <button
             type="button"
             className="button is-light"
+            onClick={() => handleChange()}
           >
             Find a movie
           </button>
@@ -37,7 +59,7 @@ export const FindMovie: React.FC = () => (
 
         <div className="control">
           <button
-            type="button"
+            type="submit"
             className="button is-primary"
           >
             Add to the list
@@ -48,7 +70,9 @@ export const FindMovie: React.FC = () => (
 
     <div className="container">
       <h2 className="title">Preview</h2>
-      {/* <MovieCard  /> */}
+      {movie.Title ? (
+        <MovieCard movie={movie} />
+      ) : '' }
     </div>
   </>
 );

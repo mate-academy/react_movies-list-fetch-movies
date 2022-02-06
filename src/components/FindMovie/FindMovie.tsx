@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { getData } from '../../api';
 import { MovieCard } from '../MovieCard';
 import { Loader } from '../Loader';
+import { ErrorMessage } from '../ErrorMessage';
 
 type Props = {
   listMovies: Movie[],
@@ -14,21 +15,47 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
   const [inputValue, setInputValue] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isErrorVisible, changeErrorVisibility] = useState(false);
   const [isLoading, setIsloading] = useState(false);
-  const [movieInListError, setMovieInListError] = useState(false);
-
-  function isMovieNotInList(movieForCompare: Movie) {
-    return !listMovies
-      .some(listMovie => listMovie.imdbID === movieForCompare.imdbID);
-  }
+  const [isInputEntered, setIsInputEntered] = useState(true);
+  const [isMovieLoaded, setIsMovieLoaded] = useState(false);
+  const [isMovieOnList, setIsMovieOnList] = useState(false);
+  const [isSubmitButtonDisable, setIsSubmitButtonDisable] = useState(false);
+  const [firstLoad, setFirstLoad] = useState(false);
+  const [emptyFormError, setEmptyFormError] = useState(false);
 
   function changeInput(event: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(event.target.value);
-    changeErrorVisibility(false);
+    setIsInputEntered(true);
+    setFirstLoad(false);
+  }
+
+  function checkMovieOnList(movieForCheck: Movie) {
+    if (movieForCheck) {
+      return listMovies
+        .some(listMovie => (
+          listMovie.Title.toLowerCase().includes(
+            movieForCheck.Title.trim().toLowerCase(),
+          )
+        ));
+    }
+
+    return false;
   }
 
   async function getMovieFromServer() {
+    setMovie(null);
+    setIsMovieLoaded(false);
+    setIsMovieOnList(false);
+    setIsSubmitButtonDisable(true);
+    setEmptyFormError(false);
+
+    if (!inputValue.length) {
+      setIsInputEntered(false);
+      setFirstLoad(true);
+
+      return;
+    }
+
     setIsloading(true);
 
     try {
@@ -36,30 +63,48 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
 
       if (movieFromServer.Title) {
         setMovie(movieFromServer);
+        setIsMovieLoaded(true);
 
-        if (isMovieNotInList(movieFromServer)) {
-          setMovieInListError(false);
+        if (!checkMovieOnList(movieFromServer)) {
+          setTimeout(() => {
+            setIsSubmitButtonDisable(false);
+          }, 510);
+        } else {
+          setTimeout(() => {
+            setIsMovieOnList(true);
+          }, 300);
         }
       } else {
-        changeErrorVisibility(true);
+        setIsMovieLoaded(false);
       }
     } finally {
       setTimeout(() => {
         setIsloading(false);
+        setFirstLoad(true);
       }, 500);
     }
   }
 
   function throwMovie() {
+    setIsSubmitButtonDisable(true);
+
+    if (firstLoad) {
+      setIsMovieOnList(true);
+    }
+
+    if (!firstLoad) {
+      setEmptyFormError(true);
+    }
+
     if (movie) {
       setInputValue('');
 
-      if (isMovieNotInList(movie)) {
+      if (!checkMovieOnList(movie)) {
         addMovie(movie);
-      } else {
-        setMovieInListError(true);
       }
     }
+
+    setMovie(null);
   }
 
   return (
@@ -75,22 +120,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
                 placeholder="Enter a title to search"
                 className={cn(
                   'input',
-                  { 'is-danger': isErrorVisible },
+                  { 'is-danger': firstLoad && !isMovieLoaded },
                 )}
                 value={inputValue}
                 onChange={changeInput}
               />
             </div>
           </label>
-
-          {isErrorVisible && (
-            <p className="help is-danger">Can&#39;t find a movie with such a title</p>
-          )}
-
-          {movieInListError && (
-            <p className="help is-danger">The movie is already on the list</p>
-          )}
-
         </div>
 
         <div className="field is-grouped">
@@ -109,7 +145,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
               type="button"
               className="button is-primary"
               onClick={throwMovie}
-              disabled={movieInListError}
+              disabled={isSubmitButtonDisable}
             >
               Add to the list
             </button>
@@ -124,9 +160,41 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
           </div>
         )
         : (
-          <div className="container">
-            <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
+          <div>
+            {isMovieLoaded
+              ? (
+                <div>
+                  {isMovieOnList
+                    ? (
+                      <div>
+                        <ErrorMessage errorMessage="The movie is already on the list. Please try to find another movie!" />
+                      </div>
+                    )
+                    : (
+                      <div className="container">
+                        <h2 className="title">Preview</h2>
+                        <MovieCard movie={movie} />
+                      </div>
+                    )}
+                </div>
+              )
+              : (
+                <div>
+                  {firstLoad && isInputEntered && (
+                    <ErrorMessage errorMessage={'Oops... Can\'t find a movie with such a title'} />
+                  )}
+                  {!isInputEntered && !emptyFormError && (
+                    <div>
+                      <ErrorMessage errorMessage="Please input a title!" />
+                    </div>
+                  )}
+                  {emptyFormError && (
+                    <div>
+                      <ErrorMessage errorMessage="Please try to find a movie!" />
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
         )}
     </>

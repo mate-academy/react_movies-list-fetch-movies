@@ -6,11 +6,10 @@ import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  movies: Movie[];
-  setMovies: (movie: Movie[]) => void,
+  addMovie: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
   const [hasError, setHasError] = useState(false);
@@ -30,11 +29,11 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setHasError(false);
   };
 
-  const addMovie = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (movie?.imdbID && !movies.find(currentMovie => movie.imdbID === currentMovie.imdbID)) {
-      setMovies([...movies, movie]);
+    if (movie) {
+      addMovie(movie);
     }
 
     setTitle('');
@@ -44,7 +43,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={addMovie}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">

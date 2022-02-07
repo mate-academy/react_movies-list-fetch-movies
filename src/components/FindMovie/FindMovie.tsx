@@ -26,6 +26,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
 
     if (!film.Title) {
       setError(true);
+      setMovieExist(false);
     } else {
       setMovie(film);
       setError(false);
@@ -53,6 +54,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
   const isMovieExist = () => {
     if (movie && (movies.some(film => film.imdbID === movie.imdbID))) {
       setMovieExist(true);
+      setError(false);
     }
   };
 

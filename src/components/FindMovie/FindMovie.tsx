@@ -17,26 +17,21 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsloading] = useState(false);
   const [isInputEntered, setIsInputEntered] = useState(true);
-  const [isMovieLoaded, setIsMovieLoaded] = useState(false);
+  const [isMovieLoaded, setIsMovieLoaded] = useState(true);
   const [isMovieOnList, setIsMovieOnList] = useState(false);
-  const [isSubmitButtonDisable, setIsSubmitButtonDisable] = useState(false);
-  const [firstLoad, setFirstLoad] = useState(false);
-  const [emptyFormError, setEmptyFormError] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
 
   function changeInput(event: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(event.target.value);
     setIsInputEntered(true);
-    setFirstLoad(false);
+    setIsMovieLoaded(true);
+    setUploadError(false);
   }
 
-  function checkMovieOnList(movieForCheck: Movie) {
-    if (movieForCheck) {
+  function checkMovieOnList() {
+    if (movie) {
       return listMovies
-        .some(listMovie => (
-          listMovie.Title.toLowerCase().includes(
-            movieForCheck.Title.trim().toLowerCase(),
-          )
-        ));
+        .some(listMovie => listMovie.imdbID === movie.imdbID);
     }
 
     return false;
@@ -44,14 +39,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
 
   async function getMovieFromServer() {
     setMovie(null);
-    setIsMovieLoaded(false);
     setIsMovieOnList(false);
-    setIsSubmitButtonDisable(true);
-    setEmptyFormError(false);
+    setIsMovieLoaded(true);
+    setUploadError(false);
 
     if (!inputValue.length) {
       setIsInputEntered(false);
-      setFirstLoad(true);
 
       return;
     }
@@ -64,44 +57,31 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
       if (movieFromServer.Title) {
         setMovie(movieFromServer);
         setIsMovieLoaded(true);
-
-        if (!checkMovieOnList(movieFromServer)) {
-          setTimeout(() => {
-            setIsSubmitButtonDisable(false);
-          }, 510);
-        } else {
-          setTimeout(() => {
-            setIsMovieOnList(true);
-          }, 300);
-        }
       } else {
-        setIsMovieLoaded(false);
+        setTimeout(() => {
+          setIsMovieLoaded(false);
+        }, 510);
       }
     } finally {
       setTimeout(() => {
         setIsloading(false);
-        setFirstLoad(true);
       }, 500);
     }
   }
 
   function throwMovie() {
-    setIsSubmitButtonDisable(true);
-
-    if (firstLoad) {
-      setIsMovieOnList(true);
-    }
-
-    if (!firstLoad) {
-      setEmptyFormError(true);
-    }
+    setIsInputEntered(true);
+    setIsMovieLoaded(true);
 
     if (movie) {
-      setInputValue('');
-
-      if (!checkMovieOnList(movie)) {
+      if (!checkMovieOnList()) {
+        setInputValue('');
         addMovie(movie);
+      } else {
+        setIsMovieOnList(true);
       }
+    } else {
+      setUploadError(true);
     }
 
     setMovie(null);
@@ -120,7 +100,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
                 placeholder="Enter a title to search"
                 className={cn(
                   'input',
-                  { 'is-danger': firstLoad && !isMovieLoaded },
+                  { 'is-danger': !isMovieLoaded || !isInputEntered || uploadError },
                 )}
                 value={inputValue}
                 onChange={changeInput}
@@ -145,13 +125,40 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
               type="button"
               className="button is-primary"
               onClick={throwMovie}
-              disabled={isSubmitButtonDisable}
             >
               Add to the list
             </button>
           </div>
         </div>
       </form>
+
+      <div className="errors-container">
+        {isInputEntered
+          ? (
+            <div>
+              {isMovieOnList && !uploadError && (
+                <div>
+                  <ErrorMessage errorMessage="The movie is already on the list" />
+                </div>
+              )}
+            </div>
+          )
+          : (
+            <div>
+              <ErrorMessage errorMessage="Please input a title!" />
+            </div>
+          )}
+        {!isMovieLoaded && (
+          <div>
+            <ErrorMessage errorMessage="Oops... Can't find a movie with such a title" />
+          </div>
+        )}
+        {uploadError && (
+          <div>
+            <ErrorMessage errorMessage="The movie is not loaded" />
+          </div>
+        )}
+      </div>
 
       {isLoading
         ? (
@@ -160,42 +167,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
           </div>
         )
         : (
-          <div>
-            {isMovieLoaded
-              ? (
-                <div>
-                  {isMovieOnList
-                    ? (
-                      <div>
-                        <ErrorMessage errorMessage="The movie is already on the list. Please try to find another movie!" />
-                      </div>
-                    )
-                    : (
-                      <div className="container">
-                        <h2 className="title">Preview</h2>
-                        <MovieCard movie={movie} />
-                      </div>
-                    )}
-                </div>
-              )
-              : (
-                <div>
-                  {firstLoad && isInputEntered && (
-                    <ErrorMessage errorMessage={'Oops... Can\'t find a movie with such a title'} />
-                  )}
-                  {!isInputEntered && !emptyFormError && (
-                    <div>
-                      <ErrorMessage errorMessage="Please input a title!" />
-                    </div>
-                  )}
-                  {emptyFormError && (
-                    <div>
-                      <ErrorMessage errorMessage="Please try to find a movie!" />
-                    </div>
-                  )}
-                </div>
-              )}
-          </div>
+          <>
+            {movie !== null && (
+              <div className="container">
+                <h2 className="title">Preview</h2>
+                <MovieCard movie={movie} />
+              </div>
+            )}
+          </>
         )}
     </>
   );

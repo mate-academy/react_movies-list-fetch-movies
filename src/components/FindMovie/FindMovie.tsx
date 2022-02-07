@@ -26,6 +26,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, listMovies }) => {
     setIsInputEntered(true);
     setIsMovieLoaded(true);
     setUploadError(false);
+    setIsMovieOnList(false);
   }
 
   function checkMovieOnList() {

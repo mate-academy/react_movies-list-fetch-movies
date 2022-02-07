@@ -33,6 +33,12 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     }
   };
 
+  const handleSetMovie = (newMovie: Movie) => {
+    onAddMovie(newMovie);
+    setMovie(null);
+    setQuerySearch('');
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -76,9 +82,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               onClick={() => {
                 if (movie) {
-                  onAddMovie(movie);
-                  setMovie(null);
-                  setQuerySearch('');
+                  handleSetMovie(movie);
                 }
               }}
               type="button"

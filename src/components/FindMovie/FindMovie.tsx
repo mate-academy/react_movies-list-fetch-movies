@@ -11,9 +11,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [movieTitle, setMovieTitle] = useState('');
-  const [movie, setMovie] = useState({
-    Poster: '', Title: '', Plot: '', imdbID: '',
-  });
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [hasSearchError, setSearchError] = useState(false);
   const [hasListError, setListError] = useState(false);
 
@@ -24,18 +22,21 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
     if (!movieFromServer.Title) {
       setSearchError(true);
+      setMovie(null);
+    } else {
+      setMovie(movieFromServer);
     }
-
-    setMovie(movieFromServer);
   };
 
   const pushMovie = () => {
-    const movieIsUnique = !(movies.some(mov => mov.imdbID === movie.imdbID));
+    if (movie) {
+      const movieIsUnique = !(movies.some(mov => mov.imdbID === movie.imdbID));
 
-    if (movieIsUnique) {
-      setMovies([...movies, movie]);
-    } else {
-      setListError(true);
+      if (movieIsUnique) {
+        setMovies([...movies, movie]);
+      } else {
+        setListError(true);
+      }
     }
   };
 
@@ -102,7 +103,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       </form>
 
       <div className="container">
-        {movie.Title
+        {movie
           && (
             <>
               <h2 className="title">Preview</h2>

@@ -15,6 +15,7 @@ export const FindMovie: React.FC<Props> = (props) => {
 
   const handleTitleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value.toLowerCase());
+    setMovieError(false);
   };
 
   const handleSearchQuery = async () => {

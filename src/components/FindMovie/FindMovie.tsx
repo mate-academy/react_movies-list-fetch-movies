@@ -27,6 +27,7 @@ export const FindMovie: React.FC<Props> = (props) => {
     } else {
       setMovie(null);
       setMovieError(true);
+      setTitle('');
     }
   };
 

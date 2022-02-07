@@ -16,13 +16,13 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [hasError, setHasError] = useState(false);
 
   const handleSearchButton = async () => {
-    const movieFromServer = await getMovie(title);
+    try {
+      const movieFromServer = await getMovie(title);
 
-    if (!movieFromServer.imdbID) {
+      setMovie(movieFromServer);
+    } catch {
       setHasError(true);
     }
-
-    setMovie(movieFromServer);
   };
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {

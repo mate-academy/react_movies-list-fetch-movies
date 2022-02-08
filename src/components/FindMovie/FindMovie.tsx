@@ -3,21 +3,29 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api';
 
 type Props = {
-  addMovie: (title: string) => void,
-  addMovieToList: (movie: Movie) => void,
-  movie: Movie | null,
-  movieFound: boolean,
+  addMovieToList: (movie: Movie | null) => void,
 };
 
 export const FindMovie: React.FC<Props> = ({
-  addMovie,
-  movie,
   addMovieToList,
-  movieFound,
 }) => {
   const [searchTitle, setSearchTitle] = useState('');
+  const [newMovie, setMovie] = useState<Movie | null>(null);
+  const [movieFound, setFoundMovie] = useState(true);
+
+  const addNewMovie = async (title: string) => {
+    const movie = await getMovie(title);
+
+    if (movie.Response === 'True') {
+      setMovie(movie);
+      setFoundMovie(true);
+    } else {
+      setFoundMovie(false);
+    }
+  };
 
   const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -28,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    addMovie(searchTitle);
+    addNewMovie(searchTitle);
 
     setSearchTitle('');
   };
@@ -74,9 +82,7 @@ export const FindMovie: React.FC<Props> = ({
               type="button"
               className="button is-primary"
               onClick={() => {
-                if (movie !== null) {
-                  addMovieToList(movie);
-                }
+                addMovieToList(newMovie);
               }}
             >
               Add to the list
@@ -86,10 +92,10 @@ export const FindMovie: React.FC<Props> = ({
       </form>
 
       <div className="container">
-        {movie && (
+        {newMovie && (
           <>
             <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
+            <MovieCard movie={newMovie} />
           </>
 
         )}

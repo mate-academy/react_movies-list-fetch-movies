@@ -2,28 +2,16 @@ import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { getMovie } from './api';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [newMovie, setMovie] = useState<Movie | null>(null);
-  const [movieFound, setFoundMovie] = useState(true);
 
-  const addMovieToList = (movie: Movie) => {
-    if (movie !== null && movies.every(movieItem => movieItem.imdbID !== movie.imdbID)) {
+  const addMovieToList = (movie: Movie | null) => {
+    const isMovieAlreadyAdded = movie
+      && movies.every(movieItem => movieItem.imdbID !== movie.imdbID);
+
+    if (isMovieAlreadyAdded) {
       setMovies([...movies, movie]);
-      setMovie(null);
-    }
-  };
-
-  const addNewMovie = async (title: string) => {
-    const movie = await getMovie(title);
-
-    if (movie.Response === 'True') {
-      setMovie(movie);
-      setFoundMovie(true);
-    } else {
-      setFoundMovie(false);
     }
   };
 
@@ -34,10 +22,7 @@ export const App: React.FC = () => {
       </div>
       <div className="sidebar">
         <FindMovie
-          movie={newMovie}
-          addMovie={addNewMovie}
           addMovieToList={addMovieToList}
-          movieFound={movieFound}
         />
       </div>
     </div>

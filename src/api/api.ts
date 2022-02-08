@@ -6,9 +6,6 @@ export async function getFilm(title: string) {
 
     return await response.json();
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log('error ', error);
-
     throw new Error('error');
   }
 }

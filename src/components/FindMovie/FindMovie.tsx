@@ -14,17 +14,16 @@ export const FindMovie: React.FC<Props> = ({ addMovieToList }) => {
   const [inputSearch, setInputSearch] = useState<string>('');
   const [isError, setError] = useState<boolean>(false);
 
-  const loadMovie = () => {
-    getFilm(inputSearch)
-      .then(film => {
-        if (film.Response === 'True') {
-          setMovie(film);
-          setError(false);
-        } else {
-          setMovie(null);
-          setError(true);
-        }
-      });
+  const loadMovie = async () => {
+    const film = await getFilm(inputSearch);
+
+    if (film.Response === 'True') {
+      setMovie(film);
+      setError(false);
+    } else {
+      setMovie(null);
+      setError(true);
+    }
   };
 
   const addNewMovie = () => {

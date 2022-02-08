@@ -12,7 +12,10 @@ export const App: React.FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie movies={movies} setMovies={setMovies} />
+        <FindMovie
+          movies={movies}
+          setMovies={setMovies}
+        />
       </div>
     </div>
   );

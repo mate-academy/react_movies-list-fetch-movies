@@ -1,17 +1,8 @@
 import { useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
 
 import { MovieCard } from '../MovieCard';
-
-async function getMovie(title: string): Promise<Movie> {
-  try {
-    const response = await fetch(`https://www.omdbapi.com/?apikey=f151d5b2&t=${title}`);
-
-    return await response.json();
-  } catch (error) {
-    throw new Error('error');
-  }
-}
 
 type Props = {
   addMovie: (movie: Movie) => void;

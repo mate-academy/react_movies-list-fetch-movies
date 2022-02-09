@@ -6,7 +6,7 @@ import { FindMovie } from './components/FindMovie';
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const addMovie = (movie: Movie) => {
+  const isMovieAlreadyAdded = (movie: Movie) => {
     if (!movies.some(item => item.imdbID === movie.imdbID)) {
       setMovies(moviesList => [...moviesList, movie]);
     }
@@ -18,7 +18,7 @@ export const App: React.FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie addMovie={addMovie} />
+        <FindMovie addMovie={isMovieAlreadyAdded} />
       </div>
     </div>
   );

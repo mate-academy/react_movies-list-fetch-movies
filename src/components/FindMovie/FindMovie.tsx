@@ -14,16 +14,17 @@ export const FindMovie: React.FC<Props> = ({ addToList }) => {
   const [error, setError] = useState('');
 
   const addMovie = () => {
-    addToList(foundedMovie);
+    if (foundedMovie) {
+      addToList(foundedMovie);
+    }
+
     setTitle('');
     setError('');
+    setFoundedMovie(null);
   };
 
   const findMovie = async () => {
     const foundMovie = await getMovie(title);
-
-    // eslint-disable-next-line no-console
-    console.log(foundMovie);
 
     if (foundMovie.Response === 'False') {
       setFoundedMovie(null);
@@ -38,7 +39,13 @@ export const FindMovie: React.FC<Props> = ({ addToList }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          addMovie();
+        }}
+      >
         <div className="field">
           <label
             className="label"
@@ -75,9 +82,8 @@ export const FindMovie: React.FC<Props> = ({ addToList }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
-              onClick={addMovie}
             >
               Add to the list
             </button>

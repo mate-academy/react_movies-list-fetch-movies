@@ -11,15 +11,8 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
-  const none = {
-    Poster: '',
-    Title: '',
-    Plot: '',
-    imdbID: '',
-  };
-
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState<Movie>(none);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isFound, setIsFound] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,10 +32,13 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   };
 
   const handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
-    event?.preventDefault();
+    event.preventDefault();
 
-    onAddMovie(movie);
-    setTitle('');
+    if (movie !== null) {
+      onAddMovie(movie);
+    }
+
+    setMovie(null);
   };
 
   return (
@@ -98,7 +94,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie.Title !== '' && <MovieCard movie={movie} />}
+        {movie !== null && <MovieCard movie={movie} />}
       </div>
     </>
   );

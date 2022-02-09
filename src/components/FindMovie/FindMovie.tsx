@@ -1,54 +1,142 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api/movies';
 
-// import { MovieCard } from '../MovieCard';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+type Props = {
+  toAddMovie: (movie: Movie) => void,
+};
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
+export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
+  const [query, toQueryState] = useState('');
+  const [findMovie, toFindMovieState] = useState<Movie>({
+    Poster: '',
+    Title: '',
+    Plot: '',
+    imdbID: '',
+  });
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [showError, setShowErrorState] = useState(false);
+  const [addToList, setAddToList] = useState(false);
+
+  // control query......................................................
+  const changeQueryHandler = (inputValue: string) => {
+    setShowErrorState(false);
+    toQueryState(inputValue);
+  };
+
+  // async download movie...............................................
+  const downloadMovie = async (title: string) => {
+    if (title.length > 0) {
+      setStatusLoading(true);
+
+      try {
+        // eslint-disable-next-line no-console
+        console.log('try to start download');
+        const newMovie = await getMovie(title);
+
+        setStatusLoading(false);
+
+        // eslint-disable-next-line no-console
+        console.log('newMovie', newMovie);
+
+        // eslint-disable-next-line no-console
+        console.log('add new movie to state', newMovie.Title);
+        toFindMovieState(newMovie);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log('catch error');
+        setShowErrorState(true);
+        setStatusLoading(false);
+      }
+    }
+  };
+
+  const addToListHandler = () => {
+    const flag = addToList;
+
+    return flag;
+  };
+
+  const submitForm = async (event: React.ChangeEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // eslint-disable-next-line no-console
+    console.log('addToListApp?', addToList);
+
+    if (addToListHandler()) {
+      toAddMovie(findMovie);
+      toFindMovieState({
+        Poster: '',
+        Title: '',
+        Plot: '',
+        imdbID: '',
+      });
+    }
+  };
+
+  return (
+    <>
+      {statusLoading && (<p>Loading...</p>)}
+      {showError && (<p>error</p>)}
+      <form
+        className="find-movie"
+        onSubmit={submitForm}
+      >
+        <div className="field">
+          <label className="label" htmlFor="movie-title">
+            Movie title
+            <div className="control">
+              <input
+                name="title"
+                value={query}
+                onChange={event => changeQueryHandler(event.target.value)}
+                // onKeyPress={handleKeyPress}
+                type="text"
+                id="movie-title"
+                placeholder="Enter a title to search"
+                className="input is-danger"
+              />
+            </div>
+          </label>
+          <p className="help is-danger">
+            Can&apos;t find a movie with such a title
+          </p>
         </div>
 
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              type="submit"
+              className="button is-light"
+              onClick={() => downloadMovie(query)}
+            >
+              Find a movie
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="button"
+              className="button is-primary"
+              onClick={() => setAddToList(true)}
+              disabled={!findMovie.Title}
+            >
+              Add to the list
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div className="container">
+        {findMovie.Title && (
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={findMovie} />
+          </>
+        )}
       </div>
-
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
-          >
-            Find a movie
-          </button>
-        </div>
-
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
-        </div>
-      </div>
-    </form>
-
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      {/* <MovieCard  /> */}
-    </div>
-  </>
-);
+    </>
+  );
+};

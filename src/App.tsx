@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -6,11 +6,13 @@ import { FindMovie } from './components/FindMovie';
 export const App: React.FC = () => {
   const [movies, newMovie] = useState<Movie[]>([]);
 
-  const addMovie = (movie: Movie) => {
-    if (movies.every(addedMovie => addedMovie.imdbID !== movie.imdbID)) {
-      newMovie(addedMovies => [...addedMovies, movie]);
+  const addMovie = useCallback((movie: Movie) => {
+    const isMovieAdded = movies.every(addedMovie => addedMovie.imdbID !== movie.imdbID);
+
+    if (isMovieAdded) {
+      newMovie([...movies, movie]);
     }
-  };
+  }, []);
 
   return (
     <div className="page">

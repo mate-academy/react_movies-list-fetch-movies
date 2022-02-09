@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api/api';
 
@@ -10,12 +11,7 @@ interface Props {
 
 export const FindMovie: React.FC<Props> = (props) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState({
-    Poster: '',
-    Title: '',
-    Plot: '',
-    imdbID: '',
-  });
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [titleError, setTitleError] = useState(false);
 
   async function searchMovie() {
@@ -28,21 +24,30 @@ export const FindMovie: React.FC<Props> = (props) => {
     }
   }
 
+  const changeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    setTitleError(false);
+  };
+
+  const addMovie = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setMovie({
+      Poster: '',
+      Title: '',
+      Plot: '',
+      imdbID: '',
+    });
+    setTitle('');
+    if (movie?.imdbID) {
+      props.newMovie(movie);
+    }
+  };
+
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          setMovie({
-            Poster: '',
-            Title: '',
-            Plot: '',
-            imdbID: '',
-          });
-          setTitle('');
-          props.newMovie(movie);
-        }}
+        onSubmit={addMovie}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -52,12 +57,9 @@ export const FindMovie: React.FC<Props> = (props) => {
                 type="text"
                 id="movie-title"
                 placeholder="Enter a title to search"
-                className={`input ${titleError && 'is-danger'}`}
+                className={classNames('input', { 'is-danger': titleError })}
                 value={title}
-                onChange={(event) => {
-                  setTitle(event.target.value);
-                  setTitleError(false);
-                }}
+                onChange={changeTitle}
               />
             </div>
           </label>
@@ -73,7 +75,7 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => searchMovie()}
+              onClick={searchMovie}
             >
               Find a movie
             </button>
@@ -92,7 +94,7 @@ export const FindMovie: React.FC<Props> = (props) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie.imdbID && <MovieCard movie={movie} />}
+        {movie?.imdbID && <MovieCard movie={movie} />}
       </div>
     </>
   );

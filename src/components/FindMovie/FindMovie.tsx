@@ -68,6 +68,7 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
     // eslint-disable-next-line no-console
     console.log('addToListApp?', addToList);
 
+    // don't work: i try to receive addToList as permissionn
     if (addToList) {
       toAddMovie(findMovie);
       toFindMovieState({

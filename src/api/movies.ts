@@ -21,9 +21,9 @@ export function getMovie(addUrl: string): Promise<Movie> {
       // eslint-disable-next-line no-console
       // console.log(response);
 
-      // if (!response.ok) {
-      //   throw new Error('error');
-      // }
+      if (!response.ok) {
+        throw new Error('error');
+      }
 
       // eslint-disable-next-line no-console
       // console.log(response.json());

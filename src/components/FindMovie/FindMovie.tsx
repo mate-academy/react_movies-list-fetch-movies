@@ -53,19 +53,22 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
     }
   };
 
-  const addToListHandler = () => {
-    const flag = addToList;
+  const addToListHandler = (value: boolean) => {
+    setAddToList(value);
 
-    return flag;
+    // eslint-disable-next-line no-console
+    console.log(addToList);
+
+    return addToList;
   };
 
-  const submitForm = async (event: React.ChangeEvent<HTMLFormElement>) => {
+  const submitForm = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     // eslint-disable-next-line no-console
     console.log('addToListApp?', addToList);
 
-    if (addToListHandler()) {
+    if (addToList) {
       toAddMovie(findMovie);
       toFindMovieState({
         Poster: '',
@@ -73,6 +76,8 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
         Plot: '',
         imdbID: '',
       });
+
+      setAddToList(false);
     }
   };
 
@@ -92,7 +97,6 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
                 name="title"
                 value={query}
                 onChange={event => changeQueryHandler(event.target.value)}
-                // onKeyPress={handleKeyPress}
                 type="text"
                 id="movie-title"
                 placeholder="Enter a title to search"
@@ -120,7 +124,7 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => setAddToList(true)}
+              onClick={() => addToListHandler(true)}
               disabled={!findMovie.Title}
             >
               Add to the list

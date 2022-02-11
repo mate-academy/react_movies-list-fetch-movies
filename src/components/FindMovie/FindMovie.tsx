@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
+import cn from 'classnames';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 
 type Props = {
-  handleAddMovie: (newMovie: Movie) => void;
+  onMovieAdd: (newMovie: Movie) => void;
   queryInput: string;
   setQueryInput: React.Dispatch<React.SetStateAction<string>>;
   movies: Movie[];
 };
 
 export const FindMovie: React.FC<Props> = ({
-  handleAddMovie,
+  onMovieAdd,
   queryInput,
   setQueryInput,
   movies,
@@ -25,9 +26,14 @@ export const FindMovie: React.FC<Props> = ({
   });
   const [searchError, setSearchError] = useState(false);
 
+  const clearInput = () => {
+    setQueryInput('');
+  };
+
   const handleChange = async () => {
     const movieFromServer = await getMovie(queryInput);
 
+    clearInput();
     setMovie(movieFromServer);
 
     if (!movieFromServer.Title) {
@@ -37,18 +43,17 @@ export const FindMovie: React.FC<Props> = ({
     return setSearchError(false);
   };
 
-  const clearInput = () => {
-    setQueryInput('');
-  };
-
   const handleSubmit = (event: React.FormEvent) => {
+    const findMovie = movies.find(movieOnList => movieOnList.imdbID === movie.imdbID);
+
     event.preventDefault();
     clearInput();
-    if (movies.find(movieOnList => movieOnList.imdbID === movie.imdbID)) {
+
+    if (findMovie) {
       return;
     }
 
-    handleAddMovie(movie);
+    onMovieAdd(movie);
   };
 
   return (
@@ -65,7 +70,7 @@ export const FindMovie: React.FC<Props> = ({
                 type="text"
                 id="movie-title"
                 placeholder="Enter a title to search"
-                className={searchError ? 'input is-danger' : 'input'}
+                className={cn({ 'input is-danger': searchError }, 'input')}
                 value={queryInput}
                 onChange={event => setQueryInput(event.target.value)}
               />
@@ -83,7 +88,7 @@ export const FindMovie: React.FC<Props> = ({
             <button
               type="button"
               className="button is-light"
-              onClick={() => handleChange()}
+              onClick={handleChange}
             >
               Find a movie
             </button>

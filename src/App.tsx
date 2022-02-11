@@ -20,10 +20,11 @@ export const App: React.FC = () => {
       <div className="page-content">
         <MoviesList movies={addedMovies} />
       </div>
+
       <div className="sidebar">
         <FindMovie
           movies={addedMovies}
-          handleAddMovie={handleAddMovie}
+          onMovieAdd={handleAddMovie}
           queryInput={queryInput}
           setQueryInput={setQueryInput}
         />

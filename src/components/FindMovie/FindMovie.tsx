@@ -10,12 +10,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
   const [query, toQueryState] = useState('');
-  const [findMovie, toFindMovieState] = useState<Movie>({
-    Poster: '',
-    Title: '',
-    Plot: '',
-    imdbID: '',
-  });
+  const [findMovie, toFindMovieState] = useState<Movie | null>(null);
   const [statusLoading, setStatusLoading] = useState(false);
   const [showError, setShowErrorState] = useState(false);
   const [addToList, setAddToList] = useState(false);
@@ -27,14 +22,14 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
   };
 
   // async download movie...............................................
-  const downloadMovie = async (title: string) => {
-    if (title.length > 0) {
+  const downloadMovie = async () => {
+    if (query.length > 0) {
       setStatusLoading(true);
 
       try {
         // eslint-disable-next-line no-console
         console.log('try to start download');
-        const newMovie = await getMovie(title);
+        const newMovie = await getMovie(query);
 
         setStatusLoading(false);
 
@@ -59,17 +54,7 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
     // eslint-disable-next-line no-console
     console.log(addToList);
 
-    return addToList;
-  };
-
-  const submitForm = (event: React.ChangeEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    // eslint-disable-next-line no-console
-    console.log('addToListApp?', addToList);
-
-    // don't work: i try to receive addToList as permissionn
-    if (addToList) {
+    if (findMovie) {
       toAddMovie(findMovie);
       toFindMovieState({
         Poster: '',
@@ -80,6 +65,20 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
 
       setAddToList(false);
     }
+  };
+
+  const submitForm = (event: React.ChangeEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    downloadMovie();
+
+    // eslint-disable-next-line no-console
+    console.log('movie = ');
+
+    // eslint-disable-next-line no-console
+    console.log('addToListApp?', addToList);
+
+    // don't work: i try to receive addToList as permissionn
   };
 
   return (
@@ -115,7 +114,6 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
             <button
               type="submit"
               className="button is-light"
-              onClick={() => downloadMovie(query)}
             >
               Find a movie
             </button>
@@ -126,7 +124,7 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
               type="button"
               className="button is-primary"
               onClick={() => addToListHandler(true)}
-              disabled={!findMovie.Title}
+              disabled={!findMovie}
             >
               Add to the list
             </button>
@@ -135,7 +133,7 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
       </form>
 
       <div className="container">
-        {findMovie.Title && (
+        {findMovie && (
           <>
             <h2 className="title">Preview</h2>
             <MovieCard movie={findMovie} />

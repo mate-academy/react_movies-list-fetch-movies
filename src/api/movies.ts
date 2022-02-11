@@ -12,23 +12,33 @@ const API_URL = `https://www.omdbapi.com/?i=tt3896198&apikey=8327dd52&t=`;
 //     });
 // }
 
-export function getMovie(addUrl: string): Promise<Movie> {
+export async function getMovie(addUrl: string): Promise<Movie> {
   // eslint-disable-next-line no-console
   console.log(`${API_URL}${addUrl}`);
 
-  return fetch(`${API_URL}${addUrl}`)
-    .then(response => {
-      // eslint-disable-next-line no-console
-      // console.log(response);
+  const response = await fetch(`${API_URL}${addUrl}`);
 
-      if (!response.ok) {
-        throw new Error('error');
-      }
+  //  eslint-disable-next-line no-console
+  console.log('response', response);
 
-      // eslint-disable-next-line no-console
-      // console.log(response.json());
-
-      return response.json();
+  if (!response.ok) {
     // eslint-disable-next-line no-console
-    }, (error) => console.log('error Url', error));
+    console.log('test');
+
+    throw new Error('error');
+  }
+
+  return response.json();
+
+  //   .then(response => {
+  //   // eslint-disable-next-line no-console
+  //   // console.log(response);
+
+  //   if (!response.ok) {
+  //     throw new Error('error');
+  //   }
+
+  //   return response.json();
+  // // eslint-disable-next-line no-console
+  // }, (error) => console.log('error Url', error));
 }

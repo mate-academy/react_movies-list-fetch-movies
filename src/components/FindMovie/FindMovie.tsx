@@ -22,7 +22,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
   };
 
-  const searchMovie = async (title: string) => {
+  async function loadMovie(title: string) {
     if (searchingMovieTitle) {
       const movieFromServer = await getMovie(title.trim());
 
@@ -35,6 +35,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     } else {
       setIsMovieValid(false);
     }
+  }
+
+  const searchMovie = () => {
+    loadMovie(searchingMovieTitle);
   };
 
   const handleMovieTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +78,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => searchMovie(searchingMovieTitle)}
+              onClick={() => searchMovie()}
             >
               Find a movie
             </button>

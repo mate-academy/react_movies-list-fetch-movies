@@ -1,29 +1,34 @@
-import { Component } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [queryInput, setQueryInput] = useState('');
+  const [addedMovies, setAddedMovies] = useState<Movie[]>([]);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const handleAddMovie = (newMovie: Movie) => {
+    if (!newMovie.Title) {
+      return;
+    }
+
+    setAddedMovies([...addedMovies, newMovie]);
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={addedMovies} />
       </div>
-    );
-  }
-}
+
+      <div className="sidebar">
+        <FindMovie
+          movies={addedMovies}
+          onMovieAdd={handleAddMovie}
+          queryInput={queryInput}
+          setQueryInput={setQueryInput}
+        />
+      </div>
+    </div>
+  );
+};

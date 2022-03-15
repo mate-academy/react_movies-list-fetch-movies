@@ -7,8 +7,8 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const onMovieAdd = (movie: Movie) => {
-    if (movies.some(mov => mov.imdbID === movie.imdbID)) {
-      return;
+    if (!movies.some(mov => mov.imdbID === movie.imdbID)) {
+      setMovies([...movies, movie]);
     }
 
     setMovies([...movies, movie]);

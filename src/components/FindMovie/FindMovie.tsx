@@ -12,7 +12,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>();
   const [isError, setIsError] = useState(false);
 
   const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,18 +20,19 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
     setIsError(false);
   };
 
-  const onFindClick = () => {
+  const onFindMovie = () => {
     getMovieByTitle(title)
-      .then(mov => setMovie(mov))
+      .then(foundedMovie => setMovie(foundedMovie))
       .then(() => setIsError(true));
   };
 
-  const onAddClick = () => {
+  const onAddMovie = () => {
     if (movie) {
       onMovieAdd(movie);
+      setTitle('');
+      setMovie(null);
+      setIsError(false);
     }
-
-    setTitle('');
   };
 
   return (
@@ -62,7 +63,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={onFindClick}
+              onClick={onFindMovie}
             >
               Find a movie
             </button>
@@ -72,7 +73,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => onAddClick()}
+              onClick={onAddMovie}
             >
               Add to the list
             </button>

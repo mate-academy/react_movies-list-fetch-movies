@@ -14,6 +14,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>();
   const [isError, setIsError] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
   const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -21,8 +22,10 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   };
 
   const onFindMovie = () => {
+    setIsFetching(true);
     getMovieByTitle(title)
       .then(foundedMovie => setMovie(foundedMovie))
+      .then(() => setIsFetching(false))
       .then(() => setIsError(true));
   };
 
@@ -84,6 +87,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
       <div className="container">
         <h2 className="title">Preview</h2>
         {movie && <MovieCard movie={movie} />}
+        {isFetching && <p>Loading...</p>}
       </div>
     </>
   );

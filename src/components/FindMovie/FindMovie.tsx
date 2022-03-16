@@ -21,12 +21,13 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
     setIsError(false);
   };
 
-  const onFindMovie = () => {
+  const onFindMovie = async () => {
     setIsFetching(true);
-    getMovieByTitle(title)
-      .then(foundedMovie => setMovie(foundedMovie))
-      .then(() => setIsFetching(false))
-      .then(() => setIsError(true));
+    const foundedMovie = await getMovieByTitle(title);
+
+    await setIsFetching(false);
+    await setIsError(true);
+    setMovie(foundedMovie);
   };
 
   const onAddMovie = () => {

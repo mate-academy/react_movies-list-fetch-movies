@@ -10,8 +10,6 @@ export const App: React.FC = () => {
     if (!movies.some(mov => mov.imdbID === movie.imdbID)) {
       setMovies([...movies, movie]);
     }
-
-    setMovies([...movies, movie]);
   };
 
   return (

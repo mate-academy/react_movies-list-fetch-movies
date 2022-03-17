@@ -13,7 +13,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {
   const [title, setTitle] = useState('');
   const [isInvalid, setInvalid] = useState(false);
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>(null);
 
   const onInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {
         return [...movies, movie];
       });
 
-      setMovie(undefined);
+      setMovie(null);
       setTitle('');
     }
   }, [movie]);
@@ -47,7 +47,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {
     const movieFromServer = await getMovie(title);
 
     if (!movieFromServer) {
-      setMovie(undefined);
+      setMovie(null);
       setInvalid(true);
     } else {
       setMovie(movieFromServer);
@@ -70,6 +70,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {
               <input
                 type="text"
                 id="movie-title"
+                value={title}
                 placeholder="Enter title"
                 className={classNames('input', { 'is-danger': isInvalid })}
                 onChange={onInputChange}

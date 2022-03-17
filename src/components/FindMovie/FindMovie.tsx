@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import classNames from 'classnames';
 import { getMovie } from '../../api/api';
 
@@ -11,25 +11,58 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {
+  const [title, setTitle] = useState('');
   const [isInvalid, setInvalid] = useState(false);
   const [movie, setMovie] = useState<Movie>();
 
-  const titleRef = useRef(document.createElement('input'));
+  const onInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (isInvalid) {
+        setInvalid(false);
+      }
 
-  const fetchMovie = async () => {
-    const res = await getMovie(titleRef.current.value);
+      setTitle(event.target.value);
+    },
+    [isInvalid],
+  );
 
-    if (!res) {
+  const addMovie = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    if (movie) {
+      setMovies((movies) => {
+        if (movies.find(m => m.imdbID === movie.imdbID)) {
+          return movies;
+        }
+
+        return [...movies, movie];
+      });
+
+      setMovie(undefined);
+      setTitle('');
+    }
+  }, [movie]);
+
+  const fetchMovie = useCallback(async () => {
+    const movieFromServer = await getMovie(title);
+
+    if (!movieFromServer) {
       setMovie(undefined);
       setInvalid(true);
     } else {
-      setMovie(res);
+      setMovie(movieFromServer);
     }
-  };
+  }, [title]);
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          fetchMovie();
+        }}
+      >
         <div className="field">
           <div className="control">
             <label className="label" htmlFor="movie-title">
@@ -37,14 +70,9 @@ export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {
               <input
                 type="text"
                 id="movie-title"
-                ref={titleRef}
                 placeholder="Enter title"
                 className={classNames('input', { 'is-danger': isInvalid })}
-                onChange={() => {
-                  if (isInvalid) {
-                    setInvalid(false);
-                  }
-                }}
+                onChange={onInputChange}
               />
             </label>
           </div>
@@ -59,11 +87,8 @@ export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-light"
-              onClick={() => {
-                fetchMovie();
-              }}
             >
               Search
             </button>
@@ -73,19 +98,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                if (movie) {
-                  setMovies((movies) => {
-                    if (movies.find(m => m.imdbID === movie.imdbID)) {
-                      return movies;
-                    }
-
-                    return [...movies, movie];
-                  });
-                  setMovie(undefined);
-                  titleRef.current.value = '';
-                }
-              }}
+              onClick={addMovie}
             >
               Add to list
             </button>

@@ -6,8 +6,10 @@ import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 
+type Callback = (movies: Movie[]) => Movie[];
+
 type Props = {
-  setMovies: (callback: (movies: Movie[]) => Movie[]) => void;
+  setMovies: (callback: Callback) => void;
 };
 
 export const FindMovie: React.FC<Props> = React.memo(({ setMovies }) => {

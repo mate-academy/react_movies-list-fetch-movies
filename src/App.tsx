@@ -11,7 +11,6 @@ export const App: React.FC = () => {
   return (
     <div className="page">
       <div className="page-content">
-        <p>hello</p>
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">

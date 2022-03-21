@@ -1,18 +1,13 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import './FindMovie.scss';
-
 import classnames from 'classnames';
 
+import { AddMovie } from '../../react-app-env';
 import { MovieCard } from '../MovieCard';
 
 const API_KEY = '&apikey=a552bcb7';
-
 const API_SERVER = 'https://www.omdbapi.com/';
-
-type AddMovie = {
-  addMovie: (movie: Movie) => void,
-};
 
 export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
   const [movie, setMovie] = useState();

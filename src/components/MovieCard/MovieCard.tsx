@@ -1,11 +1,9 @@
 import React from 'react';
 import './MovieCard.scss';
 
-type Props = {
-  movie: Movie;
-};
+import { Movie } from '../../react-app-env';
 
-export const MovieCard: React.FC<Props> = (props) => {
+export const MovieCard: React.FC<{ movie: Movie }> = (props) => {
   const { movie } = props;
 
   return (

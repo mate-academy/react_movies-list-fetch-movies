@@ -3,9 +3,7 @@ import './MovieCard.scss';
 
 import { Movie } from '../../react-app-env';
 
-export const MovieCard: React.FC<{ movie: Movie }> = (props) => {
-  const { movie } = props;
-
+export const MovieCard: React.FC<{ movie: Movie }> = ({ movie }) => {
   return (
     <div className="card">
       <div className="card-image">

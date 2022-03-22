@@ -5,32 +5,26 @@ import classnames from 'classnames';
 
 import { AddMovie } from '../../react-app-env';
 import { MovieCard } from '../MovieCard';
-
-const API_KEY = '&apikey=a552bcb7';
-const API_SERVER = 'https://www.omdbapi.com/';
+import { request } from '../../api';
 
 export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
   const [movie, setMovie] = useState();
   const [searchTitle, setSearchTitle] = useState('');
   const [isMovieFind, setIsMovieFind] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const findMovie = async (movieTitle: string) => {
-    const response = await fetch(`${API_SERVER}?t=${movieTitle}${API_KEY}`);
+  const findMovie = async () => {
+    setIsLoading(true);
+    const response = await request(searchTitle, setIsMovieFind);
 
-    if (!response.ok) {
-      setIsMovieFind(false);
+    setIsLoading(false);
 
-      throw new Error(`Error: ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    if (result.Response === 'False') {
+    if (response.Response === 'False') {
       setIsMovieFind(false);
     } else {
       setIsMovieFind(true);
 
-      setMovie(result);
+      setMovie(response);
     }
   };
 
@@ -67,8 +61,8 @@ export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
           <div className="control">
             <button
               type="button"
-              className="button is-light"
-              onClick={() => findMovie(searchTitle)}
+              className={classnames('button', 'is-light', { 'is-loading': isLoading })}
+              onClick={() => findMovie()}
             >
               Find a movie
             </button>

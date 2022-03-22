@@ -1,54 +1,101 @@
-import React from 'react';
+import React, { useState } from 'react';
+
 import './FindMovie.scss';
 
-// import { MovieCard } from '../MovieCard';
+import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api/api';
 
-export const FindMovie: React.FC = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+type Props = {
+  onAddMovie: (movie: Movie) => void,
+};
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
-        </div>
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+  const [title, setTitle] = useState('');
+  const [foundedMovie, setFoundedMovie] = useState<Movie | null>(null);
 
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
-      </div>
+  const [hasError, setHasError] = useState(false);
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
+  const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    setHasError(false);
+  };
+
+  const onHandleFindButton = () => {
+    getMovie(title)
+      .then((movie) => {
+        if (!movie) {
+          setHasError(true);
+          setFoundedMovie(null);
+        } else {
+          setFoundedMovie(movie);
+        }
+      });
+  };
+
+  const onHandleAddMovieToList = () => {
+    if (foundedMovie) {
+      onAddMovie(foundedMovie);
+      setTitle('');
+      setFoundedMovie(null);
+    }
+  };
+
+  return (
+    <>
+      <form className="find-movie">
+        <div className="field">
+          <label
+            className="label"
+            htmlFor="movie-title"
           >
-            Find a movie
-          </button>
+            Movie title
+            <div className="control">
+              <input
+                type="text"
+                id="movie-title"
+                placeholder="Enter a title to search"
+                className="input is-danger"
+                value={title}
+                onChange={onTitleChange}
+              />
+            </div>
+          </label>
+          {hasError && (
+            <p className=" help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              type="button"
+              className="button is-light"
+              onClick={onHandleFindButton}
+            >
+              Find a movie
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="button"
+              className="button is-primary"
+              onClick={onHandleAddMovieToList}
+            >
+              Add to the list
+            </button>
+          </div>
         </div>
+      </form>
+
+      <div className="container">
+        <h2 className="title">Preview</h2>
+        {foundedMovie && (
+          <MovieCard movie={foundedMovie} />
+        )}
       </div>
-    </form>
-
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      {/* <MovieCard  /> */}
-    </div>
-  </>
-);
+    </>
+  );
+};

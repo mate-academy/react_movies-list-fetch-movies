@@ -36,6 +36,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
   };
 
   const findMovie = () => {
+    setSearch(true);
     getMovie(title)
       .then(response => {
         setMovie(response);
@@ -95,10 +96,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
             <button
               type="button"
               className="button is-light"
-              onClick={() => {
-                setSearch(true);
-                findMovie();
-              }}
+              onClick={() => findMovie()}
             >
               Find a movie
             </button>

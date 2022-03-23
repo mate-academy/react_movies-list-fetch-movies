@@ -15,9 +15,8 @@ export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
 
   const findMovie = async () => {
     setIsLoading(true);
-    const response = await request(searchTitle, setIsMovieFind);
 
-    setIsLoading(false);
+    const response = await request(searchTitle);
 
     if (response.Response === 'False') {
       setIsMovieFind(false);
@@ -26,6 +25,8 @@ export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
 
       setMovie(response);
     }
+
+    setIsLoading(false);
   };
 
   return (

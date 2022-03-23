@@ -29,6 +29,12 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
   const [search, setSearch] = useState(false);
   const [error, setError] = useState(false);
 
+  const titleEntering = (event:React.ChangeEvent<HTMLInputElement>) => {
+    setMovieISAdded(false);
+    setTitle(event.target.value);
+    setError(false);
+  };
+
   const findMovie = () => {
     getMovie(title)
       .then(response => {
@@ -39,8 +45,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
         setSearch(false);
         setError(true);
       });
-
-    console.log(error);
   };
 
   const addMovie = () => {
@@ -64,11 +68,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
             <input
               type="text"
               value={title}
-              onChange={(event) => {
-                setMovieISAdded(false);
-                setTitle(event.target.value);
-                setError(false);
-              }}
+              onChange={titleEntering}
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames(

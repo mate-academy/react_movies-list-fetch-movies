@@ -21,8 +21,11 @@ export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
 
     if (response.Response === 'False') {
       setIsMovieFind(false);
-    } else {
-      setIsMovieFind(true);
+      
+      return;
+    } 
+    
+    setIsMovieFind(true);
 
       setMovie(response);
     }

@@ -14,6 +14,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [foundedMovie, setFoundedMovie] = useState<Movie | null>(null);
 
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -21,8 +22,10 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   };
 
   const onHandleFindButton = () => {
+    setIsLoading(true);
     getMovie(title)
       .then((movie) => {
+        setIsLoading(false);
         if (!movie) {
           setHasError(true);
           setFoundedMovie(null);
@@ -92,6 +95,12 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
+        {isLoading && (
+          <div>
+            Loading...
+          </div>
+        )}
+
         {foundedMovie && (
           <MovieCard movie={foundedMovie} />
         )}

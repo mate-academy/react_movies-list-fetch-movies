@@ -1,21 +1,9 @@
-/* eslint-disable no-console */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
-
-const getMovie = (title: string) => {
-  return fetch(`https://www.omdbapi.com/?apikey=1061a671&t=${title}`)
-    .then(response => response.json())
-    .then(response => {
-      if (response.Error) {
-        throw new Error('Error');
-      }
-
-      return response;
-    });
-};
+import { getMovie } from '../../api';
 
 type Props = {
   onAddMovie: (movie: Movie) => void;
@@ -30,6 +18,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
   const [error, setError] = useState(false);
 
   const titleEntering = (event:React.ChangeEvent<HTMLInputElement>) => {
+    setMovie(undefined);
     setMovieISAdded(false);
     setTitle(event.target.value);
     setError(false);

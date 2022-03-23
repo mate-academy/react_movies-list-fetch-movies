@@ -12,6 +12,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [hasError, setHasError] = useState(false);
+  const [errorFromServer, setErrorFromServer] = useState(false);
 
   const titleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -23,7 +24,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       return;
     }
 
-    const newMovie:Movie = await getMovie(title);
+    const newMovie = await getMovie(title);
+
+    if (newMovie.Response === 'False') {
+      setErrorFromServer(true);
+    }
 
     if (!newMovie.Title) {
       setHasError(true);
@@ -92,7 +97,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
+        {!errorFromServer && movie && <MovieCard movie={movie} />}
       </div>
     </>
   );

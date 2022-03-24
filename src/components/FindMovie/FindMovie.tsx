@@ -18,18 +18,15 @@ export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
 
     const response = await request(searchTitle);
 
+    setIsLoading(false);
+
     if (response.Response === 'False') {
       setIsMovieFind(false);
-      
-      return;
-    } 
-    
-    setIsMovieFind(true);
 
-      setMovie(response);
+      return;
     }
 
-    setIsLoading(false);
+    setMovie(response);
   };
 
   return (

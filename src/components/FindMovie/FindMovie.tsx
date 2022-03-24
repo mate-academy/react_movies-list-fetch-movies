@@ -14,26 +14,26 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieISAdded }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie>();
-  const [search, setSearch] = useState(false);
-  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const titleEntering = (event:React.ChangeEvent<HTMLInputElement>) => {
     setMovie(undefined);
     setMovieISAdded(false);
     setTitle(event.target.value);
-    setError(false);
+    setHasError(false);
   };
 
   const findMovie = () => {
-    setSearch(true);
+    setIsLoading(true);
     getMovie(title)
       .then(response => {
         setMovie(response);
-        setSearch(false);
+        setIsLoading(false);
       })
       .catch(() => {
-        setSearch(false);
-        setError(true);
+        setIsLoading(false);
+        setHasError(true);
       });
   };
 
@@ -63,18 +63,18 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
               placeholder="Enter a title to search"
               className={classNames(
                 'input',
-                { 'is-danger': error },
+                { 'is-danger': hasError },
               )}
             />
           </div>
 
-          {error ? (
+          {hasError ? (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
           ) : (
             <>
-              {search && <p className="help">Loading...</p>}
+              {isLoading && <p className="help">Loading...</p>}
             </>
           )}
 
@@ -85,7 +85,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
             <button
               type="button"
               className="button is-light"
-              onClick={() => findMovie()}
+              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -95,7 +95,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movieIsAdded, setMovieI
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addMovie()}
+              onClick={addMovie}
             >
               Add to the list
             </button>

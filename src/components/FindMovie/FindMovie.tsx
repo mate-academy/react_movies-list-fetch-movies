@@ -17,6 +17,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const titleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
     setHasError(false);
+    setErrorFromServer(false);
   };
 
   const findMovie = async () => {

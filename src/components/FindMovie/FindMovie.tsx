@@ -10,7 +10,7 @@ import { request } from '../../api';
 export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
   const [movie, setMovie] = useState();
   const [searchTitle, setSearchTitle] = useState('');
-  const [isMovieFind, setIsMovieFind] = useState(true);
+  const [isMovieFound, setIsMovieFound] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const findMovie = async () => {

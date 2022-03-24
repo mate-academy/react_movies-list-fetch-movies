@@ -63,7 +63,7 @@ export const FindMovie: React.FC<AddMovie> = ({ addMovie }) => {
             <button
               type="button"
               className={classnames('button', 'is-light', { 'is-loading': isLoading })}
-              onClick={() => findMovie()}
+              onClick={findMovie}
             >
               Find a movie
             </button>

@@ -38,6 +38,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies: onSetMovies, movies }) =
       setShowError(false);
     }
 
+    setMovie(null);
     setExistMovieError(false);
   }, [query]);
 

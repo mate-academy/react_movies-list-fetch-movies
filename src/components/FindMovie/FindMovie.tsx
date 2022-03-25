@@ -10,7 +10,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
 
   const onTitleClick = (event: React.ChangeEvent<HTMLInputElement>) => {

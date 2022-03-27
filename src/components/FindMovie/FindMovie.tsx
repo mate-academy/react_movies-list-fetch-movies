@@ -18,19 +18,17 @@ export const FindMovie: React.FC <Props> = ({
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(false);
   const [errorEmpty, setErrorEmpty] = useState(false);
+  const [sameError, setSomeError] = useState(false);
 
   const findMovies = async () => {
+    setSomeError(false);
     if (input) {
       const data = await moviesfromServer(input);
 
       if (data.Response !== 'False') {
-        // eslint-disable-next-line no-console
-        console.log(data.Response);
         setMovie(await data);
       } else {
         setMovie(null);
-        // eslint-disable-next-line no-console
-        console.log(data.Response);
         setError(true);
       }
     } else {
@@ -42,7 +40,11 @@ export const FindMovie: React.FC <Props> = ({
 
   const add = () => {
     if (movie && movies) {
-      setMovies([...movies, movie]);
+      if (!movies?.some(m => m !== movie)) {
+        setMovies([...movies, movie]);
+      } else {
+        setSomeError(true);
+      }
     }
 
     setMovie(null);
@@ -52,7 +54,10 @@ export const FindMovie: React.FC <Props> = ({
     <>
       <form className="find-movie">
         <div className="field">
-          <label className="label" htmlFor="movie-title">
+          <label
+            className="label"
+            htmlFor="movie-title"
+          >
             Movie title
           </label>
 
@@ -67,13 +72,14 @@ export const FindMovie: React.FC <Props> = ({
                 setInput(event.target.value);
                 setError(false);
                 setErrorEmpty(false);
+                setSomeError(false);
               }}
             />
           </div>
 
           {!!(error) && (
             <p className="help is-danger">
-              Can&apos;t find a movie with such a title
+              Can&apos;t find a movie with such a title or server didn`t answered`
             </p>
           )}
         </div>
@@ -111,6 +117,11 @@ export const FindMovie: React.FC <Props> = ({
         {!!(errorEmpty) && (
           <h2 className="help is-danger">
             First find movie to add
+          </h2>
+        )}
+        {!!(sameError) && (
+          <h2 className="help is-danger">
+            Already added
           </h2>
         )}
         <MovieCard movie={movie} />

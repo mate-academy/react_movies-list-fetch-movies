@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/';
+const BASE_URL = 'https://www.omdbapi.com/';
 const API_KEY = '2642b950';
 
 export const request = async (endpoint: string) => {

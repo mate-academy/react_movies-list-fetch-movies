@@ -12,17 +12,31 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [invalid, setInvalid] = useState(false);
+  const [isInvalid, setIsInvalid] = useState(false);
 
-  const getMoviesFromServer = async () => {
-    const moviesFromServer = await getMovie(title);
+  const getMovieFromServer = async () => {
+    const movieFromServer = await getMovie(title);
 
-    if (!moviesFromServer) {
-      setInvalid(true);
+    if (!movieFromServer) {
+      setIsInvalid(true);
       setMovie(null);
     }
 
-    return setMovie(moviesFromServer);
+    return setMovie(movieFromServer);
+  };
+
+  const addMovie = () => {
+    if (movie) {
+      setMovies((movies) => {
+        if (movies.find((m) => m.imdbID === movie.imdbID)) {
+          return movies;
+        }
+
+        return [...movies, movie];
+      });
+      setTitle('');
+      setMovie(null);
+    }
   };
 
   return (
@@ -31,7 +45,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          getMoviesFromServer();
+          getMovieFromServer();
         }}
       >
         <div className="field">
@@ -46,13 +60,16 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                 id="movie-title"
                 value={title}
                 placeholder="Enter a title to search"
-                className={classNames('input', { 'is-danger': invalid })}
-                onChange={(event) => (invalid ? setInvalid(false) : setTitle(event.target.value))}
+                className={classNames('input', { 'is-danger': isInvalid })}
+                onChange={(event) => (
+                  isInvalid
+                    ? setIsInvalid(false)
+                    : setTitle(event.target.value))}
               />
             </div>
           </label>
 
-          {invalid && (
+          {isInvalid && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -73,20 +90,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={(event) => {
-                event.preventDefault();
-                if (movie) {
-                  setMovies((movies) => {
-                    if (movies.find((m) => m.imdbID === movie.imdbID)) {
-                      return movies;
-                    }
-
-                    return [...movies, movie];
-                  });
-                  setTitle('');
-                  setMovie(null);
-                }
-              }}
+              onClick={addMovie}
             >
               Add to the list
             </button>

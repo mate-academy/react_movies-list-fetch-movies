@@ -12,6 +12,6 @@ export const request = async (endpoint: string) => {
   return data;
 };
 
-export const getMovie = async (title: string) => {
+export const getMovie = (title: string) => {
   return request(`/?apikey=${API_KEY}&t=${title}`);
 };

@@ -7,12 +7,12 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
-  addedMovies: (movie: Movie) => void;
-  inList: boolean;
-  setInList: (is: boolean) => void;
+  addMovies: (movie: Movie) => void;
+  isInList: boolean;
+  setIsInList: (is: boolean) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({ addedMovies, inList, setInList }) => {
+export const FindMovie: React.FC<Props> = ({ addMovies, isInList, setIsInList }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
@@ -21,13 +21,13 @@ export const FindMovie: React.FC<Props> = ({ addedMovies, inList, setInList }) =
     getMovies(title).then(response => {
       setMovie(response.Response === 'True' ? response : null);
       setError(response.Response === 'False');
-      setInList(false);
+      setIsInList(false);
     });
   };
 
   const addButton = () => {
     if (movie !== null) {
-      addedMovies(movie);
+      addMovies(movie);
     }
 
     setMovie(null);
@@ -53,6 +53,8 @@ export const FindMovie: React.FC<Props> = ({ addedMovies, inList, setInList }) =
               value={title}
               onChange={event => {
                 setTitle(event.target.value.toLocaleLowerCase());
+                setIsInList(false);
+                setError(false);
               }}
             />
           </div>
@@ -62,7 +64,7 @@ export const FindMovie: React.FC<Props> = ({ addedMovies, inList, setInList }) =
                 Can&apos;t find a movie with such a title
               </p>
             )}
-          {inList
+          {isInList
             && (
               <p className="help is-danger">
                 This is movie already in list.

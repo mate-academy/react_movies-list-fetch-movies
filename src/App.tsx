@@ -5,17 +5,15 @@ import { FindMovie } from './components/FindMovie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [inList, setInList] = useState(false);
+  const [isInList, setIsInList] = useState(false);
 
-  const addedMovies = (movie: Movie): void => {
-    const foundMovie = movies.find(addedMovie => addedMovie.imdbID === movie.imdbID);
+  const addMovies = (movie: Movie): void => {
+    const foundMovie = movies.find(addMovie => addMovie.imdbID === movie.imdbID);
 
     if (!foundMovie) {
       setMovies([...movies, movie]);
-    }
-
-    if (foundMovie) {
-      setInList(true);
+    } else {
+      setIsInList(true);
     }
   };
 
@@ -26,9 +24,9 @@ export const App = () => {
       </div>
       <div className="sidebar">
         <FindMovie
-          addedMovies={addedMovies}
-          inList={inList}
-          setInList={setInList}
+          addMovies={addMovies}
+          isInList={isInList}
+          setIsInList={setIsInList}
         />
       </div>
     </div>

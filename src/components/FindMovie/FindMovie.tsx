@@ -7,15 +7,15 @@ import { MovieCard } from '../MovieCard';
 
 interface Props {
   setMovies: (a: Movie[]) => void
-  movies: Movie[] | null;
+  movies: Movie[];
 }
 
 export const FindMovie: React.FC <Props> = ({
   setMovies,
-  movies,
+  movies = [],
 }) => {
   const [input, setInput] = useState('');
-  const [movie, setMovie] = useState(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
   const [errorEmpty, setErrorEmpty] = useState(false);
   const [sameError, setSomeError] = useState(false);
@@ -38,9 +38,9 @@ export const FindMovie: React.FC <Props> = ({
     setInput('');
   };
 
-  const add = () => {
-    if (movie && movies) {
-      if (!movies?.some(m => m !== movie)) {
+  const add = async () => {
+    if (movie) {
+      if (!movies.some(m => m.Title === movie.Title)) {
         setMovies([...movies, movie]);
       } else {
         setSomeError(true);

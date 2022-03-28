@@ -5,15 +5,17 @@ import { FindMovie } from './components/FindMovie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [inList, setInList] = useState(false);
 
   const addedMovies = (movie: Movie): void => {
-    const findedMovie = movies.find(addedMovie => addedMovie.imdbID === movie.imdbID);
+    const foundMovie = movies.find(addedMovie => addedMovie.imdbID === movie.imdbID);
 
-    // eslint-disable-next-line no-console
-    console.log(movie);
-
-    if (findedMovie === undefined) {
+    if (!foundMovie) {
       setMovies([...movies, movie]);
+    }
+
+    if (foundMovie) {
+      setInList(true);
     }
   };
 
@@ -23,7 +25,11 @@ export const App = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie addedMovies={addedMovies} />
+        <FindMovie
+          addedMovies={addedMovies}
+          inList={inList}
+          setInList={setInList}
+        />
       </div>
     </div>
   );

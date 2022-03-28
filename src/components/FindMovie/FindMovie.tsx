@@ -8,17 +8,20 @@ import { MovieCard } from '../MovieCard';
 
 interface Props {
   addedMovies: (movie: Movie) => void;
+  inList: boolean;
+  setInList: (is: boolean) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({ addedMovies }) => {
+export const FindMovie: React.FC<Props> = ({ addedMovies, inList, setInList }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(false);
 
   const findButton = () => {
     getMovies(title).then(response => {
       setMovie(response.Response === 'True' ? response : null);
-      setError(response.Response === 'True' ? '' : 'False');
+      setError(response.Response === 'False');
+      setInList(false);
     });
   };
 
@@ -44,17 +47,25 @@ export const FindMovie: React.FC<Props> = ({ addedMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames('input', error && 'is-danger')}
+              className={classNames('input', {
+                'is-danger': error,
+              })}
               value={title}
               onChange={event => {
                 setTitle(event.target.value.toLocaleLowerCase());
               }}
             />
           </div>
-          {error === 'False'
+          {error
             && (
               <p className="help is-danger">
                 Can&apos;t find a movie with such a title
+              </p>
+            )}
+          {inList
+            && (
+              <p className="help is-danger">
+                This is movie already in list.
               </p>
             )}
         </div>

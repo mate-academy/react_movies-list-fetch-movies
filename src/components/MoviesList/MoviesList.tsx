@@ -3,7 +3,7 @@ import './MoviesList.scss';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
-  movies: Movie[];
+  movies: Movie[] | null;
 }
 
 export const MoviesList: React.FC<Props> = (props) => {
@@ -11,12 +11,12 @@ export const MoviesList: React.FC<Props> = (props) => {
 
   return (
     <div className="movies">
-      {movies.map(movie => (
+      {movies && (movies.map(movie => (
         <MovieCard
           key={movie.imdbID}
           movie={movie}
         />
-      ))}
+      )))}
     </div>
   );
 };

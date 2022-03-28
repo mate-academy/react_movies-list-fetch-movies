@@ -1,3 +1,30 @@
 .card-image img {
   object-fit: contain;
 }
+
+
+.card {
+  min-height: 570px;
+  position: relative;
+  transition-duration: 0.3s;
+  &:hover {
+    transform: scale(1.05);
+    &::before {
+      content: "Tab to open";
+      display: block;
+      text-align: center;
+      width: 100%;
+      color: #3300ff;
+      opacity: 0.5;
+      font-size: 36px;
+      font-weight: 700;
+      position: absolute;
+      top: 10px;
+      right: 0;
+      left: 0;
+      z-index: 1;
+
+    }
+  }
+}
+

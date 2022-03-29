@@ -20,18 +20,20 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsError(false);
   };
 
-  const findCklick = () => {
+  const findMovie = () => {
     getMovie(title)
       .then(cinema => setMovie(cinema))
       .then(() => setIsError(true));
   };
 
-  const addCklick = () => {
+  const addMovies = () => {
     if (movie) {
       addMovie(movie);
     }
 
     setTitle('');
+    setMovie(undefined);
+    setIsError(false);
   };
 
   return (
@@ -67,7 +69,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={findCklick}
+              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -77,7 +79,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={addCklick}
+              onClick={addMovies}
             >
               Add to the list
             </button>

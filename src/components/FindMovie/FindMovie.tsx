@@ -51,10 +51,9 @@ export const FindMovie: React.FC<Props> = ({ setMovies: onSetMovies, movies }) =
 
     if (alredyExistMovie) {
       setExistMovieError(true);
-    }
-
-    if (!alredyExistMovie) {
+    } else {
       onSetMovies([...movies, movie]);
+      setQuery('');
     }
   };
 
@@ -86,6 +85,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies: onSetMovies, movies }) =
               Can&apos;t find a movie with such a title
             </p>
           )}
+          {existMovieError && (
+            <p className="help is-danger">
+              There is already such a movie in the list
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -113,11 +117,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies: onSetMovies, movies }) =
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {existMovieError && (
-          <p className="help is-danger">
-            There is already such a movie in the list
-          </p>
-        )}
         {movie && <MovieCard movie={movie} />}
       </div>
     </>

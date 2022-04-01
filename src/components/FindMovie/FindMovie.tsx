@@ -35,7 +35,7 @@ export const FindMovie: React.FC<Props> = ({
               className={classNames(
                 'input',
                 {
-                  'is-danger': !movie?.Title && click,
+                  'is-danger': !movie?.Title && click && input !== '',
                 },
               )}
               value={input}
@@ -44,7 +44,7 @@ export const FindMovie: React.FC<Props> = ({
           </div>
         </label>
 
-        {!movie?.Title && (
+        {!movie?.Title && click && (
           <p className="help is-danger">
             Can&apos;t find a movie with such a title
           </p>

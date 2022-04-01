@@ -12,7 +12,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const fetchMovie = async () => {
-      const movieFromServer = await getMovie(input);
+      const movieFromServer = await getMovie<Movie>(input);
 
       setMovie(movieFromServer);
     };
@@ -22,6 +22,7 @@ export const App: React.FC = () => {
 
   const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value);
+    setClicked(false);
   };
 
   const clickAddHandler = () => {

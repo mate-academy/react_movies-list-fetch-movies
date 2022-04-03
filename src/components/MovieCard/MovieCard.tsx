@@ -5,9 +5,7 @@ type Props = {
   movie: Movie;
 };
 
-export const MovieCard: React.FC<Props> = (props) => {
-  const { movie } = props;
-
+export const MovieCard: React.FC<Props> = ({ movie }) => {
   return (
     <div className="card">
       <div className="card-image">
@@ -32,7 +30,6 @@ export const MovieCard: React.FC<Props> = (props) => {
             <p className="title is-8">{movie.Title}</p>
           </div>
         </div>
-
         <div className="content">
           {movie.Plot}
           <br />

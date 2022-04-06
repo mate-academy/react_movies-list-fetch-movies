@@ -1,40 +1,48 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { memo, useCallback, useState } from 'react';
+import React, { MouseEvent, FormEvent, memo, useCallback, useState } from 'react';
 import { request } from '../../api/api';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  onAdd: CallableFunction;
+  addMovie: CallableFunction;
 };
 
-export const FindMovie: React.FC<Props> = memo(({ onAdd }) => {
+export const FindMovie: React.FC<Props> = memo(({ addMovie }) => {
   const [previewMovie, setPreviewMovie] = useState<Movie | null>(null);
   const [fetchError, setFetchError] = useState(false);
   const [title, setTitle] = useState('');
 
-  const fetchMovie = useCallback(() => (
-    request(title)
-      .then(({ Response, Plot, Poster, Title, imdbID }) => {
-        setFetchError(Response !== 'True');
-        setTitle('');
+  const fetchMovie = useCallback(
+    (event: FormEvent<HTMLFormElement> | MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
 
-        if (Response === 'True') {
-          setPreviewMovie({ Plot, Poster, Title, imdbID });
-        } else {
-          setPreviewMovie(null);
-        }
-      })
-  ), [title]);
+      request(title)
+        .then(({ Response, Plot, Poster, Title, imdbID }) => {
+          setFetchError(Response !== 'True');
+
+          if (Response === 'True') {
+            setPreviewMovie({ Plot, Poster, Title, imdbID });
+          } else {
+            setPreviewMovie(null);
+          }
+        });
+    }, [title],
+  );
 
   const handlChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
   }, []);
 
+  const onAdd = useCallback(() => {
+    setTitle('');
+    addMovie(previewMovie);
+  }, [previewMovie]);
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={fetchMovie}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -46,6 +54,7 @@ export const FindMovie: React.FC<Props> = memo(({ onAdd }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={`input ${fetchError && 'is-danger'}`}
+              value={title}
               onChange={handlChange}
             />
           </div>
@@ -72,7 +81,7 @@ export const FindMovie: React.FC<Props> = memo(({ onAdd }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={onAdd(previewMovie)}
+              onClick={onAdd}
             >
               Add to the list
             </button>

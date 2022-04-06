@@ -7,7 +7,7 @@ export const App: FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const addedFilmsId = useRef<string[]>([]);
 
-  const addMovie = (newMovie: Movie) => () => {
+  const addMovie = (newMovie: Movie) => {
     if (newMovie && !addedFilmsId.current.includes(newMovie.imdbID)) {
       setMovies((state) => [...state, newMovie]);
       addedFilmsId.current = [...addedFilmsId.current, newMovie.imdbID];
@@ -20,8 +20,8 @@ export const App: FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie onAdd={addMovie} />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );
-}
+};

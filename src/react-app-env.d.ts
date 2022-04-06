@@ -2,6 +2,7 @@
 
 type Movie = {
   Poster: string;
+  Year: number;
   Title: string;
   Plot: string;
   imdbID: string;

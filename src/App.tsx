@@ -1,29 +1,55 @@
-import { Component } from 'react';
-import './App.scss';
-import { MoviesList } from './components/MoviesList';
-import { FindMovie } from './components/FindMovie';
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Routes,
+} from 'react-router-dom';
+import classNames from 'classnames';
+import { Favourites } from './components/Favourites/Favourites';
+import { Search } from './components/Search/Search';
+import { useLocalStorage } from './CustomHooks/useLocallStorage';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useLocalStorage<Movie[]>('Movies', []);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const [isFolderActive, setIsFolderActive] = useLocalStorage<boolean>('isFolderActive', true);
+
+  const addMovie = (movie: Movie): void => {
+    const includeMovie = movies.some(({ imdbID }) => movie.imdbID === imdbID);
+
+    if (!includeMovie) {
+      setMovies(currentMovies => [...currentMovies, movie]);
+    }
   };
 
-  render() {
-    const { movies } = this.state;
+  const deleteMovie = (movie: Movie):void => {
+    setMovies(currentMovies => currentMovies
+      .filter(currentMovie => currentMovie.imdbID !== movie.imdbID));
+  };
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <Router>
+      <div className="box tabs is-centered is-toggle is-toggle-rounded">
+        <ul>
+          <li className={classNames({ 'is-active': isFolderActive })}>
+            <Link to="/favourites" onClick={() => setIsFolderActive(true)}>
+              <span className="icon is-small"><i className="fa-solid fa-star" /></span>
+              <span>Favourites</span>
+            </Link>
+          </li>
+          <li className={classNames({ 'is-active': !isFolderActive })}>
+            <Link to="/search" onClick={() => setIsFolderActive(false)}>
+              <span className="icon is-small"><i className="fa-solid fa-magnifying-glass" /></span>
+              <span>Search</span>
+            </Link>
+          </li>
+        </ul>
       </div>
-    );
-  }
-}
+      <Routes>
+        <Route path="/favourites" element={<Favourites deleteMovie={deleteMovie} movies={movies} />} />
+        <Route path="/search" element={<Search addMovie={addMovie} deleteMovie={deleteMovie} movies={movies} />} />
+      </Routes>
+    </Router>
+  );
+};

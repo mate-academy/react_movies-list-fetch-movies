@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './MovieCard.scss';
 
 type Props = {
   movie: Movie;
 };
 
-export const MovieCard: React.FC<Props> = (props) => {
+export const MovieCard: React.FC<Props> = memo((props) => {
   const { movie } = props;
 
   return (
@@ -40,4 +40,4 @@ export const MovieCard: React.FC<Props> = (props) => {
       </div>
     </div>
   );
-};
+});

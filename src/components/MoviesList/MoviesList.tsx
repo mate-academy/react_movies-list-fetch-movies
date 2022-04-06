@@ -4,10 +4,11 @@ import { MovieCard } from '../MovieCard';
 
 interface Props {
   movies: Movie[];
+  deleteMovie(movie: Movie): void;
 }
 
 export const MoviesList: React.FC<Props> = (props) => {
-  const { movies } = props;
+  const { movies, deleteMovie } = props;
 
   return (
     <div className="movies">
@@ -15,6 +16,7 @@ export const MoviesList: React.FC<Props> = (props) => {
         <MovieCard
           key={movie.imdbID}
           movie={movie}
+          deleteMovie={deleteMovie}
         />
       ))}
     </div>

@@ -4,13 +4,12 @@ import { MovieCard } from '../MovieCard';
 
 import { getMovie } from '../../api/movies';
 
-import './FindMovie.scss';
-
 type Props = {
   addMovie: (movie: Movie) => void,
+  deleteMovie: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
   const [error, setError] = useState(false);
   const [movie, setMovie] = useState(null);
   const [title, setTitle] = useState('');
@@ -48,7 +47,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie" onSubmit={submitForm}>
+      <form onSubmit={submitForm}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -97,7 +96,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
+        {movie && <MovieCard movie={movie} deleteMovie={deleteMovie} />}
       </div>
     </>
 

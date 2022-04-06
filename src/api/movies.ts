@@ -9,3 +9,15 @@ export async function getMovie(title: string) {
 
   return response.json();
 }
+
+export async function getMovies(title?: string) {
+  const url = `https://www.omdbapi.com/?apikey=b170ffd0&s=${title}`;
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`${response.status}: ${response.text}`);
+  }
+
+  return response.json();
+}

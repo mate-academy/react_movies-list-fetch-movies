@@ -14,18 +14,19 @@ export const FindMovie: React.FC<Props> = memo(({ onAdd }) => {
   const [fetchError, setFetchError] = useState(false);
   const [title, setTitle] = useState('');
 
-  const fetchMovie = useCallback(() => {
+  const fetchMovie = useCallback(() => (
     request(title)
       .then(({ Response, Plot, Poster, Title, imdbID }) => {
         setFetchError(Response !== 'True');
+        setTitle('');
 
         if (Response === 'True') {
           setPreviewMovie({ Plot, Poster, Title, imdbID });
         } else {
           setPreviewMovie(null);
         }
-      });
-  }, [title]);
+      })
+  ), [title]);
 
   const handlChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);

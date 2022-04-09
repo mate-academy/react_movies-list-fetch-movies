@@ -12,13 +12,13 @@ export class App extends Component<{}, State> {
     movies: [],
   };
 
-  addMovie = (obj: Movie) => {
+  addMovie = (movieFromServer: Movie) => {
     const findSameMovie = this.state.movies.find(movie => (
-      movie.imdbID === obj.imdbID));
+      movie.imdbID === movieFromServer.imdbID));
 
     if (!findSameMovie) {
       this.setState((state) => ({
-        movies: [...state.movies, obj],
+        movies: [...state.movies, movieFromServer],
       }));
     }
   };

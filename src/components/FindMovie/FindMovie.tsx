@@ -9,8 +9,8 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
-  const [title, setTitle] = useState('');
   const [film, setFilm] = useState<Movie | null>();
+  const [title, setTitle] = useState('');
   const [error, setError] = useState(false);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -20,11 +20,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     if (!movie) {
       setError(true);
+    } else {
+      setFilm(movie);
+      setTitle('');
+      setError(false);
     }
-
-    setTitle('');
-    setFilm(movie);
-    setError(false);
   };
 
   const handleClick = () => {
@@ -33,6 +33,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
 
     addMovie(film);
+
     setTitle('');
     setFilm(null);
     setError(false);
@@ -58,14 +59,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={classNames('input', {
                 'is-danger': error,
               })}
-              onChange={(e) => {
-                setTitle(e.target.value);
-                setError(false);
-              }}
+              onChange={(e) => setTitle(e.target.value)}
             />
           </div>
 
-          {(error) && (
+          {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>

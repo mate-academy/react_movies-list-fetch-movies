@@ -4,10 +4,15 @@ export const request = async (movieTitle: string) => {
   const response = await fetch(`${BASE_URL}${movieTitle}`);
 
   if (!response.ok) {
-    throw new Error(`Status: ${response.status} - StatusText: ${response.statusText}`);
+    throw new Error(`Status: ${response.status}
+      - StatusText: ${response.statusText}`);
   }
 
-  const movie: Promise<Movie> = await response.json();
+  const movie = await response.json();
+
+  if (movie.Response === 'False') {
+    return null;
+  }
 
   return movie;
 };

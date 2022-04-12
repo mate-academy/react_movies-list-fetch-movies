@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import './App.scss';
 import { useState } from 'react';
 import { MoviesList } from './components/MoviesList';
@@ -7,13 +6,16 @@ import { FindMovie } from './components/FindMovie';
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const addMovie = (movie:Movie) => {
+  const addMovie = (movie: Movie) => {
     setMovies(currMovies => {
-      if (currMovies.some(currMovie => currMovie.imdbID === movie.imdbID)) {
+      const alreadyInMovies = currMovies.some(currMovie => currMovie.imdbID
+        === movie.imdbID);
+
+      if (alreadyInMovies) {
         return currMovies;
       }
 
-      return [...currMovies, { ...movie }];
+      return [...currMovies, movie];
     });
   };
 

@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { request } from '../../api/requests';
@@ -10,7 +9,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [queriedMovie, setQueridMovie] = useState<Movie | null>(null);
   const [hasError, setHasError] = useState(false);
 
-  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHasError(false);
     setTitleQuery(event.target.value);
   };
@@ -20,18 +19,19 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setQueridMovie(null);
   };
 
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (queriedMovie) {
       addMovie(queriedMovie);
       reset();
+    } else {
+      setHasError(true);
     }
   };
 
   const getFilm = () => {
     request(titleQuery).then(loadedMovie => {
-      // eslint-disable-next-line no-console
       if (loadedMovie.Title) {
         setQueridMovie(loadedMovie);
       } else {
@@ -44,7 +44,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={submitHandler}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -58,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': hasError })}
               value={titleQuery}
-              onChange={changeHandler}
+              onChange={handleChange}
             />
           </div>
 

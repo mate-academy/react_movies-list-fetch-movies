@@ -1,29 +1,22 @@
-import { Component } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
+import { MoviesContext } from './contexts/MoviesContext';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
-  };
-
-  render() {
-    const { movies } = this.state;
-
-    return (
+  return (
+    <MoviesContext.Provider value={{ movies, setMovies }}>
       <div className="page">
         <div className="page-content">
-          <MoviesList movies={movies} />
+          <MoviesList />
         </div>
         <div className="sidebar">
           <FindMovie />
         </div>
       </div>
-    );
-  }
-}
+    </MoviesContext.Provider>
+  );
+};

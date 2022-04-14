@@ -40,7 +40,9 @@ export const FindMovie: React.FC = memo(() => {
   const getMovie = () => {
     request(searchValue)
       .then(data => {
-        if (data.Response === true) {
+        if (data.Response === 'True') {
+          // eslint-disable-next-line no-console
+          console.log(data);
           setSearchedMovie(data);
         } else {
           setHasError(true);

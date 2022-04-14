@@ -1,29 +1,20 @@
-import { Component } from 'react';
+import { FC } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
+import { MoviesProvider } from './components/MoviesContext';
 
-interface State {
-  movies: Movie[];
-}
-
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
-  };
-
-  render() {
-    const { movies } = this.state;
-
-    return (
+export const App: FC = () => {
+  return (
+    <MoviesProvider>
       <div className="page">
         <div className="page-content">
-          <MoviesList movies={movies} />
+          <MoviesList />
         </div>
         <div className="sidebar">
           <FindMovie />
         </div>
       </div>
-    );
-  }
-}
+    </MoviesProvider>
+  );
+};

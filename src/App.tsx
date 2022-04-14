@@ -12,26 +12,24 @@ export function App() {
   const fetchMovies = () => {
     return fetch('http://www.omdbapi.com/?apikey=2636363f&t=cat')
       .then(response => {
-        console.log('response', response);
-        response.json()
-      })
+        response.json();
+      });
   };
 
   useEffect(() => {
     fetchMovies().then(data => {
-    setMovies(data)});
+      setMovies(data);
+    });
   }, []);
-
-  console.log('movie', movies);
 
   return (
     <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-   );
+      <div className="sidebar">
+        <FindMovie />
+      </div>
+    </div>
+  );
 }

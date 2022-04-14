@@ -1,22 +1,31 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+// http://www.omdbapi.com/?apikey=2636363f&t=cat
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+export function App() {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  // const [movie, setMovie] = useState<Movie>(Object);
+
+  const fetchMovies = () => {
+    return fetch('http://www.omdbapi.com/?apikey=2636363f&t=cat')
+      .then(response => {
+        console.log('response', response);
+        response.json()
+      })
   };
 
-  render() {
-    const { movies } = this.state;
+  useEffect(() => {
+    fetchMovies().then(data => {
+    setMovies(data)});
+  }, []);
 
-    return (
-      <div className="page">
+  console.log('movie', movies);
+
+  return (
+    <div className="page">
         <div className="page-content">
           <MoviesList movies={movies} />
         </div>
@@ -24,6 +33,5 @@ export class App extends Component<{}, State> {
           <FindMovie />
         </div>
       </div>
-    );
-  }
+   );
 }

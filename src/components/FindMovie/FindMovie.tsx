@@ -40,7 +40,7 @@ export const FindMovie: React.FC = memo(() => {
   const getMovie = () => {
     request(searchValue)
       .then(data => {
-        if (data.Title) {
+        if (data.Response === true) {
           setSearchedMovie(data);
         } else {
           setHasError(true);

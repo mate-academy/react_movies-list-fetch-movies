@@ -38,7 +38,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setError(false);
   };
 
-  const handelSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  // eslint-disable-next-line max-len
+  const handelSubmit = (event: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!movie) {
       setError(true);
@@ -55,6 +56,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
+        onSubmit={handelSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">

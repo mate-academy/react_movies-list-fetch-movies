@@ -60,7 +60,7 @@ export const FindMovie: React.FC = memo(() => {
     event.preventDefault();
     resetSearchField();
 
-    if (foundMovie && checkIfStored(storedMovies, foundMovie)) {
+    if (foundMovie && !checkIfStored(storedMovies, foundMovie)) {
       setStoredMovies(prevState => ([
         ...prevState,
         foundMovie,
@@ -68,6 +68,9 @@ export const FindMovie: React.FC = memo(() => {
       setFoundMovie(null);
     }
   }, [foundMovie, storedMovies]);
+
+  const getStatus = () => (Boolean(!foundMovie
+    || checkIfStored(storedMovies, foundMovie)));
 
   return (
     <>
@@ -114,6 +117,7 @@ export const FindMovie: React.FC = memo(() => {
             <button
               type="submit"
               className="button is-primary"
+              disabled={getStatus()}
             >
               Add to the list
             </button>

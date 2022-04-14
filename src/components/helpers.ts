@@ -2,8 +2,8 @@ export function checkIfStored(array: Movie[], element: Movie) {
   const index = array.findIndex(item => item.imdbID === element.imdbID);
 
   if (index === -1) {
-    return true;
+    return false;
   }
 
-  return false;
+  return true;
 }

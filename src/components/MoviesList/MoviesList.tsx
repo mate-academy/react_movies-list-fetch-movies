@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './MoviesList.scss';
 import { MovieCard } from '../MovieCard';
+import { useMoviesContext } from '../../customHooks/useMoviesContext';
 
-interface Props {
-  movies: Movie[];
-}
-
-export const MoviesList: React.FC<Props> = (props) => {
-  const { movies } = props;
+export const MoviesList: React.FC = memo(() => {
+  const { movies } = useMoviesContext();
 
   return (
     <div className="movies">
@@ -19,4 +16,4 @@ export const MoviesList: React.FC<Props> = (props) => {
       ))}
     </div>
   );
-};
+});

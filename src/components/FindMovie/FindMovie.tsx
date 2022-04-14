@@ -27,6 +27,7 @@ export const FindMovie: React.FC<Props> = React.memo(
     const findMovie = () => {
       setIsLoaded(true);
       setHasError(false);
+      setFoundedMovie(null);
 
       request(title)
         .then((movie) => {

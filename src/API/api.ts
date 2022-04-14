@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=3dfb3239';
+const BASE_URL = 'https://www.omdbapi.com/?i=tt3896198&apikey=3dfb3239';
 
 export const request = (url: string, options?: RequestInit) => {
   return fetch(`${BASE_URL}${url}`, options)

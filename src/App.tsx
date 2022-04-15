@@ -1,26 +1,17 @@
-import { useState, useEffect } from 'react';
-import './App.scss';
-import { MoviesList } from './components/MoviesList';
+import { useState } from 'react';
 import { FindMovie } from './components/FindMovie';
-
-// http://www.omdbapi.com/?apikey=2636363f&t=cat
+import { MoviesList } from './components/MoviesList';
+import './App.scss';
 
 export function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
-  // const [movie, setMovie] = useState<Movie>(Object);
 
-  const fetchMovies = () => {
-    return fetch('http://www.omdbapi.com/?apikey=2636363f&t=cat')
-      .then(response => {
-        response.json();
-      });
+  const addMovie = (newMovie: Movie) => {
+    setMovies(prev => ([
+      ...prev,
+      newMovie,
+    ]));
   };
-
-  useEffect(() => {
-    fetchMovies().then(data => {
-      setMovies(data);
-    });
-  }, []);
 
   return (
     <div className="page">
@@ -28,7 +19,7 @@ export function App() {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie onAddMovie={addMovie} />
       </div>
     </div>
   );

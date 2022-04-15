@@ -7,15 +7,17 @@ export const App: React.FC = () => {
   const [movies, addMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie | null) => {
-    if (movie !== null) {
-      const existMovie = movies.find((mov) => mov.imdbID === movie.imdbID);
+    if (movie === null) {
+      return;
+    }
 
-      if (!existMovie) {
-        addMovies(currentMovie => [
-          ...currentMovie,
-          movie,
-        ]);
-      }
+    const existMovie = movies.find((mov) => mov.imdbID === movie.imdbID);
+
+    if (!existMovie) {
+      addMovies(currentMovie => [
+        ...currentMovie,
+        movie,
+      ]);
     }
   };
 

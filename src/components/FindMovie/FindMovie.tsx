@@ -13,8 +13,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [hasError, setHasError] = useState(false);
 
   const resetForm = () => {
-    setHasError(false);
     setTitle('');
+  };
+
+  const handlerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    setHasError(false);
   };
 
   const handlerSumbit
@@ -26,9 +30,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       .then((movie) => {
         if (movie.Response === 'True') {
           setShowMovie(movie);
+        } else {
+          setHasError(true);
         }
-
-        setHasError(movie.Response !== 'True');
       });
 
     resetForm();
@@ -51,7 +55,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               value={title}
-              onChange={event => setTitle(event.target.value)}
+              onChange={handlerChange}
               placeholder="Enter a title to search"
               className="input"
             />

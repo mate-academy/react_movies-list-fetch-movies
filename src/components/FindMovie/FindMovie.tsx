@@ -4,6 +4,7 @@ import cn from 'classnames';
 
 import { MovieCard } from '../MovieCard';
 import { request } from '../../api/api';
+import { Loader } from '../Loader/Loader';
 
 interface Props {
   addOnPage: (movie: Movie) => void,
@@ -125,16 +126,7 @@ export const FindMovie: React.FC<Props> = React.memo(
 
           {isLoaded && !hasError
             && (
-              <div className="lds-roller">
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-              </div>
+              <Loader />
             )}
         </div>
       </>

@@ -8,7 +8,6 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { MoviesContext } from '../MoviesContext';
 import { findMovie } from '../../API/api';
-import { checkIfStored } from '../helpers';
 
 export const FindMovie: React.FC = memo(() => {
   const {
@@ -20,6 +19,7 @@ export const FindMovie: React.FC = memo(() => {
     setSearchError,
     setStoredMovies,
     storedMovies,
+    checkIfStored,
   } = useContext(MoviesContext);
 
   const resetSearchField = useCallback(() => {
@@ -36,7 +36,9 @@ export const FindMovie: React.FC = memo(() => {
   );
 
   const handleSearch = useCallback(async () => {
-    if (query) {
+    if (!query) {
+      setSearchError(true);
+    } else {
       setSearchError(false);
       setFoundMovie(null);
 
@@ -51,8 +53,6 @@ export const FindMovie: React.FC = memo(() => {
       } catch (error) {
         setSearchError(true);
       }
-    } else {
-      setSearchError(true);
     }
   }, [query]);
 

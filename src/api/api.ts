@@ -1,5 +1,3 @@
-// https://www.omdbapi.com/?apikey=[yourkey]&t=[title]
-
 const API_KEY = '4fb96ef5';
 const URL = 'https://www.omdbapi.com/';
 

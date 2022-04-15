@@ -55,7 +55,7 @@ export const FindMovie: React.FC<Props> = memo(({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={(event => addToTheList(event))}
+        onSubmit={addToTheList}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -69,7 +69,7 @@ export const FindMovie: React.FC<Props> = memo(({ addMovie }) => {
               placeholder="Enter a title to search"
               className={cn('input', { 'is-danger': findError })}
               value={title}
-              onChange={event => handleChange(event)}
+              onChange={handleChange}
             />
           </div>
 
@@ -88,7 +88,7 @@ export const FindMovie: React.FC<Props> = memo(({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={event => fetchMovie(event)}
+              onClick={fetchMovie}
             >
               Find a movie
             </button>

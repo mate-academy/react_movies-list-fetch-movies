@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-export const App: React.FC = () => {
+export const App: React.FC = React.memo(() => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = useCallback((movie: Movie) => {
@@ -26,4 +26,4 @@ export const App: React.FC = () => {
       </div>
     </div>
   );
-};
+});

@@ -36,6 +36,10 @@ export const MovieCard: React.FC<Props> = (props) => {
         <div className="content">
           {movie.Plot}
           <br />
+          <br />
+          <strong>{'imdbRating: '}</strong>
+          {movie.imdbRating}
+          <br />
         </div>
       </div>
     </div>

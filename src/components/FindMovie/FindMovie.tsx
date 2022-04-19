@@ -5,7 +5,7 @@ import './FindMovie.scss';
 
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
-import { GetMovie } from '../../api';
+import { getMovie } from '../../api';
 
 interface Props {
   onAdd: (movie: Movie) => void
@@ -17,7 +17,7 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
   const [error, setError] = useState(false);
 
   const findMovie = () => {
-    GetMovie(query)
+    getMovie(query)
       .then(data => {
         if (data.Response === 'True') {
           setMovie(data);

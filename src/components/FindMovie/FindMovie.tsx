@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getData } from '../../api';
+import { getMovieByTitle } from '../../api';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
@@ -36,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, onClear }) => {
   };
 
   const getMovie = () => {
-    getData(title)
+    getMovieByTitle(title)
       .then(movie => {
         if (movie.Title) {
           setQuery(movie);

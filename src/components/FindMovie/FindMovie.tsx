@@ -12,7 +12,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = (props) => {
   const { addMovie, moviesAlredyExist, setMoviesAlredyExist } = props;
   const [movieTitle, setMovieTitle] = useState('');
-  const [serverData, setServerData] = useState<Movie | {}>();
+  const [serverData, setServerData] = useState<Movie | undefined>(undefined);
   const [errorMessage, setErrorMessage] = useState('');
 
   const titleHandler = useCallback(
@@ -24,9 +24,11 @@ export const FindMovie: React.FC<Props> = (props) => {
 
   const addMovieHandler = useCallback(
     () => {
-      addMovie(serverData);
-      setServerData({});
-      setMovieTitle('');
+      if (serverData !== undefined) {
+        addMovie(serverData);
+        setServerData(undefined);
+        setMovieTitle('');
+      }
     }, [serverData],
   );
 
@@ -37,6 +39,8 @@ export const FindMovie: React.FC<Props> = (props) => {
         .then((res) => {
           if (res.Response === 'False') {
             setErrorMessage("Can't find a movie with such a title");
+
+            return;
           }
 
           setMoviesAlredyExist(false);
@@ -96,7 +100,7 @@ export const FindMovie: React.FC<Props> = (props) => {
         <h2 className="title">Preview</h2>
         {moviesAlredyExist
           ? <span className="movie">Movie is alredy in the list</span>
-          : <MovieCard movie={serverData} /> }
+          : serverData !== undefined && <MovieCard movie={serverData} /> }
       </div>
     </>
   );

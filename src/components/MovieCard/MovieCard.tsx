@@ -12,10 +12,13 @@ export const MovieCard: React.FC<Props> = (props) => {
     <div className="card">
       <div className="card-image">
         <figure className="image is-4by3">
-          <img
-            src={movie.Poster}
-            alt="Film logo"
-          />
+          {movie.Poster && (
+            <img
+              src={movie.Poster}
+              alt="Film logo"
+            />
+          )}
+
         </figure>
       </div>
       <div className="card-content">

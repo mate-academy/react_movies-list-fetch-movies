@@ -6,9 +6,7 @@ interface Props {
   movies: Movie[];
 }
 
-export const MoviesList: React.FC<Props> = (props) => {
-  const { movies } = props;
-
+export const MoviesList: React.FC<Props> = ({ movies }) => {
   return (
     <div className="movies">
       {movies.map(movie => (

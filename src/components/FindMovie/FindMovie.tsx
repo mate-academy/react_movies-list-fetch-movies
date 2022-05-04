@@ -71,6 +71,21 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
             </div>
           </label>
 
+          <label className="label" htmlFor="movie-year">
+            Movie year
+
+            <div className="control">
+              <input
+                defaultValue={0}
+                type="text"
+                id="movie-year"
+                placeholder="Enter a title to search"
+                className={classNames('input',
+                  { 'input is-danger': error })}
+              />
+            </div>
+          </label>
+
           {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
@@ -101,7 +116,22 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
+        <h2 className="title mt-3">Preview</h2>
+        <nav className="pagination" role="navigation" aria-label="pagination">
+          <a className="pagination-previous is-disabled" title="This is the first page">Previous</a>
+          <a className="pagination-next">Next page</a>
+          <ul className="pagination-list">
+            <li>
+              <a className="pagination-link is-current" aria-label="Page 1" aria-current="page">1</a>
+            </li>
+            <li>
+              <a className="pagination-link" aria-label="Goto page 2">2</a>
+            </li>
+            <li>
+              <a className="pagination-link" aria-label="Goto page 3">3</a>
+            </li>
+          </ul>
+        </nav>
         <MoviesList movies={movies} deleteMovie={deleteMovie} />
       </div>
     </>

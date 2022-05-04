@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocalStorage } from '../../CustomHooks/useLocallStorage';
 
 type Props = {
   movie: Movie;
@@ -7,13 +8,21 @@ type Props = {
 
 export const MovieCard: React.FC<Props> = (props) => {
   const { movie, deleteMovie } = props;
+  const [movies] = useLocalStorage<Movie[]>('Movies', []);
 
   return (
     <div className="card">
       <div className="card-header is-align-content-flex-end">
-        <button className="card-footer-item button is-danger is-light" type="button" onClick={() => deleteMovie(movie)}>
-          Delete movie
-        </button>
+        {movies.findIndex(film => film.Title === movie.Title) !== -1
+          ? (
+            <button className="card-footer-item button is-danger is-light" type="button" onClick={() => deleteMovie(movie)}>
+              Delete movie
+            </button>
+          ) : (
+            <button className="card-footer-item button is-primary is-light" type="button" onClick={() => deleteMovie(movie)}>
+              Add movie
+            </button>
+          )}
       </div>
       <div className="card-image">
         <figure className="image is-4by5">

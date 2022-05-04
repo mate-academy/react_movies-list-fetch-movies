@@ -2,7 +2,6 @@
 import React, {useEffect, useState} from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MoviesList } from '../MoviesList';
-import {useLocalStorage} from "../../CustomHooks/useLocallStorage";
 
 type Props = {
   deleteMovie: (movie: Movie) => void,
@@ -10,18 +9,11 @@ type Props = {
 };
 
 export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
-  const [films] = useLocalStorage<Movie[]>('Movies', []);
-  const [preparedMovies, setPreparedMovies] = useState([...movies]);
+  const [preparedMovies, setPreparedMovies] = useState<Movie[]>([]);
   const [inputTitle, setInputTitle] = useState('');
   const [inputYear, setInputYear] = useState(0);
   const [params, setParams] = useSearchParams('');
   const [sortParams, setSortParams] = useState('');
-
-  console.log('State', preparedMovies);
-
-  useEffect(() => {
-    setPreparedMovies(films)
-  }, [films]);
 
   enum SortType {
     Clear = '',
@@ -37,17 +29,12 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
           .toLowerCase()
           .includes(title.toLowerCase());
 
-      const isBodyIncludes = (movieBody: string) => movieBody
-          .toLowerCase()
-          .includes(title.toLowerCase());
-
       const isCorrectYear = (movieYear: number) => movieYear === +year;
 
       return  year
         ? movies.filter((movie) => (isTitleIncludes(movie.Title)
-          || isBodyIncludes(movie.Plot)) && isCorrectYear(movie.Year))
-        : movies.filter((movie) => isTitleIncludes(movie.Title)
-          || isBodyIncludes(movie.Plot));
+          || isCorrectYear(movie.Year)))
+        : movies.filter((movie) => isTitleIncludes(movie.Title));
   };
 
   const sortedMovies = (movies: Movie[]) => {
@@ -106,9 +93,7 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
     setInputYear(0);
   };
 
-  console.log('Favourites');
-  console.log(movies);
-  console.log('PreparedMovies', preparedMovies);
+  useEffect(() => setPreparedMovies(movies), [movies]);
 
   return (
     <div className="ml-6 mr-6">

@@ -1,8 +1,9 @@
+/* eslint-disable */
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { MovieCard } from '../MovieCard';
 
-import { getMovie } from '../../api/movies';
+import { getMovies } from '../../api/movies';
+import {MoviesList} from "../MoviesList";
 
 type Props = {
   addMovie: (movie: Movie) => void,
@@ -11,21 +12,26 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
   const [error, setError] = useState(false);
-  const [movie, setMovie] = useState(null);
+  const [movies, setMovies] = useState([]);
   const [title, setTitle] = useState('');
 
   const searchMovie = () => {
-    getMovie(title)
+    getMovies(title)
       .then(newMovie => {
         if (newMovie.Response === 'False') {
-          setMovie(null);
+          setMovies([]);
           setError(true);
-        } else {
-          setMovie(newMovie);
+          console.log('error');
+        } else if (newMovie) {
+          setMovies(newMovie);
           setError(false);
         }
       });
+
+    console.log(movies);
   };
+
+  console.log(movies);
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -37,10 +43,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
   const submitForm: React.FormEventHandler = (event) => {
     event.preventDefault();
 
-    if (movie) {
-      addMovie(movie);
+    if (movies) {
+      addMovie(movies[0]);
       setTitle('');
-      setMovie(null);
+      setMovies([]);
       setError(false);
     }
   };
@@ -96,7 +102,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} deleteMovie={deleteMovie} />}
+        <MoviesList movies={movies} deleteMovie={deleteMovie} />
       </div>
     </>
 

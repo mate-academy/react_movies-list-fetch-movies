@@ -1,9 +1,9 @@
-import React from 'react';
+/* eslint-disable */
+import React, { useEffect } from 'react';
 import {
-  BrowserRouter as Router,
   Route,
   Link,
-  Routes,
+  Routes, HashRouter,
 } from 'react-router-dom';
 import classNames from 'classnames';
 import { Favourites } from './components/Favourites/Favourites';
@@ -16,6 +16,9 @@ export const App: React.FC = () => {
   const [isFolderActive, setIsFolderActive] = useLocalStorage<boolean>('isFolderActive', true);
 
   const addMovie = (movie: Movie): void => {
+    if (!movie) {
+      return;
+    }
     const includeMovie = movies.some(({ imdbID }) => movie.imdbID === imdbID);
 
     if (!includeMovie) {
@@ -28,18 +31,20 @@ export const App: React.FC = () => {
       .filter(currentMovie => currentMovie.imdbID !== movie.imdbID));
   };
 
+  useEffect(() => {setMovies(movies)}, [movies]);
+
   return (
-    <Router>
+    <HashRouter>
       <div className="box tabs is-centered is-toggle is-toggle-rounded">
         <ul>
           <li className={classNames({ 'is-active': isFolderActive })}>
-            <Link to="/favourites" onClick={() => setIsFolderActive(true)}>
+            <Link to="favourites" onClick={() => setIsFolderActive(true)}>
               <span className="icon is-small"><i className="fa-solid fa-star" /></span>
               <span>Favourites</span>
             </Link>
           </li>
           <li className={classNames({ 'is-active': !isFolderActive })}>
-            <Link to="/search" onClick={() => setIsFolderActive(false)}>
+            <Link to="search" onClick={() => setIsFolderActive(false)}>
               <span className="icon is-small"><i className="fa-solid fa-magnifying-glass" /></span>
               <span>Search</span>
             </Link>
@@ -48,8 +53,8 @@ export const App: React.FC = () => {
       </div>
       <Routes>
         <Route path="/favourites" element={<Favourites deleteMovie={deleteMovie} movies={movies} />} />
-        <Route path="/search" element={<Search addMovie={addMovie} deleteMovie={deleteMovie} movies={movies} />} />
+        <Route path="/search" element={<Search addMovie={addMovie} deleteMovie={deleteMovie} />} />
       </Routes>
-    </Router>
+    </HashRouter>
   );
 };

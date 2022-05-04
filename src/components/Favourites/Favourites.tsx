@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
+/* eslint-disable */
+import React, {useEffect, useState} from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { MoviesList } from '../MoviesList';
+import {useLocalStorage} from "../../CustomHooks/useLocallStorage";
 
 type Props = {
   deleteMovie: (movie: Movie) => void,
@@ -7,48 +10,91 @@ type Props = {
 };
 
 export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
-  const [title, setTitle] = useState('');
-  const [year, setYear] = useState(0);
-  const [preparedMovies, setPreparedMovies] = useState(movies);
+  const [films] = useLocalStorage<Movie[]>('Movies', []);
+  const [preparedMovies, setPreparedMovies] = useState([...movies]);
+  const [inputTitle, setInputTitle] = useState('');
+  const [inputYear, setInputYear] = useState(0);
+  const [params, setParams] = useSearchParams('');
+  const [sortParams, setSortParams] = useState('');
+
+  console.log('State', preparedMovies);
+
+  useEffect(() => {
+    setPreparedMovies(films)
+  }, [films]);
+
+  enum SortType {
+    Clear = '',
+    Year = 'byYear',
+    Title = 'byTitle',
+  }
 
   const visibleMovies = () => {
-    const isTitleIncludes = (movieTitle: string) => movieTitle
-      .toLowerCase()
-      .includes(title.toLowerCase());
+    const title = params.get('title') || '';
+    const year = params.get('year') || 0;
 
-    const isBodyIncludes = (movieBody: string) => movieBody
-      .toLowerCase()
-      .includes(title.toLowerCase());
+      const isTitleIncludes = (movieTitle: string) => movieTitle
+          .toLowerCase()
+          .includes(title.toLowerCase());
 
-    const isCorrectYear = (movieYear: number) => movieYear === year;
+      const isBodyIncludes = (movieBody: string) => movieBody
+          .toLowerCase()
+          .includes(title.toLowerCase());
 
-    const filterCallback = year
-      ? movies.filter((movie) => (isTitleIncludes(movie.Title)
-        || isBodyIncludes(movie.Plot)) && isCorrectYear(movie.Year))
-      : movies.filter((movie) => isTitleIncludes(movie.Title)
-        || isBodyIncludes(movie.Plot));
+      const isCorrectYear = (movieYear: number) => movieYear === +year;
 
-    return filterCallback;
+      return  year
+        ? movies.filter((movie) => (isTitleIncludes(movie.Title)
+          || isBodyIncludes(movie.Plot)) && isCorrectYear(movie.Year))
+        : movies.filter((movie) => isTitleIncludes(movie.Title)
+          || isBodyIncludes(movie.Plot));
   };
+
+  const sortedMovies = (movies: Movie[]) => {
+    return [...movies].sort((movie1, movie2) => {
+      switch (sortParams) {
+        case SortType.Year:
+          return movie1.Year - movie2.Year;
+
+        case SortType.Title:
+          return movie1.Title.localeCompare(movie2.Title);
+
+        default:
+          return 0;
+      }
+    });
+  }
 
   const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
-    setTitle(value);
+    setInputTitle(value);
   };
 
   const handleInputYear = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
-    setYear(+value);
+    setInputYear(+value);
+  };
+
+  const handleSelectSortType = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+
+    setSortParams(value);
   };
 
   const submitForm: React.FormEventHandler = (event) => {
     event.preventDefault();
 
-    setPreparedMovies(visibleMovies());
+    setParams({ year: inputYear.toString(), title: inputTitle });
 
-    setTitle('');
+    console.log('12345');
+    console.log(sortedMovies(visibleMovies()));
+
+    setPreparedMovies(sortedMovies(visibleMovies()));
+
+    setInputTitle('');
+    setInputYear(0);
   };
 
   const resetFilter: React.FormEventHandler = (event) => {
@@ -56,8 +102,13 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
 
     setPreparedMovies(movies);
 
-    setTitle('');
+    setInputTitle('');
+    setInputYear(0);
   };
+
+  console.log('Favourites');
+  console.log(movies);
+  console.log('PreparedMovies', preparedMovies);
 
   return (
     <div className="ml-6 mr-6">
@@ -68,7 +119,7 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
               Key words to search
               <div className="control">
                 <input
-                  value={title}
+                  value={inputTitle}
                   onChange={handleInputTitle}
                   type="text"
                   id="movie-title"
@@ -83,7 +134,7 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
               Movie year
               <div className="control">
                 <input
-                  value={year}
+                  value={inputYear}
                   onChange={handleInputYear}
                   type="number"
                   id="movie-year"
@@ -94,14 +145,26 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
             </label>
           </div>
 
-          <div className="field is-grouped">
-            <div className="control">
+          <div className="field is-grouped is-grouped-centered">
+            <div className="control level-item">
               <button
                 type="submit"
                 className="button is-primary is-light"
               >
                 Filter movies
               </button>
+              <div className="control has-icons-left ml-6">
+                <div className="select is-medium">
+                  <select onChange={handleSelectSortType}>
+                    <option>Select sort type</option>
+                    <option>Sort by Year</option>
+                    <option>Sort by Title</option>
+                  </select>
+                </div>
+                <span className="icon is-medium is-left">
+                  <i className="fas fa-globe"></i>
+                </span>
+              </div>
               <button
                 type="button"
                 className="button is-warning is-light ml-6"

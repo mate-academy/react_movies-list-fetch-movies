@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable */
+import React  from 'react';
 import './MoviesList.scss';
 import { MovieCard } from '../MovieCard';
 
@@ -9,6 +10,8 @@ interface Props {
 
 export const MoviesList: React.FC<Props> = (props) => {
   const { movies, deleteMovie } = props;
+
+  console.log('List', movies);
 
   return (
     <div className="movies">

@@ -157,6 +157,13 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
               >
                 Reset filter
               </button>
+              <button
+                type="button"
+                className="button is-danger is-light ml-6"
+                onClick={resetFilter}
+              >
+                Reset all
+              </button>
             </div>
           </div>
         </form>

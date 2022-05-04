@@ -21,7 +21,14 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie
+            setMovies={(movie) => {
+              this.setState(prevState => ({
+                movies: [...prevState.movies, movie],
+              }));
+            }}
+            movies={movies}
+          />
         </div>
       </div>
     );

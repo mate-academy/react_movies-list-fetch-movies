@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/?apikey=6fc09e40';
+const BASE_URL = 'https://www.omdbapi.com/?apikey=6fc09e40';
 
 export const getData = async (url:string) => {
   try {

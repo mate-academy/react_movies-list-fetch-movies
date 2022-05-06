@@ -17,7 +17,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   useEffect(() => {
     request(inputValue)
       .then(movie => {
-        setFindMovie(movie);
+        if (Object.keys(movie).length > 3) {
+          setFindMovie(movie);
+        } else {
+          setFindMovie(undefined);
+        }
       });
     setVisible(false);
   }, [inputValue]);
@@ -40,10 +44,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
               onChange={(event) => setinputValue(event.target.value)}
             />
           </div>
-
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
+          {visible && findMovie === undefined && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">

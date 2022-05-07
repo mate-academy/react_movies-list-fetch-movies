@@ -39,7 +39,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${findMovie === undefined && visible && 'is-danger'}`}
               value={inputValue}
               onChange={(event) => setinputValue(event.target.value)}
             />
@@ -71,6 +71,8 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
                   && findMovie !== undefined) {
                   setMovies(findMovie);
                 }
+
+                setinputValue('');
               }}
             >
               Add to the list

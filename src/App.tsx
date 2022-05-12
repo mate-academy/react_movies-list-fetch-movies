@@ -12,26 +12,26 @@ export class App extends Component<{}, State> {
     movies: [],
   };
 
-  findMovieInArray = (movieToCheck: Movie) => {
-    if (this.state.movies
-      .find(movie => movie.imdbID === movieToCheck.imdbID)) {
-      return true;
+  checkIsMovieInArray = (movieToCheck: Movie | null) => {
+    if (movieToCheck) {
+      if (this.state.movies
+        .find(movie => movie.imdbID === movieToCheck.imdbID)) {
+        return true;
+      }
     }
 
     return false;
   };
 
-  addMovie = (receivedMovie: Movie) => {
-    if (this.findMovieInArray(receivedMovie)) {
-      return;
+  addMovie = (receivedMovie: Movie | null) => {
+    if (receivedMovie && !this.checkIsMovieInArray(receivedMovie)) {
+      this.setState(state => {
+        return {
+          movies: [...state.movies,
+            receivedMovie],
+        };
+      });
     }
-
-    this.setState(state => {
-      return {
-        movies: [...state.movies,
-          receivedMovie],
-      };
-    });
   };
 
   render() {

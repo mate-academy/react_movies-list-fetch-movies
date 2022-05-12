@@ -4,14 +4,7 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from './api';
 
 type Props = {
-  addNewMovie: (newMovie: Movie) => void;
-};
-
-const emptyMovie = {
-  Poster: '',
-  Title: '',
-  Plot: '',
-  imdbID: '',
+  addNewMovie: (newMovie: Movie | null) => void;
 };
 
 export const FindMovie: React.FC <Props> = ({ addNewMovie }) => {
@@ -28,7 +21,7 @@ export const FindMovie: React.FC <Props> = ({ addNewMovie }) => {
   const [
     loadedMovie,
     setLoadedMovie,
-  ] = useState(emptyMovie);
+  ] = useState(null);
 
   const handleSearchButtonClick = async () => {
     try {
@@ -97,7 +90,7 @@ export const FindMovie: React.FC <Props> = ({ addNewMovie }) => {
               onClick={() => {
                 addNewMovie(loadedMovie);
                 setSearchQuery('');
-                setLoadedMovie(emptyMovie);
+                setLoadedMovie(null);
               }}
             >
               Add to the list
@@ -109,9 +102,12 @@ export const FindMovie: React.FC <Props> = ({ addNewMovie }) => {
       <div className="container">
         <h2 className="title">Preview</h2>
         {
-          (!isErrorOccurred && loadedMovie.Title)
+          loadedMovie
           && (
-            <MovieCard movie={loadedMovie} />
+            (!isErrorOccurred && loadedMovie)
+            && (
+              <MovieCard movie={loadedMovie} />
+            )
           )
         }
       </div>

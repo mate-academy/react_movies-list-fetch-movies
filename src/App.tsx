@@ -12,6 +12,28 @@ export class App extends Component<{}, State> {
     movies: [],
   };
 
+  checkIsMovieInArray = (movieToCheck: Movie | null) => {
+    if (movieToCheck) {
+      if (this.state.movies
+        .find(movie => movie.imdbID === movieToCheck.imdbID)) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  addMovie = (receivedMovie: Movie | null) => {
+    if (receivedMovie && !this.checkIsMovieInArray(receivedMovie)) {
+      this.setState(state => {
+        return {
+          movies: [...state.movies,
+            receivedMovie],
+        };
+      });
+    }
+  };
+
   render() {
     const { movies } = this.state;
 
@@ -21,7 +43,9 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie
+            addNewMovie={this.addMovie}
+          />
         </div>
       </div>
     );

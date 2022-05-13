@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
+import './App.scss';
 
 interface State {
   movies: Movie[];
@@ -10,6 +10,18 @@ interface State {
 export class App extends Component<{}, State> {
   state: State = {
     movies: [],
+  };
+
+  addMovie = (film: Movie) => {
+    const foundMovie = this.state.movies.some(
+      movie => movie.imdbID === film.imdbID,
+    );
+
+    if (!foundMovie) {
+      this.setState(prev => ({
+        movies: [film, ...prev.movies],
+      }));
+    }
   };
 
   render() {
@@ -21,7 +33,7 @@ export class App extends Component<{}, State> {
           <MoviesList movies={movies} />
         </div>
         <div className="sidebar">
-          <FindMovie />
+          <FindMovie addMovie={this.addMovie} />
         </div>
       </div>
     );

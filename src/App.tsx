@@ -13,11 +13,11 @@ export class App extends Component<{}, State> {
   };
 
   addMovie = (film: Movie) => {
-    const findMovie = this.state.movies.some(
+    const foundMovie = this.state.movies.some(
       movie => movie.imdbID === film.imdbID,
     );
 
-    if (!findMovie) {
+    if (!foundMovie) {
       this.setState(prev => ({
         movies: [film, ...prev.movies],
       }));

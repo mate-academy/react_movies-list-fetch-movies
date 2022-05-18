@@ -36,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({
   };
 
   const isInputValid = (input: string) => {
-    return input.match(/[A-Za-z0-9А-Яа-я ]/g);
+    return input.match(/[A-Za-z0-9А-Яа-я .,!?-]/g);
   };
 
   const handleFindButton = async () => {

@@ -6,7 +6,7 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  addMovie: (movie?: Movie) => void;
+  addMovie: (movie: Movie) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
@@ -89,7 +89,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="button is-primary"
               disabled={errorMasage}
               onClick={() => {
-                addMovie(previeData);
+                if (previeData) {
+                  addMovie(previeData);
+                }
               }}
             >
               Add to the list

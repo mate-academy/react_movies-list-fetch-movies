@@ -5,13 +5,8 @@ import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  // const [checkFilm, setCheckFilm] = useState(false);
 
-  const addMovie = (movie: Movie | undefined) => {
-    if (!movie) {
-      return;
-    }
-
+  const addMovie = (movie: Movie) => {
     const checkFilms = movies.some(m => m.imdbID === movie.imdbID);
 
     if (checkFilms) {

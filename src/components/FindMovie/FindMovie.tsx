@@ -11,7 +11,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [inputText, setInputText] = useState('');
-  const [previeData, setPrevieData] = useState<Movie>();
+  const [previeData, setPrevieData] = useState<Movie | null>(null);
   const [errorMasage, setErrorMasage] = useState(false);
 
   const selectFilm = async () => {
@@ -91,6 +91,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               onClick={() => {
                 if (previeData) {
                   addMovie(previeData);
+                  setPrevieData(null);
                 }
               }}
             >

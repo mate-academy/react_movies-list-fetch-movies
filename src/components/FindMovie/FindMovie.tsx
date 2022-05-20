@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 
@@ -31,15 +31,15 @@ export const FindMovie: React.FC<Props> = ({
   checkMovieRepeat,
   setMovieRepeat,
 }) => {
-  const isInputEmpty = (input: string) => {
+  const isInputEmpty = useCallback((input: string) => {
     return !input.trim();
-  };
+  }, []);
 
-  const isInputValid = (input: string) => {
+  const isInputValid = useCallback((input: string) => {
     return input.match(/[A-Za-z0-9А-Яа-я .,!?-]/g);
-  };
+  }, []);
 
-  const handleFindButton = async () => {
+  const handleFindButton = useCallback(async () => {
     if (isInputEmpty(titleQuery)) {
       setFindErrorVisible(true);
 
@@ -51,9 +51,9 @@ export const FindMovie: React.FC<Props> = ({
     }
 
     await getMovieFromServer();
-  };
+  }, [getMovieFromServer, titleQuery, previewMovie]);
 
-  const handleAddMovieButton = () => {
+  const handleAddMovieButton = useCallback(() => {
     if (!previewMovie) {
       return;
     }
@@ -67,7 +67,7 @@ export const FindMovie: React.FC<Props> = ({
     setMovies((prevValue) => [...prevValue, previewMovie]);
     setTitleQuery('');
     setPreviewMovie(null);
-  };
+  }, [previewMovie]);
 
   return (
     <>

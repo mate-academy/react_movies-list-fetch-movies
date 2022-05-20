@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -12,11 +12,11 @@ export const App: React.FC = () => {
   const [isFindErrorVisible, setFindErrorVisible] = useState(false);
   const [isMovieRepeat, setMovieRepeat] = useState(false);
 
-  const checkMovieRepeat = (id: string) => {
+  const checkMovieRepeat = useCallback((id: string) => {
     return movies.some(movie => movie.imdbID === id);
-  };
+  }, [movies]);
 
-  const getMovieFromServer = async () => {
+  const getMovieFromServer = useCallback(async () => {
     const newMovie = await getMovieByTitle(titleQuery);
 
     if (newMovie.Response === 'False') {
@@ -34,7 +34,7 @@ export const App: React.FC = () => {
 
     setPreviewMovie(newMovie);
     setFindErrorVisible(false);
-  };
+  }, [titleQuery]);
 
   return (
     <div className="page">

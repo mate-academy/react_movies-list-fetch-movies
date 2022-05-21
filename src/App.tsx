@@ -1,29 +1,33 @@
-import { Component } from 'react';
+import { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[] | []>([]);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
-  };
+  const addMovie = useCallback((newMovie: Movie) => {
+    if (!movies.some(movie => movie.imdbID === newMovie.imdbID)) {
+      setMovies([...movies, newMovie]);
+    } else {
+      alert('Film is already in the list!'); // eslint-disable-line
+    }
+  }, [movies]);
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        {movies && (
+          <MoviesList
+            movies={movies}
+          />
+        )}
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          addMovie={addMovie}
+        />
+      </div>
+    </div>
+  );
+};

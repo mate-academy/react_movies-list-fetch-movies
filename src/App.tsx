@@ -10,7 +10,7 @@ export const App: React.FC = () => {
     if (!movies.some(movie => movie.imdbID === newMovie.imdbID)) {
       setMovies([...movies, newMovie]);
     } else {
-      alert('Film is already in the list!'); // eslint-disable-line
+      alert('Film is already in the list!');
     }
   }, [movies]);
 

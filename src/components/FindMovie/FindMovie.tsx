@@ -20,7 +20,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     const findMovie = async () => {
       const result = await getMovies(query);
 
-      if (result.Response !== 'False') {
+      if (result.Response === 'True') {
         setMovie(result);
       } else {
         setQueryError('Can not find a movie with this title');

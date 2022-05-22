@@ -17,17 +17,22 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [queryError, setQueryError] = useState('');
 
   const onFind = useCallback(() => {
-    const findMovie = async () => {
-      const result = await getMovies(query);
+    if (!query.trim()) {
+      setQueryError('Please fill correct!');
+    } else {
+      const findMovie = async () => {
+        const result = await getMovies(query);
 
-      if (result.Response === 'True') {
-        setMovie(result);
-      } else {
-        setQueryError('Can not find a movie with this title');
-      }
-    };
+        if (result.Response === 'True') {
+          setMovie(result);
+          setQueryError('');
+        } else {
+          setQueryError('Can not find a movie with this title');
+        }
+      };
 
-    findMovie();
+      findMovie();
+    }
   }, [query]);
 
   const onAdd = useCallback((event: FormEvent) => {
@@ -56,6 +61,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
+              className="input"
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);

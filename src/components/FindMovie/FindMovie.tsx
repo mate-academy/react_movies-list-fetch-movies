@@ -58,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               value={query}
               onChange={(event) => {
-                setQuery(event.target.value)
+                setQuery(event.target.value);
               }}
             />
           </div>

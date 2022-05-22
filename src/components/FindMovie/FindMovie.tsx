@@ -64,7 +64,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           </div>
 
           {queryError && (
-            <p className="help is-danger">
+            <p className="help is-danger"> 
               {queryError}
             </p>
           )}

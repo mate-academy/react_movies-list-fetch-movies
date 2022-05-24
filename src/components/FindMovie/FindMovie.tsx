@@ -19,15 +19,14 @@ export const FindMovie: React.FC<Props> = ({
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
 
-  const loadMovie = () => {
-    getMovie(query)
-      .then(movieFromServer => {
-        if ('Error' in movieFromServer) {
-          setError(movieFromServer.Error);
-        } else {
-          setMovie(movieFromServer);
-        }
-      });
+  const loadMovie = async () => {
+    const movieFromServer = await getMovie(query);
+
+    if ('Error' in movieFromServer) {
+      setError(movieFromServer.Error);
+    } else {
+      setMovie(movieFromServer);
+    }
   };
 
   const changeQuery = (event: ChangeEvent<HTMLInputElement>) => {

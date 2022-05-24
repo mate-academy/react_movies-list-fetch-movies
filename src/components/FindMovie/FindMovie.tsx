@@ -1,5 +1,5 @@
 import {
-  FC, useState, useCallback, ChangeEvent,
+  FC, useState, useCallback, ChangeEvent, FormEvent,
 } from 'react';
 import classNames from 'classnames';
 import { getMovie } from '../../api/api';
@@ -45,7 +45,8 @@ export const FindMovie: FC<Props> = ({ addMovie, isMovieInTheList }) => {
     }
   }, [query, errorMessage]);
 
-  const onAddMovie = useCallback(() => {
+  const onAddMovie = useCallback((event: FormEvent) => {
+    event.preventDefault();
     if (movie) {
       if (isMovieInTheList(movie)) {
         setErrorMessage(Error.hasTheSameMovie);
@@ -64,7 +65,10 @@ export const FindMovie: FC<Props> = ({ addMovie, isMovieInTheList }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(e) => e.preventDefault()}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title

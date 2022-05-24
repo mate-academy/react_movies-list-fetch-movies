@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, {
+  useCallback,
+  useState,
+  FormEvent,
+} from 'react';
 import './FindMovie.scss';
 import { getMovies } from '../../api';
 import { MovieCard } from '../MovieCard';
@@ -10,22 +14,42 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState('');
 
-  const sendRequest = async () => {
-    const movieFromServer = await getMovies(title);
+  const onFindMovie = useCallback(() => {
+    if (!title.trim()) {
+      setError('Please enter a title');
+    } else {
+      const findMovie = async () => {
+        const result = await getMovies(title);
 
-    if (movieFromServer.Title) {
-      return setMovie(movieFromServer);
+        if (result.Response === 'True') {
+          setMovie(result);
+          setError('');
+        } else {
+          setError('Can not find a movie with such a title');
+        }
+      };
+
+      findMovie();
     }
+  }, [title]);
 
-    return setError(current => !current);
-  };
+  const onAddMovie = useCallback((event: FormEvent) => {
+    event.preventDefault();
+
+    if (!error && movie) {
+      addMovie(movie);
+      setMovie(null);
+      setError('');
+    }
+  }, [movie, error]);
 
   return (
     <>
       <form
         className="find-movie"
+        onSubmit={onAddMovie}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -40,7 +64,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="input"
               value={title}
               onChange={(event) => {
-                setError(false);
                 setTitle(event.target.value);
               }}
             />
@@ -58,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={sendRequest}
+              onClick={onFindMovie}
             >
               Find a movie
             </button>
@@ -66,15 +89,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           <div className="control">
             <button
-              type="button"
+              type="submit"
               className="button is-primary"
               disabled={!movie}
-              onClick={() => {
-                if (movie) {
-                  addMovie(movie);
-                  setTitle('');
-                }
-              }}
             >
               Add to the list
             </button>
@@ -82,14 +99,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      <div className="container">
-        <h2 className="title">Preview</h2>
-        {movie && (
+      {movie && (
+        <div className="container">
+          <h2 className="title">Preview</h2>
           <MovieCard
             movie={movie}
           />
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 };

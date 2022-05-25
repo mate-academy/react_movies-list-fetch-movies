@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { getMovie } from '../../api';
 import './FindMovie.scss';
 
@@ -40,6 +40,11 @@ export const FindMovie: React.FC<Props> = ({
     }
   };
 
+  const changeQuery = (event:ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setError(false);
+  };
+
   return (
     <>
       <form
@@ -58,9 +63,7 @@ export const FindMovie: React.FC<Props> = ({
               id="movie-title"
               placeholder="Enter a title to search"
               className={`input ${hasError && 'is-danger'}`}
-              onChange={(event) => {
-                setQuery(event.target.value);
-              }}
+              onChange={changeQuery}
             />
           </div>
 

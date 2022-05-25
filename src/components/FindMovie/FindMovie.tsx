@@ -20,9 +20,8 @@ export const FindMovie: React.FC<Props> = ({
   const getMovieFromServer = async () => {
     const movieFromServer = await getMovie(query);
 
-    if (movieFromServer.Error) {
+    if (!movieFromServer.Title) {
       setError(true);
-      setQuery('');
 
       return;
     }

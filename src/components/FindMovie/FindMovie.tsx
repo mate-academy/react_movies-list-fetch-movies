@@ -41,6 +41,12 @@ export const FindMovie: React.FC<Props> = ({
     }
   };
 
+  const changeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setError('');
+    changeRepeat();
+  };
+
   return (
     <>
       <form className="find-movie" onSubmit={Submit}>
@@ -57,11 +63,7 @@ export const FindMovie: React.FC<Props> = ({
               className={classNames('input',
                 { 'is-danger': error || repeat })}
               value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setError('');
-                changeRepeat();
-              }}
+              onChange={changeQuery}
             />
           </div>
 

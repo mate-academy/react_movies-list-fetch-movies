@@ -6,8 +6,6 @@ type Props = {
 };
 
 export const MovieCard: React.FC<Props> = ({ movie }) => {
-  // const { movie } = props;
-
   return (
     <div className="card">
       <div className="card-image">

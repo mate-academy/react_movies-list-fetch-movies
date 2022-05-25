@@ -38,6 +38,22 @@ export const FindMovie: React.FC<Props> = ({ addMovie, isMoviesIncludes }) => {
     }
   }, [movie, title]);
 
+  const onAddMovie = () => {
+    if (movie && !isMoviesIncludes(movie)) {
+      addMovie(movie);
+      setTitle('');
+      setMovie(null);
+    } else {
+      if (!movie) {
+        setError('Pls choose the movie');
+      }
+
+      if (movie && isMoviesIncludes(movie)) {
+        setError('Movie already in the list');
+      }
+    }
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -83,13 +99,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, isMoviesIncludes }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => {
-                if (movie && !isMoviesIncludes(movie)) {
-                  addMovie(movie);
-                  setTitle('');
-                  setMovie(null);
-                }
-              }}
+              onClick={onAddMovie}
             >
               Add to the list
             </button>

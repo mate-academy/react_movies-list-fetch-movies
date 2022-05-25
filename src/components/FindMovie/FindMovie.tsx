@@ -1,6 +1,11 @@
 /* eslint-disable no-useless-return */
 import classNames from 'classnames';
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { InputErrors } from '../../enums/InputErrors';
 import { findFilmByTitle } from '../../api/api';
 import { MovieCard } from '../MovieCard';
@@ -19,7 +24,7 @@ export const FindMovie: React.FC<Props> = ({
   const [titleTextPattern, setTitleTextPattern] = useState('');
   const [findedMovie, setFindedMovie] = useState<Movie | null>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = useCallback((e: FormEvent) => {
     e.preventDefault();
 
     if (!findedMovie) {
@@ -41,9 +46,10 @@ export const FindMovie: React.FC<Props> = ({
 
       return [...prevValue, findedMovie];
     });
-  };
+    setTitleTextPattern('');
+  }, [findedMovie, setMovies]);
 
-  const findMovie = async () => {
+  const findMovie = useCallback(async () => {
     if (!titleTextPattern.trim()) {
       setError(InputErrors.EmptyField);
 
@@ -59,7 +65,7 @@ export const FindMovie: React.FC<Props> = ({
     }
 
     setFindedMovie(filmPromise);
-  };
+  }, [titleTextPattern, setFindedMovie, setError]);
 
   useEffect(() => {
     switch (error) {
@@ -130,7 +136,13 @@ export const FindMovie: React.FC<Props> = ({
           <div className="control">
             <button
               type="button"
-              className="button is-light"
+              className={classNames(
+                'button',
+                {
+                  'is-primary':
+                  titleTextPattern.trim(),
+                },
+              )}
               onClick={findMovie}
             >
               Find a movie
@@ -140,7 +152,15 @@ export const FindMovie: React.FC<Props> = ({
           <div className="control">
             <button
               type="submit"
-              className="button is-primary"
+              className={classNames(
+                'button',
+                {
+                  'is-light':
+                  !findedMovie,
+                  'is-primary':
+                  findedMovie,
+                },
+              )}
             >
               Add to the list
             </button>

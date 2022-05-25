@@ -1,8 +1,8 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { getMovie } from '../../api';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api';
 
 type Props = {
   addMovie:(movie: Movie) => void;

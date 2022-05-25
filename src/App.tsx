@@ -7,8 +7,11 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = useCallback((newMovie: Movie) => {
-    if (movies.every((film => film.imdbID === newMovie.imdbID))) {
-      setMovies((prev) => [...prev, newMovie]);
+    if (!movies.some(film => film.imdbID === newMovie.imdbID)) {
+      setMovies([...movies, newMovie]);
+    } else {
+      // eslint-disable-next-line no-alert
+      alert('This movie was selected');
     }
   }, [movies]);
 

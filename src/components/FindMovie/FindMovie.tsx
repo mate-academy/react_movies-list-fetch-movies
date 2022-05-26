@@ -3,7 +3,11 @@ import './FindMovie.scss';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  onAddMovie: (movie: Movie) => void
+};
+
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [movie, setMovie] = useState<Movie | null>();
   const [title, setTitle] = useState('');
   const [titleError, setTitleError] = useState('');
@@ -26,6 +30,14 @@ export const FindMovie: React.FC = () => {
       }
     } else {
       setTitleError('Please input title');
+    }
+  };
+
+  const handleAddMovie = () => {
+    if (movie) {
+      onAddMovie(movie);
+      setMovie(null);
+      setTitle('');
     }
   };
 
@@ -75,6 +87,8 @@ export const FindMovie: React.FC = () => {
             <button
               type="button"
               className="button is-primary"
+              disabled={!movie}
+              onClick={handleAddMovie}
             >
               Add to the list
             </button>

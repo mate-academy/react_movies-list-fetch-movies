@@ -17,9 +17,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     if (searchStr.trim()) {
       const searchResult = await getMovieFS(searchStr);
 
-      // eslint-disable-next-line no-console
-      console.log(searchResult);
-
       if (searchResult.Response === 'True') {
         setMovie(searchResult);
         setError('');

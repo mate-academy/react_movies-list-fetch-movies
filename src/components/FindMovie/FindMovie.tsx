@@ -10,28 +10,19 @@ import { getMovie } from '../../api/api';
 
 interface Props {
   addMovie: (movie: Movie) => void,
-  movieInTheList: (movie: Movie) => boolean;
 }
 
-export const FindMovie: React.FC<Props> = (props) => {
-  const {
-    addMovie,
-    movieInTheList,
-  } = props;
-
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [errorText, setErrorText] = useState('');
   const [title, setTitle] = useState('');
 
   const onAddMovie = useCallback((event: FormEvent) => {
     event.preventDefault();
-
     if (movie && !errorText) {
-      if (movieInTheList(movie)) {
-        addMovie(movie);
-        setMovie(null);
-        setErrorText('');
-      }
+      addMovie(movie);
+      setMovie(null);
+      setErrorText('');
     }
   }, [movie, errorText]);
 

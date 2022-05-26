@@ -10,10 +10,6 @@ export const App: React.FC = () => {
     setMovies([...movies, movie]);
   }, [movies]);
 
-  const movieInTheList = useCallback((movie: Movie) => {
-    return movies.some(el => el.imdbID === movie.imdbID);
-  }, [movies]);
-
   return (
     <div className="page">
       <div className="page-content">
@@ -24,7 +20,6 @@ export const App: React.FC = () => {
       <div className="sidebar">
         <FindMovie
           addMovie={addMovie}
-          movieInTheList={movieInTheList}
         />
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import './FindMovie.scss';
-import classNames from 'classnames'
+import classNames from 'classnames';
 import { getMovie } from '../api/api';
 
 import { MovieCard } from '../MovieCard';
@@ -31,6 +31,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const findMovie = async () => {
     if (!title) {
+      setTitleError(false);
       setTitleIsEmpty(true);
 
       return;
@@ -39,6 +40,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     const newMovie = await getMovie(title);
 
     if (!newMovie.Title) {
+      setTitleIsEmpty(false);
       setTitleError(true);
 
       return;

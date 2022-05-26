@@ -1,14 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[] | []>([]);
+  const [isAddedMovie, setIsAddedMovie] = useState(false);
 
-  const addMovie = useCallback((movie: Movie) => {
-    setMovies([...movies, movie]);
-  }, [movies]);
+  const addMovie = (newFilm: Movie) => {
+    if (movies.every(movie => movie.imdbID !== newFilm.imdbID)) {
+      setMovies((prev) => [...prev, newFilm]);
+      setIsAddedMovie(false);
+    } else {
+      setIsAddedMovie(true);
+    }
+  };
 
   return (
     <div className="page">
@@ -21,6 +27,11 @@ export const App: React.FC = () => {
         <FindMovie
           addMovie={addMovie}
         />
+        {isAddedMovie && (
+          <p className="help is-danger">
+            Such a movie has been already added
+          </p>
+        )}
       </div>
     </div>
   );

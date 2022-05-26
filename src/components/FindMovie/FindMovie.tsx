@@ -5,6 +5,8 @@ import React, {
 } from 'react';
 import './FindMovie.scss';
 
+import classNames from 'classnames';
+
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api/api';
 
@@ -14,31 +16,44 @@ interface Props {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [errorText, setErrorText] = useState('');
+  const [errorText, setErrorText] = useState(false);
   const [title, setTitle] = useState('');
+  const [emptyTitle, setEmptyTitle] = useState(false);
 
   const onAddMovie = useCallback((event: FormEvent) => {
     event.preventDefault();
     if (movie && !errorText) {
       addMovie(movie);
       setMovie(null);
-      setErrorText('');
+      setTitle('');
     }
   }, [movie, errorText]);
 
-  const onFindMovieTitle = useCallback(async () => {
-    if (!title.trim()) {
-      setErrorText('Enter a movie title, please');
-    } else {
-      const foundMovie = await getMovie(title);
+  const onFindMovieTitle = async () => {
+    if (!title) {
+      setErrorText(false);
+      setEmptyTitle(true);
 
-      if (foundMovie.Response === 'True') {
-        setMovie(foundMovie);
-      } else {
-        setErrorText('There are no movies with such a title');
-      }
+      return;
     }
-  }, [title, errorText]);
+
+    const newMovie = await getMovie(title);
+
+    if (!newMovie.Title) {
+      setEmptyTitle(false);
+      setErrorText(true);
+
+      return;
+    }
+
+    setMovie(newMovie);
+    setErrorText(false);
+    setEmptyTitle(false);
+  };
+
+  const onChangeTitle = useCallback((event => {
+    setTitle(event.target.value);
+  }), []);
 
   return (
     <>
@@ -56,17 +71,20 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', { 'is-danger': errorText })}
               value={title}
-              onChange={(event => {
-                setTitle(event.target.value);
-              })}
+              onChange={onChangeTitle}
             />
           </div>
-
           {errorText && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
+            </p>
+          )}
+
+          {emptyTitle && (
+            <p className="help is-danger">
+              Enter the title
             </p>
           )}
         </div>
@@ -88,6 +106,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               onClick={onAddMovie}
+              disabled={movie === null}
             >
               Add to the list
             </button>

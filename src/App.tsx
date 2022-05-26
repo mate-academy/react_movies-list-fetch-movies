@@ -1,29 +1,34 @@
-import { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [isDoubleFilm, setDoubleFilm] = useState<boolean>(false);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
-  };
+  const addMovie = useCallback((newMovie: Movie) => {
+    const result = movies.some(movie => movie.imdbID === newMovie.imdbID);
 
-  render() {
-    const { movies } = this.state;
+    if (!result) {
+      setMovies(prevMovies => [...prevMovies, newMovie]);
+      setDoubleFilm(false);
+    } else {
+      setDoubleFilm(true);
+    }
+  }, [movies, isDoubleFilm]);
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          onAddMovie={addMovie}
+          doubleFilm={isDoubleFilm}
+        />
+      </div>
+    </div>
+  );
+};

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
 import { request } from '../../api';
 import { MovieCard } from '../MovieCard';
 
@@ -44,6 +45,20 @@ export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
           <label className="label" htmlFor="movie-title">
             Movie title
           </label>
+
+          <div className="control">
+            <input
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className={classNames('input', { 'is-danger': isError })}
+              value={title}
+              onChange={(event) => {
+                setIsError(false);
+                setTitle(event.target.value);
+              }}
+            />
+          </div>
 
           {isError && (
             <p className="help is-danger">

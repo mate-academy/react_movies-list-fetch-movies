@@ -10,7 +10,7 @@ export const App: React.FC = () => {
     if (!movies.find(movie => movie.imdbID === newMovie.imdbID)) {
       setMovies([...movies, newMovie]);
     } else {
-      //eslint-disable-next-line
+      // eslint-disable-next-line
       alert('Film is already added');
     }
   }, []);

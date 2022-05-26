@@ -1,29 +1,32 @@
-import { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
-  };
+  const isMovieInTheList = useCallback((movie: Movie) => {
+    return movies.some(currentMovie => currentMovie.imdbID === movie.imdbID);
+  }, [movies]);
 
-  render() {
-    const { movies } = this.state;
+  const addMovie = useCallback((movie: Movie) => {
+    setMovies([...movies, movie]);
+  }, [movies]);
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList
+          movies={movies}
+        />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          addMovie={addMovie}
+          isMovieInTheList={isMovieInTheList}
+        />
+      </div>
+    </div>
+  );
+};

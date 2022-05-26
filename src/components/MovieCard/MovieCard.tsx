@@ -39,5 +39,5 @@ export const MovieCard: React.FC<Props> = (props) => {
         </div>
       </div>
     </div>
-  );
+  )
 };

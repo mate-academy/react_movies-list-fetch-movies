@@ -2,13 +2,11 @@ import React from 'react';
 import './MovieCard.scss';
 
 type Props = {
-  movie: Movie;
+  movie: Movie | null;
 };
 
-export const MovieCard: React.FC<Props> = (props) => {
-  const { movie } = props;
-
-  return (
+export const MovieCard: React.FC<Props> = ({ movie }) => {
+  return (movie && (
     <div className="card">
       <div className="card-image">
         <figure className="image is-4by3">
@@ -39,5 +37,5 @@ export const MovieCard: React.FC<Props> = (props) => {
         </div>
       </div>
     </div>
-  );
+  ));
 };

@@ -18,30 +18,42 @@ type Props = {
 export const FindMovie: FC<Props> = ({ movies, setMovies }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isError, setError] = useState(false);
+  const [isQueryError, setIsQueryError] = useState(false);
+  const [isAddedMovie, setIsAddedMovie] = useState(false);
 
   const findMovie = useCallback(async (title: string) => {
-    const request = await getMovieByTitle(title.trim());
+    setIsAddedMovie(false);
+
+    if (!title.trim()) {
+      setIsQueryError(true);
+
+      return;
+    }
+
+    const request = await getMovieByTitle(title);
 
     if (request.Response === 'False') {
       setMovie(null);
-      setError(true);
+      setIsQueryError(true);
     } else {
       setMovie(request);
-      setError(false);
+      setIsQueryError(false);
     }
   }, []);
 
   const handleQuery = (newQuery: string) => {
     setQuery(newQuery);
 
-    if (newQuery !== query && isError) {
-      setError(false);
+    if ((newQuery !== query) && (isQueryError || isAddedMovie)) {
+      setIsAddedMovie(false);
+      setIsQueryError(false);
     }
   };
 
   const handleSubmit
-    = useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    = useCallback((
+      event: React.FormEvent<HTMLFormElement>,
+    ) => {
       event.preventDefault();
 
       findMovie(query);
@@ -50,6 +62,10 @@ export const FindMovie: FC<Props> = ({ movies, setMovies }) => {
   const handleOnAdd = useCallback(() => {
     const isAdded = movie
       && movies.some((addedMovie) => addedMovie.imdbID === movie.imdbID);
+
+    if (isAdded) {
+      setIsAddedMovie(true);
+    }
 
     if (movie && !isAdded) {
       setMovies([...movies, movie]);
@@ -74,15 +90,20 @@ export const FindMovie: FC<Props> = ({ movies, setMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames('input', { 'is-danger': isError })}
+              className={classNames('input', { 'is-danger': isQueryError })}
               value={query}
               onChange={({ target }) => handleQuery(target.value)}
             />
           </div>
 
-          {isError && (
+          {isQueryError && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
+            </p>
+          )}
+          {isAddedMovie && (
+            <p className="help is-danger">
+              Movie has already been added
             </p>
           )}
         </div>
@@ -103,7 +124,7 @@ export const FindMovie: FC<Props> = ({ movies, setMovies }) => {
               type="button"
               className="button is-primary"
               onClick={handleOnAdd}
-              disabled={movie === null}
+              disabled={!movie}
             >
               Add to the list
             </button>

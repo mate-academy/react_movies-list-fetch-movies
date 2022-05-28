@@ -7,8 +7,8 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = useCallback((movie: Movie) => {
-    setMovies([
-      ...movies,
+    setMovies((prevMovies) => [
+      ...prevMovies,
       movie,
     ]);
   }, [movies]);

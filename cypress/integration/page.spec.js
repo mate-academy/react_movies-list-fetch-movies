@@ -30,8 +30,6 @@ describe('Page', () => {
 
   it('should find movie', ()=> {
     page.findMovie('car');
-    cy.getByDataCy('container')
-      .should('contain', 'Preview');
     cy.getByDataCy('movie-title')
       .should('contain', `Dude, Where's My Car?`);
     cy.getByDataCy('content')

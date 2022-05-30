@@ -35,6 +35,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const onFormAdd = useCallback((event: FormEvent) => {
     event.preventDefault();
 
+    if (!query.length) {
+      setErrorMessage('Select a movie first');
+    }
+
     if (!errorMessage && movie) {
       addMovie(movie);
       setMovie(null);

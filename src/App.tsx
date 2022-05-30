@@ -5,13 +5,13 @@ import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [error, setError] = useState(false);
 
   const addMovie = useCallback((newMovie: Movie) => {
     if (!movies.some(film => film.imdbID === newMovie.imdbID)) {
       setMovies([...movies, newMovie]);
     } else {
-      // eslint-disable-next-line no-alert
-      alert('This movie was selected');
+      setError(true);
     }
   }, [movies]);
 
@@ -21,7 +21,7 @@ export const App: React.FC = () => {
         {movies && <MoviesList movies={movies} />}
       </div>
       <div className="sidebar">
-        <FindMovie addMovie={addMovie} />
+        <FindMovie addMovie={addMovie} error={error} />
       </div>
     </div>
   );

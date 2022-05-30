@@ -4,10 +4,11 @@ import { getMovies } from '../../api';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  addMovie: (a: Movie) => void
+  addMovie: (a: Movie) => void,
+  error: boolean,
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({ addMovie, error }) => {
   const [movie, setMovie] = useState(null);
   const [title, setTitle] = useState('');
   const [titleError, setTitleError] = useState('');
@@ -100,6 +101,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />
         </div>
+      )}
+
+      {error && (
+        <span style={{ color: 'red' }}>
+          This movie was selected
+        </span>
       )}
     </>
   );

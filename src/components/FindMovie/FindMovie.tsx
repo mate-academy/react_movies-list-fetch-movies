@@ -43,6 +43,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
     setError(false);
   };
 
+  const canNotAddMovie = !movie
+  || movies.some(film => film.imdbID === movie.imdbID);
+
   return (
     <>
       <form
@@ -88,8 +91,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
 
           <div className="control">
             <button
-              disabled={!movie
-                || movies.some(film => film.imdbID === movie.imdbID)}
+              disabled={canNotAddMovie}
               type="submit"
               className="button is-primary"
             >

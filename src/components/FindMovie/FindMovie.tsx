@@ -15,7 +15,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie, isMoviesIncludes }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
-  const [error, setError] = useState('Title is empty');
+  const [error, setError] = useState('');
 
   const handleTitle = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);

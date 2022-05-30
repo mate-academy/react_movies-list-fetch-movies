@@ -20,12 +20,14 @@ export const FindMovie: React.FC<Props>
 
   const findMovie = async () => {
     if (query === '') {
+      setShowError(true);
+
       return;
     }
 
     const response = await getMovie(query);
 
-    if (response.Response !== 'False') {
+    if (response.Response !== 'false') {
       setMovie(response);
       setShowError(false);
     } else {
@@ -45,6 +47,8 @@ export const FindMovie: React.FC<Props>
 
   const addMovie = () => {
     if (movie === null) {
+      setShowError(true);
+
       return;
     }
 

@@ -1,6 +1,6 @@
 const page = {
   findMovie(input) {
-    return cy.get('#movie-title')
+    return cy.get('input')
       .type(`${input}`)
       .getByDataCy('find').click()
   }
@@ -30,13 +30,8 @@ describe('Page', () => {
       .should('equal', 1);
   });
 
-<<<<<<< Updated upstream
-  it('should find movie', ()=> {
-    page.findMovie('car');
-=======
   it('should show the film as a MovieCard if a film has been found', ()=> {
   page.findMovie('car');
->>>>>>> Stashed changes
     cy.getByDataCy('movie-title')
       .should('contain', `Dude, Where's My Car?`);
     cy.getByDataCy('content')
@@ -79,7 +74,7 @@ describe('Page', () => {
     page.findMovie('!@#');
     cy.get('.sidebar')
       .should('contain', "Can't find a movie with such a title");
-    cy.get('#movie-title')
+    cy.get('input')
       .type('{selectall}car');
     cy.get('.sidebar')
       .should('not.contain', "Can't find a movie with such a title");

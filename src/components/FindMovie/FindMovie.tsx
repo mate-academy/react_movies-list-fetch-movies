@@ -27,13 +27,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   );
 
   const findMovie = useCallback(() => {
-    if (!query.trim()) {
+    if (!query) {
       setError(Errors.required);
     } else {
       const find = async () => {
         const res = await request(query);
 
-        if (res.response === 'false') {
+        if (res.Response === 'False') {
           setError(Errors.notMatch);
         } else {
           setMovie(res);

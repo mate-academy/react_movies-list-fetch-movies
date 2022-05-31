@@ -7,13 +7,13 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = useCallback((newMovie: Movie) => {
-    if (!movies.find(movie => movie.imdbID === newMovie.imdbID)) {
+    if (movies.every(movie => movie.imdbID !== newMovie.imdbID)) {
       setMovies([...movies, newMovie]);
     } else {
       // eslint-disable-next-line
-      alert('Film is already added');
+      alert('Movie already exist')
     }
-  }, []);
+  }, [movies]);
 
   return (
     <div className="page">

@@ -33,7 +33,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       const find = async () => {
         const res = await request(query);
 
-        if (res.response === 'False') {
+        if (res.response === 'false') {
           setError(Errors.notMatch);
         } else {
           setMovie(res);

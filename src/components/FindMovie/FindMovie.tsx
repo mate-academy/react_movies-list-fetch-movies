@@ -27,12 +27,20 @@ export const FindMovie: React.FC<Props>
 
     const response = await getMovie(query);
 
-    if (response.Response !== 'false') {
+    if (response.Response !== 'False') {
       setMovie(response);
       setShowError(false);
     } else {
       setMovie(null);
       setShowError(true);
+    }
+  };
+
+  const handleQuery = (newQuery: string) => {
+    setQuery(newQuery);
+
+    if (newQuery !== query) {
+      setShowError(false);
     }
   };
 
@@ -80,9 +88,7 @@ export const FindMovie: React.FC<Props>
                 { 'is-danger': showError },
               )}
               value={query}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setQuery(event.target.value);
-              }}
+              onChange={({ target }) => handleQuery(target.value)}
             />
           </div>
           {showError && (

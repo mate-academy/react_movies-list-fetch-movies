@@ -10,30 +10,37 @@ interface Props {
   movies: Movie[],
 }
 
+enum Error {
+  withoutError = '',
+  enterTitle = 'Enter a movie name',
+  cantFind = 'Can not find a movie with such a title',
+  wasAdded = 'Already in your list',
+}
+
 export const FindMovie: React.FC<Props> = ({
   addMovie,
   movies,
 }) => {
   const [movieTitle, setMovieTitle] = useState('');
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(Error.withoutError);
 
   const getfoundMovie = async () => {
     const movie = await getMovie(movieTitle);
 
     if (!movie.Title) {
-      setError(true);
+      setError(Error.cantFind);
 
       return;
     }
 
-    setError(false);
+    setError(Error.withoutError);
     setFoundMovie(movie);
   };
 
   const handleTitle = (event:React.ChangeEvent<HTMLInputElement>) => {
     setMovieTitle(event.target.value);
-    setError(false);
+    setError(Error.withoutError);
   };
 
   const handleSubmit = (event:React.FormEvent) => {
@@ -42,7 +49,13 @@ export const FindMovie: React.FC<Props> = ({
     if (foundMovie && !error) {
       if (!movies.some(movie => movie.imdbID === foundMovie.imdbID)) {
         addMovie(foundMovie);
+      } else {
+        setError(Error.wasAdded);
+
+        return;
       }
+    } else {
+      setError(Error.enterTitle);
     }
 
     setMovieTitle('');
@@ -74,9 +87,9 @@ export const FindMovie: React.FC<Props> = ({
             />
           </div>
 
-          {error && (
+          {error.length > 0 && (
             <p className="help is-danger">
-              Can&apos;t find a movie with such a title
+              {error}
             </p>
           )}
         </div>

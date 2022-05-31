@@ -77,7 +77,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
 
         <div className="field is-grouped">
           <div className="control">
-            <button
+            <button data-cy="find"
               onClick={() => getMovieFromServer()}
               type="button"
               className="button is-light"
@@ -87,7 +87,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
           </div>
 
           <div className="control">
-            <button
+            <button data-cy="add"
               disabled={!movie
                 || movies.some(film => film.imdbID === movie.imdbID)}
               type="submit"
@@ -101,7 +101,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
 
       {movie && (
         <div
-          data-cy="container"
           className="container"
         >
           <h2 className="title">Preview</h2>

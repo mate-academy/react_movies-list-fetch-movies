@@ -16,8 +16,8 @@ export class App extends Component<{}, State> {
     const { movies } = this.state;
 
     if (!movies
-        .some(movieFromState => movieFromState.imdbID === movie.imdbID)
-      ) {
+      .some(movieFromState => movieFromState.imdbID === movie.imdbID)
+    ) {
       this.setState((state) => ({
         movies: [
           ...state.movies,

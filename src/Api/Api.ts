@@ -5,18 +5,7 @@ const request = (title: string) => fetch(`https://www.omdbapi.com/?apikey=${MyAp
 
 
 export async function prepareMovie(title: string) {
+  const response = await request(title);
 
-  const responseCall = async () =>
-    await request(title)
-    .then(response => {
-      if (!response.ok) {
-        Promise.reject();
-      }
-
-      return response.json()
-    });
-
-  const preparedMovie: Movie = await responseCall();
-
-  return preparedMovie;
+  return response.json();
 }

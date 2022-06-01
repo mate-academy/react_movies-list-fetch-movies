@@ -11,6 +11,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ pushMovie }) => {
   const [title, setTitle] = useState('');
   const [isCorrectTitle, setIsCorrect] = useState(true);
+  const [ErrorTitle, setErrorTitle] = useState('');
 
   const [movie, setMovie] = useState<Movie>({
     Title: '',
@@ -19,13 +20,19 @@ export const FindMovie: React.FC<Props> = ({ pushMovie }) => {
     imdbID: '',
   });
 
+  const handleInput = (value: string) => {
+    setTitle(value);
+    setIsCorrect(true);
+  }
+
   async function setMovieFromApi() {
-    const neededMovie: Movie = await prepareMovie(title);
+    const neededMovie = await prepareMovie(title);
 
     setTitle('');
 
-    if (!neededMovie.Title) {
+    if (neededMovie.Response === 'False') {
       setIsCorrect(false);
+      setErrorTitle(neededMovie.Error);
     }
 
     setMovie(neededMovie);
@@ -53,10 +60,7 @@ export const FindMovie: React.FC<Props> = ({ pushMovie }) => {
               placeholder="Enter a title to search"
               value={title}
               className={classNames('input', { 'is-danger': !isCorrectTitle })}
-              onChange={({ target }) => {
-                setTitle(target.value);
-                setIsCorrect(true);
-              }}
+              onChange={({ target }) => handleInput(target.value)}
             />
           </div>
 
@@ -91,7 +95,7 @@ export const FindMovie: React.FC<Props> = ({ pushMovie }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {movie.Title ? (<MovieCard movie={movie} />) : 'No film'}
+        {movie.Title ? (<MovieCard movie={movie} />) : ErrorTitle}
       </div>
     </>
   );

@@ -14,3 +14,8 @@ Implement `FindMovie` component to load movies from [OMDb API](http://www.omdbap
 1. If a film has been found show the preview as a `MovieCard`.
 1. Add a movie to the list after submitting a form and clear the input.
 1. Don't add the same film to the list twice (compare by `imdbId`).
+
+## REQUIREMENTS
+1. The button for movie finding should have attribute `data-cy="find"`
+1. The button for adding movie to the list should have attribute `data-cy="add"`
+1. You should not remove exist data-cy attributes

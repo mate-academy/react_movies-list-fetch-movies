@@ -1,4 +1,4 @@
-import React, { useCallback, useState, FormEvent } from 'react';
+import React, { useCallback, useState } from 'react';
 import './FindMovie.scss';
 import { getMovies } from '../../api/api';
 import { MovieCard } from '../MovieCard';
@@ -34,13 +34,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie, isExist }) => {
     }
   }, [movie, title]);
 
-  const onSend = useCallback((e: FormEvent) => {
+  const onSend = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!error && movie) {
       addMovie(movie);
-      reset();
     }
+
+    reset();
   }, [movie, error]);
 
   const onAddMovie = () => {

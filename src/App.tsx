@@ -17,7 +17,6 @@ export const App: React.FC = () => {
 
   return (
     <div className="page">
-      Hello
       <div className="page-content">
         {movies && <MoviesList movies={movies} />}
       </div>

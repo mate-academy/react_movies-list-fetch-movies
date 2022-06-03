@@ -1,3 +1,21 @@
 .find-movie {
   margin-bottom: 20px;
+  text-align: center;
+}
+
+.is-danger {
+  text-align: center;
+}
+
+.field.is-grouped {
+  display: flex;
+  justify-content: space-between;
+}
+
+.button.is-primary {
+  transition: background-color 0.5s;
+
+  &:hover {
+    background-color: #f14668;
+  }
 }

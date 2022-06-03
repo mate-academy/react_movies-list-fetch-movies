@@ -1,29 +1,38 @@
-import { Component } from 'react';
+import { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [repeat, setRepeat] = useState(false);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const addMovies = useCallback((movie: Movie) => {
+    const duplicate = movies.find(({ imdbID }) => imdbID === movie.imdbID);
+
+    if (!duplicate) {
+      setMovies((state) => [...state, movie]);
+    } else {
+      setRepeat(true);
+    }
+  }, [movies]);
+
+  const handleRepeat = () => {
+    setRepeat(false);
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          addMovies={addMovies}
+          repeat={repeat}
+          handleRepeat={handleRepeat}
+        />
+      </div>
+    </div>
+  );
+};

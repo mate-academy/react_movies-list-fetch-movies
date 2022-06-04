@@ -4,14 +4,6 @@ import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
 
-enum Error {
-  noError = '',
-  noSuchMovieError = 'Can\t find a movie with such title',
-  noMovieError = 'Select a movie first',
-  emptyQueryError = 'Enter search text',
-  repeatedMovieError = 'This movie already is in the list',
-}
-
 interface Props {
   isMovieInTheList: (movie: Movie) => boolean;
   addMovie: (movie: Movie) => void;
@@ -20,20 +12,24 @@ interface Props {
 export const FindMovie: React.FC<Props> = ({ isMovieInTheList, addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [errorMessage, setErrorMessage] = useState<Error>(Error.noError);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const findMovie = useCallback(async () => {
     if (!query.trim().length) {
-      setErrorMessage(Error.emptyQueryError);
-    } else {
-      setErrorMessage(Error.noError);
+      setErrorMessage('Enter search text');
+    }
+
+    if (query.trim().length) {
+      setErrorMessage('');
       const request = await getMovie(query);
 
       if (request.Response === 'True') {
         setMovie(request);
-        setErrorMessage(Error.noError);
-      } else {
-        setErrorMessage(Error.noSuchMovieError);
+        setErrorMessage('');
+      }
+
+      if (request.Response === 'False') {
+        setErrorMessage('Can\t find a movie with such title');
       }
     }
   }, [errorMessage, query]);
@@ -41,20 +37,24 @@ export const FindMovie: React.FC<Props> = ({ isMovieInTheList, addMovie }) => {
   const addMovieToTheList = useCallback(() => {
     if (movie) {
       if (isMovieInTheList(movie)) {
-        setErrorMessage(Error.repeatedMovieError);
-      } else {
+        setErrorMessage('This movie already is in the list');
+      }
+
+      if (!isMovieInTheList(movie)) {
         addMovie(movie);
         setQuery('');
         setMovie(null);
       }
-    } else {
-      setErrorMessage(Error.noMovieError);
+    }
+
+    if (!movie) {
+      setErrorMessage('Select a movie first');
     }
   }, [movie]);
 
   const inputHandler = ({ target }: ChangeEvent<HTMLInputElement>) => {
     setQuery(target.value);
-    setErrorMessage(Error.noError);
+    setErrorMessage('');
     setMovie(null);
   };
 

@@ -15,11 +15,11 @@ export const FindMovie: React.FC<Props> = ({ isMovieInTheList, addMovie }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   const findMovie = useCallback(async () => {
-    if (!query.trim().length) {
+    if (!query.trim()) {
       setErrorMessage('Enter search text');
     }
 
-    if (query.trim().length) {
+    if (query.trim()) {
       setErrorMessage('');
       const request = await getMovie(query);
 

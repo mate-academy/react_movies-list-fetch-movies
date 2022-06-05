@@ -23,10 +23,16 @@ export const MovieCard: React.FC<Props> = (props) => {
         <div className="media">
           <div className="media-left">
             <figure className="image is-48x48">
-              <img
-                src="images/imdb-logo.jpeg"
-                alt="imdb"
-              />
+              <a
+                href={`https://www.imdb.com/title/${movie.imdbID}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src="images/imdb-logo.jpeg"
+                  alt="imdb"
+                />
+              </a>
             </figure>
           </div>
           <div className="media-content">

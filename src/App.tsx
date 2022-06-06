@@ -1,29 +1,41 @@
-import { Component } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
+import { Modal } from './components/Modal/Modal';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [isVisibleModal, setIsVisibleModal] = useState(false);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
-  };
+  const addMovie = useCallback((newMovie: Movie) => {
+    if (movies.every(movie => movie.imdbID !== newMovie.imdbID)) {
+      setMovies(
+        [...movies, newMovie],
+      );
+    } else {
+      setIsVisibleModal(true);
+    }
+  }, [movies]);
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList
+          movies={movies}
+        />
       </div>
-    );
-  }
-}
+
+      <div className="sidebar">
+        <FindMovie
+          addMovie={addMovie}
+        />
+      </div>
+
+      <Modal
+        isVisibleModal={isVisibleModal}
+        setIsVisibleModal={setIsVisibleModal}
+      />
+    </div>
+  );
+};

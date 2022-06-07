@@ -1,54 +1,112 @@
-import React from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import { getMovie } from '../../api';
 import './FindMovie.scss';
 
-// import { MovieCard } from '../MovieCard';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+interface Props {
+  isMovieInTheList: (movie: Movie) => boolean;
+  addMovie: (movie: Movie) => void;
+}
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
+export const FindMovie: React.FC<Props> = ({ isMovieInTheList, addMovie }) => {
+  const [query, setQuery] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const findMovie = useCallback(async () => {
+    if (!query.trim()) {
+      setErrorMessage('Enter search text');
+
+      return;
+    }
+
+    setErrorMessage('');
+    const request = await getMovie(query);
+
+    if (request.Response === 'True') {
+      setMovie(request);
+      setErrorMessage('');
+    } else {
+      setErrorMessage('Can\t find a movie with such title');
+    }
+  }, [errorMessage, query]);
+
+  const addMovieToTheList = useCallback(() => {
+    if (!movie) {
+      setErrorMessage('Select a movie first');
+
+      return;
+    }
+
+    if (isMovieInTheList(movie)) {
+      setErrorMessage('This movie already is in the list');
+    } else {
+      addMovie(movie);
+      setQuery('');
+      setMovie(null);
+    }
+  }, [movie]);
+
+  const inputHandler = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    setQuery(target.value);
+    setErrorMessage('');
+    setMovie(null);
+  };
+
+  return (
+    <>
+      <form className="find-movie" onSubmit={(event) => event.preventDefault()}>
+        <div className="field">
+          <label className="label" htmlFor="movie-title">
+            Movie title
+          </label>
+
+          <div className="control">
+            <input
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className={`input ${errorMessage.length && 'is-danger'}`}
+              value={query}
+              onChange={inputHandler}
+            />
+          </div>
+
+          <p className="help is-danger">
+            {errorMessage}
+          </p>
         </div>
 
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              type="button"
+              className="button is-light"
+              data-cy="find"
+              onClick={findMovie}
+            >
+              Find a movie
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="button"
+              className="button is-primary"
+              data-cy="add"
+              onClick={addMovieToTheList}
+            >
+              Add to the list
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div className="container">
+        <h2 className="title">Preview</h2>
+        {movie && <MovieCard movie={movie} />}
       </div>
-
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
-          >
-            Find a movie
-          </button>
-        </div>
-
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
-        </div>
-      </div>
-    </form>
-
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      {/* <MovieCard  /> */}
-    </div>
-  </>
-);
+    </>
+  );
+};

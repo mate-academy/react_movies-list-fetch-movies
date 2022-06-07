@@ -17,38 +17,34 @@ export const FindMovie: React.FC<Props> = ({ isMovieInTheList, addMovie }) => {
   const findMovie = useCallback(async () => {
     if (!query.trim()) {
       setErrorMessage('Enter search text');
+
+      return;
     }
 
-    if (query.trim()) {
+    setErrorMessage('');
+    const request = await getMovie(query);
+
+    if (request.Response === 'True') {
+      setMovie(request);
       setErrorMessage('');
-      const request = await getMovie(query);
-
-      if (request.Response === 'True') {
-        setMovie(request);
-        setErrorMessage('');
-      }
-
-      if (request.Response === 'False') {
-        setErrorMessage('Can\t find a movie with such title');
-      }
+    } else {
+      setErrorMessage('Can\t find a movie with such title');
     }
   }, [errorMessage, query]);
 
   const addMovieToTheList = useCallback(() => {
-    if (movie) {
-      if (isMovieInTheList(movie)) {
-        setErrorMessage('This movie already is in the list');
-      }
-
-      if (!isMovieInTheList(movie)) {
-        addMovie(movie);
-        setQuery('');
-        setMovie(null);
-      }
-    }
-
     if (!movie) {
       setErrorMessage('Select a movie first');
+
+      return;
+    }
+
+    if (isMovieInTheList(movie)) {
+      setErrorMessage('This movie already is in the list');
+    } else {
+      addMovie(movie);
+      setQuery('');
+      setMovie(null);
     }
   }, [movie]);
 

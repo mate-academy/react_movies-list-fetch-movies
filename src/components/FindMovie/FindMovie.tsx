@@ -3,8 +3,7 @@ import './FindMovie.scss';
 import classNames from 'classnames';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import { MovieCard } from '../MovieCard';
-
-const baseURL = 'https://www.omdbapi.com/?apikey=314cbfea&t=';
+import { loadMovie } from '../../api/api';
 
 type Props = {
   movies: Movie[];
@@ -17,33 +16,33 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   const [movieFromServer, setMovieFromServer] = useState<Movie | null>(null);
   const [showError, setShowError] = useState('');
 
-  async function loadMovie() {
+  async function fetchMovie() {
     if (!movieTitle.trim()) {
       setShowError('Enter the title to search');
 
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const result = await fetch(`${baseURL}${movieTitle.trim().toLocaleLowerCase()}`);
-      const data = await result.json();
+    setIsLoading(true);
 
+    const result = await loadMovie(movieTitle.trim().toLocaleLowerCase());
+
+    if (result.Response === 'False') {
+      setShowError('Movie not found!');
       setIsLoading(false);
 
-      if (data.Response === 'False') {
-        throw new Error('Movie not found!');
-      }
-
-      setMovieFromServer(data);
-    } catch (error) {
-      setIsLoading(false);
-      setMovieFromServer(null);
-      setShowError(`Error: ${error}`);
+      return;
     }
+
+    setIsLoading(false);
+    setMovieFromServer(result);
   }
 
   function addMovieToList() {
+    if (!movieFromServer) {
+      setShowError('Search movie first!');
+    }
+
     if (movies.some(movie => movie.imdbID === movieFromServer?.imdbID)) {
       setShowError('This movie already in the list!');
 
@@ -91,7 +90,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={loadMovie}
+              onClick={fetchMovie}
               data-cy="find"
             >
               Find a movie

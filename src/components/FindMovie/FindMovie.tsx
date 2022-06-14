@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 import { request } from '../api/request';
 import { MovieCard } from '../MovieCard/MovieCard';
@@ -13,11 +14,18 @@ export const FindMovie: React.FC<Props> = (
 ) => {
   const [movieForFind, setMovieForFind] = useState('');
   const [preview, setPreview] = useState<Movie>();
+  const [isFilmValid, setIsFilmValid] = useState(true);
 
   async function finder() {
     const result = await request(movieForFind.toLowerCase());
 
-    setPreview(result);
+    if (result.Response !== 'False') {
+      setPreview(result);
+    } else {
+      setMovieForFind('');
+      setPreview(undefined);
+      setIsFilmValid(false);
+    }
   }
 
   return (
@@ -33,16 +41,20 @@ export const FindMovie: React.FC<Props> = (
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              value={movieForFind}
+              className={classNames('input', { 'is-danger': !isFilmValid })}
               onChange={(event) => {
                 setMovieForFind(event.target.value);
               }}
             />
           </div>
 
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
+          { !isFilmValid
+          && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -52,6 +64,7 @@ export const FindMovie: React.FC<Props> = (
               className="button is-light"
               onClick={() => {
                 finder();
+                setMovieForFind('');
               }}
             >
               Find a movie

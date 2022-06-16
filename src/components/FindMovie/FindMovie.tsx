@@ -66,6 +66,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
+              data-cy="find"
               type="button"
               className="button is-light"
               onClick={findMovieHandler}
@@ -76,6 +77,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
           <div className="control">
             <button
+              data-cy="add"
               type="button"
               className="button is-primary"
               onClick={() => {

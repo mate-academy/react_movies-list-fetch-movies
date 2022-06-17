@@ -79,7 +79,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
             )}
         </div>
 
-        <div className="field is-grouped">
+        <div className="field is-grouped" data-cy="find">
           <div className="control">
             <button
               type="button"
@@ -90,7 +90,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
             </button>
           </div>
 
-          <div className="control">
+          <div className="control" data-cy="add">
             <button
               type="button"
               className="button is-primary"

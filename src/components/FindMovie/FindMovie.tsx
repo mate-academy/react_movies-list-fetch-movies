@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
-  const urlMovies = 'http://www.omdbapi.com/?apikey=848ed1e8&';
+  const urlMovies = 'https://www.omdbapi.com/?apikey=848ed1e8&';
 
   const [theMovie, setTheMovie] = useState <Movie>({
     Poster: '',

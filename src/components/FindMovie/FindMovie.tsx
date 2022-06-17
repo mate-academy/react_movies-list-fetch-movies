@@ -49,6 +49,7 @@ export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
+              value={inputedMovie}
               className="input is-danger"
               onChange={(event) => {
                 setInputedMovie(event.target.value);
@@ -75,7 +76,9 @@ export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
               className="button is-light"
               data-cy="find"
               onClick={() => {
-                findMovie();
+                if (inputedMovie) {
+                  findMovie();
+                }
               }}
             >
               Find a movie
@@ -96,6 +99,7 @@ export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
                   }
 
                   onAdd(theMovie);
+                  setInputedMovie('');
                 }
               }}
             >
@@ -107,6 +111,26 @@ export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
                 Movie has been added
               </p>
             )}
+          </div>
+          <div
+            className="control"
+          >
+            <button
+              type="button"
+              className="button is-danger"
+              onClick={() => {
+                setInputedMovie('');
+                setTheMovie({
+                  Poster: '',
+                  Title: '',
+                  Plot: '',
+                  imdbID: '',
+                });
+                setErrorMessage('');
+              }}
+            >
+              Clear
+            </button>
           </div>
         </div>
       </form>

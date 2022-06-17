@@ -50,7 +50,7 @@ export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               value={inputedMovie}
-              className="input is-danger"
+              className={errorMessage ? 'input is-danger' : 'input'}
               onChange={(event) => {
                 setInputedMovie(event.target.value);
                 setErrorMessage('');

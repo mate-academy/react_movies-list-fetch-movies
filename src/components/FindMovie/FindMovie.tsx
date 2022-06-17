@@ -16,7 +16,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
     getMovie(query)
       .then(movieFromServer => {
         if (!movieFromServer) {
-          setError(movieFromServer.Error);
+          setError('Error');
         } else {
           setMovie(movieFromServer);
         }

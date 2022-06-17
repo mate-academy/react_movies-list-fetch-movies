@@ -13,6 +13,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [error, setError] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
   const getMovies = (currentQuery: string) => {
     return request(currentQuery)
@@ -31,6 +32,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
     }
 
     setQuery(event.currentTarget.value.toLowerCase());
+    setInputValue(event.currentTarget.value);
   };
 
   const addMovieHandler = (currentMovie: Movie | null) => {
@@ -42,7 +44,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
         addMovie(currentMovie);
       }
 
-      setQuery('');
+      setInputValue('');
       setMovie(null);
     }
   };
@@ -58,6 +60,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
           <div className="control">
             <input
               type="text"
+              value={inputValue}
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames(

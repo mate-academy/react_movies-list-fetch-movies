@@ -16,6 +16,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [error, setError] = useState(false);
   const [movieHere, setMovieHere] = useState(false);
   const [defaulText, setDefaultText] = useState(true);
+  const [activeButon, setActiveButton] = useState(false);
 
   const getMovie = (title: string) => {
     searchMovie(title)
@@ -27,7 +28,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
           return null;
         }
 
-        return (setCurrent(result), setDefaultText(false), setMovieHere(false));
+        return (setCurrent(result),
+        setDefaultText(false),
+        setMovieHere(false),
+        setActiveButton(true));
       });
   };
 
@@ -36,12 +40,21 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       setCurrent(null);
       setMovieHere(true);
       setDefaultText(false);
+      setActiveButton(false);
     } else if (current !== null) {
+      setActiveButton(false);
       setMovies([...movies, current]);
       setCurrent(null);
       setDefaultText(true);
       setTitleMovie('');
     }
+  };
+
+  const serchButtonApprove = (
+    event: { target: { value: React.SetStateAction<string>; }; },
+  ) => {
+    setError(false);
+    setTitleMovie(event.target.value);
   };
 
   return (
@@ -70,10 +83,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                 },
               )}
               value={titleMovie}
-              onChange={(event) => {
-                setError(false);
-                setTitleMovie(event.target.value);
-              }}
+              onChange={serchButtonApprove}
             />
           </div>
 
@@ -98,7 +108,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
           <div className="control">
             <button
               type="button"
-              className="button is-primary"
+              className={classNames(
+                'button is-primary',
+                {
+                  'is-static': !activeButon,
+                },
+              )}
               onClick={addToList}
               data-cy="add"
             >

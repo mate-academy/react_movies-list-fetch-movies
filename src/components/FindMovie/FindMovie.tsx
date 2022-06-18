@@ -21,7 +21,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const getMovie = (title: string) => {
     searchMovie(title)
       .then(result => {
-        if (result.Response !== 'True') {
+        if (result.Response !== 'True' || titleMovie.length === 0) {
           setCurrent(null);
           setError(true);
 
@@ -124,14 +124,17 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
+
         {movieHere && (
           <p className="subtitle is-5 has-text-danger-dark m-3">
             This movie already in your library
           </p>
         )}
         {current && (
-          <MovieCard movie={current} />
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={current} />
+          </>
         )}
         {defaulText && (
           <p className="subtitle is-6 m-3">

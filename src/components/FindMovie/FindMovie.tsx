@@ -10,13 +10,14 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovies }) => {
   const [movie, setMovie] = useState(null);
   const [query, setQuery] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState(false);
 
   const loadMovie = () => {
     getMovie(query)
       .then(movieFromServer => {
-        if (!movieFromServer) {
-          setError('Error');
+        if (movieFromServer.Error === 'Movie not found!') {
+          setError(true);
+          setMovie(null);
         } else {
           setMovie(movieFromServer);
         }
@@ -27,7 +28,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
     const { value } = event.target;
 
     setQuery(value);
-    setError('');
+    setError(false);
   };
 
   const submitForm = (event: { preventDefault: () => void; }) => {
@@ -37,6 +38,8 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
       setQuery('');
       setMovie(null);
     }
+
+    setError(false);
   };
 
   return (
@@ -55,13 +58,13 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={error ? 'is-danger' : 'input'}
               value={query}
               onChange={changeQuery}
             />
           </div>
 
-          {error.length > 0 && (
+          {error && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
             </p>
@@ -86,6 +89,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
               type="submit"
               className="button is-primary"
               data-cy="add"
+              disabled={error}
             >
               Add to the list
             </button>

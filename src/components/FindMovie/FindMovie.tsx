@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovies }) => {
-  const [movie, setMovie] = useState(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [error, setError] = useState(false);
 
@@ -58,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={error ? 'is-danger' : 'input'}
+              className={error ? 'is-danger input' : 'input'}
               value={query}
               onChange={changeQuery}
             />
@@ -90,6 +90,11 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
               className="button is-primary"
               data-cy="add"
               disabled={error}
+              onClick={() => {
+                if (!query) {
+                  setError(true);
+                }
+              }}
             >
               Add to the list
             </button>

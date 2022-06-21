@@ -8,7 +8,7 @@ export const App : React.FC = () => {
 
   const addMovie = useCallback((movie: Movie): boolean => {
     if (!movies.some(movie1 => movie1.imdbID === movie.imdbID)) {
-      setMovies([...movies, movie]);
+      setMovies(films => [...films, movie]);
 
       return true;
     }

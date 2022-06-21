@@ -11,11 +11,11 @@ interface Props {
 
 export const FindMovie: React.FC<Props> = React.memo(
   ({ addMovie }) => {
-    const [query, setQuery] = useState<string>('');
+    const [query, setQuery] = useState('');
 
-    const [isInList, setIsInList] = useState<boolean>(false);
+    const [isInList, setIsInList] = useState(false);
 
-    const [error, setError] = useState<boolean>(false);
+    const [error, setError] = useState(false);
 
     const [film, setFilm] = useState<Movie | null>(null);
 
@@ -24,7 +24,6 @@ export const FindMovie: React.FC<Props> = React.memo(
 
       if (neededFilm.Response === 'False') {
         setError(true);
-        setQuery('');
 
         return;
       }
@@ -40,7 +39,6 @@ export const FindMovie: React.FC<Props> = React.memo(
             event.preventDefault();
 
             getFilmsByTitle(query);
-            setQuery('');
           }}
         >
           <div className="field">
@@ -91,19 +89,19 @@ export const FindMovie: React.FC<Props> = React.memo(
                   if (film) {
                     if (!addMovie(film)) {
                       setIsInList(true);
+                    } else {
+                      setQuery('');
                     }
                   }
 
-                  setQuery('');
                   setFilm(null);
                 }}
               >
                 Add to the list
               </button>
               <br />
-              {isInList &&
-                (<p className="help is-danger">It is alredy in list</p>)
-              }
+              {isInList
+                && (<p className="help is-danger">It is alredy in list</p>)}
             </div>
           </div>
         </form>

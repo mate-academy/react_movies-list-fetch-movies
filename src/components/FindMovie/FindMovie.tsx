@@ -110,10 +110,12 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
           )
           : (
             <>
-              <h2 className="title">Preview</h2>
               {preview
             && (
-              <MovieCard movie={preview} />
+              <>
+                <h2 className="title">Preview</h2>
+                <MovieCard movie={preview} />
+              </>
             )}
             </>
           )}

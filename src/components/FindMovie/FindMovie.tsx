@@ -13,13 +13,21 @@ export const FindMovie: React.FC<Props> = ({ setMoviesFSState, movies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [sameMovie, setSameMovie] = useState(false);
 
+  const setMovieFSState = (arg: Movie | null) => {
+    setMovie(arg);
+  };
+
+  const setSameMovieFSState = (arg: boolean) => {
+    setSameMovie(arg);
+  };
+
   return (
     <>
       <FindMovieForm
         setMoviesFSState={setMoviesFSState}
         movies={movies}
-        setSameMovie={setSameMovie}
-        setMovie={setMovie}
+        setSameMovieFSState={setSameMovieFSState}
+        setMovieFSState={setMovieFSState}
         movie={movie}
       />
 

@@ -13,11 +13,12 @@ interface Props {
 export const FindMovie: React.FC<Props> = ({ addMovies }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
+  const [erors, setErors] = useState(true);
 
   const findMovie = () => {
     getMovie(title)
       .then(response => setMovie(response))
-      .catch(() => console.log('film not found, write correct title'));
+      .catch(() => setErors(false));
   };
 
   return (
@@ -34,16 +35,21 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classname('input',
-                { 'is-danger': !movie, 'is-primary': movie })}
+                { 'is-danger': !erors, 'is-primary': erors })}
               value={title}
-              onChange={(event) => (
-                setTitle(event.target.value)
-              )}
+              onChange={
+                (event) => {
+                  (
+                    setTitle(event.target.value)
+                  );
+                  setErors(true);
+                }
+              }
             />
           </div>
 
           <p className="help is-danger">
-            {!movie ? 'Can`t find a movie with such a title' : ''}
+            {!erors ? 'Can`t find a movie with such a title' : ''}
           </p>
         </div>
 
@@ -52,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={() => findMovie()}
+              onClick={findMovie}
               data-cy="find"
             >
               Find a movie
@@ -69,6 +75,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
                   addMovies(movie);
                   setMovie(null);
                   setTitle('');
+                  setErors(true);
                 }
               }}
             >

@@ -1,47 +1,37 @@
 /* eslint-disable no-console */
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App = () => {
+  const [movies, setMovies] = useState <Movie[]>([]);
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
-  };
-
-  addMovie = (theMovie: Movie) => {
-    this.setState((prev) => {
-      if (prev.movies.some((movie) => movie.imdbID === theMovie.imdbID)) {
+  const addMovie = (theMovie: Movie) => {
+    setMovies((prev) => {
+      if (prev.some((movie) => movie.imdbID === theMovie.imdbID)) {
         return (
-          { movies: [...prev.movies] }
+          [...prev]
         );
       }
 
       return (
-        { movies: [...prev.movies, theMovie] }
+        [...prev, theMovie]
       );
     });
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie
-            onAdd={this.addMovie}
-            ifMovieAdded={movies}
-          />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          onAdd={addMovie}
+          ifMovieAdded={movies}
+        />
+      </div>
+    </div>
+  );
+};

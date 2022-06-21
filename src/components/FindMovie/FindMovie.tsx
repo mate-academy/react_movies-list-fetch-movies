@@ -78,6 +78,8 @@ export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
               onClick={() => {
                 if (inputedMovie) {
                   findMovie();
+                } else {
+                  setErrorMessage('movie not found');
                 }
               }}
             >
@@ -100,6 +102,14 @@ export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
 
                   onAdd(theMovie);
                   setInputedMovie('');
+                  setTheMovie({
+                    Poster: '',
+                    Title: '',
+                    Plot: '',
+                    imdbID: '',
+                  });
+                } else {
+                  setErrorMessage('Movie not fouund!');
                 }
               }}
             >

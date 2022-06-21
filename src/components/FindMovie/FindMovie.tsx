@@ -13,6 +13,7 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
   const [title, setTitle] = useState('');
   const [preview, setPreview] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
+  const [duplicate, setDuplicate] = useState(false);
 
   return (
     <>
@@ -39,6 +40,7 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
               onChange={(event) => {
                 setTitle(event.target.value);
                 setError(false);
+                setDuplicate(false);
               }}
             />
           </div>
@@ -87,8 +89,13 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
                   choosedMovie(current => [...current, preview]);
                 }
 
+                if (movies.some(movie => movie.imdbID === preview?.imdbID)) {
+                  setDuplicate(true);
+                }
+
                 setPreview(null);
                 setTitle('');
+
               }}
             >
               Add to the list
@@ -98,10 +105,18 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
       </form>
 
       <div className="container">
-        <h2 className="title">Preview</h2>
-        {preview
-        && (
-          <MovieCard movie={preview} />
+        {duplicate
+        ? (
+          <h2 className="title">Looks like, you already have this movie</h2>
+        )
+        : (
+          <>
+            <h2 className="title">Preview</h2>
+            {preview
+            && (
+              <MovieCard movie={preview} />
+            )}
+          </>
         )}
       </div>
     </>

@@ -95,7 +95,6 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
 
                 setPreview(null);
                 setTitle('');
-
               }}
             >
               Add to the list
@@ -106,18 +105,18 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
 
       <div className="container">
         {duplicate
-        ? (
-          <h2 className="title">Looks like, you already have this movie</h2>
-        )
-        : (
-          <>
-            <h2 className="title">Preview</h2>
-            {preview
+          ? (
+            <h2 className="title">Looks like, you already have this movie</h2>
+          )
+          : (
+            <>
+              <h2 className="title">Preview</h2>
+              {preview
             && (
               <MovieCard movie={preview} />
             )}
-          </>
-        )}
+            </>
+          )}
       </div>
     </>
   );

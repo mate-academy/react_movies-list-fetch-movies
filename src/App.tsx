@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-// import { request } from './movies';
 
 export const App: React.FC = () => {
   const [movies, setMovie] = useState<Movie[]>([]);

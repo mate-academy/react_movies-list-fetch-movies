@@ -59,6 +59,7 @@ export const FindMovie: React.FC<Props> = ({ addMove }) => {
             <button
               type="button"
               className="button is-light"
+              data-cy="find"
               onClick={serchMovie}
             >
               Find a movie
@@ -68,6 +69,7 @@ export const FindMovie: React.FC<Props> = ({ addMove }) => {
             <button
               type="button"
               className="button is-primary"
+              data-cy="add"
               onClick={() => {
                 addMove(movie);
               }}

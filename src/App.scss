@@ -5,6 +5,10 @@
   min-height: 100vh;
 }
 
+iframe {
+  display: none !important;
+}
+
 .page-content {
   padding: 20px;
 }

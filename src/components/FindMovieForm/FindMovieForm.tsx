@@ -45,8 +45,21 @@ export const FindMovieForm: React.FC<Props> = ({
     }
   };
 
+  const submitEvent = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (movie) {
+      addMovieToList();
+    }
+  };
+
   return (
-    <form className="find-movie">
+    <form
+      className="find-movie"
+      onSubmit={(event) => {
+        submitEvent(event);
+      }}
+    >
       <div className="field">
         <label className="label" htmlFor="movie-title">
           Movie title
@@ -92,14 +105,9 @@ export const FindMovieForm: React.FC<Props> = ({
         <div className="control">
           <button
             data-cy="add"
-            type="button"
+            type="submit"
             className="button is-primary"
             disabled={movieNotEhist}
-            onClick={() => {
-              if (movie) {
-                addMovieToList();
-              }
-            }}
           >
             Add to the list
           </button>

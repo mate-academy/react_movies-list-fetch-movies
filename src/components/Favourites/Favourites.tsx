@@ -1,14 +1,16 @@
 /* eslint-disable */
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MoviesList } from '../MoviesList';
 
 type Props = {
   deleteMovie: (movie: Movie) => void,
   movies: Movie[],
+  addMovie: (movie: Movie) => void,
+  setLocalStorage: (movies: Movie[]) => void,
 };
 
-export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
+export const Favourites: React.FC<Props> = ({ deleteMovie, movies, addMovie, setLocalStorage }) => {
   const [preparedMovies, setPreparedMovies] = useState<Movie[]>([]);
   const [inputTitle, setInputTitle] = useState('');
   const [inputYear, setInputYear] = useState(0);
@@ -17,13 +19,14 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
 
   enum SortType {
     Clear = '',
-    Year = 'byYear',
-    Title = 'byTitle',
+    Year = 'Sort by Year',
+    Title = 'Sort by Title',
   }
 
   const visibleMovies = () => {
     const title = params.get('title') || '';
     const year = params.get('year') || 0;
+    console.log('title', title);
 
       const isTitleIncludes = (movieTitle: string) => movieTitle
           .toLowerCase()
@@ -31,17 +34,20 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
 
       const isCorrectYear = (movieYear: number) => movieYear === +year;
 
+      console.log('filter', movies.filter((movie) => isTitleIncludes(movie.Title)))
+
       return  year
         ? movies.filter((movie) => (isTitleIncludes(movie.Title)
           || isCorrectYear(movie.Year)))
         : movies.filter((movie) => isTitleIncludes(movie.Title));
   };
 
-  const sortedMovies = (movies: Movie[]) => {
-    return [...movies].sort((movie1, movie2) => {
+  const sortedMovies = (ourMovies: Movie[]) => {
+    const sortCallback = (movie1: Movie, movie2: Movie) => {
       switch (sortParams) {
         case SortType.Year:
-          return movie1.Year - movie2.Year;
+          console.log(movie1.Title,'|', movie2.Title, movie1.Year, movie2.Year, movie1.Year - movie2.Year)
+          return movie2.Year - movie1.Year;
 
         case SortType.Title:
           return movie1.Title.localeCompare(movie2.Title);
@@ -49,7 +55,12 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
         default:
           return 0;
       }
-    });
+    }
+    const finalMovies = [...ourMovies].sort((movie1, movie2) => sortCallback(movie1, movie2));
+
+    console.log(sortParams);
+    console.log('Final', finalMovies);
+    return finalMovies;
   }
 
   const handleInputTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,7 +86,6 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
 
     setParams({ year: inputYear.toString(), title: inputTitle });
 
-    console.log('12345');
     console.log(sortedMovies(visibleMovies()));
 
     setPreparedMovies(sortedMovies(visibleMovies()));
@@ -87,13 +97,17 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
   const resetFilter: React.FormEventHandler = (event) => {
     event.preventDefault();
 
+    setSortParams('')
+    setParams('');
     setPreparedMovies(movies);
 
     setInputTitle('');
     setInputYear(0);
   };
 
-  useEffect(() => setPreparedMovies(movies), [movies]);
+  useEffect(() => {
+    return setPreparedMovies(sortedMovies(visibleMovies()));
+  }, [movies, params, sortParams]);
 
   return (
     <div className="ml-6 mr-6">
@@ -160,7 +174,7 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
               <button
                 type="button"
                 className="button is-danger is-light ml-6"
-                onClick={resetFilter}
+                onClick={() => setLocalStorage([])}
               >
                 Reset all
               </button>
@@ -169,7 +183,7 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies }) => {
         </form>
       </div>
       <div className="mt-3">
-        <MoviesList movies={preparedMovies} deleteMovie={deleteMovie} />
+        <MoviesList addMovie={addMovie} movies={preparedMovies} deleteMovie={deleteMovie} />
       </div>
     </div>
   );

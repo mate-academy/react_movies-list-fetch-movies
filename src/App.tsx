@@ -3,11 +3,14 @@ import React, { useEffect } from 'react';
 import {
   Route,
   Link,
-  Routes, HashRouter,
+  Routes,
+  HashRouter,
+  Navigate,
 } from 'react-router-dom';
 import classNames from 'classnames';
 import { Favourites } from './components/Favourites/Favourites';
 import { Search } from './components/Search/Search';
+import { NotFoundPage } from "./components/NotFoundPage/NotFoundPage";
 import { useLocalStorage } from './CustomHooks/useLocallStorage';
 
 export const App: React.FC = () => {
@@ -23,12 +26,14 @@ export const App: React.FC = () => {
 
     if (!includeMovie) {
       setMovies(currentMovies => [...currentMovies, movie]);
+      window.alert('Movie added');
     }
   };
 
   const deleteMovie = (movie: Movie):void => {
     setMovies(currentMovies => currentMovies
       .filter(currentMovie => currentMovie.imdbID !== movie.imdbID));
+    window.alert('Movie deleted');
   };
 
   useEffect(() => {setMovies(movies)}, [movies]);
@@ -52,8 +57,15 @@ export const App: React.FC = () => {
         </ul>
       </div>
       <Routes>
-        <Route path="/favourites" element={<Favourites deleteMovie={deleteMovie} movies={movies} />} />
+        <Route path="/home" element={<Navigate to="/favourites" />} />
+
+        <Route path="/" element={<Navigate to="/favourites" />} />
+
+        <Route path="/favourites" element={<Favourites addMovie={addMovie} deleteMovie={deleteMovie} movies={movies} setLocalStorage={setMovies} />} />
+
         <Route path="/search" element={<Search addMovie={addMovie} deleteMovie={deleteMovie} />} />
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </HashRouter>
   );

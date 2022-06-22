@@ -1,6 +1,6 @@
 /* eslint-disable */
-export async function getMovie(title: string) {
-  const url = `https://www.omdbapi.com/?apikey=b170ffd0&t=${title}`;
+export async function getMovie(imdbID: string) {
+  const url = `https://www.omdbapi.com/?apikey=b170ffd0&i=${imdbID}`;
 
   const response = await fetch(url);
 
@@ -11,10 +11,10 @@ export async function getMovie(title: string) {
   return response.json();
 }
 
-export async function getMovies(title?: string, year?: number, type?: string, page?: number) {
+export async function getMovies(title?: string, year?: number, page?: number, type?: string) {
   const filmTitle = title ? `&s=${title}` : '';
   const filmYear = year ? `&y=${year}` : '';
-  const filmPage = page ? `&=${page}` : '';
+  const filmPage = page ? `&page=${page}` : '';
   const filmType = type ? `&=${type}` : '';
   const url = `https://www.omdbapi.com/?apikey=b170ffd0${filmTitle + filmYear + filmPage + filmType}`;
 

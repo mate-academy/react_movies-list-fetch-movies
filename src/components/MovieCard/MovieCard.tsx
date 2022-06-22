@@ -10,7 +10,7 @@ type Props = {
 export const MovieCard: React.FC<Props> = (props) => {
   const { movie, deleteMovie, addMovie } = props;
   const [movies] = useLocalStorage<Movie[]>('Movies', []);
-  const moviePoster = movie.Poster === 'N/A' ? 'http://www.terminy.info/assets/images/shargonizmi/not-found.jpg' : movie.Poster;
+  const moviePoster = movie.Poster === 'N/A' ? 'https://habrastorage.org/getpro/habr/upload_files/a01/cfb/160/a01cfb160c1e83d50a0e1c6b4d239974.jpg' : movie.Poster;
 
   return (
     <div className="card">

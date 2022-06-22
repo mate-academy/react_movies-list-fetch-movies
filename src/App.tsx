@@ -20,6 +20,7 @@ export const App: React.FC = () => {
 
   const addMovie = (movie: Movie): void => {
     if (!movie) {
+      window.alert('No movies to add');
       return;
     }
     const includeMovie = movies.some(({ imdbID }) => movie.imdbID === imdbID);
@@ -27,7 +28,9 @@ export const App: React.FC = () => {
     if (!includeMovie) {
       setMovies(currentMovies => [...currentMovies, movie]);
       window.alert('Movie added');
+      return;
     }
+    window.alert('You already add this movie');
   };
 
   const deleteMovie = (movie: Movie):void => {

@@ -59,10 +59,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
   const submitForm: React.FormEventHandler = (event) => {
     event.preventDefault();
 
-    window.alert('Random movie added');
-
     if (movies) {
-      addMovie(movies[0]);
+      const randomElement = () => Math.floor(Math.random() * movies.length);
+      addMovie(movies[randomElement()]);
       // setTitle('');
       // setMovies([]);
       setError(false);
@@ -130,7 +129,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
               type="submit"
               className="button is-primary"
             >
-              Add to the list
+              Add random movie
             </button>
           </div>
         </div>

@@ -1,54 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
 
-// import { MovieCard } from '../MovieCard';
+import { MovieCard } from '../MovieCard';
+import { FindMovieForm } from '../FindMovieForm';
 
-export const FindMovie: React.FC = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+interface Props {
+  setMoviesFSState: (arg: Movie[], arg2: Movie) => void;
+  movies: Movie[];
+}
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
-        </div>
+export const FindMovie: React.FC<Props> = ({ setMoviesFSState, movies }) => {
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [sameMovie, setSameMovie] = useState(false);
 
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
-      </div>
+  const setMovieFSState = (arg: Movie | null) => {
+    setMovie(arg);
+  };
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
+  const setSameMovieFSState = (arg: boolean) => {
+    setSameMovie(arg);
+  };
+
+  return (
+    <>
+      <FindMovieForm
+        setMoviesFSState={setMoviesFSState}
+        movies={movies}
+        setSameMovieFSState={setSameMovieFSState}
+        setMovieFSState={setMovieFSState}
+        movie={movie}
+      />
+
+      <div className="container">
+        <h2 className="title">Preview</h2>
+        {sameMovie && (
+          <p
+            className="has-text-danger mb-5"
           >
-            Find a movie
-          </button>
-        </div>
+            This movie is alredy exist in your library
+          </p>
+        )}
 
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
-        </div>
+        {movie && <MovieCard movie={movie} />}
+
       </div>
-    </form>
-
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      {/* <MovieCard  /> */}
-    </div>
-  </>
-);
+    </>
+  );
+};

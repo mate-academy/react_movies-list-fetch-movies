@@ -1,6 +1,6 @@
 const URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=';
 
-const API_KEY='f3a7d222';
+const API_KEY = 'f3a7d222';
 
 export const requestMovies = async (title: string): Promise<Movie> => {
   const response = await fetch(`${URL}${API_KEY}&t=${title}`);

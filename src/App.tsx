@@ -1,29 +1,46 @@
-import { Component } from 'react';
+/* eslint-disable no-console */
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [errMess, setErrMess] = useState<string>('');
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+  const addMovie = (movie: Movie | null) => {
+    if (!movie) {
+      return;
+    }
+
+    const check = movies.find(mov => mov.imdbID === movie.imdbID);
+
+    if (check) {
+      console.log('Movie is already added to the list!');
+      setErrMess('Movie is already added to the list!');
+
+      return;
+    }
+
+    setMovies((prev) => [...prev, movie]);
   };
 
-  render() {
-    const { movies } = this.state;
+  const cancelErrMess = () => {
+    setErrMess('');
+  };
 
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          addMovie={addMovie}
+          errMess={errMess}
+          cancelErrMess={cancelErrMess}
+        />
+      </div>
+    </div>
+  );
+};

@@ -3,15 +3,10 @@ import './FindMovie.scss';
 import { Movie } from '../../react-app-env';
 
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../api/movie';
 
 type Props = {
   addMovie: (movie: Movie) => void,
-};
-
-const getMovie = async (query: string) => {
-  const response = await fetch(`https://www.omdbapi.com/?apikey=27284918&t=${query}`);
-
-  return response.json();
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
@@ -37,6 +32,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     if (!notFound && movie) {
       addMovie(movie);
       setQuery('');
+      setMovie(null);
     }
   };
 

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 
 import { MovieCard } from '../MovieCard';
+import { request } from '../api/api';
 
 type Props = {
   onAdd: (theMovie: Movie) => void
@@ -23,16 +24,13 @@ export const FindMovie: React.FC <Props> = ({ onAdd, ifMovieAdded }) => {
   const [added, setAdded] = useState(false);
 
   const findMovie = () => {
-    fetch(`${urlMovies}t=${inputedMovie}`)
-      .then(response => {
-        response.json()
-          .then(movie => {
-            if (movie.Response !== 'False') {
-              setTheMovie(movie);
-            } else {
-              setErrorMessage('Movie not found!!!');
-            }
-          });
+    request(`${urlMovies}t=${inputedMovie}`)
+      .then(movie => {
+        if (movie.Response !== 'False') {
+          setTheMovie(movie);
+        } else {
+          setErrorMessage('Movie not found!!!');
+        }
       });
   };
 

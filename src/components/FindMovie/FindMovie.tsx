@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-// import { getMovie } from '../../api';
+import { getMovie } from '../../api';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
@@ -12,17 +12,6 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
   const [movieTitle, setMovieTitle] = useState('');
   const [isError, setIsError] = useState(false);
 
-  const URL = 'https://www.omdbapi.com/?apikey=';
-
-  const getMovie = async (title: string): Promise<Movie> => {
-    const result = await fetch(`${URL}130e0d23&t=${title}`)
-      .then(response => response.json());
-
-    setFoundMovie(result);
-
-    return result;
-  };
-
   const handleFindMovie = async () => {
     const movie = await getMovie(movieTitle);
 
@@ -30,7 +19,23 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
       setIsError(true);
     }
 
+    setFoundMovie(movie);
+
     return movie;
+  };
+
+  const onSubmit = () => {
+    if (movieTitle !== '') {
+      if (!foundMovie) {
+        handleFindMovie();
+      } else if (movieTitle.toLowerCase() === foundMovie.Title.toLowerCase()) {
+        getSelectedMovie(foundMovie);
+        setMovieTitle('');
+        setFoundMovie(null);
+      } else {
+        handleFindMovie();
+      }
+    }
   };
 
   return (
@@ -39,15 +44,7 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          if (movieTitle !== '') {
-            if (!foundMovie) {
-              handleFindMovie();
-            } else {
-              getSelectedMovie(foundMovie);
-              setMovieTitle('');
-              setFoundMovie(null);
-            }
-          }
+          onSubmit();
         }}
       >
         <div className="field">

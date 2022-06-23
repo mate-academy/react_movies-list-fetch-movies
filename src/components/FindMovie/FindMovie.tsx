@@ -29,20 +29,24 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       });
   };
 
+  const handleOnSubmit = () => {
+    if (!foundMovie) {
+      requestButton();
+    } else {
+      addMovie(foundMovie);
+      setTempTitle('');
+      setFoundMovie(null);
+    }
+  };
+
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event => {
+        onSubmit={(event) => {
           event.preventDefault();
-          if (!foundMovie) {
-            requestButton();
-          } else {
-            addMovie(foundMovie);
-            setTempTitle('');
-            setFoundMovie(null);
-          }
-        })}
+          handleOnSubmit();
+        }}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">

@@ -5,7 +5,7 @@
 - Use [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript)
 
 ## Task
-Implement `FindMovie` component to load movies from [OMDb API](http://www.omdbapi.com/) (You need to register and get an API key).
+Implement `FindMovie` component to load movies from [OMDb API]( (You need to register and get an API key).
 
 > Don't use class components. Use React Hooks instead.
 

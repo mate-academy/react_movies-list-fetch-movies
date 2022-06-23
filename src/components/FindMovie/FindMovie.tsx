@@ -15,6 +15,33 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
   const [error, setError] = useState(false);
   const [duplicate, setDuplicate] = useState(false);
 
+  const findMovie = () => {
+    getFilmByTitle(title)
+      .then(film => {
+        if (film.Error) {
+          setError(true);
+        } else {
+          return setPreview(film);
+        }
+
+        return null;
+      });
+  };
+
+  const addmovie = () => {
+    if (preview
+      && movies.every(movie => movie.imdbID !== preview.imdbID)) {
+      choosedMovie(current => [...current, preview]);
+    }
+
+    if (movies.some(movie => movie.imdbID === preview?.imdbID)) {
+      setDuplicate(true);
+    }
+
+    setPreview(null);
+    setTitle('');
+  };
+
   return (
     <>
       <form
@@ -60,18 +87,7 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
               data-cy="find"
               className="button is-light"
               disabled={!title}
-              onClick={() => {
-                getFilmByTitle(title)
-                  .then(film => {
-                    if (film.Error) {
-                      setError(true);
-                    } else {
-                      return setPreview(film);
-                    }
-
-                    return null;
-                  });
-              }}
+              onClick={findMovie}
             >
               Find a movie
             </button>
@@ -83,19 +99,7 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
               data-cy="add"
               className="button is-primary"
               disabled={error}
-              onClick={() => {
-                if (preview !== null
-                  && movies.every(movie => movie.imdbID !== preview.imdbID)) {
-                  choosedMovie(current => [...current, preview]);
-                }
-
-                if (movies.some(movie => movie.imdbID === preview?.imdbID)) {
-                  setDuplicate(true);
-                }
-
-                setPreview(null);
-                setTitle('');
-              }}
+              onClick={addmovie}
             >
               Add to the list
             </button>
@@ -110,13 +114,12 @@ export const FindMovie: React.FC<Props> = ({ choosedMovie, movies }) => {
           )
           : (
             <>
-              {preview
-            && (
-              <>
-                <h2 className="title">Preview</h2>
-                <MovieCard movie={preview} />
-              </>
-            )}
+              {preview && (
+                <>
+                  <h2 className="title">Preview</h2>
+                  <MovieCard movie={preview} />
+                </>
+              )}
             </>
           )}
       </div>

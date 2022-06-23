@@ -17,9 +17,9 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
 
     if (movie.Response === 'False') {
       setIsError(true);
+    } else {
+      setFoundMovie(movie);
     }
-
-    setFoundMovie(movie);
 
     return movie;
   };

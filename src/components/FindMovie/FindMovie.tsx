@@ -30,9 +30,6 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
       setIsError(true);
     }
 
-    // eslint-disable-next-line no-console
-    console.log(movie);
-
     return movie;
   };
 
@@ -42,12 +39,14 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          if (!foundMovie) {
-            handleFindMovie();
-          } else {
-            getSelectedMovie(foundMovie);
-            setMovieTitle('');
-            setFoundMovie(null);
+          if (movieTitle !== '') {
+            if (!foundMovie) {
+              handleFindMovie();
+            } else {
+              getSelectedMovie(foundMovie);
+              setMovieTitle('');
+              setFoundMovie(null);
+            }
           }
         }}
       >
@@ -85,7 +84,11 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
             <button
               type="button"
               className="button is-light"
-              onClick={handleFindMovie}
+              onClick={() => {
+                if (movieTitle !== '') {
+                  handleFindMovie();
+                }
+              }}
               data-cy="find"
             >
               Find a movie
@@ -113,7 +116,6 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
       </form>
 
       <div className="container">
-        {/* <h2 className="title">Preview</h2> */}
         {foundMovie && <MovieCard movie={foundMovie} />}
       </div>
     </>

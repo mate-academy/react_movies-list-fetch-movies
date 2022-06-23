@@ -1,16 +1,26 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react';
-import { MovieCard } from '../MovieCard';
-import { Movie } from '../../react-app-env';
+import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
 
 import './FindMovie.scss';
+
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../react-app-env';
 import { getMovie } from '../../api/api';
 
 interface Props {
-  addMove: (movie: Movie) => void
+  addMove: (movie: Movie) => void,
+  resetError: () => void,
+  dublikate: boolean,
 }
 
-export const FindMovie: React.FC<Props> = ({ addMove }) => {
+export const FindMovie: React.FC<Props> = (
+  {
+    addMove,
+    resetError,
+    dublikate,
+  },
+) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie>({
     Response: '',
@@ -19,7 +29,35 @@ export const FindMovie: React.FC<Props> = ({ addMove }) => {
     imdbID: 'not found',
   });
 
+  const [foundError, setFoundError] = useState(false);
+
+  let initialRender = true;
+
+  useEffect(() => {
+    if (initialRender) {
+      initialRender = false;
+
+      return;
+    }
+
+    if (movie.Response === 'False') {
+      setFoundError(true);
+    }
+  }, [movie]);
+
+  const changeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (dublikate) {
+      resetError();
+    }
+
+    setQuery(event.target.value);
+  };
+
   const serchMovie = () => {
+    if (dublikate) {
+      resetError();
+    }
+
     getMovie(query).then((result) => {
       console.log(result);
 
@@ -41,20 +79,27 @@ export const FindMovie: React.FC<Props> = ({ addMove }) => {
               id="movie-title"
               value={query}
               placeholder="Enter a title to search"
-              className="input is-danger"
-              onChange={(event) => {
-                setQuery(event.target.value);
-                console.log(query);
-              }}
+              className={classNames(
+                'input',
+                {
+                  'is-danger': foundError,
+                },
+              )}
+              onChange={changeInput}
             />
           </div>
+          {foundError
+            && (
+              <p className="field is-grouped">
+                Can&apos;t find a movie with that title
+              </p>
+            )}
 
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
         </div>
 
-        <div className="field is-grouped">
+        <div
+          className={classNames('is-grouped', 'field')}
+        >
           <div className="control">
             <button
               type="button"
@@ -68,7 +113,13 @@ export const FindMovie: React.FC<Props> = ({ addMove }) => {
           <div className="control">
             <button
               type="button"
-              className="button is-primary"
+              className={classNames(
+                'button',
+                {
+                  'is-primary': !dublikate,
+                  'is-danger': dublikate,
+                },
+              )}
               data-cy="add"
               onClick={() => {
                 addMove(movie);
@@ -76,6 +127,12 @@ export const FindMovie: React.FC<Props> = ({ addMove }) => {
             >
               Add to the list
             </button>
+            {dublikate
+            && (
+              <span className="add-error">
+                The film is already on the list
+              </span>
+            )}
           </div>
         </div>
       </form>

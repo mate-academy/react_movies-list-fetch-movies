@@ -1,3 +1,12 @@
 .find-movie {
   margin-bottom: 20px;
 }
+
+.add-error {
+  position: absolute;
+  top: 100%;
+  transform: translateX(-100%);
+  background-color: aliceblue;
+  border: 1px solid #f00;
+  width: fit-content;
+}

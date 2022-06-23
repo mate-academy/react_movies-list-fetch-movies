@@ -7,8 +7,6 @@ interface Props {
 }
 
 export const MoviesList: React.FC<Props> = ({ selectedMovie }) => {
-  // const { movies } = props;
-
   return (
     <div className="movies">
       {selectedMovie?.map(movie => (

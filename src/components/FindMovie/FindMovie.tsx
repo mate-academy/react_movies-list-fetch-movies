@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import { getMovie } from '../../api';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
@@ -38,6 +39,11 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
     }
   };
 
+  const cleaner = () => {
+    setFoundMovie(null);
+    setMovieTitle('');
+  };
+
   return (
     <>
       <form
@@ -57,7 +63,11 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames(
+                'input is-info', {
+                  'is-danger': isError,
+                },
+              )}
               value={movieTitle}
               onChange={(event) => {
                 if (isError) {
@@ -107,6 +117,16 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
               data-cy="add"
             >
               Add to the list
+            </button>
+          </div>
+
+          <div className="control">
+            <button
+              type="button"
+              className="button is-danger"
+              onClick={cleaner}
+            >
+              Clear
             </button>
           </div>
         </div>

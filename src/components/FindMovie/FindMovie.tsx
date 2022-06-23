@@ -42,6 +42,7 @@ export const FindMovie: React.FC<Props> = ({ getSelectedMovie }) => {
   const cleaner = () => {
     setFoundMovie(null);
     setMovieTitle('');
+    setIsError(false);
   };
 
   return (

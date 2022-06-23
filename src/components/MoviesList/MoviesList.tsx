@@ -6,17 +6,14 @@ interface Props {
   movies: Movie[];
 }
 
-export const MoviesList: React.FC<Props> = (props) => {
-  const { movies } = props;
-
-  return (
-    <div className="movies">
-      {movies.map(movie => (
-        <MovieCard
-          key={movie.imdbID}
-          movie={movie}
-        />
+export const MoviesList: React.FC<Props> = ({ movies }) => (
+  <div>
+    <ul className="movies">
+      {movies.map((movie) => (
+        <li key={movie.imdbID}>
+          <MovieCard movie={movie} />
+        </li>
       ))}
-    </div>
-  );
-};
+    </ul>
+  </div>
+);

@@ -16,7 +16,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const findMovie = (title: string) => {
     getMovie(title)
       .then(response => {
-        if (response.Error === 'Movie not found!') {
+        if (response.Response === 'False') {
           setMovieNotFound(true);
         } else {
           setMovie(response);
@@ -29,6 +29,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     if (movie) {
       addMovie(movie);
       setMovieTitle('');
+      setMovie(null);
     }
   };
 

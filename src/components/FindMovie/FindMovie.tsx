@@ -1,54 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { MovieCard } from '../MovieCard';
+import { Form } from '../Form/Form';
 
-// import { MovieCard } from '../MovieCard';
+interface Props {
+  onAddMovie: (movie: Movie) => void,
+}
 
-export const FindMovie: React.FC = () => (
-  <>
-    <form className="find-movie">
-      <div className="field">
-        <label className="label" htmlFor="movie-title">
-          Movie title
-        </label>
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+  const [movie, stateMovie] = useState<Movie | null>(null);
+  const [title, setTitle] = useState(''); // move to form
+  const [isMovieFound, setIsMovieFound] = useState(false);
 
-        <div className="control">
-          <input
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className="input is-danger"
-          />
+  const clearFields = () => {
+    setTitle('');
+    stateMovie(null);
+  };
+
+  const findMovieCatch = () => {
+    getMovie(title)
+      .then(response => stateMovie(response))
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        setIsMovieFound(true);
+        clearFields();
+      });
+  };
+
+  const onSubmit = () => {
+    if (movie !== null) {
+      onAddMovie(movie);
+      clearFields();
+      setIsMovieFound(false);
+    }
+  };
+
+  return (
+    <>
+      <Form
+        title={title}
+        setTitle={setTitle}
+        setIsMovieFound={setIsMovieFound}
+        isMovieFound={isMovieFound}
+        findMovieCatch={findMovieCatch}
+        onSubmit={onSubmit}
+        movie={movie}
+      />
+
+      {movie && (
+        <div className="container">
+          <MovieCard movie={movie} />
         </div>
-
-        <p className="help is-danger">
-          Can&apos;t find a movie with such a title
-        </p>
-      </div>
-
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            type="button"
-            className="button is-light"
-          >
-            Find a movie
-          </button>
-        </div>
-
-        <div className="control">
-          <button
-            type="button"
-            className="button is-primary"
-          >
-            Add to the list
-          </button>
-        </div>
-      </div>
-    </form>
-
-    <div className="container">
-      <h2 className="title">Preview</h2>
-      {/* <MovieCard  /> */}
-    </div>
-  </>
-);
+      )}
+    </>
+  );
+};

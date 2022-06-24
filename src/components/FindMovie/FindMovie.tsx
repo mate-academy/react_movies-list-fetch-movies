@@ -30,6 +30,7 @@ export const FindMovie: React.FC<Props> = (
   });
 
   const [foundError, setFoundError] = useState(false);
+  const [clearCard, setClearCard] = useState(true);
 
   let initialRender = true;
 
@@ -42,6 +43,7 @@ export const FindMovie: React.FC<Props> = (
 
     if (movie.Response === 'False') {
       setFoundError(true);
+      setClearCard(false);
     }
   }, [movie]);
 
@@ -50,12 +52,15 @@ export const FindMovie: React.FC<Props> = (
       resetError();
     }
 
+    setClearCard(true);
+
     setQuery(event.target.value);
   };
 
   const serchMovie = () => {
     if (dublikate) {
       resetError();
+      setClearCard(true)
     }
 
     getMovie(query).then((result) => {
@@ -123,7 +128,9 @@ export const FindMovie: React.FC<Props> = (
               data-cy="add"
               onClick={() => {
                 addMove(movie);
+                setQuery('');
               }}
+              disabled={dublikate}
             >
               Add to the list
             </button>
@@ -139,6 +146,7 @@ export const FindMovie: React.FC<Props> = (
 
       <div className="container">
         {movie.Response === 'True'
+          && clearCard
           && (
             <>
               <h2 className="title">Preview</h2>

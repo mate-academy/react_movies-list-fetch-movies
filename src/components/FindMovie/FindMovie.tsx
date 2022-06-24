@@ -38,6 +38,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       setMovie(null);
       setTitle('');
     }
+
+    setTitle('');
   };
 
   return (

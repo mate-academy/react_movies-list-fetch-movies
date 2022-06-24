@@ -73,6 +73,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           <div className="control">
             <button
               type="button"
+              data-cy="find"
               className="button is-light"
               disabled={!title}
               onClick={loadFilms}
@@ -85,6 +86,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               type="submit"
               className="button is-primary"
+              data-cy="add"
             >
               Add to the list
             </button>

@@ -5,15 +5,11 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
-  const [movies, setMovies] = useState<Movie[]>();
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const movieList = (newMovie: Movie) => {
-    if (!movies?.includes(newMovie)) {
-      setMovies((prev) => {
-        return prev
-          ? [...prev, newMovie]
-          : [newMovie];
-      });
+    if (!movies.find(movie => movie.imdbID === newMovie.imdbID)) {
+      setMovies((prev) => [...prev, newMovie]);
     }
   };
 

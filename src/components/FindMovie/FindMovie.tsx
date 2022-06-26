@@ -3,6 +3,7 @@ import './FindMovie.scss';
 import classNames from 'classnames';
 
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api/api';
 
 type Props = {
   movieList: (newMovie: Movie) => void,
@@ -10,8 +11,9 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ movieList }) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
 
   useEffect(() => {
     if (movie?.Response === 'False') {
@@ -19,11 +21,7 @@ export const FindMovie: React.FC<Props> = ({ movieList }) => {
     }
   }, [movie]);
 
-  const getMovie = async (inputTitle: string) => {
-    const responce = await fetch(`https://www.omdbapi.com/?apikey=e3df8ec5&t=${inputTitle}`);
-
-    return responce.json();
-  };
+  const checkConditions = showPreview && movie && movie.Response === 'True';
 
   return (
     <>
@@ -62,10 +60,12 @@ export const FindMovie: React.FC<Props> = ({ movieList }) => {
               type="button"
               className="button is-light"
               data-cy="find"
-              onClick={() => (
+              onClick={() => {
                 getMovie(title)
-                  .then(movieFromServer => setMovie(movieFromServer))
-              )}
+                  .then(movieFromServer => setMovie(movieFromServer));
+
+                setShowPreview(true);
+              }}
             >
               Find a movie
             </button>
@@ -82,6 +82,7 @@ export const FindMovie: React.FC<Props> = ({ movieList }) => {
                   movieList(movie);
                 }
 
+                setShowPreview(false);
                 setTitle('');
               }}
             >
@@ -94,7 +95,7 @@ export const FindMovie: React.FC<Props> = ({ movieList }) => {
       <div className="container">
         <h2 className="title">{error && movie?.Error}</h2>
         {
-          movie && movie?.Response === 'True' && <MovieCard movie={movie} />
+          checkConditions && <MovieCard movie={movie} />
         }
       </div>
     </>

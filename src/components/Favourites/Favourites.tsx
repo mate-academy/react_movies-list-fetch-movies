@@ -169,7 +169,7 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies, addMovie, set
               </button>
             </div>
 
-            <div className="control mt-4 has-icons-left ml-6 has-text-centered-mobile">
+            <div className="control mt-4 has-icons-left has-text-centered-mobile">
               <div className="select is-medium">
                 <select onChange={handleSelectSortType}>
                   <option>Select sort type</option>

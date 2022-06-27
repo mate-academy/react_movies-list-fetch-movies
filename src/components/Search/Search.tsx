@@ -8,8 +8,8 @@ type Props = {
 
 export const Search: React.FC<Props> = ({ addMovie, deleteMovie }) => {
   return (
-    <div className="ml-6 mr-6 columns">
-      <div className="column">
+    <div className="ml-6 mr-6">
+      <div>
         <FindMovie addMovie={addMovie} deleteMovie={deleteMovie} />
       </div>
     </div>

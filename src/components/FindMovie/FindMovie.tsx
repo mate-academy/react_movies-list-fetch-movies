@@ -137,7 +137,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
 
       <div className="container">
         <h2 className="title mt-3">Preview</h2>
-        <nav className="pagination" role="navigation" aria-label="pagination">
+        <nav className="pagination is-medium is-right" role="navigation" aria-label="pagination">
           <a onClick={() => updatePagination(page - 1)} className={classNames('pagination-previous', { 'is-hidden': page === 1 })} title="This is the first page">Previous</a>
           <a onClick={() => updatePagination(page + 1)} className={classNames('pagination-next', { 'is-hidden': page === 3 })}>Next page</a>
           <ul id="test" className="pagination-list">

@@ -144,45 +144,47 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies, addMovie, set
             </label>
           </div>
 
-          <div className="field is-grouped is-grouped-centered">
-            <div className="control level-item">
+          <div className="field columns mr-0 mt-3">
+            <div className="control column has-text-centered-mobile level-item">
               <button
                 type="submit"
-                className="button is-primary is-light"
+                className="button is-primary is-light ml-0 mt-3"
               >
                 Filter movies
               </button>
-              <div className="control has-icons-left ml-6">
-                <div className="select is-medium">
-                  <select onChange={handleSelectSortType}>
-                    <option>Select sort type</option>
-                    <option>Sort by Year</option>
-                    <option>Sort by Title</option>
-                  </select>
-                </div>
-                <span className="icon is-medium is-left">
-                  <i className="fas fa-globe"></i>
-                </span>
-              </div>
+
               <button
                 type="button"
-                className="button is-warning is-light ml-6"
+                className="button is-warning is-light ml-3 mt-3"
                 onClick={resetFilter}
               >
                 Reset filter
               </button>
               <button
                 type="button"
-                className="button is-danger is-light ml-6"
+                className="button is-danger is-light ml-3 mt-3"
                 onClick={() => setLocalStorage([])}
               >
                 Reset all
               </button>
             </div>
+
+            <div className="control mt-4 has-icons-left ml-6 has-text-centered-mobile">
+              <div className="select is-medium">
+                <select onChange={handleSelectSortType}>
+                  <option>Select sort type</option>
+                  <option>Sort by Year</option>
+                  <option>Sort by Title</option>
+                </select>
+              </div>
+              <span className="icon is-medium is-left is-hidden-mobile">
+                  <i className="fas fa-globe"></i>
+                </span>
+            </div>
           </div>
         </form>
       </div>
-      <div className="mt-3">
+      <div className="mt-5 container">
         <MoviesList addMovie={addMovie} movies={preparedMovies} deleteMovie={deleteMovie} />
       </div>
     </div>

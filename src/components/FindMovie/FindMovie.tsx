@@ -17,12 +17,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const requestButton = () => {
     requestMovies(tempTitle)
       .then(movieFromServer => {
-        if (!movieFromServer) {
-          setError(true);
-        } else {
-          setFoundMovie(movieFromServer);
-          setError(false);
-        }
+        setFoundMovie(movieFromServer);
+        setError(false);
       })
       .catch(() => {
         setError(true);

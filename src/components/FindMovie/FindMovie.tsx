@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import cn from 'classnames';
 import { getMovie } from '../../api';
-
 import { MovieCard } from '../MovieCard';
+import { Movie } from '../../react-app-env';
 
 interface Props {
   movies: Movie[];
@@ -10,21 +11,20 @@ interface Props {
 }
 
 export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
-  const defaultMovie = {
-    Poster: '',
-    Title: '',
-    Plot: '',
-    imdbID: '',
-  };
-
-  const [selectedMovie, setSelectedMovie] = useState<Movie>(defaultMovie);
-  const [showMovie, setShowMovie] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
+  const [isMovieFound, setIsMovieFound] = useState(true);
 
   const loadMovie = async () => {
     const loadedMovie = await getMovie(query);
 
     setSelectedMovie(loadedMovie);
+
+    if (selectedMovie) {
+      setIsMovieFound(true);
+    } else {
+      setIsMovieFound(false);
+    }
   };
 
   return (
@@ -40,15 +40,22 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn(
+                'input',
+                { 'is-danger': !isMovieFound },
+              )}
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+              }}
             />
           </div>
 
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
+          {!isMovieFound && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -59,7 +66,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
               data-cy="find"
               onClick={() => {
                 loadMovie();
-                setShowMovie(true);
+                setQuery('');
               }}
             >
               Find a movie
@@ -73,11 +80,13 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
               data-cy="add"
               onClick={() => {
                 if (movies.every(
-                  movie => movie.imdbID !== selectedMovie.imdbID,
+                  movie => movie.imdbID !== selectedMovie?.imdbID,
                 )) {
-                  onSetMovies(selectedMovie);
+                  if (selectedMovie !== null) {
+                    onSetMovies(selectedMovie);
+                  }
+
                   setQuery('');
-                  setShowMovie(false);
                 }
               }}
             >
@@ -89,8 +98,9 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
 
       <div className="container">
         <h2 className="title">Preview</h2>
-        {showMovie && (
-          <MovieCard movie={selectedMovie} />)}
+        {(selectedMovie && isMovieFound) && (
+          <MovieCard movie={selectedMovie} />
+        )}
       </div>
     </>
   );

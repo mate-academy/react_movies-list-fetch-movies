@@ -82,7 +82,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
                 if (movies.every(
                   movie => movie.imdbID !== selectedMovie?.imdbID,
                 )) {
-                  if (selectedMovie !== null) {
+                  if (selectedMovie && isMovieFound) {
                     onSetMovies(selectedMovie);
                   }
 

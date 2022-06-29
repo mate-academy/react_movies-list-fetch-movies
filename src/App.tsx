@@ -5,14 +5,15 @@ import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  // const [title] = useState('as');
 
-  // useEffect(
-  //   () => {
-  //     getMovie(title).then((response: Movie[]) => setMovies(response));
-  //   },
-  //   [],
-  // );
+  const addMovie = (movie: Movie) => {
+    const isAddedBefore = movies
+      .some(mov => mov.imdbID === movie.imdbID);
+
+    if (!isAddedBefore) {
+      setMovies([...movies, movie]);
+    }
+  };
 
   return (
     <div className="page">
@@ -20,7 +21,7 @@ export const App: React.FC = () => {
         <MoviesList movies={movies} />
       </div>
       <div className="sidebar">
-        <FindMovie movies={movies} setMovies={setMovies} />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );

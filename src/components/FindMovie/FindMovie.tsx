@@ -19,12 +19,6 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
     const loadedMovie = await getMovie(query);
 
     setSelectedMovie(loadedMovie);
-
-    if (selectedMovie) {
-      setIsMovieFound(true);
-    } else {
-      setIsMovieFound(false);
-    }
   };
 
   return (
@@ -68,6 +62,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
                 if (query) {
                   loadMovie();
                   setQuery('');
+                  setIsMovieFound(true);
                 } else {
                   setIsMovieFound(false);
                 }

@@ -15,11 +15,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [searchError, setSearchError] = useState(false);
 
   const handleSearch = async () => {
-    const movieFromServer = await getMovie(title);
+    if (title) {
+      const movieFromServer = await getMovie(title);
 
-    setSearchError(movieFromServer.Response === 'False');
+      setSearchError(movieFromServer.Response === 'False');
 
-    setCurrentMovie(movieFromServer);
+      setCurrentMovie(movieFromServer);
+    }
   };
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {

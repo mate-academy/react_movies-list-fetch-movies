@@ -65,8 +65,12 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
               className="button is-light"
               data-cy="find"
               onClick={() => {
-                loadMovie();
-                setQuery('');
+                if (query) {
+                  loadMovie();
+                  setQuery('');
+                } else {
+                  setIsMovieFound(false);
+                }
               }}
             >
               Find a movie

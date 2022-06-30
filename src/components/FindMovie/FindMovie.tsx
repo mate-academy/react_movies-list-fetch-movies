@@ -31,6 +31,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
   const pushMovie = () => {
     if (movie) {
+      setMovie(null);
       const movieIsUnique = !(movies.some(mov => mov.imdbID === movie.imdbID));
 
       if (movieIsUnique) {

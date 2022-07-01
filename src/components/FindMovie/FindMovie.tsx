@@ -9,14 +9,14 @@ import { Movie } from '../../react-app-env';
 import { getMovie } from '../../api/api';
 
 interface Props {
-  addMove: (movie: Movie) => void,
+  addMovie: (movie: Movie) => void,
   resetError: () => void,
   dublikate: boolean,
 }
 
 export const FindMovie: React.FC<Props> = (
   {
-    addMove,
+    addMovie,
     resetError,
     dublikate,
   },
@@ -47,11 +47,19 @@ export const FindMovie: React.FC<Props> = (
     }
   }, [movie]);
 
+  useEffect(() => {
+    if (movie.Response === 'False') {
+      setFoundError(true);
+      setClearCard(false);
+    }
+  });
+
   const changeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (dublikate) {
       resetError();
     }
 
+    setFoundError(false);
     setClearCard(true);
 
     setQuery(event.target.value);
@@ -60,12 +68,10 @@ export const FindMovie: React.FC<Props> = (
   const serchMovie = () => {
     if (dublikate) {
       resetError();
-      setClearCard(true)
+      setClearCard(true);
     }
 
     getMovie(query).then((result) => {
-      console.log(result);
-
       setMovie(result);
     });
   };
@@ -93,7 +99,7 @@ export const FindMovie: React.FC<Props> = (
               onChange={changeInput}
             />
           </div>
-          {foundError
+          {movie.Response === 'False'
             && (
               <p className="field is-grouped">
                 Can&apos;t find a movie with that title
@@ -127,7 +133,7 @@ export const FindMovie: React.FC<Props> = (
               )}
               data-cy="add"
               onClick={() => {
-                addMove(movie);
+                addMovie(movie);
                 setQuery('');
               }}
               disabled={dublikate}

@@ -10,7 +10,7 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [dublikate, setDublikate] = useState(false);
 
-  const addMove = (movie: Movie) => {
+  const addMovie = (movie: Movie) => {
     const index: number = movies.findIndex((element: Movie) => (
       element.imdbID === movie.imdbID));
 
@@ -35,7 +35,7 @@ export const App: React.FC = () => {
       </div>
       <div className="sidebar">
         <FindMovie
-          addMove={addMove}
+          addMovie={addMovie}
           dublikate={dublikate}
           resetError={resetError}
         />

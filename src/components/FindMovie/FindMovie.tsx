@@ -22,9 +22,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
       if (receivedMovie.Response === 'True') {
         setNoMovieError('');
         setMovie(receivedMovie);
-      }
-
-      if (receivedMovie.Response === 'False') {
+      } else {
         setNoMovieError(receivedMovie.Error);
         setMovie(null);
       }

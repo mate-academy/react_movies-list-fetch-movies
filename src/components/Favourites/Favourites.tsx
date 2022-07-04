@@ -144,25 +144,25 @@ export const Favourites: React.FC<Props> = ({ deleteMovie, movies, addMovie, set
             </label>
           </div>
 
-          <div className="field columns mr-0 mt-3">
+          <div className="field columns">
             <div className="control column has-text-centered-mobile level-item">
               <button
                 type="submit"
-                className="button is-primary is-light ml-0 mt-3"
+                className="button is-normal is-primary is-light ml-0 mt-3"
               >
                 Filter movies
               </button>
 
               <button
                 type="button"
-                className="button is-warning is-light ml-3 mt-3"
+                className="button is-normal is-warning is-light ml-3 mt-3"
                 onClick={resetFilter}
               >
                 Reset filter
               </button>
               <button
                 type="button"
-                className="button is-danger is-light ml-3 mt-3"
+                className="button is-normal is-danger is-light ml-3 mt-3"
                 onClick={() => setLocalStorage([])}
               >
                 Reset all

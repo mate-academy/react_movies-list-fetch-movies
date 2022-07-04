@@ -62,8 +62,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
     if (movies) {
       const randomElement = () => Math.floor(Math.random() * movies.length);
       addMovie(movies[randomElement()]);
-      // setTitle('');
-      // setMovies([]);
       setError(false);
     }
   };
@@ -113,31 +111,27 @@ export const FindMovie: React.FC<Props> = ({ addMovie, deleteMovie }) => {
           )}
         </div>
 
-        <div className="field is-grouped">
-          <div className="control">
+        <div className="field is-grouped mt-5 control">
             <button
               type="button"
-              className="button is-light"
+              className="button is-light is-warning is-normal"
               onClick={searchMovie}
             >
-              Find a movie
+              Find movies
             </button>
-          </div>
 
-          <div className="control">
             <button
               type="submit"
-              className="button is-primary"
+              className="button is-light is-primary is-normal ml-3"
             >
               Add random movie
             </button>
-          </div>
         </div>
       </form>
 
       <div className="container">
         <h2 className="title mt-3">Preview</h2>
-        <nav className="pagination is-medium is-right" role="navigation" aria-label="pagination">
+        <nav className={classNames("pagination is-medium is-right", {'is-hidden': !movies.length})} role="navigation" aria-label="pagination">
           <a onClick={() => updatePagination(page - 1)} className={classNames('pagination-previous', { 'is-hidden': page === 1 })} title="This is the first page">Previous</a>
           <a onClick={() => updatePagination(page + 1)} className={classNames('pagination-next', { 'is-hidden': page === 3 })}>Next page</a>
           <ul id="test" className="pagination-list">

@@ -1,29 +1,28 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-interface State {
-  movies: Movie[];
-}
+import { Movie } from './react-app-env';
 
-export class App extends Component<{}, State> {
-  state: State = {
-    movies: [],
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const setMovieHandler = (movie: Movie) => {
+    setMovies([...movies, movie]);
   };
 
-  render() {
-    const { movies } = this.state;
-
-    return (
-      <div className="page">
-        <div className="page-content">
-          <MoviesList movies={movies} />
-        </div>
-        <div className="sidebar">
-          <FindMovie />
-        </div>
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
       </div>
-    );
-  }
-}
+      <div className="sidebar">
+        <FindMovie
+          movies={movies}
+          addMovies={setMovieHandler}
+        />
+      </div>
+    </div>
+  );
+};

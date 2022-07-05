@@ -1,3 +1,5 @@
+import { Movie } from './react-app-env';
+
 const API_URL = 'https://www.omdbapi.com/?apikey=b2241fd4&t=';
 
 export function getMovie(movieTitle: string): Promise<Movie> {

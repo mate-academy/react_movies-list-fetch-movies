@@ -8,7 +8,7 @@ import { Movie } from '../../react-app-env';
 type Props = {
   movies: Movie[];
   addMovies: (movie: Movie) => void;
-}
+};
 
 export const FindMovie: React.FC<Props> = ({ movies, addMovies }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);

@@ -8,7 +8,7 @@ type Props = {
   setMovies: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ movies, setMovies}) => {
+export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
 

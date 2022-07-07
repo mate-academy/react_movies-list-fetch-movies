@@ -15,35 +15,42 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie, movies }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMovieRepeated, setIsMovieRepeated] = useState(false);
 
-  const doesMovieExist = (movie: Movie) => (
-    movies.find(({ imdbID }) => imdbID === movie.imdbID)
-  );
-
   const findMovie = async () => {
     setIsLoading(true);
 
-    const response = await fetch(`https://www.omdbapi.com/?apikey=1c29b9bf&t=${title}`);
-    const movie = await response.json();
+    try {
+      const response = await fetch(`https://www.omdbapi.com/?apikey=1c29b9bf&t=${title}`);
+      const movie = await response.json();
 
-    if (doesMovieExist(movie)) {
-      setIsMovieRepeated(true);
+      const isMovieListed = movies.some((
+        ({ imdbID }) => imdbID === movie.imdbID
+      ));
+
+      if (isMovieListed) {
+        setIsMovieRepeated(true);
+        setIsLoading(false);
+
+        return;
+      }
+
+      if (movie.Response === 'False') {
+        setHasFoundMovie(false);
+        setIsLoading(false);
+
+        return;
+      }
+
+      setNewMovie(movie);
+    } catch (error) {
+      throw new Error(`${error}`);
+    } finally {
       setIsLoading(false);
-
-      return;
     }
-
-    if (movie.Response === 'False') {
-      setHasFoundMovie(false);
-      setIsLoading(false);
-
-      return;
-    }
-
-    setNewMovie(movie);
-    setIsLoading(false);
   };
 
-  function handleSubmission(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmission(
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) {
     event.preventDefault();
 
     setTitle('');
@@ -54,7 +61,10 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie, movies }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={handleSubmission}
+        onSubmit={(event) => {
+          findMovie();
+          event.preventDefault();
+        }}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -103,9 +113,10 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie, movies }) => {
             <button
               type="submit"
               className="button is-primary"
-              onClick={() => {
+              onClick={(event) => {
                 if (newMovie) {
                   handleAddMovie(newMovie);
+                  handleSubmission(event);
                 }
               }}
             >

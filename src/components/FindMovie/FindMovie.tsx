@@ -14,16 +14,24 @@ export const FindMovie: React.FC<Props> = React.memo(
   ({ movies, onSetMovies }) => {
     const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
     const [query, setQuery] = useState('');
-    const [isMovieFound, setIsMovieFound] = useState(true);
+    const [isAddMovieDisabled, setIsAddMovieDisabled] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const loadMovie = useCallback(
-      async () => {
+    const searchHandler = useCallback(() => {
+      const loadMovie = async () => {
         const loadedMovie = await getMovie(query);
 
-        setSelectedMovie(loadedMovie);
-      },
-      [query],
-    );
+        if (loadedMovie.Response === 'True') {
+          setSelectedMovie(loadedMovie);
+          setErrorMessage('');
+        } else {
+          setErrorMessage('Can\'t find a movie with such a title');
+        }
+      };
+
+      setIsAddMovieDisabled(false);
+      loadMovie();
+    }, [query]);
 
     return (
       <>
@@ -40,7 +48,7 @@ export const FindMovie: React.FC<Props> = React.memo(
                 placeholder="Enter a title to search"
                 className={cn(
                   'input',
-                  { 'is-danger': !isMovieFound },
+                  { 'is-danger': errorMessage },
                 )}
                 value={query}
                 onChange={(event) => {
@@ -49,9 +57,9 @@ export const FindMovie: React.FC<Props> = React.memo(
               />
             </div>
 
-            {!isMovieFound && (
+            {errorMessage && (
               <p className="help is-danger">
-                Can&apos;t find a movie with such a title
+                {errorMessage}
               </p>
             )}
           </div>
@@ -62,15 +70,7 @@ export const FindMovie: React.FC<Props> = React.memo(
                 type="button"
                 className="button is-light"
                 data-cy="find"
-                onClick={() => {
-                  if (query) {
-                    loadMovie();
-                    setQuery('');
-                    setIsMovieFound(true);
-                  } else {
-                    setIsMovieFound(false);
-                  }
-                }}
+                onClick={searchHandler}
               >
                 Find a movie
               </button>
@@ -81,12 +81,15 @@ export const FindMovie: React.FC<Props> = React.memo(
                 type="button"
                 className="button is-primary"
                 data-cy="add"
+                disabled={isAddMovieDisabled}
                 onClick={() => {
                   if (movies.every(
                     movie => movie.imdbID !== selectedMovie?.imdbID,
                   )) {
-                    if (selectedMovie && isMovieFound) {
+                    if (selectedMovie) {
                       onSetMovies(selectedMovie);
+                      setIsAddMovieDisabled(true);
+                      setSelectedMovie(null);
                     }
 
                     setQuery('');
@@ -101,7 +104,7 @@ export const FindMovie: React.FC<Props> = React.memo(
 
         <div className="container">
           <h2 className="title">Preview</h2>
-          {(selectedMovie && isMovieFound) && (
+          {(selectedMovie) && (
             <MovieCard movie={selectedMovie} />
           )}
         </div>

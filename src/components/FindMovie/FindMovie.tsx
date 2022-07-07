@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './FindMovie.scss';
 import cn from 'classnames';
 import { getMovie } from '../../api';
@@ -16,11 +16,14 @@ export const FindMovie: React.FC<Props> = React.memo(
     const [query, setQuery] = useState('');
     const [isMovieFound, setIsMovieFound] = useState(true);
 
-    const loadMovie = async () => {
-      const loadedMovie = await getMovie(query);
+    const loadMovie = useCallback(
+      async () => {
+        const loadedMovie = await getMovie(query);
 
-      setSelectedMovie(loadedMovie);
-    };
+        setSelectedMovie(loadedMovie);
+      },
+      [query],
+    );
 
     return (
       <>

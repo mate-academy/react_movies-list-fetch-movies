@@ -11,12 +11,12 @@ export const App: React.FC = () => {
     const dublMovie = movies
       .some(currentMovie => currentMovie.imdbID === movie.imdbID);
 
+
     if (!dublMovie) {
       setMovies([
         ...movies,
         movie,
       ]);
-      setDoubleAddError(false);
     } else {
       setDoubleAddError(true);
     }
@@ -31,6 +31,7 @@ export const App: React.FC = () => {
         <FindMovie
           addMovie={addMovie}
           doubleAddError={doubleAddError}
+          setDoubleAddError={setDoubleAddError}
         />
       </div>
     </div>

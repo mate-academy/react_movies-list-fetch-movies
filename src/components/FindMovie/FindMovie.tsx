@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getMovie } from '../API';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
@@ -7,17 +7,29 @@ import './FindMovie.scss';
 interface Props {
   addMovie: (movie: Movie) => void,
   doubleAddError: boolean;
+  setDoubleAddError: (value: boolean) => void,
 }
 
-export const FindMovie: React.FC<Props> = ({ addMovie, doubleAddError }) => {
+export const FindMovie: React.FC<Props> = (
+  {
+    addMovie,
+    doubleAddError,
+    setDoubleAddError
+  },
+) => {
   const [query, setQuery] = useState<string>('');
   const [findedMovie, setFindedMovie] = useState<Movie | null>(null);
   const [queryError, setQueryError] = useState(false);
+
 
   const logError = () => {
     setQueryError(true);
     setFindedMovie(null);
   };
+
+  useEffect(() => {
+
+  }, [doubleAddError]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -54,6 +66,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, doubleAddError }) => {
               onChange={(event) => {
                 setQuery(event.target.value);
                 setQueryError(false);
+                setDoubleAddError(false);
               }}
             />
           </div>

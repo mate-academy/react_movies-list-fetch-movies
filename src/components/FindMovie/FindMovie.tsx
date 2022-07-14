@@ -11,7 +11,7 @@ interface FindMovieProps {
 export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
-  const [noMovieError, setNoMovieError] = useState('');
+  const [movieError, setMovieError] = useState('');
   const [isRequired, setIsRequired] = useState(false);
 
   const loadMovie = useCallback(
@@ -20,10 +20,10 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
         .then(response => response.json());
 
       if (receivedMovie.Response === 'True') {
-        setNoMovieError('');
+        setMovieError('');
         setMovie(receivedMovie);
       } else {
-        setNoMovieError(receivedMovie.Error);
+        setMovieError(receivedMovie.Error);
         setMovie(null);
       }
     }, [title],
@@ -37,15 +37,11 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
     } else {
       setIsRequired(true);
     }
-
-    return () => {
-      'Movie is loading';
-    };
   }, [title]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    setNoMovieError('');
+    setMovieError('');
     setIsRequired(false);
   };
 
@@ -81,7 +77,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
 
           <p className="help is-danger">
             {
-              noMovieError
+              movieError
             }
           </p>
         </div>
@@ -107,6 +103,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
               onClick={() => {
                 onAddMovie(movie);
                 setTitle('');
+                setMovie(null);
               }}
             >
               Add to the list
@@ -120,7 +117,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
         {
           movie
             ? (<MovieCard movie={movie} />)
-            : (noMovieError)
+            : (movieError)
         }
       </div>
     </>

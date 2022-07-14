@@ -4,9 +4,7 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
 export const App: FC = () => {
-  const [movies,
-    setMovies,
-  ] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const handleAddMovie = (newMovie: Movie | null) => {
     if (newMovie) {
@@ -25,11 +23,7 @@ export const App: FC = () => {
   return (
     <div className="page">
       <div className="page-content">
-        {
-          movies
-            ? (<MoviesList movies={movies} />)
-            : (null)
-        }
+        { movies && <MoviesList movies={movies} /> }
       </div>
       <div className="sidebar">
         <FindMovie onAddMovie={handleAddMovie} />

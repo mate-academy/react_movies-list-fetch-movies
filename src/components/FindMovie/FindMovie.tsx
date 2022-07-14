@@ -81,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
               onClick={addToListHandler}
               data-cy="add"
             >
-              Add selected movie to the list
+              Add movie to the list
             </button>
           </div>
         </div>

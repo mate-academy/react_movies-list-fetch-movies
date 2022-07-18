@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import classNames from 'classnames';
 import { getMovie } from '../../api/api';
 import { Movie } from '../../react-app-env';
@@ -9,17 +9,19 @@ type Props = {
   addMovie: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
 
-  const onTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onTitleChange = useCallback((
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setQuery(event.target.value);
     setError('');
-  };
+  }, []);
 
-  const handleMovieSearch = (event: FormEvent) => {
+  const handleMovieSearch = useCallback((event: FormEvent) => {
     event.preventDefault();
 
     getMovie(query)
@@ -32,7 +34,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           setError('');
         }
       });
-  };
+  }, []);
 
   const handleMovieAdd = () => {
     if (movie) {
@@ -108,4 +110,4 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       </div>
     </>
   );
-};
+});

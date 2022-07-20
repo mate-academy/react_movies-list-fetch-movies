@@ -1,17 +1,17 @@
 import React from 'react';
 import './MovieCard.scss';
+import { Movie } from '../../react-app-env';
 
 type Props = {
   movie: Movie;
 };
 
-export const MovieCard: React.FC<Props> = (props) => {
+export const MovieCard: React.FC<Props> = React.memo((props) => {
   const { movie } = props;
 
   return (
     <div className="card">
       <div className="card-image" data-cy="card-image">
-      
         <figure className="image is-4by3">
           <img
             src={movie.Poster}
@@ -24,7 +24,7 @@ export const MovieCard: React.FC<Props> = (props) => {
           <div className="media-left">
             <figure className="image is-48x48">
               <img
-                src="images/imdb-logo.jpeg"
+                src="./images/imdb-logo.jpeg"
                 alt="imdb"
               />
             </figure>
@@ -41,4 +41,4 @@ export const MovieCard: React.FC<Props> = (props) => {
       </div>
     </div>
   );
-};
+});

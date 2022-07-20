@@ -21,20 +21,17 @@ export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
     setError('');
   }, []);
 
-  const handleMovieSearch = useCallback((event: FormEvent) => {
+  const handleMovieSearch = useCallback(async (event: FormEvent) => {
     event.preventDefault();
 
-    getMovie(query)
-      .then((response: Movie) => {
-        if (response.Error) {
-          setMovie(null);
-          setError(response.Error);
-        } else {
-          setMovie(response);
-          setError('');
-        }
-      });
-  }, []);
+    const movieFromServer = await getMovie(query);
+
+    if (!movieFromServer.Error) {
+      setMovie(movieFromServer);
+    } else {
+      setError(movieFromServer.Error);
+    }
+  }, [query]);
 
   const handleMovieAdd = () => {
     if (movie) {
@@ -42,6 +39,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
     }
 
     setQuery('');
+    setMovie(null);
   };
 
   return (

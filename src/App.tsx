@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
-export const App = () => {
-  const [movies, addMovie] = useState(data);
+export const App: React.FC = () => {
+  const [movies, addMovie] = useState<Movie[]>([]);
 
-  const onAddMovie = (newMovie) => {
+  const onAddMovie = useCallback((newMovie: Movie): void => {
     const moviesIds = movies.map(
       ({ imdbID }) => imdbID,
     );
@@ -14,7 +14,7 @@ export const App = () => {
     if (!moviesIds.includes(newMovie.imdbID)) {
       addMovie([newMovie, ...movies]);
     }
-  };
+  }, [movies]);
 
   return (
     <div className="page">

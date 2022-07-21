@@ -1,43 +1,43 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api/api';
 
-const URL = `https://www.omdbapi.com/?apikey=7272b996`;
+type Props = {
+  onAddMovie: (arg0: Movie) => void;
+};
 
-export const FindMovie = ({ onAddMovie }) => {
-  const [movieTitle, setMovieTitle] = useState('');
-  const [foundedMovie, setFoundedMovie] = useState(null);
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+  const [movieTitle, setMovieTitle] = useState<string>('');
+  const [foundedMovie, setFoundedMovie] = useState<Movie | null>(null);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setIsError(false);
   }, [movieTitle]);
 
-  const searchMovie = async() => {
+  const searchMovie = async () => {
     setIsLoading(true);
     setIsError(false);
 
-    fetch(`${URL}&t=${movieTitle}`)
-      .then(response => response.json())
-      .then((result) => {
-        if (result.Error) {
-          setIsError(true);
-        } else {
-          setFoundedMovie(result);
-        }
-      })
-      .catch((error) => {
-        setIsError(true);
-        throw new Error(error);
-      })
-      .finally(() => setIsLoading(false));
+    const result = await getMovie(movieTitle);
+
+    if (result.Error) {
+      setIsError(true);
+    } else {
+      setFoundedMovie(result);
+    }
+
+    setIsLoading(false);
   };
 
   const handleAddMovie = () => {
-    onAddMovie(foundedMovie);
+    if (foundedMovie) {
+      onAddMovie(foundedMovie);
+    }
+
     setMovieTitle('');
   };
 
@@ -80,6 +80,7 @@ export const FindMovie = ({ onAddMovie }) => {
               type="button"
               className="button is-light"
               data-cy="find"
+              disabled={isLoading}
               onClick={searchMovie}
             >
               Find a movie
@@ -103,13 +104,9 @@ export const FindMovie = ({ onAddMovie }) => {
       {foundedMovie && (
         <div className="container">
           <h2 className="title">Preview</h2>
-          <MovieCard {...foundedMovie} />
+          <MovieCard movie={foundedMovie} />
         </div>
       )}
     </>
   );
-};
-
-FindMovie.propTypes = {
-  onAddMovie: PropTypes.func.isRequired,
 };

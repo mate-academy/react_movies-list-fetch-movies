@@ -2,11 +2,10 @@ const API_KEY = 'fe759ad0';
 const BASE_URL = 'http://www.omdbapi.com/';
 
 const request = async (url: string) => {
-  return fetch(`${BASE_URL}${url}`)
-    .then(response => response.json());
+  return (await fetch(`${BASE_URL}${url}`)).json();
 };
 
-export const getMovie = async (title: string) => {
+export const getMovie = (title: string) => {
   const api = `?apikey=${API_KEY}&`;
   const titleQuery = `&t=${title}`;
 

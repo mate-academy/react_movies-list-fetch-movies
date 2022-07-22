@@ -36,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsLoading(false);
   };
 
-  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (currentMovie !== null) {

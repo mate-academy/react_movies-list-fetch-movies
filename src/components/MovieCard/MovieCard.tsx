@@ -2,7 +2,7 @@ import React from 'react';
 import './MovieCard.scss';
 
 type Props = {
-  movie: Movie;
+  movie: Movie | null;
 };
 
 export const MovieCard: React.FC<Props> = (props) => {
@@ -11,10 +11,10 @@ export const MovieCard: React.FC<Props> = (props) => {
   return (
     <div className="card">
       <div className="card-image" data-cy="card-image">
-      
+
         <figure className="image is-4by3">
           <img
-            src={movie.Poster}
+            src={movie?.Poster}
             alt="Film logo"
           />
         </figure>
@@ -30,12 +30,12 @@ export const MovieCard: React.FC<Props> = (props) => {
             </figure>
           </div>
           <div className="media-content">
-            <p className="title is-8" data-cy="movie-title">{movie.Title}</p>
+            <p className="title is-8" data-cy="movie-title">{movie?.Title}</p>
           </div>
         </div>
 
         <div className="content" data-cy="content">
-          {movie.Plot}
+          {movie?.Plot}
           <br />
         </div>
       </div>

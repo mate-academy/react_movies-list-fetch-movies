@@ -1,0 +1,40 @@
+{
+  "Title": "Star Trek",
+  "Year": "2009",
+  "Rated": "PG-13",
+  "Released": "08 May 2009",
+  "Runtime": "127 min",
+  "Genre": "Action, Adventure, Sci-Fi",
+  "Director": "J.J. Abrams",
+  "Writer": "Roberto Orci, Alex Kurtzman, Gene Roddenberry",
+  "Actors": "Chris Pine, Zachary Quinto, Simon Pegg",
+  "Plot": "The brash James T. Kirk tries to live up to his father's legacy with Mr. Spock keeping him in check as a vengeful Romulan from the future creates black holes to destroy the Federation one planet at a time.",
+  "Language": "English",
+  "Country": "United States, Germany",
+  "Awards": "Won 1 Oscar. 27 wins & 95 nominations total",
+  "Poster": "https://m.media-amazon.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg",
+  "Ratings": [
+      {
+          "Source": "Internet Movie Database",
+          "Value": "7.9/10"
+      },
+      {
+          "Source": "Rotten Tomatoes",
+          "Value": "94%"
+      },
+      {
+          "Source": "Metacritic",
+          "Value": "82/100"
+      }
+  ],
+  "Metascore": "82",
+  "imdbRating": "7.9",
+  "imdbVotes": "600,160",
+  "imdbID": "tt0796366",
+  "Type": "movie",
+  "DVD": "17 Nov 2009",
+  "BoxOffice": "$257,730,019",
+  "Production": "N/A",
+  "Website": "N/A",
+  "Response": "True"
+}

@@ -1,82 +1,264 @@
 const page = {
-  findMovie(input) {
-    return cy.get('input')
-      .type(`${input}`)
-      .getByDataCy('find').click()
-  }
+  stubRequest: () => cy.intercept('*/www.omdbapi.com/*', cy.stub().as('apiCall')),
+  mockRogueOne: () => cy.intercept('*/www.omdbapi.com/*', { fixture: 'rogueOne' }),
+  mockStarTrek: () => cy.intercept('*/www.omdbapi.com/*', { fixture: 'starTrek' }),
+  mockNoPoster: () => cy.intercept('*/www.omdbapi.com/*', { fixture: 'noPoster' }),
+  mockNotFound: () => cy.intercept('*/www.omdbapi.com/*', { fixture: 'notFound' }),
+
+  getByDataCy: name => cy.get(`[data-cy="${name}"]`),
+  
+  titleField: () => page.getByDataCy('titleField'),
+  errorMessage: () => page.getByDataCy('errorMessage'),
+  searchButton: () => page.getByDataCy('searchButton'),
+  addButton: () => page.getByDataCy('addButton'),
+  movieCards: () => page.getByDataCy('movieCard'),
+  previewContainer: () => cy.get('[data-cy="previewContainer"]'),
+  previewTitle: () => page.previewContainer().find('[data-cy="movieTitle"]'),
+  previewPoster: () => page.previewContainer().find('[data-cy="moviePoster"]'),
+  previewURL: () => page.previewContainer().find('[data-cy="movieURL"]'),
+  previewDescription: () => page.previewContainer().find('[data-cy="movieDescription"]'),
 };
 
-const btn = {
-  clickBtn() {
-    return cy.get('button')
-      .getByDataCy('add')
-      .click();
-  }
-};
-
-describe('Page', () => {
+describe('Page by default', () => {
   beforeEach (() => {
-    cy.visit ('/')
+    page.stubRequest();
+    cy.visit ('/');
   });
 
-  it('should send a request to www.omdbapi.com', () => {
-    cy.intercept('*/www.omdbapi.com/*', cy.spy()
-      .as('apiCall'));
-      cy.get('input')
-      .type(`car`)
-    cy.getByDataCy('find').click()
+  it('should not have movies', () => {
+    page.movieCards().should('have.length', 0);
+  });
+
+  it('should have the disabled search button', () => {
+    page.searchButton().should('be.disabled');
+  });
+
+  it('should not have the add button', () => {
+    page.addButton().should('not.exist');
+  });
+
+  it('should have and empty title field', () => {
+    page.titleField().should('have.value', '');
+  });
+
+  it('should not show error', () => {
+    page.errorMessage().should('not.exist')
+  });
+});
+
+describe('API request', () => {
+  beforeEach(() => {
+    page.stubRequest();
+    cy.visit('/');
+  });
+
+  it('should not be sent on page load', () => {
+    cy.get('@apiCall')
+      .its('callCount')
+      .should('equal', 0);
+  });
+
+  it('should be sent on submit', () => {
+    page.titleField().type('Rogue one')
+    page.searchButton().click();
+
     cy.get('@apiCall')
       .its('callCount')
       .should('equal', 1);
   });
 
-  it('should show the film as a MovieCard if a film has been found', ()=> {
-  page.findMovie('car');
-    cy.getByDataCy('movie-title')
-      .should('contain', `Dude, Where's My Car?`);
-    cy.getByDataCy('content')
-      .should('contain', 'Two potheads wake up after a night of partying');
-    cy.getByDataCy('card-image')
+  it('should not be sent it a title is not entered', () => {
+    page.searchButton().click({ force: true });
+
+    cy.get('@apiCall')
+      .its('callCount')
+      .should('equal', 0);
+  });
+});
+
+describe('Search form', () => {
+  beforeEach (() => {
+    page.stubRequest();
+    cy.visit ('/');
+  });
+
+  it('should allow to enter a title', () => {
+    page.titleField()
+      .type('Hello, world!')
+      .should('have.value', 'Hello, world!');
+  });
+
+  it('should enable the search button after entering a title', () => {
+    page.titleField().type('Rogue');
+    page.searchButton().should('not.be.disabled');
+  });
+
+  it('should disable search button after clearing the title', () => {
+    page.titleField()
+      .type('Rogue')
+      .type('{selectAll}{backspace}');
+
+    page.searchButton().should('be.disabled');
+  });
+});
+
+describe('FindMovie component', () => {
+  beforeEach (() => {
+    cy.visit ('/');
+  });
+
+  it('should show the preview if the movie was found', ()=> {
+    page.mockRogueOne();
+    page.titleField().type('Rogue');
+    page.searchButton().click();
+    
+    page.previewContainer().should('exist');
+  });
+
+  it('should show the add button', () => {
+    page.mockRogueOne();
+    page.titleField().type('Rogue');
+    page.searchButton().click();
+
+    page.addButton()
       .should('exist');
   });
 
-  it('Add a movie to the list after submitting a form', () =>{
-    page.findMovie('car');
-    btn.clickBtn();
-    cy.get('.movies')
-      .children()
-      .should('have.length', 1);
+  it('should search for a movie by pressing {enter}', () => {
+    page.mockRogueOne();
+    page.titleField()
+      .type('Rogue')
+      .type('{enter}')
+
+    page.previewContainer().should('exist');
   });
 
-  it('should not add film twice', () => {
-    page.findMovie('car');
-    btn.clickBtn();
-    cy.get('button')
+  it('should show the preview for the found movie', () => {
+    page.mockRogueOne();
+    page.titleField().type('Rogue{enter}');
+
+    page.previewTitle()
+      .should('have.text', 'Rogue One: A Star Wars Story');
+
+    page.previewDescription()
+      .should('contain.text', 'In a time of conflict, a group of unlikely heroes band together on a mission to steal the plans to the Death Star, the Empire\'s ultimate weapon of destruction.');
+
+    page.previewURL()
+      .should('have.attr', 'href', 'https://www.imdb.com/title/tt3748528');
+
+    page.previewPoster()
+      .should('have.attr', 'src', 'https://m.media-amazon.com/images/M/MV5BMjEwMzMxODIzOV5BMl5BanBnXkFtZTgwNzg3OTAzMDI@._V1_SX300.jpg');
+  });
+
+  it('should show a preview for another movie', () => {
+    page.mockStarTrek();
+    page.titleField().type('Star Trek{enter}');
+
+    page.previewTitle()
+      .should('have.text', 'Star Trek');
+
+    page.previewDescription()
+      .should('contain.text', 'The brash James T. Kirk tries to live up to his father\'s legacy with Mr. Spock keeping him in check as a vengeful Romulan from the future creates black holes to destroy the Federation one planet at a time.');
+
+    page.previewURL()
+      .should('have.attr', 'href', 'https://www.imdb.com/title/tt0796366');
+
+    page.previewPoster()
+      .should('have.attr', 'src', 'https://m.media-amazon.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg');
+  });
+
+  it('should have the default image if the poster is empty', () => {
+    page.mockNoPoster();
+    page.titleField().type('Philosopher{enter}');
+
+    page.previewPoster()
+      .should('have.attr', 'src', 'https://via.placeholder.com/360x270.png?text=no%20preview');
+  });
+
+  it('should not show a preview if a movie is not found', () => {
+    page.mockNotFound();
+    page.titleField().type('qweqweqwe{enter}');
+
+    page.previewContainer()
+      .should('not.exist');
+  });
+
+  it('should show the error message if a movie is not found', () => {
+    page.mockNotFound();
+    page.titleField().type('qweqweqwe{enter}');
+
+    page.errorMessage()
+      .should('exist');
+  });
+
+  it('should hide the error message after changing the title', () => {
+    page.mockNotFound();
+    page.titleField().type('qweqweqwe{enter}');
+    page.titleField().type('a');
+
+    page.errorMessage()
+      .should('not.exist');
+  });
+});
+
+describe('Add button', () => {
+  beforeEach(() => {
+    cy.visit('/');
+    page.mockRogueOne();
+    page.titleField().type('Rogue{enter}');
+    page.addButton().click();
+  });
+
+  it('should add the found movie to the list', () =>{
+    page.movieCards()
+      .should('have.length', 1);
+  
+    page.movieCards()
+      .eq(0)
+      .find('[data-cy="movieTitle"]')
+      .should('have.text', 'Rogue One: A Star Wars Story');
+  });
+
+  it('should clear the title field', () => {
+    page.titleField().should('have.text', '');
+  });
+
+  it('should hide the preview', () => {
+    page.previewContainer().should('not.exist');
+  });
+
+  it('should hide the add button', () => {
+    page.addButton().should('not.exist');
+  });
+
+  it('should allow to add one more movie to the list', () =>{
+    page.mockStarTrek();
+    page.titleField().type('star trek{enter}');
+    page.addButton().click();
+    page.movieCards()
+      .should('have.length', 2);
+  
+    page.movieCards()
       .eq(1)
-      .should('be.disabled');
+      .find('[data-cy="movieTitle"]')
+      .should('have.text', 'Star Trek');
   });
 
-  it('should clear the input after adding movie to the list', () =>{
-    page.findMovie('car');
-    btn.clickBtn();
-    cy.get('.sidebar')
-      .children()
-      .should('have.length', 1);
+  it('should not add a movie twice', () => {
+    page.mockRogueOne();
+    page.titleField().type('Rogue{enter}');
+    page.addButton().click();
+    
+    page.movieCards().should('have.length', 1);
   });
 
-  it('should display error message if film is not found', () => {
-    page.findMovie('!@#');
-    cy.get('.sidebar')
-      .should('contain', "Can't find a movie with such a title");
-  });
+  it('should clear the form when submitting a duplicated movie', () => {
+    page.mockRogueOne();
+    page.titleField().type('Rogue{enter}');
+    page.addButton().click();
 
-  it('should hide error message after changing film title', () => {
-    page.findMovie('!@#');
-    cy.get('.sidebar')
-      .should('contain', "Can't find a movie with such a title");
-    cy.get('input')
-      .type('{selectall}car');
-    cy.get('.sidebar')
-      .should('not.contain', "Can't find a movie with such a title");
+    page.titleField().should('have.text', '');
+    page.previewContainer().should('not.exist');
+    page.addButton().should('not.exist');
   });
 });

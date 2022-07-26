@@ -68,6 +68,7 @@ export const FindMovie: React.FC <Props> = ({ addMovie }) => {
               className="button is-light"
               onClick={findMovieHandler}
               disabled={!query.length}
+              data-cy="find"
 
             >
               Find a movie
@@ -79,6 +80,7 @@ export const FindMovie: React.FC <Props> = ({ addMovie }) => {
               type="button"
               className="button is-primary"
               disabled={!movie?.imdbID}
+              data-cy="add"
               onClick={() => {
                 if (movie) {
                   addMovie(movie);

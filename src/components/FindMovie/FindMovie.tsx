@@ -70,7 +70,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
             />
           </div>
 
-          {(hasNotFoundError) && (
+          {(hasNotFoundError && !sameIdCheck) && (
             <p className={classNames('help is-danger')}>
               Can&apos;t find a movie with such a title
             </p>

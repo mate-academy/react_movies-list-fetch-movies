@@ -1,4 +1,4 @@
-const BASE_URL = 'http://www.omdbapi.com/';
+const BASE_URL = 'https://www.omdbapi.com/';
 const API_KEY = 'ab0cbce';
 
 export function getMovie(query: string): Promise<Movie> {

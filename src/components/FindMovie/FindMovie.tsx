@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
@@ -13,6 +13,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
   const [movieTitle, setMovieTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [hasNotFoundError, setNotFoundError] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const sameIdCheck = movies.some(film => film.imdbID === movie?.imdbID);
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -33,11 +34,16 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
   };
 
   const findMovie = () => {
+    setLoading(true);
     getMovie(movieTitle)
       .then(foundMovie => (foundMovie.Title
         ? setMovie(foundMovie)
         : setNotFoundError(true)));
   };
+
+  useEffect(() => {
+    setLoading(false);
+  }, [movie, hasNotFoundError, sameIdCheck]);
 
   return (
     <>
@@ -80,7 +86,9 @@ export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
           <div className="control">
             <button
               type="button"
-              className="button is-light"
+              className={classNames('button is-light', {
+                'is-loading': isLoading,
+              })}
               data-cy="find"
               onClick={findMovie}
             >

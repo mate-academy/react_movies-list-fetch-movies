@@ -1,6 +1,4 @@
-/// <reference types="react-scripts" />
-
-type Movie = {
+export type Movie = {
   Poster: string;
   Title: string;
   Plot: string;

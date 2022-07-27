@@ -12,12 +12,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
   const [error, setError] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
 
   const loadMovie = async () => {
     const loadedMovie = await request(title);
 
     if (loadedMovie.Response !== 'False') {
       setMovie(loadedMovie);
+      setIsDisabled(false);
     } else {
       setMovie(null);
       setError(true);
@@ -33,6 +35,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     if (movie) {
       addMovie(movie);
       setTitle('');
+      setIsDisabled(true);
       setMovie(null);
     }
   };
@@ -81,6 +84,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="button is-primary"
               data-cy="add"
               onClick={haldleClick}
+              disabled={isDisabled}
             >
               Add to the list
             </button>

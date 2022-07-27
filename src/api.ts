@@ -1,7 +1,7 @@
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'http://www.omdbapi.com/?apikey=6e71127';
+const API_URL = 'https://www.omdbapi.com/?apikey=6e71127';
 
 export async function getMovie(
   query: string,

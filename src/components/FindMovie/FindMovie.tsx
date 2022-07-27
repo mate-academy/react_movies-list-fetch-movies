@@ -52,15 +52,19 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       }
 
       // eslint-disable-next-line max-len
-      const defaultImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+      const img = data.Poster === 'N/A'
+        ? ('https://via.placeholder.com/360x270.png?text=no%20preview')
+        : (data.Poster);
 
       setMovie({
         title: data.Title,
         description: data.Plot,
-        imgUrl: data.Poster || defaultImg,
-        imdbUrl: data.Poster,
+        imgUrl: img,
+        imdbUrl: img,
         imdbId: data.imdbID,
       });
+
+      console.log(movie);
 
       setIsMovie(true);
     }).finally(() => setIsLoader(false));

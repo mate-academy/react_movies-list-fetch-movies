@@ -107,6 +107,71 @@ describe('FindMovie component', () => {
     cy.visit ('/');
   });
 
+  it('should not show a spinner before the search request ', () => {
+    page.searchButton()
+      .should('not.have.class', 'is-loading');
+  });
+  
+  it('should show a spinner while waiting for the search results', () => {
+    cy.clock();
+    cy.intercept('*/www.omdbapi.com/*', (req) => {
+      req.reply({
+        fixture: 'rogueOne',
+        delay: 500,
+      })
+    });
+
+    page.titleField().type('Rogue');
+    page.searchButton().click();
+
+    page.searchButton()
+      .should('have.class', 'is-loading');
+  });
+
+  it('should hide a spinner after search response', () => {
+    cy.clock();
+    cy.intercept('*/www.omdbapi.com/*', (req) => {
+      req.reply({
+        fixture: 'rogueOne',
+        delay: 500,
+      })
+    })
+      .as('serachRequest');
+
+    page.titleField().type('Rogue');
+    page.searchButton().click();
+
+    cy.tick(600);
+
+    cy.wait('@serachRequest');
+
+    page.searchButton()
+      .should('not.have.class', 'is-loading');
+  });
+
+  it('should hide a spinner after an empty response', () => {
+    page.mockNotFound().as('serachRequest');
+    page.titleField().type('qwerqwerqwer');
+    page.searchButton().click();
+
+    cy.wait('@serachRequest');
+
+    page.searchButton()
+      .should('not.have.class', 'is-loading');
+  });
+
+  it('should hide a spinner after an error', () => {
+    cy.intercept('*/www.omdbapi.com/*', (req) => {
+      req.destroy();
+    });
+
+    page.titleField().type('qwerqwerqwer');
+    page.searchButton().click();
+
+    page.searchButton()
+      .should('not.have.class', 'is-loading');
+  });
+
   it('should show the preview if the movie was found', ()=> {
     page.mockRogueOne();
     page.titleField().type('Rogue');

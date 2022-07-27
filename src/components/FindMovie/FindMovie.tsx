@@ -10,24 +10,33 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+  const initialSubmitStates = {
+    isSubmitActive: false,
+    isSubmitLoading: false,
+    isTextChanged: false,
+  };
+
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [isTitleInvalid, setIsTitleInvalid] = useState(false);
-  const [isSubmitActive, setIsSubmitActive] = useState(false);
-  const [isSubitLoading, setIsSubmitLoading] = useState(false);
+  const [submitStates, setSumbitStates] = useState(initialSubmitStates);
   const [query, setQuery] = useState('');
 
   const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsSubmitLoading(true);
+    setSumbitStates(prev => ({ ...prev, isSubmitLoading: true }));
 
     const movieFromServer = await getMovie(query);
 
-    setIsSubmitLoading(false);
+    setSumbitStates(prev => ({ ...prev, isSubmitLoading: false }));
 
     if ('Error' in movieFromServer) {
       setIsTitleInvalid(true);
 
       return;
+    }
+
+    if (!submitStates.isTextChanged) {
+      setSumbitStates(prev => ({ ...prev, isTextChanged: true }));
     }
 
     const {
@@ -52,7 +61,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     { target: { value } }: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setQuery(value);
-    setIsSubmitActive(Boolean(value));
+    setSumbitStates(prev => ({ ...prev, isSubmitActive: Boolean(value) }));
 
     if (isTitleInvalid) {
       setIsTitleInvalid(false);
@@ -66,8 +75,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
     onAdd(newMovie);
     setNewMovie(null);
-    setIsTitleInvalid(false);
-    setIsSubmitActive(false);
+    setSumbitStates(initialSubmitStates);
     setQuery('');
   };
 
@@ -110,12 +118,12 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
                 'button',
                 'is-light',
                 {
-                  'is-loading': isSubitLoading,
+                  'is-loading': submitStates.isSubmitLoading,
                 },
               )}
-              disabled={!isSubmitActive}
+              disabled={!submitStates.isSubmitActive}
             >
-              Find a movie
+              {submitStates.isTextChanged ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 

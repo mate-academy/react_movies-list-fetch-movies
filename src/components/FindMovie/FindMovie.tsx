@@ -1,10 +1,77 @@
-import React from 'react';
+/* eslint-disable padding-line-between-statements */
+/* eslint-disable no-console */
+import React, { useState } from 'react';
 import './FindMovie.scss';
 
-export const FindMovie: React.FC = () => {
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { Loader } from '../Loader';
+import { MovieCard } from '../MovieCard';
+
+type Props = {
+  onAdd: (movie: Movie) => void
+};
+
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+  const [query, setQuery] = useState('');
+  const [movie, setMovie] = useState<Movie>();
+  const [movieError, setMovieError] = useState(false);
+  const [isMovie, setIsMovie] = useState(false);
+  const [isLoader, setIsLoader] = useState(false);
+
+  const handleInputChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    /* коли я роблю cosnt [value] = event.target, в мене горить лінтер, що тип не підходить, а писати any думаю помага ідея */
+    setQuery(event.target.value);
+
+    if (event.target.value.length === 0) {
+      setMovieError(false);
+    }
+  };
+
+  const handleMovieSubmit = (
+    event: React.ChangeEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    setIsLoader(true);
+
+    getMovie(query).then((data) => {
+      if ('Error' in data) {
+        setMovieError(true);
+
+        return;
+      }
+
+      // eslint-disable-next-line max-len
+      const defaultImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+      setMovie({
+        title: data.Title,
+        description: data.Plot,
+        imgUrl: data.Poster || defaultImg,
+        imdbUrl: data.Poster,
+        imdbId: data.imdbID,
+      });
+
+      setIsMovie(true);
+    }).finally(() => setIsLoader(false));
+  };
+
+  const handleBtnChange = () => {
+    if (movie) {
+      onAdd(movie);
+    }
+
+    setIsMovie(false);
+    setQuery('');
+    setMovieError(false);
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleMovieSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,17 +84,25 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={query}
+              onChange={handleInputChange}
             />
           </div>
+          {movieError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
         </div>
+        {isLoader && (
+          <Loader />
+        )}
 
         <div className="field is-grouped">
           <div className="control">
             <button
+              disabled={!query}
               data-cy="searchButton"
               type="submit"
               className="button is-light"
@@ -38,6 +113,8 @@ export const FindMovie: React.FC = () => {
 
           <div className="control">
             <button
+              onClick={handleBtnChange}
+              disabled={!query}
               data-cy="addButton"
               type="button"
               className="button is-primary"
@@ -50,7 +127,9 @@ export const FindMovie: React.FC = () => {
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {movie && isMovie && (
+          <MovieCard movie={movie} />
+        )}
       </div>
     </>
   );

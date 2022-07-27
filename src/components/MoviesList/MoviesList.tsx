@@ -1,14 +1,13 @@
 import React from 'react';
 import './MoviesList.scss';
 import { MovieCard } from '../MovieCard';
+import { Movie } from '../../type/Movie';
 
-interface Props {
+type Props = {
   movies: Movie[];
-}
+};
 
-export const MoviesList: React.FC<Props> = (props) => {
-  const { movies } = props;
-
+export const MoviesList: React.FC<Props> = ({ movies }) => {
   return (
     <div className="movies">
       {movies.map(movie => (

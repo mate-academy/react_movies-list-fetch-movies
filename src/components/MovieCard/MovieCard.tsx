@@ -1,4 +1,5 @@
 import React from 'react';
+import { Movie } from '../../type/Movie';
 import './MovieCard.scss';
 
 type Props = {
@@ -8,10 +9,9 @@ type Props = {
 export const MovieCard: React.FC<Props> = (props) => {
   const { movie } = props;
 
-  return (
+  const foundedMovie = (
     <div className="card">
       <div className="card-image" data-cy="card-image">
-      
         <figure className="image is-4by3">
           <img
             src={movie.Poster}
@@ -41,4 +41,17 @@ export const MovieCard: React.FC<Props> = (props) => {
       </div>
     </div>
   );
+
+  const notFoundedMovie = (
+    <div
+      className="block has-background-danger-light"
+      style={{ borderRadius: 10 }}
+    >
+      <p className="subtitle has-text-danger p-5">
+        Error - 404
+      </p>
+    </div>
+  );
+
+  return String(movie.Response) === 'True' ? foundedMovie : notFoundedMovie;
 };

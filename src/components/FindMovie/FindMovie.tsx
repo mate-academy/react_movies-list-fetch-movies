@@ -14,10 +14,17 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [query, setQuery] = useState('');
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>();
   const [movieError, setMovieError] = useState(false);
   const [isMovie, setIsMovie] = useState(false);
   const [isLoader, setIsLoader] = useState(false);
+
+  const reset = () => {
+    setIsMovie(false);
+    setQuery('');
+    setMovieError(false);
+    setMovie(null);
+  };
 
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -64,9 +71,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       onAdd(movie);
     }
 
-    setIsMovie(false);
-    setQuery('');
-    setMovieError(false);
+    reset();
   };
 
   return (
@@ -95,9 +100,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           )}
 
         </div>
-        {isLoader && (
-          <Loader />
-        )}
 
         <div className="field is-grouped">
           <div className="control">
@@ -107,14 +109,18 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               type="submit"
               className="button is-light"
             >
-              Find a movie
+              {isLoader ? (
+                <Loader />
+              ) : (
+                'Find a movie'
+              )}
             </button>
           </div>
 
           <div className="control">
             <button
               onClick={handleBtnChange}
-              disabled={!query}
+              disabled={!movie}
               data-cy="addButton"
               type="button"
               className="button is-primary"
@@ -126,9 +132,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       </form>
 
       <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
         {movie && isMovie && (
-          <MovieCard movie={movie} />
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={movie} />
+          </>
         )}
       </div>
     </>

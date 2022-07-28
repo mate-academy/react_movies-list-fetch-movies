@@ -35,7 +35,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         + `${movieData.imdbID}/?ref_=ttfc_fc_tt`;
 
       if (movieData.Poster !== 'N/A') {
-        defaultPoster = movieData.Poster ;
+        defaultPoster = movieData.Poster;
       }
 
       setMovie({
@@ -80,7 +80,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                missMovie(false);
+              }
+              }
             />
           </div>
 

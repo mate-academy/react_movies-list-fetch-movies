@@ -12,7 +12,6 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [search, setSearch] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
-  const [isMovieFound, setIsMovieFound] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
@@ -35,7 +34,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       };
 
       setNewMovie(movieToPreview);
-      setIsMovieFound(true);
     } else {
       setHasError(true);
     }
@@ -49,7 +47,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       setHasError(false);
       setNewMovie(null);
       setSearch('');
-      setIsMovieFound(false);
     }
   };
 
@@ -101,7 +98,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             </button>
           </div>
 
-          {isMovieFound && (
+          {newMovie && (
             <div className="control">
               <button
                 data-cy="addButton"

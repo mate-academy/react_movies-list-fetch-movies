@@ -25,12 +25,12 @@ export const FindMovie: React.FC<Props> = ({ setQuery, query, addMovie }) => {
     setIsLoading(true);
 
     getMovie(query).then((movieFromServer: MovieData | ResponseError) => {
-      if (movieFromServer.Response === 'False') {
+      if ('Response' in movieFromServer) {
         setError(true);
         setIsLoading(false);
       }
 
-      if (movieFromServer.Response === 'True') {
+      if ('Title' in movieFromServer) {
         setMovie({
           title: movieFromServer.Title,
           description: movieFromServer.Plot,

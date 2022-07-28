@@ -90,7 +90,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={classNames('button', 'is-light', {
                 'is-loading': isLoading,
               })}
-              disabled={search.length === 0}
+              disabled={search}
               onClick={searchForAMovie}
             >
               {hasError ? 'Search again'

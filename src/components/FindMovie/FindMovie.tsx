@@ -44,7 +44,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const handleAddMovie = () => {
-    if (newMovie !== null) {
+    if (newMovie) {
       addMovie(newMovie);
       setHasError(false);
       setNewMovie(null);

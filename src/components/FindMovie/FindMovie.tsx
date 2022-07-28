@@ -67,6 +67,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       console.log(movie);
 
       setIsMovie(true);
+      setMovieError(false);
     }).finally(() => setIsLoader(false));
   };
 

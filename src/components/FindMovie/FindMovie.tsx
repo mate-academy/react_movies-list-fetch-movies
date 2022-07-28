@@ -12,12 +12,13 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
-  const [isLoader, showLoader] = useState(false);
+  const [spinner, showSpinner] = useState(false);
   const [hasMovie, takeMovie] = useState(false);
   const [noMovie, missMovie] = useState(false);
   const lowQuery = query.toLowerCase();
 
   const searchMovie = (event: React.ChangeEvent<HTMLFormElement>) => {
+    showSpinner(true);
     event.preventDefault();
 
     getMovie(lowQuery).then((movieData) => {
@@ -28,17 +29,25 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         return;
       }
 
+      let defaultPoster = 'https://via.placeholder.com'
+        + '/360x270.png?text=no%20preview';
+      const defaultImdbUrl = 'https://www.imdb.com/title/'
+        + `${movieData.imdbID}/?ref_=ttfc_fc_tt`;
+
+      if (movieData.Poster !== 'N/A') {
+        defaultPoster = movieData.Poster ;
+      }
+
       setMovie({
         title: movieData.Title,
         description: movieData.Plot,
-        imgUrl: movieData.Poster,
-        imdbUrl: movieData.Poster,
+        imgUrl: defaultPoster,
+        imdbUrl: defaultImdbUrl,
         imdbId: movieData.imdbID,
       });
 
-      showLoader(true);
       takeMovie(true);
-    }).finally(() => showLoader(false));
+    }).finally(() => showSpinner(false));
   };
 
   const addToList = () => {
@@ -50,6 +59,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     takeMovie(false);
     missMovie(false);
     setMovie(null);
+    showSpinner(false);
   };
 
   return (
@@ -87,24 +97,26 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               data-cy="searchButton"
               type="submit"
               className={
-                classNames('button', 'is-light', {
-                   'is-loading': isLoader })}
+                classNames('button', 'is-light', { 'is-loading': spinner })
+              }
               disabled={!query}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={addToList}
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={addToList}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 

@@ -14,6 +14,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ moviesList, onMovieAdd }) => {
   const [movieTitle, setMovieTitle] = useState('');
   const [isMovieFound, setIsMovieFound] = useState<null | boolean>(null);
+  const [isMovieDoubled, setIsMovieDoubled] = useState<boolean>(false);
   const [foundMovie, setFoundMovie] = useState<null | Movie>(null);
 
   useEffect(() => {
@@ -32,8 +33,23 @@ export const FindMovie: React.FC<Props> = ({ moviesList, onMovieAdd }) => {
     }
   };
 
+  const resetAll = () => {
+    setMovieTitle('');
+    setIsMovieFound(null);
+    setIsMovieDoubled(false);
+    setFoundMovie(null);
+  };
+
   const addMovie = () => {
-    if (!foundMovie || moviesList.includes(foundMovie)) {
+    const idsList = moviesList.map(movie => movie.imdbID);
+
+    if (!foundMovie || idsList.includes(foundMovie.imdbID)) {
+      setIsMovieDoubled(true);
+
+      setTimeout(() => {
+        resetAll();
+      }, 1500);
+
       return;
     }
 
@@ -69,6 +85,11 @@ export const FindMovie: React.FC<Props> = ({ moviesList, onMovieAdd }) => {
           {isMovieFound === false && (
             <p className="help is-danger">
               Can&apos;t find a movie with such a title
+            </p>
+          )}
+          {isMovieDoubled && (
+            <p className="is-danger">
+              Already in your watchlist
             </p>
           )}
         </div>

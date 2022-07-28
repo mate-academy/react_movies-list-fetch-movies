@@ -11,4 +11,3 @@ export const request = async (query: string): Promise<MovieData> => {
 
   return response.json();
 };
-

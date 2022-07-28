@@ -38,7 +38,7 @@ export const App = () => {
   return (
     <div className="page">
       <div className="page-content">
-        {movies.length && <MoviesList movies={movies} />}
+        {movies.length > 0 && <MoviesList movies={movies} />}
       </div>
 
       <div className="sidebar">

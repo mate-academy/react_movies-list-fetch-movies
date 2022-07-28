@@ -88,7 +88,7 @@ export const FindMovie: React.FC<FindFilm> = ({
             <button
               data-cy="searchButton"
               type="button"
-              className="button is-light"
+              className="button is-light is-loading"
               onClick={(event) => {
                 handleClick(event);
               }}

@@ -6,7 +6,7 @@ export const request = async (query: string): Promise<MovieData> => {
   const response = await fetch(`${API_URL}&t=${query}`);
 
   if (!response.ok) {
-    Promise.reject(new Error('Film not found'));
+    Promise.reject(new Error(''));
   }
 
   return response.json();

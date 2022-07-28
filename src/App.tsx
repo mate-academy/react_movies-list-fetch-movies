@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
@@ -5,7 +6,20 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const handleAddMovie = (newMovie: Movie) => {
+    if (movies.find(movie => movie.imdbId === newMovie.imdbId)) {
+      return;
+    }
+
+    setMovies(currentMovies => ([
+      ...currentMovies,
+      newMovie,
+    ]));
+  };
+
+  console.log(movies);
 
   return (
     <div className="page">
@@ -14,7 +28,9 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          onAddMovie={handleAddMovie}
+        />
       </div>
     </div>
   );

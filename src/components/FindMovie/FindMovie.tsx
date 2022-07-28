@@ -1,10 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { convertMovie, convertQuery } from '../../utils/__helpers';
+import { request } from '../../api';
+import { MovieData } from '../../types/MovieData';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+type FindFilm = {
+  getQuery(film: string): void,
+  findNewMovie(film: MovieData): void,
+  onFormSubmit(setUpdate: boolean): void,
+  inputValue: string,
+};
+
+export const FindMovie: React.FC<FindFilm> = ({
+  getQuery,
+  inputValue,
+  findNewMovie,
+  onFormSubmit,
+}) => {
+  const [movie, createMovie] = useState<Movie | null>(null);
+  const [showErr, shouldShowError] = useState(false);
+
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    const propperQuery: string = convertQuery(inputValue);
+    const nextMovie = await request(propperQuery);
+
+    if (nextMovie.Response !== 'False') {
+      const propperFilm: Movie = convertMovie(nextMovie);
+
+      createMovie(
+        propperFilm,
+      );
+
+      findNewMovie(
+        nextMovie,
+      );
+
+      shouldShowError(false);
+    } else {
+      shouldShowError(true);
+      createMovie(null);
+    }
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          onFormSubmit(true);
+          getQuery('');
+          createMovie(null);
+          shouldShowError(false);
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,11 +70,16 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={inputValue}
+              onChange={({ target }) => {
+                getQuery(target.value);
+                shouldShowError(false);
+              }}
             />
           </div>
 
           <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
+            {`${showErr ? 'Can`t find a movie with such a title' : ''}`}
           </p>
         </div>
 
@@ -29,8 +87,11 @@ export const FindMovie: React.FC = () => {
           <div className="control">
             <button
               data-cy="searchButton"
-              type="submit"
+              type="button"
               className="button is-light"
+              onClick={(event) => {
+                handleClick(event);
+              }}
             >
               Find a movie
             </button>
@@ -39,8 +100,9 @@ export const FindMovie: React.FC = () => {
           <div className="control">
             <button
               data-cy="addButton"
-              type="button"
+              type="submit"
               className="button is-primary"
+              disabled={movie === null}
             >
               Add to the list
             </button>
@@ -50,7 +112,7 @@ export const FindMovie: React.FC = () => {
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {movie && showErr === false && <MovieCard movie={movie} />}
       </div>
     </>
   );

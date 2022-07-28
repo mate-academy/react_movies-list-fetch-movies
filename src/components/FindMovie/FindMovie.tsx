@@ -32,7 +32,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     /* коли я роблю cosnt [value] = event.target, в мене горить лінтер, що тип не підходить, а писати any думаю помага ідея */
     setQuery(event.target.value);
 
-    if (event.target.value.length === 0) {
+    if (event.target.value.length !== query.length) {
       setMovieError(false);
     }
   };
@@ -67,7 +67,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       console.log(movie);
 
       setIsMovie(true);
-      setMovieError(false);
     }).finally(() => setIsLoader(false));
   };
 

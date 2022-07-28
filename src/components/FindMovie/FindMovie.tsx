@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
-import { convertMovie, convertQuery, request } from '../../api';
+import { convertMovie, convertQuery } from '../../utils/__helpers';
+import { request } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';

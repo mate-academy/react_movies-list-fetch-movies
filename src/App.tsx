@@ -4,7 +4,7 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import { MovieData } from './types/MovieData';
-import { convertMovie } from './api';
+import { convertMovie } from '../src/utils/__helpers';
 
 export const App = () => {
   const [movies, addMovies] = useState<Movie[]>([]);

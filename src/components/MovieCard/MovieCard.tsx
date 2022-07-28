@@ -17,7 +17,7 @@ export const MovieCard: React.FC<Props> = (props) => {
 
             <figure className="image is-4by3">
               <img
-                src="https://dummyimage.com/800x600/000/fff"
+                src={movie?.Poster}
                 alt="Film logo"
               />
             </figure>
@@ -27,7 +27,7 @@ export const MovieCard: React.FC<Props> = (props) => {
               <div className="media-left">
                 <figure className="image is-48x48">
                   <img
-                    src="https://dummyimage.com/48x48/000/fff"
+                    src="/images/imdb-logo.jpeg"
                     alt="imdb"
                   />
                 </figure>

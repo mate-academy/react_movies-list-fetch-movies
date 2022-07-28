@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
 import { convertMovie, convertQuery } from '../../utils/__helpers';
 import { request } from '../../api';
 import { MovieData } from '../../types/MovieData';
@@ -21,9 +22,11 @@ export const FindMovie: React.FC<FindFilm> = ({
 }) => {
   const [movie, createMovie] = useState<Movie | null>(null);
   const [showErr, shouldShowError] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    setLoading(true);
 
     const propperQuery: string = convertQuery(inputValue);
     const nextMovie = await request(propperQuery);
@@ -39,10 +42,12 @@ export const FindMovie: React.FC<FindFilm> = ({
         nextMovie,
       );
 
+      setLoading(false);
       shouldShowError(false);
     } else {
       shouldShowError(true);
       createMovie(null);
+      setLoading(false);
     }
   };
 
@@ -88,7 +93,10 @@ export const FindMovie: React.FC<FindFilm> = ({
             <button
               data-cy="searchButton"
               type="button"
-              className="button is-light is-loading"
+              className={classNames(
+                'button', 'is-light',
+                { 'is-loading': isLoading },
+              )}
               onClick={(event) => {
                 handleClick(event);
               }}

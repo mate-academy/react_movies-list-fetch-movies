@@ -90,9 +90,12 @@ export const FindMovie: React.FC<Props> = ({ moveMovieToList }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames('button', 'is-light', {
-                'is-loading': isLoading,
-              })}
+              className={classNames(
+                'button',
+                'is-light', {
+                  'is-loading': isLoading,
+                },
+              )}
               disabled={!query}
             >
               Find a movie

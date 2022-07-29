@@ -12,8 +12,8 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [hasError, setError] = useState(false);
+  const [hasLoaded, setLoading] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value.replace(/[^a-zA-Z_0-9-]/g, ''));
@@ -21,36 +21,39 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const handleFind = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setLoading(true);
-    const current = await getMovie(query);
+    try {
+      event.preventDefault();
+      setLoading(true);
+      const current = await getMovie(query);
 
-    if ('Error' in current) {
-      setError(true);
+      if ('Error' in current) {
+        setError(true);
+        setLoading(false);
+
+        return;
+      }
+
+      const correctimgUrl = current.Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : current.Poster;
+
+      const foundedMovie = {
+        title: current.Title,
+        description: current.Plot,
+        imgUrl: correctimgUrl,
+        imdbUrl: `https://www.imdb.com/title/${current.imdbID}`,
+        imdbId: current.imdbID,
+      };
+
+      setMovie(foundedMovie);
+    } finally {
+      setError(false);
       setLoading(false);
-
-      return;
     }
-
-    const correctimgUrl = current.Poster === 'N/A'
-      ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-      : current.Poster;
-
-    const foundedMovie = {
-      title: current.Title,
-      description: current.Plot,
-      imgUrl: correctimgUrl,
-      imdbUrl: `https://www.imdb.com/title/${current.imdbID}`,
-      imdbId: current.imdbID,
-    };
-
-    setMovie(foundedMovie);
-    setError(false);
-    setLoading(false);
   };
 
   const handleAdd = () => {
-    if (movie !== null) {
+    if (movie) {
       addMovie(movie);
     }
 
@@ -76,11 +79,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               onChange={handleChange}
               placeholder="Enter a title to search"
               className={classNames('input',
-                { 'is-dander': error })}
+                { 'is-dander': hasError })}
             />
           </div>
 
-          {error && (
+          {hasError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -94,7 +97,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               data-cy="searchButton"
               type="submit"
               className={classNames('button is-light',
-                { 'is-loading': loading })}
+                { 'is-loading': hasLoaded })}
             >
               Find a movie
             </button>

@@ -29,8 +29,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       const movie = {
         title: loadedMovie.Title,
         description: loadedMovie.Plot,
-        imgUrl: loadedMovie.Poster
-          || 'https://via.placeholder.com/360x270.png?text=no%20preview',
+        imgUrl: loadedMovie.Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : loadedMovie.Poster,
         imdbId: loadedMovie.imdbID,
         imdbUrl: `https://www.imdb.com/title/${loadedMovie.imdbID}`,
       };

@@ -27,7 +27,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       const movieToPreview = {
         title: foundedMovie.Title,
         description: foundedMovie.Plot,
-        imgUrl: foundedMovie.Poster !== 'N/A' ? foundedMovie.Poster
+        imgUrl: foundedMovie.Poster !== 'N/A' 
+          ? foundedMovie.Poster
           : 'https://via.placeholder.com/360x270.png?text=no%20preview',
         imdbUrl: `https://www.imdb.com/title/${foundedMovie.imdbID}`,
         imdbId: foundedMovie.imdbID,

@@ -94,7 +94,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               disabled={search}
               onClick={searchForAMovie}
             >
-              {hasError ? 'Search again'
+              {hasError 
+                ? 'Search again'
                 : 'Find a movie'}
             </button>
           </div>

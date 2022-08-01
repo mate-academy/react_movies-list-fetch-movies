@@ -1,5 +1,4 @@
 /* eslint-disable padding-line-between-statements */
-/* eslint-disable no-console */
 import React, { useState } from 'react';
 import './FindMovie.scss';
 
@@ -29,10 +28,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const handleInputChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    /* коли я роблю cosnt [value] = event.target, в мене горить лінтер, що тип не підходить, а писати any думаю помага ідея */
-    setQuery(event.target.value);
+    const { value } = event.target;
+    setQuery(value);
 
-    if (event.target.value.length !== query.length) {
+    if (value.length !== query.length) {
       setMovieError(false);
     }
   };
@@ -51,7 +50,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         return;
       }
 
-      // eslint-disable-next-line max-len
       const img = data.Poster === 'N/A'
         ? ('https://via.placeholder.com/360x270.png?text=no%20preview')
         : (data.Poster);
@@ -60,11 +58,9 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         title: data.Title,
         description: data.Plot,
         imgUrl: img,
-        imdbUrl: img,
+        imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
         imdbId: data.imdbID,
       });
-
-      console.log(movie);
 
       setIsMovie(true);
     }).finally(() => setIsLoader(false));

@@ -41,10 +41,9 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     }
   };
 
-  const changeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    setHasError(false);
-  };
+  // const changeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setQuery(event.target.value);
+  // };
 
   return (
     <>
@@ -65,7 +64,10 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={changeQuery}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setHasError(false);
+              }}
             />
           </div>
 
@@ -116,8 +118,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          {movie && (
-            <MovieCard movie={movie} />)}
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

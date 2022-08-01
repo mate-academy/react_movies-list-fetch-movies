@@ -19,6 +19,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleSearchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
+    setHasTitleError(false);
   };
 
   const handleAddToList = () => {
@@ -41,7 +42,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       title: Title,
       description: Plot,
       imdbId: imdbID,
-      imgUrl: Poster,
+      imgUrl: Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : Poster,
       imdbUrl: `https://www.imdb.com/title/${imdbID}`,
     });
   };
@@ -121,14 +124,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        {movie && (
-          <>
-            <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
-          </>
-        )}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
+
     </>
   );
 };

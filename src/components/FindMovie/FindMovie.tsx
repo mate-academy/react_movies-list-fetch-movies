@@ -13,6 +13,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [showMovie, setShowMovie] = useState(false);
+  const [foundMovie, setFoundMovie] = useState(true);
 
   useEffect(() => {
     getMovie(query)
@@ -31,19 +32,22 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           };
 
           setMovie(newMovie);
+        } else {
+          setFoundMovie(false);
         }
       })
       .finally();
-  }, [query]);
+  }, [showMovie]);
 
   const clearForm = () => {
+    setQuery('');
     setShowMovie(false);
     setMovie(null);
   };
 
   const handleChangeInput = (event: { target: { value: string; }; }) => {
     setQuery(event.target.value);
-    clearForm();
+    setFoundMovie(true);
   };
 
   const handleChangeAddButton = () => {
@@ -53,15 +57,16 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
   };
 
+  const handleSubmit = (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    setShowMovie(true);
+  };
+
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          setShowMovie(true);
-          setQuery('');
-        }}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -79,7 +84,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               onChange={handleChangeInput}
             />
           </div>
-          {!movie && showMovie && (
+          {!foundMovie && showMovie && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -89,17 +94,27 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
         <div className="field is-grouped">
           <div className="control">
-            <button
-              data-cy="searchButton"
-              type="submit"
-              className="button is-light"
-              disabled={!query}
-            >
-              Find a movie
-            </button>
+            {!showMovie ? (
+              <button
+                data-cy="searchButton"
+                type="submit"
+                className="button is-light"
+                disabled={!query}
+              >
+                Find a movie
+              </button>
+            ) : (
+              <button
+                data-cy="searchButton"
+                type="submit"
+                className="button is-light"
+              >
+                Search again
+              </button>
+            )}
           </div>
 
-          {movie && showMovie && (
+          {foundMovie && showMovie && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -116,14 +131,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       </form>
 
       <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-
         {showMovie && movie && (
-          <MovieCard movie={movie} />
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={movie} />
+          </>
         )}
 
-        {showMovie && !movie && (
-          <div className="Loader">
+        {showMovie && foundMovie && (
+          <div className="Loader" data-cy="loader">
             <div className="Loader__content" />
           </div>
         )}

@@ -3,7 +3,6 @@ import React, { FormEvent, useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
-// import { MovieData } from '../../types/MovieData';
 import './FindMovie.scss';
 
 type Props = {
@@ -32,9 +31,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         return;
       }
 
+      const hasImgUrl = data.Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : data.Poster;
+
       setMovie({
         title: data.Title,
-        imgUrl: data.Poster,
+        imgUrl: hasImgUrl,
         imdbId: data.imdbID,
         imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
         description: data.Plot,
@@ -45,13 +48,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const onAdd = () => {
-    if (!movie) {
-      return;
+    if (movie) {
+      addMovie(movie);
+      setQuery('');
+      setMovie(null);
     }
-
-    addMovie(movie);
-    setQuery('');
-    setMovie(null);
   };
 
   return (

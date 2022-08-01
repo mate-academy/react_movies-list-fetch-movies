@@ -22,7 +22,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     if ('Error' in data) {
       setError(true);
-      setMovie(null);
       setWaiting(false);
 
       return;

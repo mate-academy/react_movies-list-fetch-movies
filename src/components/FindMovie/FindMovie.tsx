@@ -6,7 +6,7 @@ import { getMovie } from '../../api';
 import './FindMovie.scss';
 
 type Props = {
-  onAddMovie: (movie: Movie) => void
+  onAddMovie: (movie: Movie) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {

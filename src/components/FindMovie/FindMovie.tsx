@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/quotes */
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { getMovie } from '../../api';
@@ -15,23 +16,33 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [error, setError] = useState(false);
   const [spinner, setSpinner] = useState(false);
 
+  const addMovie = (movieToAdd: Movie) => {
+    setMovies(current => {
+      if (current
+        .find(curMovie => curMovie.imdbId === movieToAdd.imdbId)) {
+        setMovie(null);
+
+        return [...current];
+      }
+
+      return [...current, movieToAdd];
+    });
+  };
+
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     getMovie(query)
       .then(loadedMovie => {
-        if (loadedMovie === undefined || 'Error' in loadedMovie) {
+        if (!loadedMovie || 'Error' in loadedMovie) {
           setError(true);
           setSpinner(false);
 
           return;
         }
 
-        let url = loadedMovie.Poster;
-
-        if (loadedMovie.Poster === '') {
-          url = 'https://via.placeholder.com/360x270.png?text=no%20preview';
-        }
+        const url = loadedMovie.Poster
+          || 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
         const preparedMovie = {
           title: loadedMovie.Title,
@@ -75,46 +86,28 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
 
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {`Can't find a movie with such a title`}
             </p>
           )}
         </div>
 
         <div className="field is-grouped">
           <div className="control">
-            {movie ? (
-              <button
-                data-cy="searchButton"
-                type="submit"
-                className={classNames(
-                  'button',
-                  'is-ligth',
-                  {
-                    'is-loading': spinner,
-                  },
-                )}
-                disabled={query.length === 0}
-                onClick={() => setSpinner(true)}
-              >
-                Search again
-              </button>
-            ) : (
-              <button
-                data-cy="searchButton"
-                type="submit"
-                className={classNames(
-                  'button',
-                  'is-ligth',
-                  {
-                    'is-loading': spinner,
-                  },
-                )}
-                disabled={query.length === 0}
-                onClick={() => setSpinner(true)}
-              >
-                Find a movie
-              </button>
-            )}
+            <button
+              data-cy="searchButton"
+              type="submit"
+              className={classNames(
+                'button',
+                'is-light',
+                {
+                  'is-loading': spinner,
+                },
+              )}
+              disabled={query.length === 0}
+              onClick={() => setSpinner(true)}
+            >
+              {movie ? 'Search again' : 'Find a movie'}
+            </button>
 
           </div>
           {movie !== null && (
@@ -123,20 +116,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  setMovies(current => {
-                    if (current
-                      .find(curMovie => curMovie.imdbId === movie.imdbId)) {
-                      setMovie(null);
-
-                      return [...current];
-                    }
-
-                    return [...current, movie];
-                  });
-                  setQuery('');
-                  setMovie(null);
-                }}
+                onClick={() => addMovie(movie)}
               >
                 Add to the list
               </button>
@@ -148,7 +128,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
       {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          {movie && <MovieCard movie={movie} />}
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

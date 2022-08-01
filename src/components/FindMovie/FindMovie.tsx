@@ -45,11 +45,10 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
   };
 
   const addMovie = () => {
-    if (!newMovie) {
-      return;
+    if (newMovie !== null) {
+      addNewMovie(newMovie);
     }
 
-    addNewMovie(newMovie);
     setSearchQuery('');
     setNewMovie(null);
     setSearchErrorState(false);

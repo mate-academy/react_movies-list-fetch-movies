@@ -45,6 +45,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
+        onSubmit={handleMovieSearch}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -81,7 +82,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="button is-light"
               disabled={!query}
               data-cy="find"
-              onClick={handleMovieSearch}
             >
               Find a movie
             </button>

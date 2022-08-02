@@ -45,13 +45,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const addMovieToList = () => {
-    if (movie) {
-      addMovie(movie);
-      setMovie(null);
-      setQuery('');
+    if (!movie) {
       setError(false);
+
+      return;
     }
 
+    addMovie(movie);
+    setMovie(null);
+    setQuery('');
     setError(false);
   };
 

@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
@@ -12,8 +13,10 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
+  const [search, setSearch] = useState(false);
   const [showMovie, setShowMovie] = useState(false);
   const [foundMovie, setFoundMovie] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
     getMovie(query)
@@ -35,9 +38,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         } else {
           setFoundMovie(false);
         }
+
+        setShowLoader(false);
+        setSearch(false);
       })
       .finally();
-  }, [showMovie]);
+  }, [search]);
 
   const clearForm = () => {
     setQuery('');
@@ -60,6 +66,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const handleSubmit = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     setShowMovie(true);
+    setShowLoader(true);
+    setSearch(true);
   };
 
   return (
@@ -107,7 +115,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               <button
                 data-cy="searchButton"
                 type="submit"
-                className="button is-light"
+                className={classNames(
+                  'button is-light',
+                  { 'is-loading': showLoader },
+                )}
               >
                 Search again
               </button>
@@ -136,12 +147,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <h2 className="title">Preview</h2>
             <MovieCard movie={movie} />
           </>
-        )}
-
-        {showMovie && foundMovie && (
-          <div className="Loader" data-cy="loader">
-            <div className="Loader__content" />
-          </div>
         )}
       </div>
     </>

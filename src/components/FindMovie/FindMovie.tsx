@@ -12,6 +12,9 @@ export const FindMovie: React.FC<Props> = ({ hasFound, findMovie, onAdd }) => {
   const [query, setQuery] = useState('');
   const [hasAdd, setHasAdd] = useState(false);
 
+  const founded = hasFound !== null && hasFound;
+  const notFounded = hasFound !== null && !hasFound;
+
   const handleClickFind = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -46,17 +49,17 @@ export const FindMovie: React.FC<Props> = ({ hasFound, findMovie, onAdd }) => {
               placeholder="Enter a title to search"
               className={classNames(
                 'input',
-                { 'is-success': hasFound !== null && hasFound },
-                { 'is-danger': hasFound !== null && !hasFound },
+                { 'is-success': founded },
+                { 'is-danger': notFounded },
               )}
               value={query}
               onChange={handleClickFind}
             />
           </div>
 
-          {hasFound !== null && !hasFound && (
+          {notFounded && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              Can`t find a movie with such a title
             </p>
           )}
         </div>
@@ -73,25 +76,26 @@ export const FindMovie: React.FC<Props> = ({ hasFound, findMovie, onAdd }) => {
           </div>
 
           <div className="control">
-            {hasFound && !hasAdd && (
-              <button
-                data-cy="addButton"
-                type="button"
-                className="button is-primary"
-                onClick={handleClickAdd}
-              >
-                Add to the list
-              </button>
-            )}
-            {hasFound && hasAdd && (
-              <button
-                type="button"
-                className="button is-success"
-                title="Disabled button"
-                disabled
-              >
-                <span>Added</span>
-              </button>
+            {hasFound && (
+              hasAdd ? (
+                <button
+                  type="button"
+                  className="button is-success"
+                  title="Disabled button"
+                  disabled
+                >
+                  <span>Added</span>
+                </button>
+              ) : (
+                <button
+                  data-cy="addButton"
+                  type="button"
+                  className="button is-primary"
+                  onClick={handleClickAdd}
+                >
+                  Add to the list
+                </button>
+              )
             )}
           </div>
         </div>

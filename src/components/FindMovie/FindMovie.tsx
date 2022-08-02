@@ -11,12 +11,13 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [givenMovie, setGivenMovie] = useState({} as Movie);
+  const [givenMovie, setGivenMovie] = useState<Movie | null>(null);
   const [movieNotFound, setMovieNotFound] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [queryEnd, setQueryEnd] = useState(false);
   const [queryInProgress, setQueryInProgress] = useState(false);
 
-  const submitHandler = (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setQueryInProgress(true);
 
@@ -33,10 +34,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         });
       } else {
         setMovieNotFound(true);
+        setErrorMessage(value.Error);
       }
     }).finally(() => {
       setQueryInProgress(false);
-
       setQueryEnd(true);
     });
   };
@@ -45,7 +46,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={event => submitHandler(event)}
+        onSubmit={event => handleSubmit(event)}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -69,7 +70,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           {movieNotFound && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
         </div>
@@ -90,7 +91,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           </div>
 
           <div className="control">
-            {Object.keys(givenMovie).length > 0 && searchQuery && (
+            {givenMovie && searchQuery && (
               <button
                 data-cy="addButton"
                 type="button"
@@ -108,13 +109,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      {Object.keys(givenMovie).length > 0
-        && (
-          <div className="container" data-cy="previewContainer">
-            <h2 className="title">Preview</h2>
-            <MovieCard movie={givenMovie} />
-          </div>
-        )}
+      {givenMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={givenMovie} />
+        </div>
+      )}
     </>
   );
 };

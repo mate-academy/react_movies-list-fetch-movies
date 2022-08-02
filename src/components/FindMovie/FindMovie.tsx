@@ -11,9 +11,9 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [query, setQuery] = useState<string>('');
-  const [hasError, setHasError] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [query, setQuery] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -23,27 +23,25 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     const movieFromServer = await getMovie(query);
 
     if ('Error' in movieFromServer) {
-      setHasError(true);
+      setError(movieFromServer.Error);
       setLoading(false);
-    } else {
-      const newMovie = {
-        title: movieFromServer.Title,
-        description: movieFromServer.Plot,
-        imgUrl: movieFromServer.Poster !== 'N/A'
-          ? movieFromServer.Poster
-          : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-        imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
-        imdbId: movieFromServer.imdbID,
-      };
 
-      setMovie(newMovie);
-      setLoading(false);
+      return;
     }
-  };
 
-  // const changeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setQuery(event.target.value);
-  // };
+    const newMovie = {
+      title: movieFromServer.Title,
+      description: movieFromServer.Plot,
+      imgUrl: movieFromServer.Poster !== 'N/A'
+        ? movieFromServer.Poster
+        : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+      imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
+      imdbId: movieFromServer.imdbID,
+    };
+
+    setMovie(newMovie);
+    setLoading(false);
+  };
 
   return (
     <>
@@ -66,14 +64,17 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                setHasError(false);
+                setError('');
               }}
             />
           </div>
 
-          {hasError && (
-            <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+          {error && (
+            <p
+              className="help is-danger"
+              data-cy="errorMessage"
+            >
+              {error}
             </p>
           )}
         </div>

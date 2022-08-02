@@ -10,11 +10,9 @@ export const App = () => {
   const newMovies = (newMovie: Movie) => {
     const hasMovie = movies.some(movie => movie.imdbId === newMovie.imdbId);
 
-    if (hasMovie) {
-      return;
+    if (!hasMovie) {
+      setMovies([...movies, newMovie]);
     }
-
-    setMovies([...movies, newMovie]);
   };
 
   return (
@@ -24,9 +22,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie
-          newMovies={newMovies}
-        />
+        <FindMovie newMovies={newMovies} />
       </div>
     </div>
   );

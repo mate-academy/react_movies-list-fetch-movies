@@ -17,6 +17,7 @@ export const FindMovie: React.FC<Props> = ({ newMovies }) => {
 
   const handlyAdd = (event: FormEvent) => {
     event.preventDefault();
+    setIsLoaded(true);
 
     if (!name) {
       return;
@@ -30,9 +31,11 @@ export const FindMovie: React.FC<Props> = ({ newMovies }) => {
         return;
       }
 
+      const posterMovie = 'Poster movie';
+
       setMovie({
         title: film.Title,
-        imgUrl: film.Poster,
+        imgUrl: film.Poster || posterMovie,
         imdbId: film.imdbID,
         imdbUrl: `https://www.imdb.com/title/${film.imdbID}`,
         description: film.Plot,
@@ -44,20 +47,18 @@ export const FindMovie: React.FC<Props> = ({ newMovies }) => {
   };
 
   const onAddMovie = () => {
-    if (!movie) {
-      return;
+    if (movie) {
+      newMovies(movie);
+      setMovie(null);
+      setName('');
     }
-
-    newMovies(movie);
-    setMovie(null);
-    setName('');
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => handlyAdd(event)}
+        onSubmit={handlyAdd}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -74,13 +75,14 @@ export const FindMovie: React.FC<Props> = ({ newMovies }) => {
               value={name}
               onChange={(event) => {
                 setName(event.target.value);
+                setError(false);
               }}
             />
           </div>
 
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              Can&#39;t find a movie with such a title
             </p>
           )}
         </div>

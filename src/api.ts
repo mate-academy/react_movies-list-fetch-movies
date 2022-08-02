@@ -1,14 +1,20 @@
-import { MovieData } from './types/MovieData';
+import { Movie } from './types/Movie';
 
 const API_URL = 'https://www.omdbapi.com/?apikey=326fe605';
 
-export async function getMovie(query: string): Promise<MovieData > {
+export async function getMovie(query: string): Promise<Movie> {
+  const object: Movie = {
+    data: null,
+    error: null,
+  };
   const res = await fetch(`${API_URL}&t=${query}`);
   const result = await res.json();
 
   if (result.response === 'False') {
-    throw new Error(`${result.statusText}`);
+    object.error = result;
+  } else {
+    object.data = result;
   }
 
-  return result;
+  return object;
 }

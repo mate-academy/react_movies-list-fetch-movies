@@ -31,10 +31,10 @@ export const FindMovie: React.FC<Props> = (
 
     getMovie(search)
       .then(res => {
-        if (res?.Title === undefined) {
+        if (res.error !== null) {
           setError(true);
         } else {
-          setFilm(res);
+          setFilm(res.data);
         }
       })
       .finally(() => {

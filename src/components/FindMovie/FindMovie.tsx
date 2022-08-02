@@ -19,23 +19,25 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const findMovie = async () => {
     const res = await getMovie(query);
 
-    if ('Title' in res) {
-      const newMovie = {
-        title: res.Title,
-        description: res.Plot,
-        imgUrl: res.Poster
-          || 'https://via.placeholder.com/360x270.png?text=no%20preview',
-        imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
-        imdbId: res.imdbID,
-      };
-
-      setMovie(newMovie);
-      setIsLoadingError(false);
-      setLoading(false);
-    } else {
+    if ('Error' in res) {
       setError(true);
       setLoading(false);
+
+      return;
     }
+
+    const newMovie = {
+      title: res.Title,
+      description: res.Plot,
+      imgUrl: res.Poster
+        || 'https://via.placeholder.com/360x270.png?text=no%20preview',
+      imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
+      imdbId: res.imdbID,
+    };
+
+    setMovie(newMovie);
+    setIsLoadingError(false);
+    setLoading(false);
   };
 
   return (
@@ -60,7 +62,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           {isError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {'Can\'t find a movie with such a title'}
             </p>
           )}
         </div>
@@ -70,11 +72,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               data-cy="searchButton"
               type="button"
-              className={classNames({
-                button: true,
-                'is-light': true,
-                'is-loading': isLoading,
-              })}
+              className={classNames(
+                'button',
+                'is-light',
+                { 'is-loading': isLoading },
+              )}
               disabled={!query}
               onClick={() => {
                 setLoading(true);

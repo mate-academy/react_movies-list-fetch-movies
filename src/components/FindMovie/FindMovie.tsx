@@ -23,22 +23,24 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     const findMovie = await getMovie(query);
 
-    if (('Title' in findMovie)) {
-      const newMovie = {
-        title: findMovie.Title,
-        description: findMovie.Plot,
-        imgUrl: findMovie.Poster === 'N/A'
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : findMovie.Poster,
-        imdbUrl: `https://www.imdb.com/title/${findMovie.imdbID}`,
-        imdbId: findMovie.imdbID,
-      };
-
-      setMovie(newMovie);
-    } else {
+    if (!('Title' in findMovie)) {
       setError(true);
+      setLoaded(false);
+
+      return;
     }
 
+    const newMovie = {
+      title: findMovie.Title,
+      description: findMovie.Plot,
+      imgUrl: findMovie.Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : findMovie.Poster,
+      imdbUrl: `https://www.imdb.com/title/${findMovie.imdbID}`,
+      imdbId: findMovie.imdbID,
+    };
+
+    setMovie(newMovie);
     setLoaded(false);
   };
 
@@ -85,7 +87,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           {hasError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {`Can't find a movie with title - "${query}"`}
             </p>
           )}
         </div>

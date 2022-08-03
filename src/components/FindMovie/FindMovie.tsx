@@ -82,6 +82,7 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
+                setHasError(false);
               }}
             />
           </div>

@@ -8,12 +8,15 @@ export const App = () => {
   const [moviesFavoriteList, setMoviesFavoriteList] = useState<Movie[]>([]);
 
   const addMovieToFavorites = (newMovie:Movie) => {
-    setMoviesFavoriteList((current:Movie[]) => {
-      if (current.some((element:Movie) => element.imdbId === newMovie.imdbId)) {
-        return current;
+    setMoviesFavoriteList((previousMoviesFavoriteList:Movie[]) => {
+      if (previousMoviesFavoriteList.some(
+        (movie:Movie) => movie.imdbId === newMovie.imdbId,
+      )) {
+        return previousMoviesFavoriteList;
       }
 
-      const newFavoriteList = current.map((item:Movie) => ({ ...item }));
+      const newFavoriteList = previousMoviesFavoriteList
+        .map((movie:Movie) => ({ ...movie }));
 
       newFavoriteList.push({ ...newMovie });
 

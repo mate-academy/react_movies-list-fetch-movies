@@ -99,7 +99,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 onClick={() => {
                   addMovie(givenMovie);
                   setSearchQuery('');
-                  setGivenMovie({} as Movie);
+                  setGivenMovie(null);
                 }}
               >
                 Add to the list

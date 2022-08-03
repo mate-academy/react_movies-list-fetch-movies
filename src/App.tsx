@@ -5,16 +5,35 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [moviesFavoriteList, setMoviesFavoriteList] = useState<Movie[]>([]);
+
+  const addMovieToFavorites = (newMovie:Movie) => {
+    setMoviesFavoriteList((previousMoviesFavoriteList:Movie[]) => {
+      if (previousMoviesFavoriteList.some(
+        (movie:Movie) => movie.imdbId === newMovie.imdbId,
+      )) {
+        return previousMoviesFavoriteList;
+      }
+
+      const newFavoriteList = previousMoviesFavoriteList
+        .map((movie:Movie) => ({ ...movie }));
+
+      newFavoriteList.push({ ...newMovie });
+
+      return newFavoriteList;
+    });
+  };
 
   return (
     <div className="page">
       <div className="page-content">
-        <MoviesList movies={movies} />
+        <MoviesList movies={moviesFavoriteList} />
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          addMovieToFavorites={addMovieToFavorites}
+        />
       </div>
     </div>
   );

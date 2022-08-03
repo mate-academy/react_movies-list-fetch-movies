@@ -47,13 +47,13 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
     getMovie(query).then(findMovie => {
       if ('Error' in findMovie) {
         setHasError(true);
-        setLoading(false);
       } else {
         createMovie(findMovie);
         setHasError(false);
-        setLoading(false);
       }
     });
+
+    setLoading(false);
   };
 
   const handleListAdd = () => {

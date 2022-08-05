@@ -31,7 +31,7 @@ export const FindMovie: React.FC<Props> = (
 
     getMovie(search)
       .then(res => {
-        if (res.error !== null) {
+        if (res.error) {
           setError(true);
         } else {
           setFilm(res.data);

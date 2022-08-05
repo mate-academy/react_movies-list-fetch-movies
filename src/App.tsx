@@ -11,13 +11,8 @@ export const App = () => {
   return (
     <div className="page">
       <div className="page-content">
-        {
-          list.length > 0
-          && (<MoviesList list={list} />)
-        }
-
+        { list.length > 0 && (<MoviesList list={list} />) }
       </div>
-
       <div className="sidebar">
         <FindMovie
           setFilm={setFilm}

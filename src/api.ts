@@ -10,7 +10,7 @@ export async function getMovie(query: string): Promise<Movie> {
   const res = await fetch(`${API_URL}&t=${query}`);
   const result = await res.json();
 
-  if (result.response === 'False') {
+  if (result.Response === 'False') {
     object.error = result;
   } else {
     object.data = result;

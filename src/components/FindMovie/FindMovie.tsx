@@ -30,12 +30,11 @@ export const FindMovie: React.FC<Props> = (
     }
 
     getMovie(search)
-      .then(res => {
-        if (res.error) {
-          setError(true);
-        } else {
-          setFilm(res.data);
-        }
+      .then(res => setFilm(res))
+      .catch((err) => {
+        setError(true);
+        // eslint-disable-next-line no-console
+        console.warn(`${err.message}`);
       })
       .finally(() => {
         setLoading(false);

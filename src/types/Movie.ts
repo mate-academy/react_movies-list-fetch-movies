@@ -1,7 +1,7 @@
+import { MovieData } from './MovieData';
+import { ResponseError } from './ReponseError';
+
 export interface Movie {
-  title: string;
-  description: string;
-  imgUrl: string;
-  imdbUrl: string;
-  imdbId: string;
+  data: MovieData | null;
+  error: ResponseError | null;
 }

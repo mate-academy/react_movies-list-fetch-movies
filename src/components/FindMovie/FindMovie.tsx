@@ -13,7 +13,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [movieFound, setMovieFound]
-    = useState<Movie | null>();
+    = useState<Movie | null>(null);
   const [query, setQuery] = useState<string>('');
 
   const loadMovie = () => {
@@ -106,9 +106,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               data-cy="addButton"
               type="button"
-              className="button is-primary"
+              className={classNames('button',
+                'is-primary', { hidden: (!movieFound) })}
               onClick={addMovieHandler}
-              disabled={!movieFound}
             >
               Add to the list
             </button>

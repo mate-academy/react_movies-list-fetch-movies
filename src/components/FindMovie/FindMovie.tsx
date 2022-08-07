@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
@@ -35,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
   };
 
   const handleSubmit = async (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
     setIsLoading(true);
@@ -63,7 +64,10 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => handleSubmit(event)}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -83,7 +87,7 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
 
           {isError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {'Can\'t find a movie with such a title'}
             </p>
           )}
         </div>
@@ -93,11 +97,13 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={isLoading
-                ? 'button is-light is-loading'
-                : 'button is-light'}
-              disabled={userQuery.length <= 0}
-              onClick={(event) => handleSubmit(event)}
+              className={
+                classNames(
+                  'button is-light',
+                  { 'is-loading': isLoading },
+                )
+              }
+              disabled={!userQuery}
             >
               Find a movie
             </button>

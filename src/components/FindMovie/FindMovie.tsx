@@ -12,7 +12,6 @@ export const FindMovie: React.FC<Props> = ({ getMovies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState<string>('');
   const [isError, setIsError] = useState(false);
-  const [zminna, setZminna] = useState(false);
   const [arr, getArr] = useState<Movie[]>([]);
 
   const getFetchetMovie = async (value: string) => {
@@ -51,18 +50,12 @@ export const FindMovie: React.FC<Props> = ({ getMovies }) => {
     setQuery('');
     setMovie(null);
     setIsError(false);
-    if (query || isError) {
-      setZminna(!zminna);
-    }
   };
 
-  // const x = movie || zminna;
-
   const addMovieToMovies = () => {
-    if (movie !== null && !arr.includes(movie)) {
+    if (movie !== null && arr.every(m => m.title !== movie.title)) {
       getMovies(arr);
       getArr([...arr, movie]);
-      setZminna(!zminna);
     }
   };
 
@@ -120,7 +113,7 @@ export const FindMovie: React.FC<Props> = ({ getMovies }) => {
 
           </div>
 
-          {zminna && (
+          {movie && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -135,7 +128,7 @@ export const FindMovie: React.FC<Props> = ({ getMovies }) => {
         </div>
       </form>
 
-      {zminna && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

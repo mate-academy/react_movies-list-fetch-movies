@@ -10,10 +10,10 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
-  const [queryInput, setQueryInput] = useState<string>('');
+  const [queryInput, setQueryInput] = useState('');
   const [movieToDisplay, setMovieToDisplay] = useState<Movie | null>();
-  const [errorTitle, setErrorTitle] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [errorTitle, setErrorTitle] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const createMovie = (movie: MovieData) => {
     const {
@@ -38,14 +38,14 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
   React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     setLoading(true);
-    await getMovie(queryInput)
-      .then(movieFromServer => {
-        if ('Error' in movieFromServer) {
-          setErrorTitle(true);
-        } else {
-          createMovie(movieFromServer);
-        }
-      });
+    const movieFromServer = await getMovie(queryInput);
+
+    if ('Error' in movieFromServer) {
+      setErrorTitle(true);
+    } else {
+      createMovie(movieFromServer);
+    }
+
     setLoading(false);
   };
 

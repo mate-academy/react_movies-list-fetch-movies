@@ -12,7 +12,7 @@ export const FindMovie: React.FC<Props> = ({ getMovies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState<string>('');
   const [isError, setIsError] = useState(false);
-  const [arr, getArr] = useState<Movie[]>([]);
+  const [copiMovies, getCopiMovies] = useState<Movie[]>([]);
 
   const getFetchetMovie = async (value: string) => {
     await getMovie(value)
@@ -40,9 +40,9 @@ export const FindMovie: React.FC<Props> = ({ getMovies }) => {
 
   useEffect(() => {
     if (movie) {
-      getMovies(arr);
+      getMovies(copiMovies);
     }
-  }, [arr]);
+  }, [copiMovies]);
 
   const handleClick = (event: any) => {
     event.preventDefault();
@@ -53,9 +53,9 @@ export const FindMovie: React.FC<Props> = ({ getMovies }) => {
   };
 
   const addMovieToMovies = () => {
-    if (movie !== null && arr.every(m => m.title !== movie.title)) {
-      getMovies(arr);
-      getArr([...arr, movie]);
+    if (movie !== null && copiMovies.every(m => m.title !== movie.title)) {
+      getMovies(copiMovies);
+      getCopiMovies([...copiMovies, movie]);
     }
   };
 

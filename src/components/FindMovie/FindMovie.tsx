@@ -1,10 +1,5 @@
-import React, {
-  FormEvent,
-  useMemo,
-  useState,
-} from 'react';
+import React, { FormEvent, useState } from 'react';
 import classNames from 'classnames';
-import { MovieData } from '../../types/MovieData';
 import { getMovie } from '../../api';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
@@ -20,12 +15,10 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
-  const [query, setQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-
-  const [movieData, setMovieData] = useState<MovieData>();
+  const [query, setQuery] = useState<string>('');
   const [movie, setMovie] = useState<Movie>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   const submitHandler = (event: FormEvent) => {
     event.preventDefault();
@@ -35,7 +28,17 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         if ('Error' in item) {
           setError(true);
         } else {
-          setMovieData(item);
+          const {
+            Title, Plot, Poster, imdbID,
+          } = item;
+
+          setMovie({
+            title: Title,
+            description: Plot,
+            imgUrl: Poster || defPoster,
+            imdbUrl,
+            imdbId: imdbID,
+          });
         }
       })
       .finally(() => setIsLoading(false));
@@ -49,18 +52,6 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setQuery('');
     setMovie(undefined);
   };
-
-  useMemo(() => {
-    if (movieData !== undefined) {
-      setMovie({
-        title: movieData.Title,
-        description: movieData.Plot,
-        imgUrl: movieData.Poster || defPoster,
-        imdbUrl,
-        imdbId: movieData.imdbID,
-      });
-    }
-  }, [movieData]);
 
   return (
     <>

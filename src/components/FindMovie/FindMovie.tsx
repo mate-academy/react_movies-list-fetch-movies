@@ -3,6 +3,7 @@ import classnames from 'classnames';
 import './FindMovie.scss';
 import { getFilmByTitle } from '../../api';
 import { MovieCard } from '../MovieCard';
+import { Movie } from '../../react-app-env';
 
 type Props = {
   movies: Movie[],

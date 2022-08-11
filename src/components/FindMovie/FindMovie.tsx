@@ -6,15 +6,15 @@ import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 
 type Props = {
-  addMovie: (arg0: Movie) => void | null
+  addMovie: (movieFound: Movie) => void | null
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [movieFound, setMovieFound]
     = useState<Movie | null>(null);
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState('');
 
   const loadMovie = () => {
     setLoading(true);

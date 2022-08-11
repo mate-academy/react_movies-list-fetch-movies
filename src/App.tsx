@@ -9,6 +9,9 @@ export const App = () => {
 
   const addMovieAttempt = (movieCandidate: Movie) => {
     if (movies.find(candidate => candidate.imdbId === movieCandidate.imdbId)) {
+      // eslint-disable-next-line no-alert
+      alert('THIS MOVIE IS ALREADY IN YOUR LIST');
+
       return null;
     }
 

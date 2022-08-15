@@ -139,12 +139,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               <MovieCard movie={activeMovie} />
             </div>
           )}
-
-      {/* <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {isFound && activeMovie !== emptyMovie
-          && <MovieCard movie={activeMovie} />}
-      </div> */}
     </>
   );
 };

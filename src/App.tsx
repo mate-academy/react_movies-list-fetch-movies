@@ -3,9 +3,9 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import { getMovie } from './api';
-import './App.scss';
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
+import './App.scss';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -29,16 +29,13 @@ export const App = () => {
       const movie: MovieData | ResponseError = await getMovie(query);
 
       if ('Title' in movie) {
-        let img = movie.Poster;
-
-        if (!movie.Poster) {
-          img = 'https://placeholder.com/360x270.png?text=no+preview';
-        }
+        const imgUrl = movie.Poster
+        || 'https://placeholder.com/360x270.png?text=no+preview';
 
         setMovieInfo({
           title: movie.Title,
           description: movie.Plot,
-          imgUrl: img,
+          imgUrl,
           imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
           imdbId: movie.imdbID,
         });
@@ -51,19 +48,23 @@ export const App = () => {
   };
 
   const addMovie = () => {
-    if (movieInfo) {
-      if (movies.some(movie => movie.imdbId === movieInfo.imdbId)) {
-        setTitle('');
-        setMovieInfo(null);
-      } else {
-        setMovies([
-          ...movies,
-          movieInfo,
-        ]);
-        setTitle('');
-        setMovieInfo(null);
-      }
+    if (!movieInfo) {
+      return;
     }
+
+    if (movies.some(movie => movie.imdbId === movieInfo.imdbId)) {
+      setTitle('');
+      setMovieInfo(null);
+
+      return;
+    }
+
+    setMovies([
+      ...movies,
+      movieInfo,
+    ]);
+    setTitle('');
+    setMovieInfo(null);
   };
 
   return (

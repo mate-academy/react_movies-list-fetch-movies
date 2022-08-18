@@ -5,7 +5,20 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [isInList, setIsInList] = useState(false);
+
+  const addMovie = (movie: Movie) => {
+    if (!movies.some(item => item.imdbId === movie.imdbId)) {
+      setMovies(currentMovies => [...currentMovies, movie]);
+    } else {
+      setIsInList(true);
+    }
+  };
+
+  const resetIsInList = () => {
+    setIsInList(false);
+  };
 
   return (
     <div className="page">
@@ -14,7 +27,11 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          onAddMovie={addMovie}
+          isInList={isInList}
+          resetIsInList={resetIsInList}
+        />
       </div>
     </div>
   );

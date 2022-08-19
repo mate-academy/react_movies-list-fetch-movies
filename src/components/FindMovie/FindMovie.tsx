@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
@@ -16,7 +16,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = useCallback((event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
@@ -47,7 +47,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       })
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
-  };
+  }, [title]);
 
   const addNewMovie = () => {
     if (movie) {

@@ -12,7 +12,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       <figure className="image is-4by3">
         <img
           data-cy="moviePoster"
-          src={movie.imgUrl}
+          src={movie.imgUrl ? movie.imgUrl : 'images/defaultPoster.png'}
           alt="Film logo"
         />
       </figure>

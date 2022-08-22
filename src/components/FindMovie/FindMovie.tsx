@@ -38,7 +38,6 @@ export const FindMovie: React.FC<Props> = (props) => {
     setIsLoad(true);
     getMovie(query)
       .then(responseMovie => {
-        setIsLoad(false);
         const data = responseMovie;
 
         if ('Error' in data) {
@@ -48,7 +47,8 @@ export const FindMovie: React.FC<Props> = (props) => {
 
           setMovie(movieFormating);
         }
-      });
+      })
+      .finally(() => setIsLoad(false));
     setQuery('');
     setMovie(null);
   };
@@ -94,6 +94,7 @@ export const FindMovie: React.FC<Props> = (props) => {
             && !movie
             && errorSearch.Response === 'False'
             && query === ''
+            && !isLoad
             && errorSearch.Error
             }
 

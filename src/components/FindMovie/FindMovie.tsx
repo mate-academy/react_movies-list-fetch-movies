@@ -1,7 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  movies: Movie[],
+  setMovies(movies: Movie[]): void,
+};
+
+export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
+  const [title, setTitle] = useState('');
+  const [showError, setShowError] = useState(false);
+  const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
+  const [canFind, setCanFind] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   return (
     <>
       <form className="find-movie">
@@ -17,12 +32,20 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={title}
+              onChange={event => {
+                setTitle(event.target.value);
+                setShowError(false);
+                setCanFind(true);
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {showError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,7 +53,39 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={
+                classNames('button', 'is-light', { 'is-loading': loading })
+              }
+              onClick={async event => {
+                event.preventDefault();
+                setCanFind(false);
+                setCurrentMovie(null);
+                setLoading(true);
+
+                try {
+                  const response = await getMovie(title);
+
+                  if ('Error' in response) {
+                    setShowError(true);
+
+                    return;
+                  }
+
+                  setCurrentMovie({
+                    title: response.Title,
+                    description: response.Plot,
+                    imgUrl: response.Poster === 'N/A'
+                      // eslint-disable-next-line max-len
+                      ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+                      : response.Poster,
+                    imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+                    imdbId: response.imdbID,
+                  });
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              disabled={!canFind || !title}
             >
               Find a movie
             </button>
@@ -40,7 +95,23 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="addButton"
               type="button"
-              className="button is-primary"
+              className={
+                classNames(
+                  'button',
+                  'is-primary',
+                  { 'is-hidden': currentMovie === null },
+                )
+              }
+              onClick={() => {
+                if (currentMovie
+                  && !movies.some(movie => movie.imdbId
+                    === currentMovie.imdbId)) {
+                  setMovies([...movies, currentMovie]);
+                }
+
+                setTitle('');
+                setCurrentMovie(null);
+              }}
             >
               Add to the list
             </button>
@@ -48,10 +119,12 @@ export const FindMovie: React.FC = () => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {currentMovie !== null && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={currentMovie} />
+        </div>
+      )}
     </>
   );
 };

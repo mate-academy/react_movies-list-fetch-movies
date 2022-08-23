@@ -89,7 +89,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 'button is-light',
                 { 'is-loading': isLoading },
               )}
-              disabled={inputValue.length === 0}
+              disabled={inputValue.trim().length === 0}
             >
               Find a movie
             </button>

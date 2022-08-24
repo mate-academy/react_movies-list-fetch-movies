@@ -14,6 +14,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const defaultPoster = 'images/defaultPoster.jpeg';
 
   const hanbleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,9 +28,10 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       const newMovie = {
         title: movie.Title,
         description: movie.Plot,
-        imgUrl: movie.Poster
-          || 'https://via.placeholder.com/360x270.png?text=no%20preview',
-        imdbUrl: '',
+        imgUrl: movie.Poster === 'N/A'
+          ? defaultPoster
+          : movie.Poster,
+        imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
         imdbId: movie.imdbID,
       };
 

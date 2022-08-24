@@ -125,7 +125,7 @@ export const FindMovie: React.FC<Props> = (props) => {
       {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          {movie && <MovieCard movie={movie} />}
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

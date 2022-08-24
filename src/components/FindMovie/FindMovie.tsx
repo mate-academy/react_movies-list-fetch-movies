@@ -17,38 +17,48 @@ export const FindMovie: React.FC<Props> = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [canFind, setCanFind] = useState(false);
 
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+    getMovie(quary)
+      .then((response) => {
+        const data = response;
+
+        if ('Error' in data) {
+          setMovie(null);
+          setCanFind(true);
+        } else {
+          const recievedMovie: Movie = {
+            title: data.Title,
+            description: data.Plot,
+            imgUrl: data.Poster,
+            imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+            imdbId: data.imdbID,
+          };
+
+          setMovie(recievedMovie);
+        }
+      })
+      .catch(() => {
+        setMovie(null);
+        setCanFind(true);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const handlerAddingMovie = (): void => {
+    if (movie) {
+      onClickAdd(movie);
+      setQuary('');
+      setMovie(null);
+    }
+  };
+
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          setIsLoading(true);
-          getMovie(quary)
-            .then((response) => {
-              const data = response;
-
-              if ('Error' in data) {
-                setMovie(null);
-                setCanFind(true);
-              } else {
-                const recievedMovie: Movie = {
-                  title: data.Title,
-                  description: data.Plot,
-                  imgUrl: data.Poster,
-                  imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
-                  imdbId: data.imdbID,
-                };
-
-                setMovie(recievedMovie);
-              }
-            })
-            .catch(() => {
-              setMovie(null);
-              setCanFind(true);
-            })
-            .finally(() => setIsLoading(false));
-        }}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -82,8 +92,11 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames('button', 'is-light',
-                { 'is-loading': isLoading })}
+              className={classNames(
+                'button',
+                'is-light',
+                { 'is-loading': isLoading },
+              )}
               disabled={quary.length === 0}
             >
               Find a movie
@@ -96,11 +109,7 @@ export const FindMovie: React.FC<Props> = (props) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  onClickAdd(movie);
-                  setQuary('');
-                  setMovie(null);
-                }}
+                onClick={handlerAddingMovie}
               >
                 Add to the list
               </button>

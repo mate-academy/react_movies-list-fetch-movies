@@ -11,7 +11,9 @@ type Props = {
   isDisabled: boolean;
 };
 
-export const FindMovie: React.FC<Props> = ({ onAdd, onClear, isDisabled }) => {
+export const FindMovie: React.FC<Props> = ({
+  onAdd, onClear, isDisabled,
+}) => {
   const [quary, setQuary] = useState('');
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,32 +100,36 @@ export const FindMovie: React.FC<Props> = ({ onAdd, onClear, isDisabled }) => {
           </div>
 
           <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              disabled={(foundMovie === null)}
-              onClick={addToList}
-            >
-              Add to the list
-            </button>
+            {foundMovie && (
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                disabled={(foundMovie === null)}
+                onClick={addToList}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
-        <div className="control">
-          <button
-            data-cy="addButton"
-            type="button"
-            className="button is-primary"
-            onClick={onClear}
-            disabled={isDisabled}
-          >
-            Clear local storage
-          </button>
-        </div>
+        <form className="control">
+          {!isDisabled && (
+            <button
+              data-cy="addButton"
+              type="submit"
+              className="button is-primary"
+              onClick={onClear}
+              disabled={isDisabled}
+            >
+              Clear list
+            </button>
+          )}
+        </form>
       </form>
 
       <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
+        {foundMovie && (<h2 className="title">Preview</h2>)}
         {isLoading && <Loader />}
         {foundMovie && (!isLoading && <MovieCard movie={foundMovie} />)}
       </div>

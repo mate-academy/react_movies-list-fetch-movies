@@ -26,7 +26,11 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie onAdd={onAdd} onClear={onClear} isDisabled={isDisabled} />
+        <FindMovie
+          onAdd={onAdd}
+          onClear={onClear}
+          isDisabled={isDisabled}
+        />
       </div>
     </div>
   );

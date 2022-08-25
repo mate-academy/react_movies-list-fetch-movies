@@ -105,7 +105,7 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
             </button>
           </div>
 
-          {movieTitleQuery && (
+          {movie !== null && (
             <div className="control">
               <button
                 data-cy="addButton"

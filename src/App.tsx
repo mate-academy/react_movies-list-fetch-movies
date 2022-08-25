@@ -14,7 +14,7 @@ export const App = () => {
     if (!isInMovieList) {
       setMovies(currentMovies => [...currentMovies, currentMovie]);
     }
-  }, []);
+  }, [movies]);
 
   return (
     <div className="page">

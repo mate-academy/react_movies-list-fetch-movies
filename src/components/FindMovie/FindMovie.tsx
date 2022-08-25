@@ -24,8 +24,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     getMovie(title)
       .then(response => {
-        if (Object.prototype.hasOwnProperty.call(response, 'Error')) {
-          setIsError(true);
+        if ('Error' in response) {
+          return Promise.reject();
         }
 
         const {

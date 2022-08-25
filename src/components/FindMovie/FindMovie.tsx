@@ -1,11 +1,11 @@
 import {
   ChangeEvent, FC, FormEvent, useState,
 } from 'react';
+import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
-import classNames from 'classnames';
 
 interface Props {
   onAdd: (movie: Movie) => void,

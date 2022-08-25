@@ -15,7 +15,47 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [showError, setShowError] = useState(false);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
   const [canFind, setCanFind] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handeSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setCanFind(false);
+    setIsLoading(true);
+
+    try {
+      const response = await getMovie(title);
+
+      if ('Error' in response) {
+        setShowError(true);
+
+        return;
+      }
+
+      setCurrentMovie({
+        title: response.Title,
+        description: response.Plot,
+        imgUrl: response.Poster === 'N/A'
+          // eslint-disable-next-line max-len
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : response.Poster,
+        imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+        imdbId: response.imdbID,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleClear = () => {
+    if (currentMovie
+      && !movies.some(movie => movie.imdbId
+        === currentMovie.imdbId)) {
+      setMovies([...movies, currentMovie]);
+    }
+
+    setTitle('');
+    setCurrentMovie(null);
+  };
 
   return (
     <>
@@ -54,40 +94,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               data-cy="searchButton"
               type="submit"
               className={
-                classNames('button', 'is-light', { 'is-loading': loading })
+                classNames('button', 'is-light', { 'is-loading': isLoading })
               }
-              onClick={async event => {
-                event.preventDefault();
-                setCanFind(false);
-                setCurrentMovie(null);
-                setLoading(true);
-
-                try {
-                  const response = await getMovie(title);
-
-                  if ('Error' in response) {
-                    setShowError(true);
-
-                    return;
-                  }
-
-                  setCurrentMovie({
-                    title: response.Title,
-                    description: response.Plot,
-                    imgUrl: response.Poster === 'N/A'
-                      // eslint-disable-next-line max-len
-                      ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-                      : response.Poster,
-                    imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-                    imdbId: response.imdbID,
-                  });
-                } finally {
-                  setLoading(false);
-                }
-              }}
+              onClick={handeSubmit}
               disabled={!canFind || !title}
             >
-              Find a movie
+              {currentMovie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
@@ -102,16 +114,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                   { 'is-hidden': currentMovie === null },
                 )
               }
-              onClick={() => {
-                if (currentMovie
-                  && !movies.some(movie => movie.imdbId
-                    === currentMovie.imdbId)) {
-                  setMovies([...movies, currentMovie]);
-                }
-
-                setTitle('');
-                setCurrentMovie(null);
-              }}
+              onClick={handleClear}
             >
               Add to the list
             </button>

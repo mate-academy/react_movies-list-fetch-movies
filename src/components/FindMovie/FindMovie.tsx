@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ updateMovies, movies }) => {
-  const [currMovie, setCurrMovie] = useState<Movie | undefined>();
+  const [currMovie, setCurrMovie] = useState<Movie | null>(null);
   const [inputText, setInputText] = useState('');
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,7 +33,7 @@ export const FindMovie: React.FC<Props> = ({ updateMovies, movies }) => {
 
   const submitHandle = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setCurrMovie(undefined);
+    setCurrMovie(null);
     setIsLoading(true);
 
     getMovie(inputText)
@@ -53,7 +53,7 @@ export const FindMovie: React.FC<Props> = ({ updateMovies, movies }) => {
       updateMovies([...movies, currMovie]);
     }
 
-    setCurrMovie(undefined);
+    setCurrMovie(null);
     setInputText('');
   };
 

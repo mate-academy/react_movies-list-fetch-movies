@@ -9,11 +9,10 @@ import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 
 type Props = {
-  movies: Movie[],
-  setMovies: CallableFunction,
+  onAdd: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [title, setTitle] = useState<string>('');
@@ -50,18 +49,14 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       .finally(() => setIsLoading(false));
   };
 
-  const handleAddMovie = () => {
-    if (movie && movies.every(oldMovie => oldMovie.imdbId !== movie.imdbId)) {
-      setMovies((currentMovies: Movie[]) => [...currentMovies, movie]);
-    }
-
-    setTitle('');
-    setMovie(null);
-  };
-
   const handleInputSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
     setIsError(false);
+  };
+
+  const clearFoundData = () => {
+    setTitle('');
+    setMovie(null);
   };
 
   return (
@@ -118,7 +113,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddMovie()}
+                onClick={() => {
+                  onAdd(movie);
+                  clearFoundData();
+                }}
               >
                 Add to the list
               </button>

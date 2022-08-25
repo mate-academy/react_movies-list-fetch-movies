@@ -1,8 +1,9 @@
-import React, {FormEvent, useState} from 'react';
+import React, { FormEvent, useState } from 'react';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
+import classNames from 'classnames';
 
 interface Props {
   addMovie: (arg: Movie) => void;
@@ -13,11 +14,12 @@ export const FindMovie: React.FC<Props> = (props) => {
 
   const [query, setQuery] = useState('');
   const [uploadedMovie, setUploadedMovie] = useState<Movie | null>(null);
-  const [movieIsUploaded, setMovieIsUploaded] = useState(false);
+  const [movieIsUploading, setMovieIsUploading] = useState(false);
   const [hasError, setHasError] = useState('');
 
   const findMovie = (event: FormEvent) => {
     event.preventDefault();
+    setMovieIsUploading(true);
 
     getMovie(query)
       .then(response => {
@@ -35,15 +37,20 @@ export const FindMovie: React.FC<Props> = (props) => {
         setUploadedMovie({
           title: Title,
           description: Plot,
-          imgUrl: Poster,
-          imdbUrl: `https://m.imdb.com/title/${imdbID}`,
+          imgUrl: Poster === 'N/A'
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+            : Poster,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
           imdbId: imdbID,
         });
 
         return Promise.resolve();
       })
       .catch(error => setHasError(error))
-      .finally(() => setMovieIsUploaded(true));
+      .finally(() => setMovieIsUploading(false));
+
+    setQuery('');
+    setHasError('');
   };
 
   const addMovieToTheCollection = () => {
@@ -68,7 +75,10 @@ export const FindMovie: React.FC<Props> = (props) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => (setQuery(event.target.value))}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setHasError('');
+              }}
             />
           </div>
 
@@ -84,7 +94,9 @@ export const FindMovie: React.FC<Props> = (props) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames(
+                'button is-light', { 'is-loading': movieIsUploading },
+              )}
               onClick={findMovie}
               disabled={query.length < 1}
             >
@@ -92,17 +104,21 @@ export const FindMovie: React.FC<Props> = (props) => {
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={addMovieToTheCollection}
-              disabled={!movieIsUploaded}
-            >
-              Add to the list
-            </button>
-          </div>
+          {uploadedMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  addMovieToTheCollection();
+                  setUploadedMovie(null);
+                }}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 

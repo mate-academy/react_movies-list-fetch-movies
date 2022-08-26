@@ -11,7 +11,7 @@ export const App = () => {
   console.log(movies);
 
   const addMovie = (movie: Movie) => {
-    if (movies.some(film => film.imdbId !== movie.imdbId)) {
+    if (movies.every(film => film.imdbId !== movie.imdbId)) {
       setMovies((prev) => [...prev, movie]);
     }
   };

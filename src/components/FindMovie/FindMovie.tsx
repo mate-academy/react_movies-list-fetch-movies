@@ -14,13 +14,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const validationInput = input.replace(/\s/g, '');
 
   const handlerFindMovie = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       setIsLoading(true);
-      getMovie(validationInput).then(response => {
+      getMovie(input).then(response => {
         if ('Error' in response) {
           setIsError(true);
         } else {
@@ -79,7 +78,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="submit"
               className={classNames('button is-light',
                 { 'is-loading': isLoading })}
-              disabled={validationInput.length === 0}
+              disabled={input.length === 0}
             >
               Find a movie
             </button>

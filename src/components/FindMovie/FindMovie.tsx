@@ -7,11 +7,10 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  updateMovies: CallableFunction;
-  movies: Movie[],
+  onAdd: CallableFunction;
 };
 
-export const FindMovie: React.FC<Props> = ({ updateMovies, movies }) => {
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [currMovie, setCurrMovie] = useState<Movie | null>(null);
   const [inputText, setInputText] = useState('');
   const [isError, setIsError] = useState(false);
@@ -48,13 +47,14 @@ export const FindMovie: React.FC<Props> = ({ updateMovies, movies }) => {
       .finally(() => (setIsLoading(false)));
   };
 
-  const handleAddBtn = () => {
-    if (!movies.some(movie => movie.imdbId === currMovie?.imdbId)) {
-      updateMovies([...movies, currMovie]);
-    }
-
+  const clearForm = () => {
     setCurrMovie(null);
     setInputText('');
+  };
+
+  const handleAddBtn = () => {
+    onAdd(currMovie);
+    clearForm();
   };
 
   return (

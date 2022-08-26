@@ -26,7 +26,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         }
 
         const {
-          Title, Poster, Plot, imdbId, imdbUrl,
+          Title, Poster, Plot, imdbID, imdbUrl,
         }
           = res as MovieData;
 
@@ -36,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           imdbUrl,
           imgUrl: Poster
             || 'https://via.placeholder.com/360x270.png?text=no%20preview',
-          imdbId,
+          imdbId: imdbID,
         });
         setIsError(false);
 

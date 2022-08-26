@@ -7,9 +7,6 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  // eslint-disable-next-line no-console
-  console.log(movies);
-
   const addMovie = (movie: Movie) => {
     if (movies.every(film => film.imdbId !== movie.imdbId)) {
       setMovies((prev) => [...prev, movie]);

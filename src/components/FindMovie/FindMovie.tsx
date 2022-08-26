@@ -49,11 +49,24 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       .finally(() => setIsLoading(false));
   };
 
+  const clearForm = () => {
+    setTitle('');
+    setMovie(null);
+  };
+
   const addNewMovie = () => {
-    if (movie) {
-      addMovie(movie);
-      setTitle('');
-      setMovie(null);
+    if (!movie) {
+      return;
+    }
+
+    addMovie(movie);
+    clearForm();
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    if (error) {
+      setError(false);
     }
   };
 
@@ -76,12 +89,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={title}
-              onChange={(event) => {
-                setTitle(event.target.value);
-                if (error) {
-                  setError(false);
-                }
-              }}
+              onChange={handleChange}
             />
           </div>
 

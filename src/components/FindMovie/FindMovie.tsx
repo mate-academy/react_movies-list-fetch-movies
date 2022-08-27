@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log(movie);
+  // console.log(movie);
 
   // const handleSubmit = useCallback((event) => {
   //   event.preventDefault();

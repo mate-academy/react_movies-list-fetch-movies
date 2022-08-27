@@ -8,9 +8,9 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovieToList = useCallback((movie: Movie) => {
-    const isInList = movies.every(film => film.imdbId !== movie.imdbId);
+    const isNotInList = movies.every(film => film.imdbId !== movie.imdbId);
 
-    if (isInList) {
+    if (isNotInList) {
       setMovies(list => [...list, movie]);
     }
   }, [movies]);

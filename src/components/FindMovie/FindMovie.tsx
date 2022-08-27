@@ -12,21 +12,21 @@ type Props = {
 export const FindMovie: React.FC<Props> = (props) => {
   const { onClickAdd } = props;
 
-  const [quary, setQuary] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [canFind, setCanFind] = useState(false);
+  const [isErrorInFinding, setIsErrorInFinding] = useState(false);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     setIsLoading(true);
-    getMovie(quary)
+    getMovie(searchQuery)
       .then((response) => {
         const data = response;
 
         if ('Error' in data) {
           setMovie(null);
-          setCanFind(true);
+          setIsErrorInFinding(true);
         } else {
           const recievedMovie: Movie = {
             title: data.Title,
@@ -41,7 +41,7 @@ export const FindMovie: React.FC<Props> = (props) => {
       })
       .catch(() => {
         setMovie(null);
-        setCanFind(true);
+        setIsErrorInFinding(true);
       })
       .finally(() => setIsLoading(false));
   };
@@ -49,7 +49,7 @@ export const FindMovie: React.FC<Props> = (props) => {
   const handlerAddingMovie = (): void => {
     if (movie) {
       onClickAdd(movie);
-      setQuary('');
+      setSearchQuery('');
       setMovie(null);
     }
   };
@@ -72,15 +72,15 @@ export const FindMovie: React.FC<Props> = (props) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
-              value={quary}
+              value={searchQuery}
               onChange={(event) => {
-                setQuary(event.target.value);
-                setCanFind(false);
+                setSearchQuery(event.target.value);
+                setIsErrorInFinding(false);
               }}
             />
           </div>
 
-          {canFind && (
+          {isErrorInFinding && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -97,7 +97,7 @@ export const FindMovie: React.FC<Props> = (props) => {
                 'is-light',
                 { 'is-loading': isLoading },
               )}
-              disabled={quary.length === 0}
+              disabled={searchQuery.length === 0}
             >
               Find a movie
             </button>

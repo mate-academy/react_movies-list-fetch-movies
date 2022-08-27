@@ -15,31 +15,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // console.log(movie);
-
-  // const handleSubmit = useCallback((event) => {
-  //   event.preventDefault();
-  //   getMovie(query)
-  //     .then(response => {
-  //       if ('Error' in response) {
-  //         setIsError(true);
-  //       }
-
-  //       setMovie({
-  //         title: response.Title,
-  //         description: response.Plot,
-  //         imgUrl: response.Poster,
-  //         imdbUrl: '',
-  //         imdbId: response.imdbID,
-  //       });
-
-  //       console.log(response);
-  //     });
-
-  //   setQuery('');
-  // }, [movie]);
-
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     setLoading(true);
     getMovie(query)
@@ -56,8 +32,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           });
           setIsError(false);
         }
-
-        // console.log(response);
       })
       .finally(() => setLoading(false));
 

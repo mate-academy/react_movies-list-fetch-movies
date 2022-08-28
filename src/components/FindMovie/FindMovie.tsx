@@ -11,10 +11,10 @@ interface Props {
 }
 
 export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [movie, setMovie] = useState<Movie | null>(null);
 
   const onSubmitHandler = useCallback((event: React.FormEvent) => {
     event.preventDefault();
@@ -27,9 +27,9 @@ export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
         }
 
         const {
+          Poster,
           Title,
           Plot,
-          Poster,
           imdbID,
         } = response as MovieData;
 

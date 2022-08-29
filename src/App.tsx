@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const addMovieToList = useCallback((movie: Movie) => {
+    const isNotInList = movies.every(film => film.imdbId !== movie.imdbId);
+
+    if (isNotInList) {
+      setMovies(list => [...list, movie]);
+    }
+  }, [movies]);
 
   return (
     <div className="page">
@@ -14,7 +22,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie onClickAdd={addMovieToList} />
       </div>
     </div>
   );

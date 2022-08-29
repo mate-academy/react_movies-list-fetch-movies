@@ -8,15 +8,16 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isRepeat, setRepeat] = useState(false);
 
-  const addMovie = (newMovie: Movie) => {
-    const check = movies.find(movie => movie.imdbId === newMovie.imdbId);
+  const handleMovieAdd = (newMovie: Movie) => {
+    const isMatchMovie = movies.find(movie => movie.imdbId === newMovie.imdbId);
 
-    if (check === undefined) {
-      setMovies([...movies, newMovie]);
-      setRepeat(false);
-    } else {
+    if (isMatchMovie) {
       setRepeat(true);
+
+      return;
     }
+
+    setMovies(prevMovies => [...prevMovies, newMovie]);
   };
 
   return (
@@ -29,7 +30,7 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          addMovie={addMovie}
+          onMovieAdd={handleMovieAdd}
           isRepeat={isRepeat}
           setRepeat={setRepeat}
         />

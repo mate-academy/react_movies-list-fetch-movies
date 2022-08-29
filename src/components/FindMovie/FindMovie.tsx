@@ -6,13 +6,13 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  addMovie: (movie: Movie) => void,
+  onMovieAdd: (movie: Movie) => void,
   isRepeat: boolean,
   setRepeat: (ans: boolean) => void,
 };
 
 export const FindMovie: React.FC<Props> = ({
-  addMovie,
+  onMovieAdd,
   isRepeat,
   setRepeat,
 }) => {
@@ -21,29 +21,55 @@ export const FindMovie: React.FC<Props> = ({
   const [isLoaded, setLoaded] = useState(false);
   const [preview, setPreview] = useState<Movie | null>(null);
 
-  const newMovie = async () => {
-    const findMovie = await getMovie(query);
+  const findMovie = async () => {
+    const newMovie = await getMovie(query);
 
-    if ('Error' in findMovie) {
+    if ('Error' in newMovie) {
       setError(true);
       setLoaded(false);
-    } else {
-      const imgUrl = findMovie.Poster === 'N/A'
-        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-        : findMovie.Poster;
 
-      const movie = {
-        title: findMovie.Title,
-        description: findMovie.Plot,
-        imgUrl,
-        imdbId: findMovie.imdbID,
-        imdbUrl: `https://www.imdb.com/title/${findMovie.imdbID}`,
-      };
-
-      setPreview(movie);
-      setLoaded(false);
+      return;
     }
+
+    const imgUrl = newMovie.Poster === 'N/A'
+      ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+      : newMovie.Poster;
+
+    const movie = {
+      title: newMovie.Title,
+      description: newMovie.Plot,
+      imgUrl,
+      imdbId: newMovie.imdbID,
+      imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
+    };
+
+    setPreview(movie);
+    setLoaded(false);
   };
+
+  function handleInput(movieName: string) {
+    setQueries(movieName);
+    setError(false);
+    setRepeat(false);
+  }
+
+  function handleFindBtn(e: React.MouseEvent) {
+    e.preventDefault();
+    setPreview(null);
+    setLoaded(true);
+    setError(false);
+    findMovie();
+  }
+
+  function handleAddBtn() {
+    if (!preview) {
+      return;
+    }
+
+    setPreview(null);
+    setQueries('');
+    onMovieAdd(preview);
+  }
 
   return (
     <>
@@ -63,14 +89,10 @@ export const FindMovie: React.FC<Props> = ({
               className={classNames(
                 'input',
                 {
-                  'input is-danger': error,
+                  'is-danger': error,
                 },
               )}
-              onChange={(e) => {
-                setQueries(e.target.value);
-                setError(false);
-                setRepeat(false);
-              }}
+              onChange={(e) => handleInput(e.target.value)}
             />
           </div>
           {(error && query)
@@ -91,7 +113,6 @@ export const FindMovie: React.FC<Props> = ({
                 This movie already exists in the MovieList
               </p>
             )}
-
         </div>
 
         <div className="field is-grouped">
@@ -106,13 +127,7 @@ export const FindMovie: React.FC<Props> = ({
                   'is-loading': isLoaded,
                 },
               )}
-              onClick={(e) => {
-                e.preventDefault();
-                setPreview(null);
-                setLoaded(true);
-                setError(false);
-                newMovie();
-              }}
+              onClick={handleFindBtn}
             >
               Find a movie
             </button>
@@ -124,17 +139,11 @@ export const FindMovie: React.FC<Props> = ({
               type="button"
               className="button is-primary button"
               style={
-                preview === null
-                  ? { opacity: 0, cursor: 'default', transition: '0.5s' }
-                  : { opacity: 1, transition: '0.5s' }
+                preview
+                  ? { opacity: 1, transition: '0.5s' }
+                  : { opacity: 0, transition: '0.3s', cursor: 'default' }
               }
-              onClick={() => {
-                if (preview) {
-                  setPreview(null);
-                  setQueries('');
-                  addMovie(preview);
-                }
-              }}
+              onClick={handleAddBtn}
             >
               Add to the list
             </button>

@@ -18,15 +18,6 @@ export const App = () => {
     }, [movies],
   );
 
-  // const addMovie = (newMovie: Movie) => {
-  //   const moviesIncludesInList = movies
-  //     .some(movieList => movieList.imdbId === newMovie.imdbId);
-
-  //   if (!moviesIncludesInList) {
-  //     setMovies(prev => [...prev, newMovie]);
-  //   }
-  // };
-
   return (
     <div className="page">
       <div className="page-content">

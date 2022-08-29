@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import './FindMovie.scss';
 
+import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
-import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
@@ -14,14 +14,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [movie,  setMovie] = useState<Movie | null>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
     setHasError(false);
-  }
+  };
 
-  const submitForm =  useCallback(
+  const submitForm = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
@@ -47,7 +47,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form 
+      <form
         className="find-movie"
         onSubmit={submitForm}
       >
@@ -91,27 +91,32 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           </div>
 
           <div className="control">
-            {title && movie && <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={() => {
-                addMovie(movie);
-                setTitle('');
-                setMovie(null)
-              }}
-            >
-              Add to the list
-            </button>}
+            {title && movie && (
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  addMovie(movie);
+                  setTitle('');
+                  setMovie(null);
+                }}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
       </form>
 
       <div className="container" data-cy="previewContainer">
-        {movie 
-          && <><h2 className="title">Preview</h2>
-          <MovieCard movie={movie} /></>
-        }
+        {movie
+          && (
+            <>
+              <h2 className="title">Preview</h2>
+              <MovieCard movie={movie} />
+            </>
+          )}
       </div>
     </>
   );

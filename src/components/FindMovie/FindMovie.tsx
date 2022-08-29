@@ -25,7 +25,6 @@ export const FindMovie: React.FC<Props> = (props) => {
         const data = response;
 
         if ('Error' in data) {
-          setMovie(null);
           setIsErrorInFinding(true);
         } else {
           const recievedMovie: Movie = {
@@ -38,10 +37,6 @@ export const FindMovie: React.FC<Props> = (props) => {
 
           setMovie(recievedMovie);
         }
-      })
-      .catch(() => {
-        setMovie(null);
-        setIsErrorInFinding(true);
       })
       .finally(() => setIsLoading(false));
   };

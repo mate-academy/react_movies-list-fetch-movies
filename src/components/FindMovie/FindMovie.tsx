@@ -22,35 +22,30 @@ export const FindMovie: React.FC<Props> = (props) => {
     event.preventDefault();
     setIsMovieLoading(true);
 
-    if (query.trim().length) {
-      getMovie(query)
-        .then((loadedMovie) => {
-          if ('Error' in loadedMovie) {
-            return Promise.reject(loadedMovie.Error);
-          }
+    getMovie(query)
+      .then(response => {
+        if ('Error' in response) {
+          return Promise.reject(response.Error);
+        }
 
-          const {
-            Poster,
-            Title,
-            Plot,
-            imdbID,
-          } = loadedMovie as MovieData;
+        const {
+          Title, Plot, Poster, imdbID,
+        } = response as MovieData;
 
-          setMovie({
-            title: Title,
-            description: Plot,
-            imgUrl: Poster === 'N/A'
-              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-              : Poster,
-            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-            imdbId: imdbID,
-          });
+        setMovie({
+          title: Title,
+          description: Plot,
+          imgUrl: Poster === 'N/A'
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+            : Poster,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          imdbId: imdbID,
+        });
 
-          return Promise.resolve();
-        })
-        .catch(() => setIsError(true))
-        .finally(() => setIsMovieLoading(false));
-    }
+        return Promise.resolve();
+      })
+      .catch(() => setIsError(true))
+      .finally(() => setIsMovieLoading(false));
   };
 
   const clear = () => {

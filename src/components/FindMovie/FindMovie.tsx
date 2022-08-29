@@ -7,9 +7,15 @@ import { MovieCard } from '../MovieCard';
 
 type Props = {
   addMovie: (movie: Movie) => void,
+  isRepeat: boolean,
+  setRepeat: (ans: boolean) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({
+  addMovie,
+  isRepeat,
+  setRepeat,
+}) => {
   const [query, setQueries] = useState('');
   const [error, setError] = useState(false);
   const [isLoaded, setLoaded] = useState(false);
@@ -63,6 +69,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               onChange={(e) => {
                 setQueries(e.target.value);
                 setError(false);
+                setRepeat(false);
               }}
             />
           </div>
@@ -75,6 +82,16 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 Can&apos;t find a movie with such a title
               </p>
             )}
+          {isRepeat
+            && (
+              <p
+                className="help is-danger"
+                data-cy="errorMessage"
+              >
+                This movie already exists in the MovieList
+              </p>
+            )}
+
         </div>
 
         <div className="field is-grouped">
@@ -105,8 +122,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               data-cy="addButton"
               type="button"
-              disabled={preview === null}
               className="button is-primary button"
+              style={
+                preview === null
+                  ? { opacity: 0, cursor: 'default', transition: '0.5s' }
+                  : { opacity: 1, transition: '0.5s' }
+              }
               onClick={() => {
                 if (preview) {
                   setPreview(null);

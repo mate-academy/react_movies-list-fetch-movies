@@ -6,12 +6,16 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [isRepeat, setRepeat] = useState(false);
 
   const addMovie = (newMovie: Movie) => {
     const check = movies.find(movie => movie.imdbId === newMovie.imdbId);
 
     if (check === undefined) {
       setMovies([...movies, newMovie]);
+      setRepeat(false);
+    } else {
+      setRepeat(true);
     }
   };
 
@@ -24,7 +28,11 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie addMovie={addMovie} />
+        <FindMovie
+          addMovie={addMovie}
+          isRepeat={isRepeat}
+          setRepeat={setRepeat}
+        />
       </div>
     </div>
   );

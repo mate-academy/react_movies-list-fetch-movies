@@ -20,14 +20,15 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     setLoading(true);
     getMovie(query)
       .then(response => {
-        if (!response.Title) {
+        if ('Error' in response) {
           setIsError(true);
         } else {
           setMovie({
             title: response.Title,
             description: response.Plot,
-            imgUrl: response.Poster,
-            imdbUrl: '',
+            imgUrl: response.Poster
+              || 'https://via.placeholder.com/360x270.png?text=no%20preview',
+            imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
             imdbId: response.imdbID,
           });
           setIsError(false);

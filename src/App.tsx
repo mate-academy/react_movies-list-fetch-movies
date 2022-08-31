@@ -6,13 +6,13 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [isRepeat, setRepeat] = useState(false);
+  const [isRepeat, setIsRepeat] = useState(false);
 
   const handleMovieAdd = (newMovie: Movie) => {
     const isMatchMovie = movies.find(movie => movie.imdbId === newMovie.imdbId);
 
     if (isMatchMovie) {
-      setRepeat(true);
+      setIsRepeat(true);
 
       return;
     }
@@ -32,7 +32,7 @@ export const App = () => {
         <FindMovie
           onMovieAdd={handleMovieAdd}
           isRepeat={isRepeat}
-          setRepeat={setRepeat}
+          setIsRepeat={setIsRepeat}
         />
       </div>
     </div>

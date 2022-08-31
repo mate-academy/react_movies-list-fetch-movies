@@ -8,66 +8,65 @@ import { MovieCard } from '../MovieCard';
 type Props = {
   onMovieAdd: (movie: Movie) => void,
   isRepeat: boolean,
-  setRepeat: (ans: boolean) => void,
+  setIsRepeat: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
 export const FindMovie: React.FC<Props> = ({
   onMovieAdd,
   isRepeat,
-  setRepeat,
+  setIsRepeat,
 }) => {
-  const [query, setQueries] = useState('');
+  const [query, setQuerie] = useState('');
   const [error, setError] = useState(false);
-  const [isLoaded, setLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [preview, setPreview] = useState<Movie | null>(null);
 
   const findMovie = async () => {
-    const newMovie = await getMovie(query);
+    await getMovie(query)
+      .then(response => {
+        if ('Error' in response) {
+          setError(true);
 
-    if ('Error' in newMovie) {
-      setError(true);
-      setLoaded(false);
+          return;
+        }
 
-      return;
-    }
+        const imgUrl = response.Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : response.Poster;
 
-    const imgUrl = newMovie.Poster === 'N/A'
-      ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-      : newMovie.Poster;
-
-    const movie = {
-      title: newMovie.Title,
-      description: newMovie.Plot,
-      imgUrl,
-      imdbId: newMovie.imdbID,
-      imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
-    };
-
-    setPreview(movie);
-    setLoaded(false);
+        setPreview({
+          title: response.Title,
+          description: response.Plot,
+          imgUrl,
+          imdbId: response.imdbID,
+          imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+        });
+      })
+      .catch(() => setError(true))
+      .finally(() => setIsLoaded(false));
   };
 
-  function handleInput(movieName: string) {
-    setQueries(movieName);
+  function handleInputChange(movieName: string) {
+    setQuerie(movieName);
     setError(false);
-    setRepeat(false);
+    setIsRepeat(false);
   }
 
-  function handleFindBtn(e: React.MouseEvent) {
+  function handleFindBtnClick(e: React.MouseEvent) {
     e.preventDefault();
     setPreview(null);
-    setLoaded(true);
+    setIsLoaded(true);
     setError(false);
     findMovie();
   }
 
-  function handleAddBtn() {
+  function handleAddBtnClick() {
     if (!preview) {
       return;
     }
 
     setPreview(null);
-    setQueries('');
+    setQuerie('');
     onMovieAdd(preview);
   }
 
@@ -92,7 +91,7 @@ export const FindMovie: React.FC<Props> = ({
                   'is-danger': error,
                 },
               )}
-              onChange={(e) => handleInput(e.target.value)}
+              onChange={(e) => handleInputChange(e.target.value)}
             />
           </div>
           {(error && query)
@@ -127,7 +126,7 @@ export const FindMovie: React.FC<Props> = ({
                   'is-loading': isLoaded,
                 },
               )}
-              onClick={handleFindBtn}
+              onClick={handleFindBtnClick}
             >
               Find a movie
             </button>
@@ -143,7 +142,7 @@ export const FindMovie: React.FC<Props> = ({
                   ? { opacity: 1, transition: '0.5s' }
                   : { opacity: 0, transition: '0.3s', cursor: 'default' }
               }
-              onClick={handleAddBtn}
+              onClick={handleAddBtnClick}
             >
               Add to the list
             </button>

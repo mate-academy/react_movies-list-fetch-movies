@@ -1,10 +1,69 @@
-import React from 'react';
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  addMoviesList: (movie: Movie) => void,
+};
+
+export const FindMovie: React.FC<Props> = ({ addMoviesList }) => {
+  const [query, setQuery] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const createNewMovie = (
+    title: string,
+    plot: string,
+    poster: string,
+    imdbId: string,
+  ) => {
+    const newMovie = {
+      title,
+      description: plot,
+      imgUrl: poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : poster,
+      imdbUrl: `https://www.imdb.com/title/${imdbId}`,
+      imdbId,
+    };
+
+    return newMovie;
+  };
+
+  const addMoies = async () => {
+    const movieFromServer = await getMovie(query);
+
+    setIsLoading(true);
+
+    if ('Error' in movieFromServer) {
+      setError(true);
+      setIsLoading(false);
+    } else {
+      const newMovie = createNewMovie(
+        movieFromServer.Title,
+        movieFromServer.Plot,
+        movieFromServer.Poster,
+        movieFromServer.imdbID,
+      );
+
+      setMovie(newMovie);
+      setIsLoading(false);
+    }
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          addMoies();
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,12 +76,18 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +95,42 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames(
+                'button',
+                'is-light',
+                { 'is-loading': isLoading },
+              )}
+              disabled={!(query.length > 0)}
             >
-              Find a movie
+              {movie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
           <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
+            {movie && (
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  setQuery('');
+                  addMoviesList(movie);
+                  setMovie(null);
+                }}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

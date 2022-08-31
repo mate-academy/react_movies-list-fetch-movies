@@ -9,7 +9,7 @@ import { MovieCard } from '../MovieCard';
 
 type Props = {
   addMovie: (movieToAdd: Movie) => void;
-}
+};
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
@@ -58,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form 
+      <form
         className="find-movie"
         onSubmit={handleSubmit}
       >
@@ -114,7 +114,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               >
                 Add to the list
               </button>
-          </div>)}
+            </div>
+          )}
         </div>
       </form>
 

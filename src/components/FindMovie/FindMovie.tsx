@@ -9,7 +9,7 @@ interface Props {
   onAdd: (movie: Movie) => void
 }
 
-export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+export const FindMovie: React.FC<Props> = React.memo(({ onAdd }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isError, setIsError] = useState(false);
@@ -118,4 +118,4 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       </div>
     </>
   );
-};
+});

@@ -6,6 +6,9 @@ type Props = {
   movie: Movie,
 };
 
+// eslint-disable-next-line max-len
+const imagePlaceholder = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
@@ -15,7 +18,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           src={
             movie.imgUrl !== 'N/A'
               ? movie.imgUrl
-              : 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : imagePlaceholder
           }
           alt="Film logo"
         />

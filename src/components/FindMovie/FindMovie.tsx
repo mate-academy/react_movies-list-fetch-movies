@@ -7,16 +7,19 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 interface Props {
-  title: string,
-  onChangeTitle: (str: string) => void,
   addMovie: (m: Movie) => void,
 }
 
 export const FindMovie: React.FC<Props> = (props) => {
-  const { title, onChangeTitle, addMovie } = props;
+  const { addMovie } = props;
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [title, setTitle] = useState('');
+
+  const onChangeTitle = (str: string) => {
+    setTitle(str);
+  };
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -48,7 +51,7 @@ export const FindMovie: React.FC<Props> = (props) => {
       }).finally(() => setIsLoading(false));
   };
 
-  const handleClick = () => {
+  const addMovieHandler = () => {
     if (movie) {
       addMovie(movie);
       onChangeTitle('');
@@ -109,7 +112,7 @@ export const FindMovie: React.FC<Props> = (props) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={handleClick}
+                onClick={addMovieHandler}
               >
                 Add to the list
               </button>

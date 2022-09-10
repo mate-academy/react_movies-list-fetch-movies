@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-  const handleMovieQuery = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
 
@@ -68,7 +68,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={handleMovieQuery}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">

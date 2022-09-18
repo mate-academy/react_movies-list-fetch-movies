@@ -2,10 +2,20 @@ import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { Movie } from './types/Movie';
+import { MovieData } from './types/MovieData';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<MovieData[]>([]);
+
+  const addMovie = (kino: MovieData) => {
+    setMovies((prevState) => {
+      if (prevState.some(movie => movie.imdbID === kino.imdbID)) {
+        return prevState;
+      }
+
+      return [...prevState, kino];
+    });
+  };
 
   return (
     <div className="page">
@@ -14,7 +24,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );

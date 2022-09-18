@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api/movies';
 
@@ -10,41 +11,45 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
   const [query, toQueryState] = useState('');
-  const [findMovie, toFindMovieState] = useState<Movie | null>(null);
-  const [statusLoading, setStatusLoading] = useState(false);
-  const [showError, setShowErrorState] = useState(false);
+  const [findMovie, setFindMovie] = useState<Movie | null>(null);
+  const [showLoader, setShowLoader] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [addToList, setAddToList] = useState(false);
 
   // control query......................................................
   const changeQueryHandler = (inputValue: string) => {
-    setShowErrorState(false);
+    setShowError(false);
+    setFindMovie(null);
     toQueryState(inputValue);
   };
 
   // async download movie...............................................
   const downloadMovie = async () => {
-    if (query.length > 0) {
-      setStatusLoading(true);
+    setShowError(false);
+    setShowLoader(true);
+    setFindMovie(null);
 
-      try {
-        // eslint-disable-next-line no-console
-        console.log('try to start download');
-        const newMovie = await getMovie(query);
+    try {
+      const newMovie = await getMovie(query);
 
-        setStatusLoading(false);
+      // eslint-disable-next-line no-console
+      console.log('undefined if didnt find', newMovie.imdbID);
 
-        // eslint-disable-next-line no-console
-        console.log('newMovie', newMovie);
+      setFindMovie(newMovie);
 
-        // eslint-disable-next-line no-console
-        console.log('add new movie to state', newMovie.Title);
-        toFindMovieState(newMovie);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.log('catch error');
-        setShowErrorState(true);
-        setStatusLoading(false);
-      }
+      // if (newMovie.imdbID) {
+      //   setFindMovie(newMovie);
+      // } else {
+      //   setShowError(true);
+      // }
+      // work but its not a catch mistake
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log('catch error', error);
+
+      setShowError(true);
+    } finally {
+      setShowLoader(false);
     }
   };
 
@@ -56,12 +61,7 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
 
     if (findMovie) {
       toAddMovie(findMovie);
-      toFindMovieState({
-        Poster: '',
-        Title: '',
-        Plot: '',
-        imdbID: '',
-      });
+      setFindMovie(null);
 
       setAddToList(false);
     }
@@ -70,21 +70,16 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
   const submitForm = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    downloadMovie();
-
-    // eslint-disable-next-line no-console
-    console.log('movie = ');
-
-    // eslint-disable-next-line no-console
-    console.log('addToListApp?', addToList);
-
-    // don't work: i try to receive addToList as permissionn
+    if (query.length === 0) {
+      setShowError(true);
+    } else {
+      downloadMovie();
+    }
   };
 
   return (
     <>
-      {statusLoading && (<p>Loading...</p>)}
-      {showError && (<p>error</p>)}
+      {showLoader && (<p>Loading...</p>)}
       <form
         className="find-movie"
         onSubmit={submitForm}
@@ -100,13 +95,16 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
                 type="text"
                 id="movie-title"
                 placeholder="Enter a title to search"
-                className="input is-danger"
+                className={classNames('input',
+                  { 'is-danger': showError })}
               />
             </div>
           </label>
-          <p className="help is-danger">
-            Can&apos;t find a movie with such a title
-          </p>
+          {showError && (
+            <p className="help is-danger">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">

@@ -4,16 +4,16 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 
 export const App: React.FC = () => {
-  const [movies, toMoviesList] = useState<Movie[]>([]);
+  const [moviesList, setMoviesList] = useState<Movie[]>([]);
 
   const toAddMovie = (addMovie: Movie) => {
-    if (movies.every(movie => movie.imdbID !== addMovie.imdbID)) {
-      const newMovies = [...movies, addMovie];
+    if (moviesList.every(movie => movie.imdbID !== addMovie.imdbID)) {
+      const newMovies = [...moviesList, addMovie];
 
       // eslint-disable-next-line no-console
       console.log('added movie to movielist', newMovies);
 
-      toMoviesList(newMovies);
+      setMoviesList(newMovies);
     } else {
       // eslint-disable-next-line no-console
       console.log('there is the same movie');
@@ -23,7 +23,7 @@ export const App: React.FC = () => {
   return (
     <div className="page">
       <div className="page-content">
-        <MoviesList movies={movies} />
+        <MoviesList movies={moviesList} />
       </div>
       <div className="sidebar">
         <FindMovie

@@ -83,18 +83,20 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           </div>
 
           <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={() => {
-                addMovie(movie);
-                setIsError(false);
-                setMovie(null);
-              }}
-            >
-              Add to the list
-            </button>
+            {movie && (
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  addMovie(movie);
+                  setIsError(false);
+                  setMovie(null);
+                }}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
       </form>

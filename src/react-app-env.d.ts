@@ -6,3 +6,8 @@ type Movie = {
   Plot: string;
   imdbID: string;
 };
+
+type FetchMovieErrorResponse = {
+  Error: string;
+  Response: string;
+};

@@ -1,3 +1,7 @@
 import { request } from './request';
 
-export const getMovie = (addUrl: string) => request(addUrl);
+const apiKey = '8327dd52';
+
+export const getMovie = (addUrl: string): Promise<Movie | FetchMovieErrorResponse> => request(
+  `?i=tt3896198&apikey=${apiKey}&t=${addUrl}`,
+);

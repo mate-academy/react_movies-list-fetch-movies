@@ -7,43 +7,43 @@ import { MovieCard } from '../MovieCard';
 
 type Props = {
   toAddMovie: (movie: Movie) => void,
+  sameMovie: boolean;
+  setSameMovie: (value: boolean) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
-  const [query, toQueryState] = useState('');
+export const FindMovie: React.FC<Props> = ({ toAddMovie, sameMovie, setSameMovie }) => {
+  const [inputValue, setInputValue] = useState('');
   const [findMovie, setFindMovie] = useState<Movie | null>(null);
   const [showLoader, setShowLoader] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [addToList, setAddToList] = useState(false);
+  const [findError, setFindError] = useState(false);
 
-  // control query......................................................
-  const changeQueryHandler = (inputValue: string) => {
+  const changeQueryHandler = (value: string) => {
     setShowError(false);
+    setSameMovie(false);
     setFindMovie(null);
-    toQueryState(inputValue);
+    setInputValue(value);
   };
 
-  // async download movie...............................................
   const downloadMovie = async () => {
     setShowError(false);
     setShowLoader(true);
     setFindMovie(null);
 
     try {
-      const newMovie = await getMovie(query);
+      const response = await getMovie(inputValue);
 
-      // eslint-disable-next-line no-console
-      console.log('undefined if didnt find', newMovie.imdbID);
+      if ('Error' in response) {
+        // Error when response is not a Movie
+        // eslint-disable-next-line no-console
+        console.log(response.Error);
 
-      setFindMovie(newMovie);
-
-      // if (newMovie.imdbID) {
-      //   setFindMovie(newMovie);
-      // } else {
-      //   setShowError(true);
-      // }
-      // work but its not a catch mistake
+        setFindError(true);
+      } else {
+        setFindMovie(response);
+      }
     } catch (error) {
+      // Error of fetch
       // eslint-disable-next-line no-console
       console.log('catch error', error);
 
@@ -53,24 +53,18 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
     }
   };
 
-  const addToListHandler = (value: boolean) => {
-    setAddToList(value);
-
-    // eslint-disable-next-line no-console
-    console.log(addToList);
-
-    if (findMovie) {
+  const addToListHandler = () => {
+    if (findMovie !== null) {
       toAddMovie(findMovie);
       setFindMovie(null);
-
-      setAddToList(false);
+      setInputValue('');
     }
   };
 
   const submitForm = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (query.length === 0) {
+    if (inputValue.length === 0) {
       setShowError(true);
     } else {
       downloadMovie();
@@ -90,7 +84,7 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
             <div className="control">
               <input
                 name="title"
-                value={query}
+                value={inputValue}
                 onChange={event => changeQueryHandler(event.target.value)}
                 type="text"
                 id="movie-title"
@@ -121,7 +115,7 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
             <button
               type="button"
               className="button is-primary"
-              onClick={() => addToListHandler(true)}
+              onClick={() => addToListHandler()}
               disabled={!findMovie}
             >
               Add to the list
@@ -131,12 +125,14 @@ export const FindMovie: React.FC<Props> = ({ toAddMovie }) => {
       </form>
 
       <div className="container">
-        {findMovie && (
+        {(findMovie !== null) && (
           <>
             <h2 className="title">Preview</h2>
             <MovieCard movie={findMovie} />
           </>
         )}
+        {sameMovie && <>there is the same movie</>}
+        {findError && <>can&#x27;t find this movie</>}
       </div>
     </>
   );

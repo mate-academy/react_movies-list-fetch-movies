@@ -9,7 +9,6 @@ interface Props {
 export const MoviesList: React.FC<Props> = ({ movies }) => {
   return (
     <div className="movies">
-      <p>list</p>
       {movies.map(movie => (
         <MovieCard
           key={movie.imdbID}

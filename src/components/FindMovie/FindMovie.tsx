@@ -44,7 +44,8 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
     setMovieTitleQuery(query);
   };
 
-  const handleAddNewMovieToTheList = () => {
+  const handleAddNewMovieToTheList = (eventSubmit: React.FormEvent) => {
+    eventSubmit.preventDefault();
     addNewMovie(movie);
     setMovie(null);
     setMovieTitleQuery('');
@@ -54,7 +55,7 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={event => event.preventDefault()}
+        onSubmit={event => handleAddNewMovieToTheList(event)}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -87,7 +88,7 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
             <button
               disabled={!movieTitleQuery}
               data-cy="searchButton"
-              type="submit"
+              type="button"
               className={classNames(
                 'button is-light',
                 { 'is-loading': loadingMovie },
@@ -105,9 +106,8 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
             {movie && (
               <button
                 data-cy="addButton"
-                type="button"
+                type="submit"
                 className="button is-primary"
-                onClick={handleAddNewMovieToTheList}
               >
                 Add to the list
               </button>

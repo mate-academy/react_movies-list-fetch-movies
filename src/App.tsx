@@ -6,6 +6,7 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies] = useState<Movie[]>([]);
+  const [query, setQuery] = useState<string>('');
 
   return (
     <div className="page">
@@ -14,7 +15,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie query={query} setQuery={setQuery} />
       </div>
     </div>
   );

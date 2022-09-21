@@ -1,7 +1,23 @@
 import React from 'react';
 import './FindMovie.scss';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  query: string;
+  setQuery: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export const FindMovie: React.FC<Props> = ({
+  query,
+  setQuery,
+}) => {
+  const movieLength = query.trim().length;
+
+  const handleSearchChange = ({
+    target: { value },
+  }: React.ChangeEvent<HTMLInputElement>) => (
+    setQuery(value)
+  );
+
   return (
     <>
       <form className="find-movie">
@@ -17,6 +33,8 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={query}
+              onChange={handleSearchChange}
             />
           </div>
 
@@ -31,6 +49,7 @@ export const FindMovie: React.FC = () => {
               data-cy="searchButton"
               type="submit"
               className="button is-light"
+              disabled={movieLength === 0}
             >
               Find a movie
             </button>

@@ -7,10 +7,16 @@ import './FindMovie.scss';
 
 type Props = {
   addMovie: (movie: Movie | null) => void;
+  movies: Movie[];
 };
+
+function isMovieDuplicate(arrayMovies: Movie[], movie: Movie): boolean {
+  return arrayMovies.some(({ imdbId }) => imdbId === movie.imdbId);
+}
 
 export const FindMovie: React.FC<Props> = ({
   addMovie,
+  movies,
 }) => {
   const [query, setQuery] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -110,7 +116,14 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => addMovie(movie)}
+                onClick={() => {
+                  if (!isMovieDuplicate(movies, movie)) {
+                    addMovie(movie);
+                  }
+
+                  setMovie(null);
+                  setQuery('');
+                }}
               >
                 Add to the list
               </button>

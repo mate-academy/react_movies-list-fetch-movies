@@ -24,6 +24,7 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           addMovie={addMovie}
+          movies={movies}
         />
       </div>
     </div>

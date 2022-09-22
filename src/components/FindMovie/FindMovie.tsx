@@ -39,14 +39,21 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           return Promise.reject();
         }
 
+        const {
+          Title,
+          Plot,
+          Poster,
+          imdbID,
+        } = response;
+
         setMovie({
-          title: response.Title,
-          description: response.Plot,
-          imgUrl: response.Poster === 'N/A'
+          title: Title,
+          description: Plot,
+          imgUrl: Poster === 'N/A'
             ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-            : response.Poster,
-          imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-          imdbId: response.imdbID,
+            : Poster,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          imdbId: imdbID,
         });
 
         return Promise.resolve();

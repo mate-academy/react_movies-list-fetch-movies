@@ -69,11 +69,14 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={handleSearchChange}
+              onChange={value => {
+                handleSearchChange(value);
+                setIsError(false);
+              }}
             />
           </div>
 
-          { isError && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -110,7 +113,7 @@ export const FindMovie: React.FC<Props> = ({
             </button>
           </div>
 
-          {movie && (
+          {(movie && !isError) && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -132,12 +135,14 @@ export const FindMovie: React.FC<Props> = ({
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && (
-          <MovieCard movie={movie} />
-        )}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          {movie && (
+            <MovieCard movie={movie} />
+          )}
+        </div>
+      )}
     </>
   );
 };

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
@@ -13,6 +14,9 @@ export const FindMovie: React.FC<Props> = ({
 }) => {
   const [query, setQuery] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
+  const [isLoaded, setIsLoaded] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
+
   const queryLength = query.trim().length;
 
   const handleSearchChange = ({
@@ -25,6 +29,9 @@ export const FindMovie: React.FC<Props> = ({
     const data = await getMovie(query);
 
     if ('Error' in data) {
+      setIsLoaded(true);
+      setIsError(true);
+
       return;
     }
 
@@ -35,6 +42,9 @@ export const FindMovie: React.FC<Props> = ({
       imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
       imdbId: data.imdbID,
     });
+
+    setIsLoaded(true);
+    setIsError(false);
   };
 
   return (
@@ -57,9 +67,11 @@ export const FindMovie: React.FC<Props> = ({
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          { isError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -67,12 +79,21 @@ export const FindMovie: React.FC<Props> = ({
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames(
+                'button',
+                'is-light',
+                { 'is-loading': !isLoaded },
+                { finally: isLoaded },
+              )}
               disabled={queryLength === 0}
               onClick={(event) => {
                 event.preventDefault();
 
+                setIsLoaded(false);
+
                 if (!query) {
+                  setIsLoaded(true);
+
                   return;
                 }
 

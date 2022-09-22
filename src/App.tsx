@@ -5,14 +5,14 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
-  const pushMovie = (movie: Movie | null) => {
+  const addMovie = (movie: Movie | null) => {
     if (!movie) {
       return;
     }
 
-    movies.push(movie);
+    setMovies([...movies, movie]);
   };
 
   return (
@@ -23,7 +23,7 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          addMovie={pushMovie}
+          addMovie={addMovie}
         />
       </div>
     </div>

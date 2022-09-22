@@ -17,7 +17,6 @@ export const FindMovie: React.FC<Props> = ({ setMoviesList, moviesList }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isAnyError, setError] = useState(false);
   const [isSearchBefore, setIsSearchBefore] = useState(false);
-  // const [existingImdbId, setExistingImdbId] = useState<string[] | []>([]);
 
   const defPicUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 

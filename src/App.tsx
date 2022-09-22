@@ -2,10 +2,24 @@ import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { Movie } from './types/Movie';
+import { MovieData } from './types/MovieData';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<MovieData[]>([]);
+
+  const addNewMovie = (newMovie: MovieData | null) => {
+    if (newMovie === null) {
+      return;
+    }
+
+    const isMovieAlreadyExist = movies.find(
+      addedMovie => addedMovie.imdbID === newMovie.imdbID,
+    );
+
+    if (!isMovieAlreadyExist) {
+      setMovies([...movies, newMovie]);
+    }
+  };
 
   return (
     <div className="page">
@@ -14,7 +28,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie addNewMovie={addNewMovie} />
       </div>
     </div>
   );

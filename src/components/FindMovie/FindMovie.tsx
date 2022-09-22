@@ -89,14 +89,11 @@ export const FindMovie: FC<Props> = ({ handleMovieSet, movies }) => {
               placeholder="Enter a title to search"
               className={
                 classNames(
-                  'input',
-                  {
-                    'is-danger': error && !movie,
-                  },
+                  'input', { 'is-danger': error },
                 )
               }
               value={title}
-              onChange={event => handleInputChange(event)}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -116,7 +113,7 @@ export const FindMovie: FC<Props> = ({ handleMovieSet, movies }) => {
                 'button is-light',
                 { 'is-loading': isSearching },
               )}
-              onClick={(event) => handleGetMovie(event)}
+              onClick={handleGetMovie}
               disabled={title.length === 0}
             >
               {!movie ? 'Find a movie' : 'Search again'}
@@ -130,7 +127,7 @@ export const FindMovie: FC<Props> = ({ handleMovieSet, movies }) => {
                   data-cy="addButton"
                   type="button"
                   className="button is-primary"
-                  onClick={event => handleSubmit(event)}
+                  onClick={handleSubmit}
                 >
                   Add to the list
                 </button>

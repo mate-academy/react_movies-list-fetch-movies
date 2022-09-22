@@ -14,15 +14,17 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
     imdbID,
   } = movie;
 
+  const changePoster = (Poster === 'N/A')
+    ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+    : Poster;
+
   return (
     <div className="card" data-cy="movieCard">
       <div className="card-image">
         <figure className="image is-4by3">
           <img
             data-cy="moviePoster"
-            src={Poster === 'N/A'
-              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-              : Poster}
+            src={changePoster}
             alt="Film logo"
           />
         </figure>

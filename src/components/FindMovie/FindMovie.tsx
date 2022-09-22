@@ -51,6 +51,8 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
     setMovieTitleQuery('');
   };
 
+  const changeFindButton = !movie ? 'Find a movie' : 'Search again';
+
   return (
     <>
       <form
@@ -95,9 +97,7 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
               )}
               onClick={handleLoadMovieFromServer}
             >
-              {!movie
-                ? 'Find a movie'
-                : 'Search again'}
+              {changeFindButton}
             </button>
 
           </div>

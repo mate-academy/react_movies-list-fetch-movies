@@ -6,7 +6,14 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies] = useState<Movie[]>([]);
-  const [query, setQuery] = useState<string>('');
+
+  const pushMovie = (movie: Movie | null) => {
+    if (!movie) {
+      return;
+    }
+
+    movies.push(movie);
+  };
 
   return (
     <div className="page">
@@ -15,7 +22,9 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie query={query} setQuery={setQuery} />
+        <FindMovie
+          addMovie={pushMovie}
+        />
       </div>
     </div>
   );

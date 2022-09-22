@@ -1,22 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  query: string;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
+  addMovie: (movie: Movie | null) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({
-  query,
-  setQuery,
+  addMovie,
 }) => {
-  const movieLength = query.trim().length;
+  const [query, setQuery] = useState<string>('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const queryLength = query.trim().length;
 
   const handleSearchChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLInputElement>) => (
     setQuery(value)
   );
+
+  const handleClickFind = async () => {
+    const data = await getMovie(query);
+
+    if ('Error' in data) {
+      return;
+    }
+
+    setMovie({
+      title: data.Title,
+      description: data.Plot,
+      imgUrl: data.Poster,
+      imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+      imdbId: data.imdbID,
+    });
+  };
 
   return (
     <>
@@ -49,27 +68,41 @@ export const FindMovie: React.FC<Props> = ({
               data-cy="searchButton"
               type="submit"
               className="button is-light"
-              disabled={movieLength === 0}
+              disabled={queryLength === 0}
+              onClick={(event) => {
+                event.preventDefault();
+
+                if (!query) {
+                  return;
+                }
+
+                handleClickFind();
+              }}
             >
-              Find a movie
+              {movie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => addMovie(movie)}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {movie && (
+          <MovieCard movie={movie} />
+        )}
       </div>
     </>
   );

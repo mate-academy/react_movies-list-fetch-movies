@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState('');
 
-  const handleTitle = (event:React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setIsError(false);
   };
@@ -82,7 +82,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={handleTitle}
+              onChange={handleTitleChange}
             />
           </div>
 
@@ -101,7 +101,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="submit"
               className={className('button',
                 { 'is-light': !isLoading }, { 'is-loading': isLoading })}
-              disabled={query.length === 0}
+              disabled={!query.length}
             >
               Find a movie
             </button>

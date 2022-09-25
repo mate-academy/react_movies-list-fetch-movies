@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props> = ({ setMoviesList, moviesList }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAnyError, setError] = useState(false);
+  const [isAnyError, setHasError] = useState(false);
   const [isSearchBefore, setIsSearchBefore] = useState(false);
 
   const defPicUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
@@ -41,7 +41,7 @@ export const FindMovie: React.FC<Props> = ({ setMoviesList, moviesList }) => {
           }
         });
     } catch (errorName) {
-      setError(true);
+      setHasError(true);
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +80,7 @@ export const FindMovie: React.FC<Props> = ({ setMoviesList, moviesList }) => {
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
-                setError(false);
+                setHasError(false);
               }}
             />
           </div>

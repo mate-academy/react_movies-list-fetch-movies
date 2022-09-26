@@ -1,5 +1,10 @@
 import classNames from 'classnames';
-import { FC, SyntheticEvent, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  SyntheticEvent,
+  useState,
+} from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
@@ -10,17 +15,9 @@ type Props = {
 };
 
 export const FindMovie: FC<Props> = ({ addMovie }) => {
-  const emptyMovie = {
-    title: '',
-    description: '',
-    imgUrl: '',
-    imdbUrl: '',
-    imdbId: '',
-  };
   const [find, setFind] = useState('');
-  const [movie, setMovie] = useState<Movie>(emptyMovie);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFound, setIsFound] = useState(false);
   const [isErrorTitle, setIsErrorTitle] = useState(false);
 
   const findMovie = (e: SyntheticEvent<EventTarget>) => {
@@ -32,7 +29,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
       getMovie(find).then(res => {
         if (res.Response === 'False') {
-          setMovie(emptyMovie);
+          setMovie(null);
           setIsErrorTitle(true);
 
           return;
@@ -48,12 +45,27 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         });
 
         setIsErrorTitle(false);
-        setIsFound(true);
         setIsLoading(false);
       }).finally(() => {
         setIsLoading(false);
       });
     }
+  };
+
+  const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setFind(e.target.value);
+    setMovie(null);
+    setIsErrorTitle(false);
+  };
+
+  const inputButton = () => {
+    if (movie) {
+      addMovie(movie);
+    }
+
+    setMovie(null);
+    setFind('');
+    setMovie(null);
   };
 
   return (
@@ -72,11 +84,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={find}
-              onChange={e => {
-                setFind(e.target.value);
-                setIsFound(false);
-                setIsErrorTitle(false);
-              }}
+              onChange={inputHandler}
             />
           </div>
           {
@@ -103,18 +111,13 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
             </button>
           </div>
 
-          {isFound && (
+          {movie && (
             <div className="control">
               <button
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  addMovie(movie);
-                  setMovie(emptyMovie);
-                  setFind('');
-                  setIsFound(false);
-                }}
+                onClick={inputButton}
               >
                 Add to the list
               </button>
@@ -122,7 +125,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           )}
         </div>
       </form>
-      {isFound && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

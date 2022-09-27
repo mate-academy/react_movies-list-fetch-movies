@@ -32,9 +32,6 @@ export const FindMovie: React.FC<Props> = ({
   const handleClickFind = async () => {
     const data = await getMovie(query);
 
-    // eslint-disable-next-line no-console
-    console.log('Render');
-
     if (data.Response === 'True') {
       setMovie({
         title: data.Title,

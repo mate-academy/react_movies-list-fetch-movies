@@ -6,13 +6,20 @@ type Props = {
   movie: Movie,
 };
 
+const defaultImage
+= 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
         <img
           data-cy="moviePoster"
-          src={movie.imgUrl}
+          src={
+            movie.imgUrl !== 'N/A'
+              ? movie.imgUrl
+              : defaultImage
+          }
           alt="Film logo"
         />
       </figure>

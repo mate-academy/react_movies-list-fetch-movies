@@ -32,23 +32,26 @@ export const FindMovie: React.FC<Props> = ({
   const handleClickFind = async () => {
     const data = await getMovie(query);
 
-    if ('Error' in data) {
+    // eslint-disable-next-line no-console
+    console.log(data.Response);
+
+    if (data.Response === 'True') {
+      setMovie({
+        title: data.Title,
+        description: data.Plot,
+        imgUrl: data.Poster,
+        imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+        imdbId: data.imdbID,
+      });
+
       setIsLoaded(true);
-      setIsError(true);
+      setIsError(false);
 
       return;
     }
 
-    setMovie({
-      title: data.Title,
-      description: data.Plot,
-      imgUrl: data.Poster,
-      imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
-      imdbId: data.imdbID,
-    });
-
     setIsLoaded(true);
-    setIsError(false);
+    setIsError(true);
   };
 
   const handleClickAdd = () => {

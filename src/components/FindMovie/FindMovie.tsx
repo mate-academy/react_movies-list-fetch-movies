@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props> = ({ setMoviesList, moviesList }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isAnyError, setHasError] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [isSearchBefore, setIsSearchBefore] = useState(false);
 
   const defPicUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
@@ -25,26 +25,22 @@ export const FindMovie: React.FC<Props> = ({ setMoviesList, moviesList }) => {
     setIsSearchBefore(true);
     setIsLoading(true);
 
-    try {
-      await getMovie(title)
-        .then(data => {
-          if ('Error' in data) {
-            throw Error(data.Error);
-          } else {
-            setMovie({
-              title: data.Title,
-              description: data.Plot,
-              imgUrl: data.Poster === 'N/A' ? defPicUrl : data.Poster,
-              imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
-              imdbId: data.imdbID,
-            });
-          }
-        });
-    } catch (errorName) {
-      setHasError(true);
-    } finally {
-      setIsLoading(false);
-    }
+    await getMovie(title)
+      .then(data => {
+        if ('Error' in data) {
+          setHasError(true);
+        } else {
+          setMovie({
+            title: data.Title,
+            description: data.Plot,
+            imgUrl: data.Poster === 'N/A' ? defPicUrl : data.Poster,
+            imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+            imdbId: data.imdbID,
+          });
+        }
+
+        setIsLoading(false);
+      });
   };
 
   const handleAddButton = () => {
@@ -85,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ setMoviesList, moviesList }) => {
             />
           </div>
 
-          {isAnyError && (
+          {hasError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

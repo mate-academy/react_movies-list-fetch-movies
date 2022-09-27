@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { isMovieDuplicate } from '../helpers/IsMovieDuplivate';
@@ -22,18 +22,18 @@ export const FindMovie: React.FC<Props> = ({
 
   const queryLength = query.trim().length;
 
-  const handleSearchChange = ({
+  const handleSearchChange = useCallback(({
     target: { value },
   }: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(value);
     setIsError(false);
-  };
+  }, [query, isError]);
 
   const handleClickFind = async () => {
     const data = await getMovie(query);
 
     // eslint-disable-next-line no-console
-    console.log(data.Response);
+    console.log('Render');
 
     if (data.Response === 'True') {
       setMovie({
@@ -54,16 +54,16 @@ export const FindMovie: React.FC<Props> = ({
     setIsError(true);
   };
 
-  const handleClickAdd = () => {
+  const handleClickAdd = useCallback(() => {
     if (!isMovieDuplicate(movies, movie)) {
       addMovie(movie);
     }
 
     setMovie(null);
     setQuery('');
-  };
+  }, [movie, query]);
 
-  const handleCLickSearchButton = (
+  const handleCLickSearchButton = useCallback((
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
     event.preventDefault();
@@ -78,7 +78,7 @@ export const FindMovie: React.FC<Props> = ({
     }
 
     handleClickFind();
-  };
+  }, [query, movie, isLoaded]);
 
   return (
     <>

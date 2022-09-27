@@ -69,7 +69,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="input is-dander"
               value={query}
               onChange={event => {
-                setQuery(event.currentTarget.value);
+                setQuery(event.target.value);
                 setError(false);
               }}
             />
@@ -103,14 +103,16 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           </div>
 
           <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={handleAddMovie}
-            >
-              Add to the list
-            </button>
+            {movie && (
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAddMovie}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
       </form>

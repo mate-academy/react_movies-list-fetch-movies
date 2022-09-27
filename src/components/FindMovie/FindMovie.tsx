@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
+import { isMovieDuplicate } from '../helpers/IsMovieDuplivate';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
@@ -9,10 +10,6 @@ type Props = {
   addMovie: (movie: Movie | null) => void;
   movies: Movie[];
 };
-
-function isMovieDuplicate(arrayMovies: Movie[], movie: Movie): boolean {
-  return arrayMovies.some(({ imdbId }) => imdbId === movie.imdbId);
-}
 
 export const FindMovie: React.FC<Props> = ({
   addMovie,
@@ -27,9 +24,10 @@ export const FindMovie: React.FC<Props> = ({
 
   const handleSearchChange = ({
     target: { value },
-  }: React.ChangeEvent<HTMLInputElement>) => (
-    setQuery(value)
-  );
+  }: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(value);
+    setIsError(false);
+  };
 
   const handleClickFind = async () => {
     const data = await getMovie(query);
@@ -53,6 +51,32 @@ export const FindMovie: React.FC<Props> = ({
     setIsError(false);
   };
 
+  const handleClickAdd = () => {
+    if (!isMovieDuplicate(movies, movie)) {
+      addMovie(movie);
+    }
+
+    setMovie(null);
+    setQuery('');
+  };
+
+  const handleCLickSearchButton = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+
+    setIsLoaded(false);
+    setMovie(null);
+
+    if (!query) {
+      setIsLoaded(true);
+
+      return;
+    }
+
+    handleClickFind();
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -69,10 +93,7 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={value => {
-                handleSearchChange(value);
-                setIsError(false);
-              }}
+              onChange={handleSearchChange}
             />
           </div>
 
@@ -94,20 +115,8 @@ export const FindMovie: React.FC<Props> = ({
                 { 'is-loading': !isLoaded },
                 { finally: isLoaded },
               )}
-              disabled={queryLength === 0}
-              onClick={(event) => {
-                event.preventDefault();
-
-                setIsLoaded(false);
-
-                if (!query) {
-                  setIsLoaded(true);
-
-                  return;
-                }
-
-                handleClickFind();
-              }}
+              disabled={!queryLength}
+              onClick={handleCLickSearchButton}
             >
               {movie ? 'Search again' : 'Find a movie'}
             </button>
@@ -119,14 +128,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  if (!isMovieDuplicate(movies, movie)) {
-                    addMovie(movie);
-                  }
-
-                  setMovie(null);
-                  setQuery('');
-                }}
+                onClick={handleClickAdd}
               >
                 Add to the list
               </button>
@@ -138,7 +140,7 @@ export const FindMovie: React.FC<Props> = ({
       {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

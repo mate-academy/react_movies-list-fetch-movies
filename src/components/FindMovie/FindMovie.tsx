@@ -12,32 +12,36 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ movies, handleMovie }) => {
-  const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isSearched, setIsSearched] = useState(false);
+  const [query, setQuery] = useState('');
   const [isFetching, setIsFetching] = useState(false);
+  const [isSearched, setIsSearched] = useState(false);
 
   const handleMovieSearch = () => {
     setIsFetching(true);
 
-    getMovie(query)
-      .then(response => {
-        if ('Error' in response) {
+    const fetchMovie = async () => {
+      try {
+        const findedMovie = await getMovie(query);
+
+        if ('Error' in findedMovie) {
           setMovie(null);
         } else {
           setMovie({
-            title: response.Title,
-            description: response.Plot,
-            imgUrl: response.Poster,
-            imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-            imdbId: response.imdbID,
+            title: findedMovie.Title,
+            description: findedMovie.Plot,
+            imgUrl: findedMovie.Poster,
+            imdbUrl: `https://www.imdb.com/title/${findedMovie.imdbID}`,
+            imdbId: findedMovie.imdbID,
           });
         }
-      })
-      .finally(() => {
+      } finally {
         setIsFetching(false);
         setIsSearched(true);
-      });
+      }
+    };
+
+    fetchMovie();
   };
 
   const handleAddMovie = () => {
@@ -45,15 +49,17 @@ export const FindMovie: React.FC<Props> = ({ movies, handleMovie }) => {
       return;
     }
 
-    const hasMovie = movies.find(newMovie => newMovie.title === movie.title);
+    const hasMovie = movies.find(prev => prev.title === movie.title);
 
-    if (!hasMovie) {
-      handleMovie(movie);
+    if (hasMovie) {
+      return;
     }
 
-    setQuery('');
-    setIsSearched(false);
+    handleMovie(movie);
+
     setMovie(null);
+    setIsSearched(false);
+    setQuery('');
   };
 
   return (

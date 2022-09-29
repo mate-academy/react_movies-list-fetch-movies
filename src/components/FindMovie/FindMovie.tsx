@@ -20,12 +20,12 @@ export const FindMovie: React.FC<Props> = ({ setMoviesList, moviesList }) => {
 
   const defPicUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-  const handleFormSubmit = async (event: FormEvent) => {
+  const handleFormSubmit = (event: FormEvent) => {
     event.preventDefault();
     setIsSearchBefore(true);
     setIsLoading(true);
 
-    await getMovie(title)
+    getMovie(title)
       .then(data => {
         if ('Error' in data) {
           setHasError(true);

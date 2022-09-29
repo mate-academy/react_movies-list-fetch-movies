@@ -14,7 +14,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [firstFound, setFirstFound] = useState(false);
 
   const handleFindMovie = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -43,15 +42,13 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             imdbUrl,
             imdbId,
           });
-          setFirstFound(true);
         }
 
         if (movieData.Response === 'False') {
           setError(true);
         }
-
-        setIsLoading(false);
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const handleSearchInput = (event: ChangeEvent<HTMLInputElement>) => {
@@ -63,7 +60,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     onAddMovie(foundMovie as Movie);
     setFoundMovie(null);
     setSearchValue('');
-    setFirstFound(false);
   };
 
   return (
@@ -106,7 +102,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               )}
               disabled={!searchValue.length}
             >
-              {firstFound ? 'Search again' : 'Find a movie'}
+              {foundMovie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 

@@ -1,11 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
-// import { type } from 'os';
 
 interface Props {
   addMovie: (movie: Movie) => void,
@@ -19,7 +18,7 @@ export const FindMovie: React.FC<Props> = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const handlSubmit = useCallback((event) => {
+  const handlSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
@@ -49,11 +48,14 @@ export const FindMovie: React.FC<Props> = (
         return Promise.resolve();
       }).catch(() => setError(true))
       .finally(() => setLoading(false));
-  }, [query]);
+  };
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={handlSubmit}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -90,8 +92,6 @@ export const FindMovie: React.FC<Props> = (
                 'is-loading': loading,
               })}
               disabled={!query}
-              onClick={handlSubmit}
-
             >
               Find a movie
             </button>

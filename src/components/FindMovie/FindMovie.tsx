@@ -52,20 +52,19 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     }
   };
 
-  const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     setFind(e.target.value);
     setMovie(null);
     setIsErrorTitle(false);
   };
 
-  const inputButton = () => {
+  const handleSubmit = () => {
     if (movie) {
       addMovie(movie);
     }
 
     setMovie(null);
     setFind('');
-    setMovie(null);
   };
 
   return (
@@ -84,7 +83,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={find}
-              onChange={inputHandler}
+              onChange={handleInput}
             />
           </div>
           {
@@ -117,7 +116,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={inputButton}
+                onClick={handleSubmit}
               >
                 Add to the list
               </button>

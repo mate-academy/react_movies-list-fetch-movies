@@ -23,9 +23,9 @@ export const FindMovie: React.FC<Props> = (
     setLoading(true);
 
     getMovie(query)
-      .then(response => {
-        if ('Error' in response) {
-          return Promise.reject();
+      .then(movieadd => {
+        if ('Error' in movieadd) {
+          setError(true);
         }
 
         const {
@@ -33,7 +33,7 @@ export const FindMovie: React.FC<Props> = (
           Title,
           Plot,
           imdbID,
-        } = response as MovieData;
+        } = movieadd as MovieData;
 
         setMovie({
           title: Title,
@@ -44,8 +44,6 @@ export const FindMovie: React.FC<Props> = (
           imdbUrl: `https://www.imdb.com/title/${imdbID}`,
           imdbId: imdbID,
         });
-
-        return Promise.resolve();
       }).catch(() => setError(true))
       .finally(() => setLoading(false));
   };
@@ -71,7 +69,6 @@ export const FindMovie: React.FC<Props> = (
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                setError(false);
               }}
             />
           </div>
@@ -105,7 +102,6 @@ export const FindMovie: React.FC<Props> = (
                 onClick={() => {
                   addMovie(movie);
                   setQuery('');
-                  setError(false);
                 }}
               >
                 Add to the list

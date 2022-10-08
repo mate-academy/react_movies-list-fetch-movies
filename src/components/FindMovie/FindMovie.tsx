@@ -45,7 +45,6 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
         });
 
         setIsErrorTitle(false);
-        setIsLoading(false);
       }).finally(() => {
         setIsLoading(false);
       });

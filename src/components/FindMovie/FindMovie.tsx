@@ -51,15 +51,15 @@ export const FindMovie: React.FC<Props> = ({ movies, onMoviesChange }) => {
     try {
       const movieDataFromServer = await getMovie(searchQuery);
 
-      if (isAMovieData(movieDataFromServer)) {
-        const movieFromServer = movieDataToMovie(
-          movieDataFromServer as MovieData,
-        );
-
-        setMovie(movieFromServer);
-      } else {
-        setHasLoadingError(true);
+      if (!isAMovieData(movieDataFromServer)) {
+        throw new Error('Invalid response');
       }
+
+      const movieFromServer = movieDataToMovie(
+        movieDataFromServer as MovieData,
+      );
+
+      setMovie(movieFromServer);
     } catch {
       setHasLoadingError(true);
     } finally {
@@ -68,9 +68,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onMoviesChange }) => {
   };
 
   const handleMovieSave = () => {
-    if (movie !== undefined
-      && movies.find(m => m.imdbId === movie.imdbId) === undefined
-    ) {
+    if (movie && !movies.find(m => m.imdbId === movie.imdbId)) {
       onMoviesChange([...movies, movie]);
     }
 

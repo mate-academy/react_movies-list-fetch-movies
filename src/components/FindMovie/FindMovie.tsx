@@ -11,37 +11,39 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [querySearch, setQuerySearch] = useState('');
   const [movie, setMovie] = useState<Movie>();
-  const [error, setError] = useState(false);
+  const [isError, setisError] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
   const handleClick
     = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault();
       setLoading(true);
-      const result = await getMovie(querySearch);
+      const response = await getMovie(querySearch);
 
       setLoading(false);
 
-      if ('Title' in result) {
-        const {
-          Title, Plot, Poster, imdbID,
-        } = result;
-
-        setMovie({
-          title: Title,
-          description: Plot,
-          imgUrl:
-            (Poster !== 'N/A'
-              ? Poster
-              : 'https://via.placeholder.com/360x270.png?text=no%20preview'),
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          imdbId: imdbID,
-        });
-        setError(false);
-      } else {
-        setError(true);
+      if ('Error' in response) {
+        setisError(true);
         setMovie(undefined);
+
+        return;
       }
+
+      const {
+        Title, Plot, Poster, imdbID,
+      } = response;
+
+      setMovie({
+        title: Title,
+        description: Plot,
+        imgUrl:
+          (Poster !== 'N/A'
+            ? Poster
+            : 'https://via.placeholder.com/360x270.png?text=no%20preview'),
+        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+        imdbId: imdbID,
+      });
+      setisError(false);
     };
 
   const addToTheList = () => {
@@ -54,7 +56,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleInput = (value: string) => {
     setQuerySearch(value);
-    setError(false);
+    setisError(false);
   };
 
   return (
@@ -79,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          {error && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

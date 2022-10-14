@@ -46,7 +46,7 @@ export const FindMovie: React.FC<Props> = (
       }
     });
 
-  const handlSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handlSubmit = (event: React.MouseEvent) => {
     event.preventDefault();
     setLoading(true);
 
@@ -57,16 +57,15 @@ export const FindMovie: React.FC<Props> = (
   const handlAddMovie = () => {
     if (movie) {
       addMovie(movie);
+      setMovie(undefined);
+      setQuery('');
     }
-
-    setQuery('');
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={handlSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -103,6 +102,7 @@ export const FindMovie: React.FC<Props> = (
                 'is-loading': loading,
               })}
               disabled={!query}
+              onClick={handlSubmit}
             >
               Find a movie
             </button>

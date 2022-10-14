@@ -18,34 +18,48 @@ export const FindMovie: React.FC<Props> = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
+  const newMovie = (movi: MovieData) => {
+    const {
+      Poster,
+      Title,
+      Plot,
+      imdbID,
+    } = movi;
+
+    setMovie({
+      title: Title,
+      description: Plot,
+      imgUrl: Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : Poster,
+      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+      imdbId: imdbID,
+    });
+  };
+
+  const response = getMovie(query)
+    .then(movieadd => {
+      if ('Error' in movieadd) {
+        setError(true);
+      } else {
+        newMovie(movieadd);
+      }
+    });
+
   const handlSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
-    getMovie(query)
-      .then(movieadd => {
-        if ('Error' in movieadd) {
-          setError(true);
-        }
-
-        const {
-          Poster,
-          Title,
-          Plot,
-          imdbID,
-        } = movieadd as MovieData;
-
-        setMovie({
-          title: Title,
-          description: Plot,
-          imgUrl: Poster === 'N/A'
-            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-            : Poster,
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          imdbId: imdbID,
-        });
-      }).catch(() => setError(true))
+    response.catch(() => setError(true))
       .finally(() => setLoading(false));
+  };
+
+  const handlAddMovie = () => {
+    if (movie) {
+      addMovie(movie);
+    }
+
+    setQuery('');
   };
 
   return (
@@ -99,10 +113,7 @@ export const FindMovie: React.FC<Props> = (
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  addMovie(movie);
-                  setQuery('');
-                }}
+                onClick={handlAddMovie}
               >
                 Add to the list
               </button>

@@ -21,7 +21,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onMoviesChange }) => {
   const [movie, setMovie] = useState<Movie>();
 
   function isAMovieData(obj: MovieData | ResponseError | undefined) {
-    if (obj === undefined) {
+    if (!obj) {
       return false;
     }
 

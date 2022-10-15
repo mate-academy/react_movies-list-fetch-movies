@@ -10,9 +10,11 @@ export const App = () => {
   const addMovie = (newMovie: Movie) => {
     const alreadyExist = movies.some(movie => movie.imdbId === newMovie.imdbId);
 
-    if (!alreadyExist) {
-      setMovie(prevMovie => [...prevMovie, newMovie]);
+    if (alreadyExist) {
+      return;
     }
+
+    setMovie(prevMovie => [...prevMovie, newMovie]);
   };
 
   return (

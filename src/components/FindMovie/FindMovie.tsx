@@ -3,7 +3,6 @@ import './FindMovie.scss';
 import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
-import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
@@ -18,39 +17,33 @@ export const FindMovie: React.FC<Props> = (
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const newMovie = (movi: MovieData) => {
-    const {
-      Poster,
-      Title,
-      Plot,
-      imdbID,
-    } = movi;
-
-    setMovie({
-      title: Title,
-      description: Plot,
-      imgUrl: Poster === 'N/A'
-        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-        : Poster,
-      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-      imdbId: imdbID,
-    });
-  };
-
-  const response = getMovie(query)
-    .then(movieadd => {
-      if ('Error' in movieadd) {
-        setError(true);
-      } else {
-        newMovie(movieadd);
-      }
-    });
-
   const handlSubmit = (event: React.MouseEvent) => {
     event.preventDefault();
     setLoading(true);
 
-    response.catch(() => setError(true))
+    getMovie(query)
+      .then(movieadd => {
+        if ('Error' in movieadd) {
+          setError(true);
+        } else {
+          const {
+            Poster,
+            Title,
+            Plot,
+            imdbID,
+          } = movieadd;
+
+          setMovie({
+            title: Title,
+            description: Plot,
+            imgUrl: Poster === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : Poster,
+            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+            imdbId: imdbID,
+          });
+        }
+      }).catch(() => setError(true))
       .finally(() => setLoading(false));
   };
 
@@ -66,6 +59,7 @@ export const FindMovie: React.FC<Props> = (
     <>
       <form
         className="find-movie"
+        // onSubmit={() => handlSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -82,6 +76,7 @@ export const FindMovie: React.FC<Props> = (
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
+                setError(false);
               }}
             />
           </div>
@@ -104,7 +99,11 @@ export const FindMovie: React.FC<Props> = (
               disabled={!query}
               onClick={handlSubmit}
             >
-              Find a movie
+              {movie ? (
+                'Search again'
+              ) : (
+                'Find a movie'
+              )}
             </button>
           </div>
           {movie && (

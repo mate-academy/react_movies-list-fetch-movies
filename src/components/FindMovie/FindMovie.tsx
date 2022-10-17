@@ -6,8 +6,9 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
-// eslint-disable-next-line max-len
-const defaultPicture = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+const defaultPicture = (
+  'https://via.placeholder.com/360x270.png?text=no%20preview'
+);
 
 type Props = {
   onAddMovie: (newMovie: Movie) => void;

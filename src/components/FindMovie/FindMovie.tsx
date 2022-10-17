@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 
@@ -20,47 +20,56 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [requestError, setRequestError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    setRequestError(false);
-  };
-
-  const handleAddMovie = () => {
-    if (newMovie) {
-      onAddMovie(newMovie);
-    }
-
-    setQuery('');
-    setNewMovie(null);
-  };
-
-  const handleSirchMovie = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
-
-    const movieData = await getMovie(query);
-
-    if (movieData.Response === 'True') {
+  const handleChangeQuery = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(event.target.value);
       setRequestError(false);
-      const pictureUrl = movieData.Poster === 'N/A'
-        ? defaultPicture
-        : movieData.Poster;
+    },
+    [],
+  );
 
-      setNewMovie({
-        title: movieData.Title,
-        description: movieData.Plot,
-        imgUrl: pictureUrl,
-        imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
-        imdbId: movieData.imdbID,
-      });
-    }
+  const handleAddMovie = useCallback(
+    () => {
+      if (newMovie) {
+        onAddMovie(newMovie);
+      }
 
-    if (movieData.Response === 'False') {
-      setRequestError(true);
-    }
+      setQuery('');
+      setNewMovie(null);
+    },
+    [newMovie],
+  );
 
-    setIsLoading(false);
-  };
+  const handleSirchMovie = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setIsLoading(true);
+
+      const movieData = await getMovie(query);
+
+      if (movieData.Response === 'True') {
+        setRequestError(false);
+        const pictureUrl = movieData.Poster === 'N/A'
+          ? defaultPicture
+          : movieData.Poster;
+
+        setNewMovie({
+          title: movieData.Title,
+          description: movieData.Plot,
+          imgUrl: pictureUrl,
+          imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
+          imdbId: movieData.imdbID,
+        });
+      }
+
+      if (movieData.Response === 'False') {
+        setRequestError(true);
+      }
+
+      setIsLoading(false);
+    },
+    [query],
+  );
 
   return (
     <>

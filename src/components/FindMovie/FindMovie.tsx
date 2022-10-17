@@ -15,40 +15,40 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFindMovie = (event: FormEvent<HTMLFormElement>) => {
+  const handleFindMovie = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
 
-    getMovie(searchValue)
-      .then((movieData) => {
-        if (movieData.Response === 'True') {
-          const {
-            Title: title,
-            Plot: description,
-            Poster,
-            imdbID: imdbId,
-          } = movieData;
+    try {
+      const movieData = await getMovie(searchValue);
 
-          const imgUrl = Poster === 'N/A'
-            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-            : Poster;
+      if (movieData.Response === 'False') {
+        setIsLoading(false);
+      } else if (movieData.Response === 'True') {
+        const {
+          Title: title,
+          Plot: description,
+          Poster,
+          imdbID: imdbId,
+        } = movieData;
 
-          const imdbUrl = `https://www.imdb.com/title/${imdbId}`;
+        const imgUrl = Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : Poster;
 
-          setFoundMovie({
-            title,
-            description,
-            imgUrl,
-            imdbUrl,
-            imdbId,
-          });
-        }
+        const imdbUrl = `https://www.imdb.com/title/${imdbId}`;
 
-        if (movieData.Response === 'False') {
-          setError(true);
-        }
-      })
-      .finally(() => setIsLoading(false));
+        setFoundMovie({
+          title,
+          description,
+          imgUrl,
+          imdbUrl,
+          imdbId,
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSearchInput = (event: ChangeEvent<HTMLInputElement>) => {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
@@ -27,13 +26,15 @@ export const FindMovie: React.FC<Props> = ({ movies, handleMovie }) => {
         if ('Error' in findedMovie) {
           setMovie(null);
         } else {
-          setMovie({
+          const newMovie = {
             title: findedMovie.Title,
             description: findedMovie.Plot,
             imgUrl: findedMovie.Poster,
             imdbUrl: `https://www.imdb.com/title/${findedMovie.imdbID}`,
             imdbId: findedMovie.imdbID,
-          });
+          };
+
+          setMovie(newMovie);
         }
       } finally {
         setIsFetching(false);
@@ -62,6 +63,11 @@ export const FindMovie: React.FC<Props> = ({ movies, handleMovie }) => {
     setQuery('');
   };
 
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setIsSearched(false);
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -83,10 +89,7 @@ export const FindMovie: React.FC<Props> = ({ movies, handleMovie }) => {
                 },
               )}
               value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setIsSearched(false);
-              }}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -109,11 +112,7 @@ export const FindMovie: React.FC<Props> = ({ movies, handleMovie }) => {
                 },
               )}
               disabled={!query.trim() || (isSearched && !movie) || isFetching}
-              onClick={(event) => {
-                event.preventDefault();
-
-                handleMovieSearch();
-              }}
+              onClick={handleMovieSearch}
             >
               {!movie ? 'Find a movie' : 'Search again'}
             </button>
@@ -125,11 +124,7 @@ export const FindMovie: React.FC<Props> = ({ movies, handleMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={(event) => {
-                  event.preventDefault();
-
-                  handleAddMovie();
-                }}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>

@@ -34,31 +34,32 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     setNewMovie(null);
   };
 
-  const handleSirchMovie = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSirchMovie = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    getMovie(query)
-      .then(movieData => {
-        if (movieData.Response === 'True') {
-          setRequestError(false);
-          const pictureUrl = movieData.Poster === 'N/A'
-            ? defaultPicture
-            : movieData.Poster;
 
-          setNewMovie({
-            title: movieData.Title,
-            description: movieData.Plot,
-            imgUrl: pictureUrl,
-            imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
-            imdbId: movieData.imdbID,
-          });
-        }
+    const movieData = await getMovie(query);
 
-        if (movieData.Response === 'False') {
-          setRequestError(true);
-        }
-      })
-      .finally(() => setIsLoading(false));
+    if (movieData.Response === 'True') {
+      setRequestError(false);
+      const pictureUrl = movieData.Poster === 'N/A'
+        ? defaultPicture
+        : movieData.Poster;
+
+      setNewMovie({
+        title: movieData.Title,
+        description: movieData.Plot,
+        imgUrl: pictureUrl,
+        imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
+        imdbId: movieData.imdbID,
+      });
+    }
+
+    if (movieData.Response === 'False') {
+      setRequestError(true);
+    }
+
+    setIsLoading(false);
   };
 
   return (

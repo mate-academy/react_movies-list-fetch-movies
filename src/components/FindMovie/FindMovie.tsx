@@ -30,7 +30,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onMoviesChange }) => {
   }
 
   function movieDataToMovie(movieData: MovieData): Movie {
-    const movieFromServer: Movie = {
+    return {
       title: movieData.Title,
       description: movieData.Plot,
       imgUrl: movieData.Poster === 'N/A'
@@ -39,8 +39,6 @@ export const FindMovie: React.FC<Props> = ({ movies, onMoviesChange }) => {
       imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
       imdbId: movieData.imdbID,
     };
-
-    return movieFromServer;
   }
 
   const loadMovie = async (event: React.FormEvent<HTMLFormElement>) => {

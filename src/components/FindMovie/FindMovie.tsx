@@ -7,10 +7,9 @@ import './FindMovie.scss';
 
 interface Props {
   onAdd: (movie:Movie) => void;
-  movies: Movie[];
 }
 
-export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [query, setQuery] = useState('');
   const [movieFound, setMovieFound] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
@@ -42,12 +41,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
       .finally(() => setIsLoading(false));
   };
 
-  const addOrSkip = (movie:Movie) => {
-    if (movies.find(item => item.imdbId === movie.imdbId)) {
-      return;
-    }
-
+  const handleClick = (movie:Movie) => {
     onAdd(movie);
+    setMovieFound(null);
+    setQuery('');
   };
 
   return (
@@ -101,9 +98,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
                 type="button"
                 className="button is-primary"
                 onClick={() => {
-                  addOrSkip(movieFound);
-                  setMovieFound(null);
-                  setQuery('');
+                  handleClick(movieFound);
                 }}
               >
                 Add to the list

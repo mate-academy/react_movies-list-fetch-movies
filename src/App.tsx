@@ -8,6 +8,10 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovies = (movie: Movie) => {
+    if (movies.find(item => item.imdbId === movie.imdbId)) {
+      return;
+    }
+
     setMovies((prevList) => [...prevList, movie]);
   };
 
@@ -20,7 +24,6 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           onAdd={addMovies}
-          movies={movies}
         />
       </div>
     </div>

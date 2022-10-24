@@ -44,15 +44,6 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
             imdbId: imdbID,
           });
         }
-        // setMovie({
-        //   title: Title,
-        //   description: Plot,
-        //   imgUrl: Poster !== 'N/A'
-        //     ? Poster
-        //     : defaultImage,
-        //   imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
-        //   imdbId: imdbID,
-        // });
       })
       .finally(() => setLoading(false));
   };

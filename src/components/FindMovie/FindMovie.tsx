@@ -18,6 +18,7 @@ interface Props {
 
 export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [query, setQuery] = useState('');
+  const [isAlreadyExist, setIsAlreadyExist] = useState(false);
 
   const {
     data, fetchStatus, refetch, remove,
@@ -38,6 +39,8 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
         return [data, ...prevState];
       }
 
+      setIsAlreadyExist(true);
+
       return prevState;
     });
     remove();
@@ -46,6 +49,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
 
   const handleChange = (e:ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
+    setIsAlreadyExist(false);
   };
 
   const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
@@ -74,6 +78,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
             />
           </div>
 
+          {isAlreadyExist && (
+            <p className="help is-danger" data-cy="errorMessage">
+              This movie is already in list!
+            </p>
+          )}
           {data && 'Error' in data && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
@@ -111,7 +120,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
       </form>
 
       <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
+        {data && <h2 className="title">Preview</h2>}
         {fetchStatus === 'fetching' && <Loader />}
 
         {data && 'title' in data && (

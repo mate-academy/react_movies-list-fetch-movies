@@ -17,6 +17,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, allMovies }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
+  const [alreadyExistError, setAlreadyExistError] = useState(false);
 
   const searchMovie = async () => {
     setError(false);
@@ -52,9 +53,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie, allMovies }) => {
     setQwery('');
     setMovie(null);
 
-    if (movie && !allMovies.find(target => (
+    if (movie && allMovies.find(target => (
       target.imdbId === movie.imdbId
     ))) {
+      setAlreadyExistError(true);
+
+      return;
+    }
+
+    if (movie) {
       addMovie([...allMovies, movie]);
     }
   };
@@ -76,6 +83,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, allMovies }) => {
               className="input is-dander"
               value={qwery}
               onChange={(event) => {
+                setAlreadyExistError(false);
                 setError(false);
                 setQwery(event.target.value);
               }}
@@ -85,6 +93,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie, allMovies }) => {
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
+            </p>
+          )}
+
+          {alreadyExistError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              This movie is already in the list
             </p>
           )}
         </div>

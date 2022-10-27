@@ -6,7 +6,6 @@ import cn from 'classnames';
 
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
-// import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
@@ -22,6 +21,7 @@ export const FindMovie: React.FC<Props> = ({addMovie}) => {
   const handleQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setQuery(event.target.value);
+    setErrorMessage('');
   };
 
   const onAddMovie = (newMovie: Movie) => {
@@ -30,7 +30,7 @@ export const FindMovie: React.FC<Props> = ({addMovie}) => {
     setMovie(null);
   }
 
-  const loadMovie = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const loadMovie = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
     const data = await getMovie(query);
@@ -49,13 +49,15 @@ export const FindMovie: React.FC<Props> = ({addMovie}) => {
         imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
       }
       setMovie(loadedMovie);
-      console.log(loadedMovie);
     }
   };
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => loadMovie(event)}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -67,7 +69,7 @@ export const FindMovie: React.FC<Props> = ({addMovie}) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-dander"
+              className="input"
               value={query}
               onChange={(event) => handleQuery(event)}
             />
@@ -80,28 +82,24 @@ export const FindMovie: React.FC<Props> = ({addMovie}) => {
         </div>
 
         <div className="field is-grouped">
-          {query && (
-            <div className="control">
-              <button
-                data-cy="searchButton"
-                type="submit"
-                className={cn(
-                  'button',
-                  'is-light',
-                  {
-                    'is-loading': isLoading,
-                  },
-                )}
-                onClick={(event) => loadMovie(event)}
-              >
-                {movie
+          <div className="control">
+            <button
+              data-cy="searchButton"
+              type="submit"
+              disabled={!query}
+              className={cn(
+                'button',
+                'is-light',
+                {
+                  'is-loading': isLoading,
+                },
+              )}
+            >
+              {movie
                 ? 'Search again'
                 : 'Find a movie'}
-              </button>
-            </div>
-            )}
-
-
+            </button>
+          </div>
           {movie && (
           <div className="control">
             <button
@@ -113,14 +111,15 @@ export const FindMovie: React.FC<Props> = ({addMovie}) => {
               Add to the list
             </button>
           </div>)}
-
         </div>
       </form>
-
+      {movie && (
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
-      </div>
+        <MovieCard movie={movie} />
+      </div>)
+      }
+
     </>
   );
 };

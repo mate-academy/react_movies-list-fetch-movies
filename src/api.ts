@@ -1,7 +1,8 @@
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'https://www.omdbapi.com/?apikey=5a5a47c3';
+const key = '5a5a47c3';
+const API_URL = `https://www.omdbapi.com/?apikey=${key}`;
 
 export function getMovie(query: string): Promise<MovieData | ResponseError> {
   return fetch(`${API_URL}&t=${query}`)

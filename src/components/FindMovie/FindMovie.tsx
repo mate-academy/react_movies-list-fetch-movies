@@ -22,25 +22,41 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsLoaded(true);
 
     try {
-      await getMovie(query)
-        .then(newMovie => {
-          if ('Error' in newMovie) {
-            throw Error(newMovie.Error);
-          } else {
-            setMovie({
-              title: newMovie.Title,
-              description: newMovie.Plot,
-              imgUrl: newMovie.Poster !== 'N/A' ? newMovie.Poster : defImg,
-              imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
-              imdbId: newMovie.imdbID,
-            });
-          }
-        });
-    } catch (Error) {
+      const newMovie = await getMovie(query);
+
+      if ('Error' in newMovie) {
+        setError(true);
+        setIsLoaded(false);
+
+        return;
+      }
+
+      setMovie({
+        title: newMovie.Title,
+        description: newMovie.Plot,
+        imgUrl: newMovie.Poster !== 'N/A' ? newMovie.Poster : defImg,
+        imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
+        imdbId: newMovie.imdbID,
+      });
+    } catch (err) {
       setError(true);
     } finally {
       setIsLoaded(false);
     }
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setError(false);
+  };
+
+  const handleClickAdd = () => {
+    if (movie) {
+      addMovie(movie);
+    }
+
+    setQuery('');
+    setMovie(null);
   };
 
   return (
@@ -62,10 +78,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setError(false);
-              }}
+              onChange={handleSearch}
             />
           </div>
 
@@ -84,9 +97,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={classNames(
                 'button',
                 'is-light',
-                {
-                  'is-loading': isLoaded,
-                },
+                { 'is-loading': isLoaded },
               )}
               disabled={!query}
             >
@@ -100,11 +111,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  addMovie(movie);
-                  setQuery('');
-                  setMovie(null);
-                }}
+                onClick={handleClickAdd}
                 disabled={!query}
               >
                 Add to the list

@@ -12,7 +12,7 @@ export const App = () => {
       .find(oldMovie => oldMovie.imdbId === movie.imdbId);
 
     if (!findImdbId) {
-      setMovies([...movies, movie]);
+      setMovies((prevMovies) => [...prevMovies, movie]);
     }
   };
 

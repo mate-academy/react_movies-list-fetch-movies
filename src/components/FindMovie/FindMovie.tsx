@@ -13,8 +13,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [requestError, setRequestError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(false);
+  const [isRequestError, setIsRequestError] = useState(false);
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
 
   const placeHolderImg
     = 'https://via.placeholder.com/360x270.png?text=no%20preview';
@@ -26,8 +26,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     getMovie(query)
       .then(movie => {
         if (!('Error' in movie)) {
-          setRequestError(false);
-          setErrorMessage(false);
+          setIsRequestError(false);
+          setIsErrorMessage(false);
 
           setFoundMovie({
             title: movie.Title,
@@ -39,8 +39,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         }
 
         if (('Error' in movie)) {
-          setRequestError(true);
-          setErrorMessage(true);
+          setIsRequestError(true);
+          setIsErrorMessage(true);
         }
       })
       .finally(() => setIsLoading(false));
@@ -52,14 +52,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       addMovie(foundMovie);
     }
 
-    setRequestError(false);
+    setIsRequestError(false);
     setFoundMovie(null);
-    setErrorMessage(false);
+    setIsErrorMessage(false);
   };
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-    setErrorMessage(false);
+    setIsErrorMessage(false);
   };
 
   return (
@@ -85,7 +85,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          {(requestError && errorMessage) && (
+          {(isRequestError && isErrorMessage) && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

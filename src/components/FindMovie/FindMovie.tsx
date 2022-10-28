@@ -12,12 +12,12 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState(false);
-  const [loader, setLoader] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleOnSubmit = (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    setLoader(true);
+    setIsLoading(true);
 
     getMovie(query)
       .then(res => {
@@ -39,8 +39,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
         return Promise.resolve();
       })
-      .catch(() => setError(true))
-      .finally(() => setLoader(false));
+      .catch(() => setIsError(true))
+      .finally(() => setIsLoading(false));
   };
 
   const handleAddMovie = () => {
@@ -54,7 +54,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form onSubmit={handleOnSubmit} className="find-movie">
+      <form onSubmit={handleSubmit} className="find-movie">
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -70,12 +70,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               value={query}
               onChange={event => {
                 setQuery(event.target.value);
-                setError(false);
+                setIsError(false);
               }}
             />
           </div>
 
-          {error && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -90,7 +90,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={classNames(
                 'button',
                 'is-light',
-                { 'is-loading': loader },
+                { 'is-loading': isLoading },
               )}
               disabled={!query}
             >

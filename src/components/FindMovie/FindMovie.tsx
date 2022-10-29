@@ -36,9 +36,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
             imdbId: movie.imdbID,
           });
-        }
-
-        if (('Error' in movie)) {
+        } else {
           setIsRequestError(true);
           setIsErrorMessage(true);
         }

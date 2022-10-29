@@ -9,9 +9,9 @@ export const App = () => {
 
   const addMovie = (mov: Movie): void => {
     const result = !movies.find(movie => movie.imdbId === mov.imdbUrl);
-    const dublicat = !movies.find(movie => movie.imdbId === mov.imdbId);
+    const isDuplicated = movies.find(movie => movie.imdbId === mov.imdbId);
 
-    if (result && dublicat) {
+    if (result && !isDuplicated) {
       setMovies([...movies, mov]);
     }
   };

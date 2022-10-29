@@ -9,15 +9,15 @@ type Props = {
   addMovie: (item: Movie) => void;
 };
 
+const placeHolderImg
+    = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRequestError, setIsRequestError] = useState(false);
   const [isErrorMessage, setIsErrorMessage] = useState(false);
-
-  const placeHolderImg
-    = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

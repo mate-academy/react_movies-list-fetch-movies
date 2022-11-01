@@ -16,11 +16,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
   const [isMovieLoaded, setIsMovieLoaded] = useState(false);
   const [isMovieLoading, setIsMovieLoading] = useState(false);
   const [isMovieFounded, setIsMovieFounded] = useState(false);
+  const [isMovieAlredyInList, setIsMovieAlredyInList] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     setIsMovieFounded(true);
+    setIsMovieAlredyInList(false);
   };
 
   const getMovieByTitle = (title: string) => {
@@ -66,6 +68,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
       && !movies.find(({ imdbId }) => imdbId === movie.imdbId)
     ) {
       addMovie(movie);
+    } else {
+      setIsMovieAlredyInList(true);
     }
 
     setMovie(null);
@@ -102,6 +106,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
           {isNoMoviesWithSuchTitle && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
+            </p>
+          )}
+          {isMovieAlredyInList && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Movie is alredy in the movies list
             </p>
           )}
         </div>

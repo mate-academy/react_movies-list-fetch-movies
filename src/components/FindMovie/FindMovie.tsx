@@ -104,23 +104,22 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
 
         <div className="field is-grouped">
-          {query && (
-            <div className="control">
-              <button
-                data-cy="searchButton"
-                type="submit"
-                className={cn(
-                  'button is-light',
-                  { 'is-loading': loading },
-                )}
-                onClick={(event) => findMovie(event)}
-              >
-                {findedMovie
-                  ? 'Search again'
-                  : 'Find a movie'}
-              </button>
-            </div>
-          )}
+          <div className="control">
+            <button
+              disabled={!query.trim()}
+              data-cy="searchButton"
+              type="submit"
+              className={cn(
+                'button is-light',
+                { 'is-loading': loading },
+              )}
+              onClick={(event) => findMovie(event)}
+            >
+              {findedMovie
+                ? 'Search again'
+                : 'Find a movie'}
+            </button>
+          </div>
 
           {findedMovie && (
             <div className="control">
@@ -138,12 +137,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {findedMovie && (
+      {findedMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+
           <MovieCard movie={findedMovie} />
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 };

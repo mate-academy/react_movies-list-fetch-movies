@@ -45,16 +45,26 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         imgUrl: Poster === 'N/A'
           ? defaultImg
           : Poster,
-        imdbUrl: `https://www.imdb.com/title/${imdbID}/`,
+        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
         imdbId: imdbID,
       }));
     }
+  };
+
+  const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
+    setTitle((event.target as HTMLInputElement).value);
+    setIsError(false);
   };
 
   const reset = () => {
     setTitle('');
     setIsFound(false);
     setMovie(null);
+  };
+
+  const handleAddMovie = () => {
+    onAdd(movie);
+    reset();
   };
 
   return (
@@ -76,10 +86,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={title}
-              onChange={(event) => {
-                setTitle(event.target.value);
-                setIsError(false);
-              }}
+              onChange={handleChange}
             />
           </div>
 
@@ -112,10 +119,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  onAdd(movie);
-                  reset();
-                }}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>

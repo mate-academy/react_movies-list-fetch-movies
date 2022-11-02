@@ -126,7 +126,7 @@ export const FindMovie: React.FC = () => {
               )}
               disabled={!query}
             >
-              Find a movie
+              {movie ? 'Search again' : 'Find a movie'}
             </Button>
           </div>
 

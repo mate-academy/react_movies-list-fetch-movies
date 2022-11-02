@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
@@ -12,22 +13,30 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie>();
   const [hasLoadingError, setHasLoadingError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function findMovie() {
     setHasLoadingError(false);
+    setLoading(true);
     const newMovie = await getMovie(query);
 
     if ('Error' in newMovie) {
       setHasLoadingError(true);
     } else {
+      const imgUrl = (newMovie.Poster === 'N/A')
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : newMovie.Poster;
+
       setMovie({
         title: newMovie.Title,
         description: newMovie.Plot,
         imdbId: newMovie.imdbID,
         imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
-        imgUrl: newMovie.Poster,
+        imgUrl,
       });
     }
+
+    setLoading(false);
   }
 
   function handleFindMovie(
@@ -80,7 +89,9 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button',
+                { 'is-loading': loading },
+                { 'is-light': !loading })}
               onClick={handleFindMovie}
             >
               Find a movie

@@ -83,6 +83,7 @@ export const FindMovie: FC<Props> = memo(({ movies, addMovie }) => {
   const handleInpute = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setIsError(false);
+    setIsIncluded(false);
   };
 
   return (

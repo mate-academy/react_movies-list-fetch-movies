@@ -41,7 +41,7 @@ export const FindMovie: React.FC = () => {
 
     setIsSearch(false);
 
-    if (Object.prototype.hasOwnProperty.call(newFilm, 'Poster')) {
+    if ('Poster' in newFilm) {
       const {
         Poster,
         Title,

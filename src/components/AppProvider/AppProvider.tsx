@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Movie } from '../../types/Movie';
 
 type Context = {
@@ -34,7 +34,7 @@ export const AppProvider: React.FC = ({ children }) => {
   const [isMovieExist, setIsMovieExist] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
 
-  const contextValue = useMemo(() => ({
+  const contextValue = {
     movies,
     setMovies,
     query,
@@ -45,14 +45,7 @@ export const AppProvider: React.FC = ({ children }) => {
     setIsMovieExist,
     isSearch,
     setIsSearch,
-  }),
-  [
-    movies,
-    query,
-    movie,
-    isMovieExist,
-    isSearch,
-  ]);
+  };
 
   return (
     <AppContext.Provider value={contextValue}>

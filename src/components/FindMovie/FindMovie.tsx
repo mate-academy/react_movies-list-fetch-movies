@@ -28,17 +28,23 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       if ('Error' in response) {
         throw new Error('Sorry, no such film :(');
       } else {
-        const movie = response;
-        const poster = (movie.Poster === 'N/A')
+        const {
+          Poster,
+          Title,
+          Plot,
+          imdbID,
+        } = response;
+
+        const poster = (Poster === 'N/A')
           ? defaultPicture
-          : movie.Poster;
+          : Poster;
 
         const preparedMovie = {
-          title: movie.Title,
-          description: movie.Plot,
+          title: Title,
+          description: Plot,
           imgUrl: poster,
-          imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-          imdbId: movie.imdbID,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          imdbId: imdbID,
         };
 
         setMovieFromServer(preparedMovie);
@@ -50,11 +56,22 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     }
   };
 
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setHasNoSuchTitle(false);
+  };
+
+  const handleAddClick = () => {
+    onAddMovie(movieFromServer as Movie);
+    setQuery('');
+    setMovieFromServer(null);
+  };
+
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => handleSubmit(event)}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -69,10 +86,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={event => {
-                setQuery(event.target.value);
-                setHasNoSuchTitle(false);
-              }}
+              onChange={handleInput}
             />
           </div>
 
@@ -107,11 +121,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  onAddMovie(movieFromServer);
-                  setQuery('');
-                  setMovieFromServer(null);
-                }}
+                onClick={handleAddClick}
               >
                 Add to the list
               </button>

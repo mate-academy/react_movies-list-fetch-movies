@@ -13,17 +13,68 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   const [titleField, setTitleField] = useState('');
   // eslint-disable-next-line max-len
-  const [movieFromServer, setMovieFromServer] = useState<Movie>({
-    title: '',
-    description: '',
-    imgUrl: '',
-    imdbUrl: '',
-    imdbId: '',
-  });
+  const [movieFromServer, setMovieFromServer] = useState<Movie | null>(null);
 
   const [errorSearch, setErrorSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [addToList, setAddToList] = useState(true);
+
+  // functions
+
+  const submitMovie = (e: any) => {
+    e.preventDefault();
+
+    setIsLoading(true);
+    getMovie(titleField)
+      .then(movie => {
+        if ('Error' in movie) {
+          setErrorSearch(true);
+          setIsLoading(false);
+
+          return Promise.reject();
+        }
+
+        setAddToList(false);
+        setErrorSearch(false);
+        setIsLoading(false);
+        setMovieFromServer({
+          title: movie.Title,
+          description: movie.Plot,
+          imgUrl: movie.Poster === 'N/A'
+            // eslint-disable-next-line max-len
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+            : movie.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+          imdbId: movie.imdbID,
+        });
+
+        return Promise.resolve();
+      });
+  };
+
+  const addButton = (e: any) => {
+    e.preventDefault();
+    setAddToList(true);
+
+    // eslint-disable-next-line max-len
+    if (movieFromServer) {
+      if (!movies.some(movie => {
+        return movie.title === movieFromServer.title;
+      })) {
+        setMovies([...movies, movieFromServer]);
+      }
+    }
+
+    setTitleField('');
+
+    setMovieFromServer({
+      title: '',
+      description: '',
+      imgUrl: '',
+      imdbUrl: '',
+      imdbId: '',
+    });
+  };
 
   return (
     <>
@@ -65,36 +116,8 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
                 'is-light',
                 { 'is-loading': isLoading },
               )}
-              onClick={(e) => {
-                e.preventDefault();
-                setIsLoading(true);
-                getMovie(titleField)
-                  .then(movie => {
-                    if ('Error' in movie) {
-                      setErrorSearch(true);
-                      setIsLoading(false);
-
-                      return Promise.reject();
-                    }
-
-                    setAddToList(false);
-                    setErrorSearch(false);
-                    setIsLoading(false);
-                    setMovieFromServer({
-                      title: movie.Title,
-                      description: movie.Plot,
-                      imgUrl: movie.Poster === 'N/A'
-                        // eslint-disable-next-line max-len
-                        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-                        : movie.Poster,
-                      imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-                      imdbId: movie.imdbID,
-                    });
-
-                    return Promise.resolve();
-                  });
-              }}
-              disabled={Boolean(!titleField)}
+              onClick={submitMovie}
+              disabled={!titleField}
             >
               Find a movie
             </button>
@@ -109,25 +132,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
                 'is-primary',
                 { 'is-hidden': addToList },
               )}
-              onClick={(e) => {
-                e.preventDefault();
-                setAddToList(true);
-
-                // eslint-disable-next-line max-len
-                if (!movies.some(movie => movie.title === movieFromServer.title)) {
-                  setMovies([...movies, movieFromServer]);
-                }
-
-                setTitleField('');
-
-                setMovieFromServer({
-                  title: '',
-                  description: '',
-                  imgUrl: '',
-                  imdbUrl: '',
-                  imdbId: '',
-                });
-              }}
+              onClick={addButton}
             >
               Add to the list
             </button>
@@ -136,7 +141,9 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
       </form>
 
       <div className="container" data-cy="previewContainer">
-        {movieFromServer.title && <MovieCard movie={movieFromServer} />}
+        {movieFromServer
+        && movieFromServer.title
+        && <MovieCard movie={movieFromServer} />}
       </div>
     </>
   );

@@ -112,8 +112,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             >
 
               {movie
-                ? 'Find a movie'
-                : 'Search again'}
+                ? 'Search again'
+                : 'Find a movie'}
             </button>
           </div>
 

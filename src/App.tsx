@@ -3,9 +3,18 @@ import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
+import { isTheSameMovie } from './api';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const addMovie = (newMovie: Movie): void => {
+    if (isTheSameMovie(movies, newMovie)) {
+      return;
+    }
+
+    setMovies([...movies, newMovie]);
+  };
 
   return (
     <div className="page">
@@ -14,7 +23,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie onAddMovie={addMovie} />
       </div>
     </div>
   );

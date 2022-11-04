@@ -7,7 +7,11 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const addMovie = (newMovie: Movie) => {
-    setMovies(savedMovies => [...savedMovies, newMovie]);
+    const exists = (movie: Movie) => movie.imdbId === newMovie.imdbId;
+
+    if (!movies.some(exists)) {
+      setMovies(savedMovies => [...savedMovies, newMovie]);
+    }
   };
 
   return (

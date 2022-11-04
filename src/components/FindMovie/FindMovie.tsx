@@ -11,7 +11,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [hasLoadingError, setHasLoadingError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -20,9 +20,11 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     setLoading(true);
     const newMovie = await getMovie(query);
 
-    if ('Error' in newMovie) {
-      setHasLoadingError(true);
-    } else {
+    try {
+      if ('Error' in newMovie) {
+        throw new Error(newMovie.Error);
+      }
+
       const imgUrl = (newMovie.Poster === 'N/A')
         ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
         : newMovie.Poster;
@@ -34,9 +36,11 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
         imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
         imgUrl,
       });
+    } catch {
+      setHasLoadingError(true);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   }
 
   function handleFindMovie(
@@ -54,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     }
 
     setQuery('');
-    setMovie(undefined);
+    setMovie(null);
   }
 
   return (

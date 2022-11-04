@@ -21,24 +21,26 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
   const loadMovie = async () => {
     setIsMovieLoading(true);
 
-    const findedMovie = await getMovie(titleQuery);
+    try {
+      const findedMovie = await getMovie(titleQuery);
 
-    if ('Error' in findedMovie) {
+      if ('Error' in findedMovie) {
+        setIsError(true);
+      } else {
+        setMovie({
+          title: findedMovie.Title,
+          description: findedMovie.Plot,
+          imgUrl: findedMovie.Poster === 'N/A'
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+            : findedMovie.Poster,
+          imdbUrl: `https://www.imdb.com/title/${findedMovie.imdbID}`,
+          imdbId: findedMovie.imdbID,
+        });
+      }
+    } catch (error) {
       setIsError(true);
+    } finally {
       setIsMovieLoading(false);
-    } else {
-      setMovie({
-        title: findedMovie.Title,
-        description: findedMovie.Plot,
-        imgUrl: findedMovie.Poster === 'N/A'
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : findedMovie.Poster,
-        imdbUrl: `https://www.imdb.com/title/${findedMovie.imdbID}`,
-        imdbId: findedMovie.imdbID,
-      });
-
-      setIsMovieLoading(false);
-      setIsError(false);
     }
   };
 

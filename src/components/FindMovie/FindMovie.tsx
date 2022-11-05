@@ -1,88 +1,20 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { getMovie } from '../../api';
-import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
-import { MovieData } from '../../types/MovieData';
 import { AppContext } from '../AppProvider';
 import './FindMovie.scss';
 import { Button } from '../Button';
 
 export const FindMovie: React.FC = () => {
   const {
-    movies,
-    setMovies,
     query,
-    setQuery,
     movie,
-    setMovie,
     isMovieExist,
-    setIsMovieExist,
     isSearch,
-    setIsSearch,
+    handleInput,
+    handleSearch,
+    addingMovie,
   } = useContext(AppContext);
-
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-
-    setQuery(newValue);
-
-    if (newValue === '' || newValue !== query) {
-      setIsMovieExist(false);
-    }
-  };
-
-  const checkMovie = (newMovie: Movie) => {
-    return movies.some(film => film.imdbId === newMovie.imdbId);
-  };
-
-  const getMovieFromServer = async (appliedQuery: string) => {
-    const newFilm = await getMovie(appliedQuery);
-
-    setIsSearch(false);
-
-    if ('Poster' in newFilm) {
-      const {
-        Poster,
-        Title,
-        Plot,
-        imdbID,
-      } = newFilm as MovieData;
-
-      const movieImg = Poster === 'N/A'
-        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-        : Poster;
-
-      const newMovieInList = {
-        title: Title,
-        description: Plot,
-        imgUrl: movieImg,
-        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-        imdbId: imdbID,
-      };
-
-      setIsMovieExist(false);
-      setMovie(newMovieInList);
-    } else {
-      setIsMovieExist(true);
-      setMovie(null);
-    }
-  };
-
-  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSearch(true);
-    getMovieFromServer(query);
-  };
-
-  const addingMovie = (newFilm: Movie) => {
-    if (!checkMovie(newFilm)) {
-      setMovies([...movies, newFilm]);
-    }
-
-    setMovie(null);
-    setQuery('');
-  };
 
   return (
     <>
@@ -136,7 +68,7 @@ export const FindMovie: React.FC = () => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => addingMovie(movie)}
+                onClick={addingMovie}
               >
                 Add to the list
               </Button>

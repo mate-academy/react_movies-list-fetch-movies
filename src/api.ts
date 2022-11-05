@@ -11,9 +11,6 @@ export async function getMovie(
   try {
     return await response.json();
   } catch {
-    return ({
-      Response: 'False',
-      Error: 'unexpected error',
-    });
+    throw new Error('unexpected error');
   }
 }

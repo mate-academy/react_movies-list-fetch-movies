@@ -43,37 +43,38 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     event.preventDefault();
     setLoading(true);
 
+    let movieFromApi: MovieData | null = null;
+
     try {
-      const movieFromApi = await getMovie(query);
-
-      if ('Error' in movieFromApi) {
-        setHasError(true);
-        setLoading(false);
-
-        return;
-      }
-
-      const {
-        Poster,
-        Title,
-        Plot,
-        imdbID,
-      } = movieFromApi as MovieData;
-
-      setFindedMovie({
-        title: Title,
-        description: Plot,
-        imgUrl: Poster === 'N/A'
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : Poster,
-        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-        imdbId: imdbID,
-      });
+      movieFromApi = await getMovie(query);
     } catch (error) {
       setHasError(true);
     } finally {
       setLoading(false);
     }
+
+    if (!movieFromApi) {
+      return;
+    }
+
+    const {
+      Poster,
+      Title,
+      Plot,
+      imdbID,
+    } = movieFromApi;
+
+    const movieFromServer = {
+      title: Title,
+      description: Plot,
+      imgUrl: Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : Poster,
+      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+      imdbId: imdbID,
+    };
+
+    setFindedMovie(movieFromServer);
   };
 
   return (

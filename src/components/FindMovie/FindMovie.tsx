@@ -5,9 +5,9 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
-interface Props {
+type Props = {
   addMovie: (movie: Movie) => void;
-}
+};
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
@@ -25,7 +25,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         return Promise.reject();
       }
 
-      setFoundedMovie({
+      const preparedMovieData = {
         title: MovieData.Title,
         description: MovieData.Plot,
         imgUrl: MovieData.Poster === 'N/A' ? (
@@ -35,7 +35,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         ),
         imdbUrl: `https://www.imdb.com/title/${MovieData.imdbID}`,
         imdbId: MovieData.imdbID,
-      });
+      };
+
+      setFoundedMovie(preparedMovieData);
 
       return Promise.resolve();
     })
@@ -70,7 +72,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
-              defaultValue={query}
+              value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
                 setIsError(false);

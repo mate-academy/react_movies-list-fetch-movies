@@ -1,7 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
+  movies: Movie[]
+};
+
+export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
+  const [title, setTitle] = useState('');
+  const [movieFromServer, setMovieFromServer] = useState<Movie | null>(null);
+
+  const [errorSearch, setErrorSearch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [addToList, setAddToList] = useState(true);
+
+  const submitMovie = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+
+    setIsLoading(true);
+    getMovie(title)
+      .then(movie => {
+        if ('Error' in movie) {
+          setErrorSearch(true);
+          setIsLoading(false);
+
+          return;
+        }
+
+        setAddToList(false);
+        setErrorSearch(false);
+        setIsLoading(false);
+        setMovieFromServer({
+          title: movie.Title,
+          description: movie.Plot,
+          imgUrl: movie.Poster === 'N/A'
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+            : movie.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+          imdbId: movie.imdbID,
+        });
+      });
+  };
+
+  const addButton = (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+    setAddToList(true);
+
+    if (movieFromServer) {
+      if (!movies.some(movie => {
+        return movie.imdbId === movieFromServer.imdbId;
+      })) {
+        setMovies([...movies, movieFromServer]);
+      }
+    }
+
+    setTitle('');
+
+    setMovieFromServer({
+      title: '',
+      description: '',
+      imgUrl: '',
+      imdbUrl: '',
+      imdbId: '',
+    });
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -17,12 +84,19 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={title}
+              onChange={(e) => {
+                setErrorSearch(false);
+                setTitle(e.target.value);
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {errorSearch && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,7 +104,13 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames(
+                'button',
+                'is-light',
+                { 'is-loading': isLoading },
+              )}
+              onClick={submitMovie}
+              disabled={!title}
             >
               Find a movie
             </button>
@@ -40,7 +120,12 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="addButton"
               type="button"
-              className="button is-primary"
+              className={classNames(
+                'button',
+                'is-primary',
+                { 'is-hidden': addToList },
+              )}
+              onClick={addButton}
             >
               Add to the list
             </button>
@@ -49,8 +134,9 @@ export const FindMovie: React.FC = () => {
       </form>
 
       <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {movieFromServer
+        && movieFromServer.title
+        && <MovieCard movie={movieFromServer} />}
       </div>
     </>
   );

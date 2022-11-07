@@ -7,9 +7,10 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const addMovie = (newMovie: Movie) => {
-    const isMovieInList = (movie: Movie) => movie.imdbId === newMovie.imdbId;
+    const isMovieInList = movies
+      .some(movie => movie.imdbId === newMovie.imdbId);
 
-    if (!movies.some(isMovieInList)) {
+    if (!isMovieInList) {
       setMovies(moviesInList => [...moviesInList, newMovie]);
     }
   };

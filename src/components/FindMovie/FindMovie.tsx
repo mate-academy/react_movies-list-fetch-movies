@@ -12,16 +12,13 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   const [title, setTitle] = useState('');
-  // eslint-disable-next-line max-len
   const [movieFromServer, setMovieFromServer] = useState<Movie | null>(null);
 
   const [errorSearch, setErrorSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [addToList, setAddToList] = useState(true);
 
-  // functions
-
-  const submitMovie = (e: any) => {
+  const submitMovie = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
     setIsLoading(true);
@@ -41,7 +38,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
           title: movie.Title,
           description: movie.Plot,
           imgUrl: movie.Poster === 'N/A'
-            // eslint-disable-next-line max-len
             ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
             : movie.Poster,
           imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
@@ -50,11 +46,10 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
       });
   };
 
-  const addButton = (e: any) => {
+  const addButton = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     setAddToList(true);
 
-    // eslint-disable-next-line max-len
     if (movieFromServer) {
       if (!movies.some(movie => {
         return movie.imdbId === movieFromServer.imdbId;

@@ -6,12 +6,12 @@ import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
 type Props = {
-  setMovies: (x: Movie[]) => void
+  setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
   movies: Movie[]
 };
 
 export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
-  const [titleField, setTitleField] = useState('');
+  const [title, setTitle] = useState('');
   // eslint-disable-next-line max-len
   const [movieFromServer, setMovieFromServer] = useState<Movie | null>(null);
 
@@ -25,13 +25,13 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
     e.preventDefault();
 
     setIsLoading(true);
-    getMovie(titleField)
+    getMovie(title)
       .then(movie => {
         if ('Error' in movie) {
           setErrorSearch(true);
           setIsLoading(false);
 
-          return Promise.reject();
+          return;
         }
 
         setAddToList(false);
@@ -47,8 +47,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
           imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
           imdbId: movie.imdbID,
         });
-
-        return Promise.resolve();
       });
   };
 
@@ -59,13 +57,13 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
     // eslint-disable-next-line max-len
     if (movieFromServer) {
       if (!movies.some(movie => {
-        return movie.title === movieFromServer.title;
+        return movie.imdbId === movieFromServer.imdbId;
       })) {
         setMovies([...movies, movieFromServer]);
       }
     }
 
-    setTitleField('');
+    setTitle('');
 
     setMovieFromServer({
       title: '',
@@ -91,10 +89,10 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
-              value={titleField}
+              value={title}
               onChange={(e) => {
                 setErrorSearch(false);
-                setTitleField(e.target.value);
+                setTitle(e.target.value);
               }}
             />
           </div>
@@ -117,7 +115,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
                 { 'is-loading': isLoading },
               )}
               onClick={submitMovie}
-              disabled={!titleField}
+              disabled={!title}
             >
               Find a movie
             </button>

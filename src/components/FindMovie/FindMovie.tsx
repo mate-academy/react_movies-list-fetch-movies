@@ -32,21 +32,19 @@ export const FindMovie: React.FC<Props> = ({ query, setQuery, addMovie }) => {
       setIsLoading(true);
       const foundMovie = await getMovie(query);
 
-      if ('Error' in foundMovie) {
-        setIsError(true);
-      } else {
-        const newMovie = {
-          title: foundMovie.Title,
-          description: foundMovie.Plot,
-          imgUrl: foundMovie.Poster === 'N/A'
-            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-            : foundMovie.Poster,
-          imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
-          imdbId: foundMovie.imdbID,
-        };
+      const newMovie = {
+        title: foundMovie.Title,
+        description: foundMovie.Plot,
+        imgUrl: foundMovie.Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : foundMovie.Poster,
+        imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
+        imdbId: foundMovie.imdbID,
+      };
 
-        setMovie(newMovie);
-      }
+      setMovie(newMovie);
+    } catch {
+      setIsError(true);
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +52,7 @@ export const FindMovie: React.FC<Props> = ({ query, setQuery, addMovie }) => {
 
   return (
     <>
-      <form className="find-movie" onSubmit={event => handleSubmit(event)}>
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title

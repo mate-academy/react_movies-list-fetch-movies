@@ -12,7 +12,7 @@ export const App = () => {
     const movieIsExist = movies.find(elem => elem.imdbId === movie.imdbId);
 
     if (!movieIsExist) {
-      setMovies(movies2 => [...movies2, movie]);
+      setMovies(prevMovies => [...prevMovies, movie]);
     }
 
     setQuery('');

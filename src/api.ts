@@ -1,13 +1,22 @@
 import { MovieData } from './types/MovieData';
-import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'https://www.omdbapi.com/?apikey=your-key';
+const API_URL = 'https://www.omdbapi.com/?apikey=68fbcc03';
 
-export function getMovie(query: string): Promise<MovieData | ResponseError> {
-  return fetch(`${API_URL}&t=${query}`)
-    .then(res => res.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
+// eslint-disable-next-line max-len
+export async function getMovie(query: string): Promise<MovieData> {
+  let movieData;
+
+  try {
+    const response = await fetch(`${API_URL}&t=${query}`);
+
+    movieData = await response.json();
+
+    if ('Error' in response) {
+      throw new Error();
+    }
+  } catch (error) {
+    throw new Error();
+  }
+
+  return movieData;
 }

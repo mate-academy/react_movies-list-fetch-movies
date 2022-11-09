@@ -4,11 +4,12 @@ const API_URL = 'https://www.omdbapi.com/?apikey=68fbcc03';
 
 // eslint-disable-next-line max-len
 export async function getMovie(query: string): Promise<MovieData> {
-  let response;
+  let movieData;
 
   try {
-    response = await fetch(`${API_URL}&t=${query}`);
-    response = await response.json();
+    const response = await fetch(`${API_URL}&t=${query}`);
+
+    movieData = await response.json();
 
     if ('Error' in response) {
       throw new Error();
@@ -17,5 +18,5 @@ export async function getMovie(query: string): Promise<MovieData> {
     throw new Error();
   }
 
-  return response;
+  return movieData;
 }

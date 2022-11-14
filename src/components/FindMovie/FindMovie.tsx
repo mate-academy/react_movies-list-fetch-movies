@@ -12,14 +12,15 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [loadingError, setLoadingError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingError, setIsLoadingError] = useState(false);
 
   const loadMovie = async () => {
+    setIsLoading(true);
     const data = await getMovie(searchQuery);
 
     if ('Error' in data) {
-      setLoadingError(true);
+      setIsLoadingError(true);
     } else {
       const newMovie = {
         title: data.Title,
@@ -31,19 +32,18 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         imdbId: data.imdbID,
       };
 
+      setIsLoading(false);
       setMovie(newMovie);
     }
   };
 
-  const onLoad = async () => {
-    setLoading(true);
-    await loadMovie();
-    setLoading(false);
+  const onLoad = () => {
+    loadMovie();
   };
 
   const inputHandler = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
-    setLoadingError(false);
+    setIsLoadingError(false);
   };
 
   const onAdd = () => {
@@ -74,7 +74,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               onChange={inputHandler}
             />
           </div>
-          {(loadingError && searchQuery) && (
+          {(isLoadingError && searchQuery) && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -88,7 +88,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="submit"
               className={classNames(
                 'button is-light',
-                { 'is-loading': loading },
+                { 'is-loading': isLoading },
               )}
               disabled={searchQuery.length === 0}
               onClick={onLoad}

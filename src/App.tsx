@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import './App.scss';
+
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const addMovie = (movie: Movie) => setMovies(current => [...current, movie]);
 
   return (
     <div className="page">
@@ -14,7 +17,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie movies={movies} addMovie={addMovie} />
       </div>
     </div>
   );

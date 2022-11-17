@@ -8,7 +8,7 @@ import './FindMovie.scss';
 
 type Props = {
   movies: Movie[];
-  addMovie: (movies: Movie[]) => void;
+  addMovie: (movie: Movie) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
@@ -50,7 +50,7 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
       setTitleQuery('');
       setMovie(null);
     } else if (movie) {
-      addMovie([...movies, movie]);
+      addMovie(movie);
       setTitleQuery('');
       setMovie(null);
     }

@@ -11,8 +11,8 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
-  const [query, setQwery] = useState('');
-  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
+  const [query, setQuery] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -20,47 +20,50 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
     event.preventDefault();
 
     setIsLoaded(true);
-    const data = await getMovie(query);
+    try {
+      const data = await getMovie(query);
 
-    setIsLoaded(false);
+      if ('Error' in data) {
+        setIsError(true);
+      } else {
+        const {
+          Poster, Title, Plot, imdbID,
+        } = data;
+        const defaultPicture
+          = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-    if ('Error' in data) {
-      setIsError(true);
-    } else {
-      const defaultPicture
-        = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+        const imgUrl = (Poster !== 'N/A') ? Poster : defaultPicture;
+        const imdbUrl = `https://www.imdb.com/title/${imdbID}`;
+        const newMovie = {
+          title: Title,
+          description: Plot,
+          imgUrl,
+          imdbUrl,
+          imdbId: imdbID,
+        };
 
-      const imgUrl = (data.Poster !== 'N/A') ? data.Poster : defaultPicture;
-      const imdbUrl = `https://www.imdb.com/title/${data.imdbID}`;
-
-      setFoundMovie({
-        title: data.Title,
-        description: data.Plot,
-        imgUrl,
-        imdbUrl,
-        imdbId: data.imdbID,
-      });
+        setMovie(newMovie);
+      }
+    } catch (error) {
+      throw new Error(`Unexpected error${error}`);
+    } finally {
+      setIsLoaded(false);
     }
   };
 
   const clearForm = () => {
-    setQwery('');
-    setFoundMovie(null);
-  };
-
-  const isListHasMovie = () => {
-    if (foundMovie) {
-      return movies.every(movie => movie.imdbId !== foundMovie.imdbId);
-    }
-
-    return false;
+    setQuery('');
+    setMovie(null);
   };
 
   const updateList = () => {
-    if (foundMovie && isListHasMovie()) {
+    const isNotACopy = movies
+      .every(film => film.imdbId !== movie?.imdbId);
+
+    if (movie && isNotACopy) {
       setMovies([
         ...movies,
-        foundMovie,
+        movie,
       ]);
     }
 
@@ -68,7 +71,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   };
 
   const handleQuery = (value: React.SetStateAction<string>) => {
-    setQwery(value);
+    setQuery(value);
     setIsError(false);
   };
 
@@ -112,11 +115,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
               )}
               disabled={!query}
             >
-              {!foundMovie ? 'Find a movie' : 'Search again'}
+              {!movie ? 'Find a movie' : 'Search again'}
             </button>
           </div>
 
-          {foundMovie
+          {movie
             && (
               <div className="control">
                 <button
@@ -132,11 +135,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
         </div>
       </form>
 
-      {foundMovie
+      {movie
         && (
           <div className="container" data-cy="previewContainer">
             <h2 className="title">Preview</h2>
-            <MovieCard movie={foundMovie} />
+            <MovieCard movie={movie} />
           </div>
         )}
     </>

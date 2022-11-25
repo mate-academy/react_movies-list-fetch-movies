@@ -9,6 +9,9 @@ export const App = () => {
   // console.log(movies)
 
   const handleCklick = (inputInfo: any) => {
+    const inputToLovercase = inputInfo.toLowercase();
+
+    
     // load info
     // if movie. incluses 'inputInfo'
 

@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 // import { useState } from 'react';
-// import classNames from 'classnames';
+import classNames from 'classnames';
 // import { Movie } from '../../types/Movie';
+// import { MovieCard } from '../MovieCard';
+
 type Props = {
   findMovie:any;
+  isLoading: boolean;
+  // movie: any;
 };
 
-export const FindMovie: React.FC<Props> = ({ findMovie }) => {
-  const [input, setInput] = useState('');
+export const FindMovie: React.FC<Props>
+= ({ findMovie, isLoading }) => {
+  const [query, setQuery] = useState('');
 
   const handleChange = (event:any) => {
-    setInput(event.target.value);
+    setQuery(event.target.value);
+    // console.log(input)
   };
 
   return (
@@ -29,7 +35,7 @@ export const FindMovie: React.FC<Props> = ({ findMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
-              value={input}
+              value={query}
               onChange={handleChange}
             />
           </div>
@@ -41,7 +47,7 @@ export const FindMovie: React.FC<Props> = ({ findMovie }) => {
 
         <div className="field is-grouped">
           <div className="control">
-            {!input
+            {!query
               ? (
                 <button
                   data-cy="searchButton"
@@ -58,8 +64,11 @@ export const FindMovie: React.FC<Props> = ({ findMovie }) => {
                 <button
                   data-cy="searchButton"
                   type="submit"
-                  className="button is-light"
-                  onClick={() => findMovie(input)}
+                  // className="button is-light"
+                  className={classNames('button is-light', {
+                    'is-loading': isLoading,
+                  })}
+                  onClick={() => findMovie(query)}
                 >
                   Find a movie
                 </button>

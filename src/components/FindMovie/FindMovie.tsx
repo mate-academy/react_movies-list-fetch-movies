@@ -3,21 +3,20 @@ import './FindMovie.scss';
 // import { useState } from 'react';
 import classNames from 'classnames';
 // import { Movie } from '../../types/Movie';
-// import { MovieCard } from '../MovieCard';
+import { MovieCard } from '../MovieCard';
 
 type Props = {
   findMovie:any;
   isLoading: boolean;
-  // movie: any;
+  movie: any;
 };
 
 export const FindMovie: React.FC<Props>
-= ({ findMovie, isLoading }) => {
+= ({ findMovie, isLoading, movie }) => {
   const [query, setQuery] = useState('');
 
   const handleChange = (event:any) => {
     setQuery(event.target.value);
-    // console.log(input)
   };
 
   return (
@@ -90,7 +89,7 @@ export const FindMovie: React.FC<Props>
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        <MovieCard movie={movie} />
       </div>
     </>
   );

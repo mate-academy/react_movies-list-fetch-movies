@@ -7,28 +7,31 @@ import { getMovie } from './api';
 import 'bulma';
 
 export const App = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [foundMovie, setFoundMovie] = useState();
+  // console.log(movies)
 
   const handleCklick = async (query: string) => {
     setIsLoading(true);
 
-    // getMovie(query)
+    const inputToLowercase = query.toLocaleLowerCase();
+    // getMovie(inputToLowercase)
     //   .then(film => {
-    //     setMovies(film);
+    //     setFoundMovie(film);
     //   });
 
-    const film = await getMovie(query);
+    const movie = await getMovie(inputToLowercase);
 
-    setMovies(film);
+    setFoundMovie(movie);
+    // console.log(film)
 
-    const inputToLowercase = query.toLocaleLowerCase();
-    const findMovie = movies.filter((movie: Movie) => (
-      movie.title.toLocaleLowerCase().includes(inputToLowercase)
-    ));
+    // const inputToLowercase = query.toLocaleLowerCase();
+    // const findMovie = movies.filter((movie: Movie) => (
+    //   movie.title.toLocaleLowerCase().includes(inputToLowercase)
+    // ));
 
-    setMovies(findMovie);
-    // if movie. incluses 'inputInfo'
+    // setMovies(findMovie);
     setIsLoading(false);
   };
 
@@ -42,7 +45,7 @@ export const App = () => {
         <FindMovie
           findMovie={handleCklick}
           isLoading={isLoading}
-          // movie={movies}
+          movie={foundMovie}
         />
       </div>
     </div>

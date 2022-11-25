@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+// import { useState } from 'react';
+// import classNames from 'classnames';
+// import { Movie } from '../../types/Movie';
+type Props = {
+  findMovie:any;
+};
 
-export const FindMovie: React.FC = () => {
+export const FindMovie: React.FC<Props> = ({ findMovie }) => {
+  const [input, setInput] = useState('');
+
+  const handleChange = (event:any) => {
+    setInput(event.target.value);
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -17,6 +29,8 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={input}
+              onChange={handleChange}
             />
           </div>
 
@@ -27,13 +41,30 @@ export const FindMovie: React.FC = () => {
 
         <div className="field is-grouped">
           <div className="control">
-            <button
-              data-cy="searchButton"
-              type="submit"
-              className="button is-light"
-            >
-              Find a movie
-            </button>
+            {!input
+              ? (
+                <button
+                  data-cy="searchButton"
+                  type="submit"
+                  className="button is-light"
+                  disabled
+                  // className={classNames('button is-light', {
+                  //   disabled: !input,
+                  // })}
+                >
+                  Find a movie
+                </button>
+              ) : (
+                <button
+                  data-cy="searchButton"
+                  type="submit"
+                  className="button is-light"
+                  onClick={() => findMovie(input)}
+                >
+                  Find a movie
+                </button>
+              )}
+
           </div>
 
           <div className="control">

@@ -6,6 +6,13 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies] = useState<Movie[]>([]);
+  // console.log(movies)
+
+  const handleCklick = (inputInfo: any) => {
+    // load info
+    // if movie. incluses 'inputInfo'
+
+  };
 
   return (
     <div className="page">
@@ -14,7 +21,9 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          findMovie={handleCklick}
+        />
       </div>
     </div>
   );

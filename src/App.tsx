@@ -9,22 +9,39 @@ import 'bulma';
 export const App = () => {
   const [movies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [foundMovie, setFoundMovie] = useState();
+  const [foundMovie, setFoundMovie] = useState([]);
   // console.log(movies)
 
   const handleCklick = async (query: string) => {
     setIsLoading(true);
 
     const inputToLowercase = query.toLocaleLowerCase();
-    // getMovie(inputToLowercase)
-    //   .then(film => {
-    //     setFoundMovie(film);
-    //   });
 
-    const movie = await getMovie(inputToLowercase);
+    const film = await getMovie(inputToLowercase);
 
-    setFoundMovie(movie);
-    // console.log(film)
+    setFoundMovie(film);
+
+    // export interface MovieData {
+    //   Poster: string;
+    //   Title: string;
+    //   Plot: string;
+    //   imdbID: string;
+    // }
+
+    //   title: string;
+    //   description: string;
+    //   imgUrl: string;
+    //   imdbUrl: string;
+    //   imdbId: string;
+    // }
+
+    // let newMovie = {
+    //   title: movie.title;
+    //   description: movie.plot;
+
+    // }
+
+    // setFoundMovie(movie);
 
     // const inputToLowercase = query.toLocaleLowerCase();
     // const findMovie = movies.filter((movie: Movie) => (
@@ -34,6 +51,9 @@ export const App = () => {
     // setMovies(findMovie);
     setIsLoading(false);
   };
+
+  // eslint-disable-next-line no-console
+  // console.log(movie);
 
   return (
     <div className="page">

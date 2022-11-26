@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  findMovie:any;
+  findMovie:(query: string) => void;
   isLoading: boolean;
   movie: any;
 };
@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props>
 = ({ findMovie, isLoading, movie }) => {
   const [query, setQuery] = useState('');
 
-  const handleChange = (event:any) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
 

@@ -12,17 +12,19 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
-  const [movie, setMovie] = useState<Movie>();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState('');
 
   const findMovie = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const findData = await getMovie(query);
+    setIsLoading(true);
 
     try {
+      const findData = await getMovie(query);
+
       if ('Error' in findData) {
-        setIsError(true);
+        setIsError('Can\'t find a movie with such a title');
       } else {
         const {
           Poster,
@@ -46,15 +48,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     } catch (error) {
       throw new Error(`Unexpected error${error}`);
     } finally {
-      setIsLoading(true);
+      setIsLoading(false);
     }
   };
 
   const addToMovieList = () => {
     if (movie) {
       addMovie(movie);
-      setIsLoading(true);
-      setMovie(undefined);
+      setMovie(null);
       setQuery('');
     }
   };
@@ -80,14 +81,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                setIsError(false);
+                setIsError('');
               }}
             />
           </div>
 
           {isError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {isError}
             </p>
           )}
         </div>
@@ -97,10 +98,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={isLoading
+              className={!isLoading
                 ? 'button is-light'
                 : 'button is-loading'}
-              onClick={() => setIsLoading(false)}
               disabled={query.length === 0}
             >
               {!movie ? 'Find a movie' : 'Search again'}

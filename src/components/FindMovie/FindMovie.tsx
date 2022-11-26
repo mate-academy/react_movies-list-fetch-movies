@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   useState,
 } from 'react';
 import './FindMovie.scss';
@@ -15,6 +16,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState('');
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setIsError('');
+  };
 
   const findMovie = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -79,10 +85,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setIsError('');
-              }}
+              onChange={handleChange}
             />
           </div>
 
@@ -101,7 +104,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={!isLoading
                 ? 'button is-light'
                 : 'button is-loading'}
-              disabled={query.length === 0}
+              disabled={!query.length}
             >
               {!movie ? 'Find a movie' : 'Search again'}
             </button>

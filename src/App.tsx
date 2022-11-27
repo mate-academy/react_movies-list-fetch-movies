@@ -10,50 +10,26 @@ export const App = () => {
   const [movies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [foundMovie, setFoundMovie] = useState([]);
-  // console.log(movies)
 
   const handleCklick = async (query: string) => {
     setIsLoading(true);
 
-    const inputToLowercase = query.toLocaleLowerCase();
-
-    const film = await getMovie(inputToLowercase);
-
-    setFoundMovie(film);
-
-    // export interface MovieData {
-    //   Poster: string;
-    //   Title: string;
-    //   Plot: string;
-    //   imdbID: string;
-    // }
-
-    //   title: string;
-    //   description: string;
-    //   imgUrl: string;
-    //   imdbUrl: string;
-    //   imdbId: string;
-    // }
-
-    // let newMovie = {
-    //   title: movie.title;
-    //   description: movie.plot;
-
-    // }
-
-    // setFoundMovie(movie);
-
     // const inputToLowercase = query.toLocaleLowerCase();
-    // const findMovie = movies.filter((movie: Movie) => (
-    //   movie.title.toLocaleLowerCase().includes(inputToLowercase)
-    // ));
 
-    // setMovies(findMovie);
+    const film = await getMovie(query);
+
+    const newMovie = {
+      title: film.Title,
+      description: film.Plot,
+      imgUrl:
+      imdbUrl:
+      imdbId: film.imdbID,
+    }
+
+    setFoundMovie(newMovie);
+
     setIsLoading(false);
   };
-
-  // eslint-disable-next-line no-console
-  // console.log(movie);
 
   return (
     <div className="page">

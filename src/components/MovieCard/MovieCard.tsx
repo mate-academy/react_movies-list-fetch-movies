@@ -6,13 +6,21 @@ type Props = {
   movie: Movie,
 };
 
+const setImage = (imageLink: string) : string => {
+  if (imageLink === 'N/A') {
+    return 'https://via.placeholder.com/360x270.png?text=no%20preview';
+  }
+
+  return imageLink;
+};
+
 export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
         <img
           data-cy="moviePoster"
-          src={movie.imgUrl}
+          src={setImage(movie.imgUrl)}
           alt="Film logo"
         />
       </figure>
@@ -35,7 +43,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       <div className="content" data-cy="movieDescription">
         {movie.description}
         <br />
-        <a href={movie.imdbUrl} data-cy="movieURL">
+        <a data-cy="movieURL" href={movie.imdbUrl}>
           IMDB
         </a>
       </div>

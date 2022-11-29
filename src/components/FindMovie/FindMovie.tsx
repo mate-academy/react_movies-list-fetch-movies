@@ -5,21 +5,13 @@ import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 import './FindMovie.scss';
 
-const MOVIE_DEFAULT = {
-  title: '',
-  description: '',
-  imgUrl: '',
-  imdbUrl: '',
-  imdbId: '',
-};
-
 type Props = {
   onMovieAdd: (movies: Movie) => void,
 };
 
 export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   const [title, setTitle] = useState('');
-  const [movie, setMovie] = useState(MOVIE_DEFAULT);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSearched, setIsSearched] = useState(false);
@@ -51,7 +43,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
 
       setMovie(foundMovie);
     } else {
-      setMovie(MOVIE_DEFAULT);
+      setMovie(null);
     }
   };
 
@@ -64,11 +56,13 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   };
 
   const onMovieAddHandler = () => {
-    onMovieAdd(movie);
-    setMovie(MOVIE_DEFAULT);
-    setTitle('');
-    setIsLoaded(false);
-    setIsSearched(false);
+    if (movie !== null) {
+      onMovieAdd(movie);
+      setMovie(null);
+      setTitle('');
+      setIsLoaded(false);
+      setIsSearched(false);
+    }
   };
 
   return (
@@ -91,7 +85,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
             />
           </div>
 
-          {(isLoaded && movie === MOVIE_DEFAULT) && (
+          {(isLoaded && movie === null) && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -115,7 +109,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
             </button>
           </div>
 
-          {(movie !== MOVIE_DEFAULT) && (
+          {(movie !== null) && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -130,7 +124,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
         </div>
       </form>
 
-      {movie !== MOVIE_DEFAULT && (
+      {movie !== null && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

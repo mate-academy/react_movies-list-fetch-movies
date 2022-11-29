@@ -6,7 +6,6 @@ import { MovieCard } from '../MovieCard';
 import { MovieData } from '../../types/MovieData';
 
 type Props = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addMovie: (newMovie: any) => void
 };
 
@@ -34,6 +33,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     setIsLoading(false);
     setQuery('');
+  };
+
+  const addMovieHandler = () => {
+    addMovie(movie);
+    setIsError(false);
+    setMovie(null);
   };
 
   return (
@@ -88,11 +93,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  addMovie(movie);
-                  setIsError(false);
-                  setMovie(null);
-                }}
+                onClick={addMovieHandler}
               >
                 Add to the list
               </button>
@@ -102,8 +103,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       </form>
 
       <div className="container" data-cy="previewContainer">
-        {}
-
         {movie && (
           <>
             <h2 className="title">Preview</h2>

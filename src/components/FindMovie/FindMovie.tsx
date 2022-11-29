@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
@@ -15,34 +15,38 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setIsLoading(true);
-    const result = await getMovie(query);
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent) => {
+      event.preventDefault();
+      setIsLoading(true);
+      const result = await getMovie(query);
 
-    setIsLoading(false);
+      setIsLoading(false);
 
-    if ('Error' in result) {
-      setIsError(true);
-    } else {
-      setMovie({
-        title: result.Title,
-        description: result.Plot,
-        imgUrl: result.Poster === 'N/A'
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : result.Poster,
-        imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
-        imdbId: result.imdbID,
-      });
-    }
-  };
+      if ('Error' in result) {
+        setIsError(true);
+      } else {
+        setMovie({
+          title: result.Title,
+          description: result.Plot,
+          imgUrl: result.Poster === 'N/A'
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+            : result.Poster,
+          imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
+          imdbId: result.imdbID,
+        });
+      }
+    }, [query],
+  );
 
-  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    setIsError(false);
-  };
+  const handleQueryChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(event.target.value);
+      setIsError(false);
+    }, [],
+  );
 
-  const handleAddMovie = () => {
+  const handleAddMovie = useCallback(() => {
     if (movie) {
       onAddMovie(movie);
     }
@@ -50,7 +54,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     setMovie(null);
     setQuery('');
     setIsError(false);
-  };
+  }, [movie]);
 
   return (
     <>

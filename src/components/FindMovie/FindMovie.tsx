@@ -22,8 +22,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     const movieFromServer = await getMovie(query);
 
+    if (!movieFromServer.imdbID) {
+      setIsError(true);
+      setMovie(null);
+    }
+
     if (movieFromServer.imdbID) {
       setMovie(movieFromServer);
+      setIsError(false);
     }
 
     setIsLoading(false);
@@ -96,8 +102,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       </form>
 
       <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
+        {}
+
+        {movie && (
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={movie} />
+          </>
+        )}
       </div>
     </>
   );

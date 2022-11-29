@@ -1,12 +1,12 @@
-import React from 'react';
+import { FC, memo } from 'react';
 import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
 
-type Props = {
+type MovieCardProps = {
   movie: Movie,
 };
 
-export const MovieCard: React.FC<Props> = ({ movie }) => (
+export const MovieCard: FC<MovieCardProps> = memo(({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
@@ -41,4 +41,4 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       </div>
     </div>
   </div>
-);
+));

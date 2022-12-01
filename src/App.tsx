@@ -1,35 +1,17 @@
 import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
-import { FindMovie } from './components/FindMovie';
+// import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
-import { getMovie } from './api';
 import 'bulma';
+// import './FindMovie.scss'
+// import { ResponseError } from '../src/types/ReponseError';
 
 export const App = () => {
   const [movies] = useState<Movie[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [foundMovie, setFoundMovie] = useState([]);
-
-  const handleCklick = async (query: string) => {
-    setIsLoading(true);
-
-    // const inputToLowercase = query.toLocaleLowerCase();
-
-    const film = await getMovie(query);
-
-    const newMovie = {
-      title: film.Title,
-      description: film.Plot,
-      imgUrl:
-      imdbUrl:
-      imdbId: film.imdbID,
-    }
-
-    setFoundMovie(newMovie);
-
-    setIsLoading(false);
-  };
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [foundMovie, setFoundMovie] = useState('');
+  // const [error, setError] = useState(ResponseError);
 
   return (
     <div className="page">
@@ -38,11 +20,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie
-          findMovie={handleCklick}
-          isLoading={isLoading}
-          movie={foundMovie}
-        />
+        {/* <FindMovie addMovie={addMovie} /> */}
       </div>
     </div>
   );

@@ -22,26 +22,29 @@ export const FindMovie: React.FC
     setQuery(event.target.value);
   };
 
-  const handleClickFindMovie = async () => {
+  const handleClickFindMovie = (query: any) => {
     setIsLoading(true);
-    // const inputToLowercase = query.toLocaleLowerCase();
 
-    const film = await getMovie(query);
+    if (query) {
+      getMovie(query)
+        .then(res => {
+          if(res.Response === 'False') {
+            setFoundMovie([]);
+            setErrorTitle(true);
+            // return;
+          }
 
-    if (film) {
-      const newMovie = {
-        title: film.Title,
-        description: film.Plot,
-        imgUrl:
-        imdbUrl:
-        imdbId: film.imdbID,
-      }
+            const newMovie = {
+              title: res.Title,
+              description: res.Plot,
+              imgUrl:
+              imdbUrl:
+              imdbId: res.imdbID,
+            }
 
-      setFoundMovie(newMovie);
-    }
-
-    if (!film) {
-      setErrorTitle(true);
+            setFoundMovie(newMovie);
+            setErrorTitle(false);
+      })
     }
 
     setIsLoading(false);
@@ -124,3 +127,7 @@ export const FindMovie: React.FC
     </>
   );
 };
+
+// const inputToLowercase = query.toLocaleLowerCase();
+
+// const film = await getMovie(query);

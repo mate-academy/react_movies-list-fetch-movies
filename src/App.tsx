@@ -5,11 +5,11 @@ import { FindMovie } from './components/FindMovie';
 import { MovieData } from './types/MovieData';
 
 export const App = () => {
-  const [movies, setMovies] = useState<MovieData[]>([]);
+  const [movies, setMovies] = useState<(MovieData | null)[]>([]);
 
-  const addMovie = (movie: MovieData) => {
+  const addMovie = (movie: MovieData | null) => {
     setMovies((prevState) => {
-      if (prevState.find(addedMovie => addedMovie.imdbID === movie.imdbID)) {
+      if (prevState.find(addedMovie => addedMovie?.imdbID === movie?.imdbID)) {
         return prevState;
       }
 

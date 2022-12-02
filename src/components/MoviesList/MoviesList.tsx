@@ -5,14 +5,14 @@ import { MovieCard } from '../MovieCard';
 import { MovieData } from '../../types/MovieData';
 
 type Props = {
-  movies: MovieData[];
+  movies: (MovieData | null)[];
 };
 
 export const MoviesList: React.FC<Props> = ({ movies }) => (
   <div className="movies">
     {movies.map(movie => (
       <MovieCard
-        key={movie.imdbID}
+        key={movie?.imdbID}
         movie={movie}
       />
     ))}

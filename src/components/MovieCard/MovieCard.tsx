@@ -3,7 +3,7 @@ import { MovieData } from '../../types/MovieData';
 import './MovieCard.scss';
 
 type Props = {
-  movie: MovieData,
+  movie: MovieData | null,
 };
 
 export const MovieCard: React.FC<Props> = ({ movie }) => (
@@ -12,9 +12,9 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       <figure className="image is-4by3">
         <img
           data-cy="moviePoster"
-          src={movie.Poster === 'N/A'
+          src={movie?.Poster === 'N/A'
             ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-            : movie.Poster}
+            : movie?.Poster}
           alt="Film logo"
         />
       </figure>
@@ -30,14 +30,14 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           </figure>
         </div>
         <div className="media-content">
-          <p className="title is-8" data-cy="movieTitle">{movie.Title}</p>
+          <p className="title is-8" data-cy="movieTitle">{movie?.Title}</p>
         </div>
       </div>
 
       <div className="content" data-cy="movieDescription">
-        {movie.Plot}
+        {movie?.Plot}
         <br />
-        <a href={`https://www.imdb.com/title/${movie.imdbID}`} data-cy="movieURL">
+        <a href={`https://www.imdb.com/title/${movie?.imdbID}`} data-cy="movieURL">
           IMDB
         </a>
       </div>

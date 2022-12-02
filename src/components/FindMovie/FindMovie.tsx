@@ -6,7 +6,7 @@ import { MovieCard } from '../MovieCard';
 import { MovieData } from '../../types/MovieData';
 
 type Props = {
-  addMovie: (newMovie: any) => void
+  addMovie: (newMovie: MovieData | null) => void
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {

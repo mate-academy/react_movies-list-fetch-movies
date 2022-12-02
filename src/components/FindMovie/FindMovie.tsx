@@ -6,13 +6,13 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  addMovie: (newMovie: Movie) => void,
+  onAddMovie: (newMovie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [errorMessage, setErrorMessage] = useState(false);
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -22,7 +22,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     getMovie(query)
       .then(result => {
         if ('Error' in result) {
-          setErrorMessage(true);
+          setIsErrorMessage(true);
         } else {
           const newMovie: Movie = {
             title: result.Title,
@@ -42,11 +42,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleInputChanges = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.currentTarget.value);
-    setErrorMessage(false);
+    setIsErrorMessage(false);
   };
 
   const handleAddButton = (newMovie: Movie) => {
-    addMovie(newMovie);
+    onAddMovie(newMovie);
     setQuery('');
     setMovie(null);
   };
@@ -74,7 +74,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          {errorMessage && (
+          {isErrorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

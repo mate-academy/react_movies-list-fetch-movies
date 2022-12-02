@@ -6,28 +6,24 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  movies: Movie[];
   onAdd: (movie: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsloadig] = useState(false);
   const [isError, setIsError] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
 
-  const clear = () => {
+  const clearForm = () => {
     setQuery('');
     setIsError(false);
     setMovie(null);
   };
 
   const handleOnAdd = (newMovie: Movie) => {
-    if (movies.every(prevMovie => prevMovie.imdbId !== newMovie.imdbId)) {
-      onAdd(newMovie);
-    }
-
-    clear();
+    onAdd(newMovie);
+    clearForm();
   };
 
   const searchMovie = () => {
@@ -50,7 +46,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
       })
       .finally(() => setIsloadig(false));
 
-    clear();
+    clearForm();
   };
 
   return (

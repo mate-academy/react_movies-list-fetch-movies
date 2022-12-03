@@ -34,10 +34,10 @@ export const FindMovie: React.FC<Props> = ({ addMoviesList }) => {
     return newMovie;
   };
 
-  const addMoies = async () => {
+  const addMovies = async () => {
     const movieFromServer = await getMovie(query);
 
-    setIsLoading(true);
+    setIsLoading(false);
 
     if ('Error' in movieFromServer) {
       setError(true);
@@ -61,7 +61,7 @@ export const FindMovie: React.FC<Props> = ({ addMoviesList }) => {
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          addMoies();
+          addMovies();
         }}
       >
         <div className="field">
@@ -79,6 +79,7 @@ export const FindMovie: React.FC<Props> = ({ addMoviesList }) => {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
+                setError(false);
               }}
             />
           </div>
@@ -96,13 +97,14 @@ export const FindMovie: React.FC<Props> = ({ addMoviesList }) => {
               data-cy="searchButton"
               type="submit"
               className={classNames(
-                'button',
-                'is-light',
+                'button is-success',
                 { 'is-loading': isLoading },
               )}
-              disabled={!(query.length > 0)}
+              disabled={!query.length}
             >
-              {movie ? 'Search again' : 'Find a movie'}
+              {movie
+                ? 'Search again'
+                : 'Find a movie'}
             </button>
           </div>
 

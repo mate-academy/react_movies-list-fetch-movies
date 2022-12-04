@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
@@ -9,60 +9,49 @@ type Props = {
   addMoviesList: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ addMoviesList }) => {
+export const FindMovie: React.FC<Props> = ({
+  addMoviesList,
+}) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const createNewMovie = (
-    title: string,
-    plot: string,
-    poster: string,
-    imdbId: string,
-  ) => {
-    const newMovie = {
-      title,
-      description: plot,
-      imgUrl: poster === 'N/A'
-        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-        : poster,
-      imdbUrl: `https://www.imdb.com/title/${imdbId}`,
-      imdbId,
-    };
-
-    return newMovie;
+  const handleAdd = (newMovie: Movie) => {
+    setQuery('');
+    addMoviesList(newMovie);
+    setMovie(null);
+    setIsLoading(false);
   };
 
-  const addMovies = async () => {
-    const movieFromServer = await getMovie(query);
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
 
-    setIsLoading(false);
-
-    if ('Error' in movieFromServer) {
-      setError(true);
-      setIsLoading(false);
-    } else {
-      const newMovie = createNewMovie(
-        movieFromServer.Title,
-        movieFromServer.Plot,
-        movieFromServer.Poster,
-        movieFromServer.imdbID,
-      );
-
-      setMovie(newMovie);
-      setIsLoading(false);
-    }
+    getMovie(query)
+      .then(response => {
+        if ('Error' in response) {
+          setError(true);
+        } else {
+          setMovie({
+            title: response.Title,
+            description: response.Plot,
+            imgUrl: response.Poster === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : response.Poster,
+            imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+            imdbId: response.imdbID,
+          });
+        }
+      })
+      .finally(() => setIsLoading(false));
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          addMovies();
-        }}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -100,11 +89,11 @@ export const FindMovie: React.FC<Props> = ({ addMoviesList }) => {
                 'button is-success',
                 { 'is-loading': isLoading },
               )}
-              disabled={!query.length}
+              disabled={!query}
             >
               {movie
-                ? 'Search again'
-                : 'Find a movie'}
+                ? ('Search again')
+                : ('Find a movie')}
             </button>
           </div>
 
@@ -114,11 +103,7 @@ export const FindMovie: React.FC<Props> = ({ addMoviesList }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  setQuery('');
-                  addMoviesList(movie);
-                  setMovie(null);
-                }}
+                onClick={() => handleAdd(movie)}
               >
                 Add to the list
               </button>

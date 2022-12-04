@@ -5,7 +5,7 @@ import classNames from 'classnames';
 // import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
-// import { Movie } from '../../types/Movie';
+import { Movie } from '../../types/Movie';
 
 // type Props = {
 //   addMovie: (movie: Movie) => void;
@@ -15,7 +15,7 @@ export const FindMovie: React.FC
 = () => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [foundMovie, setFoundMovie] = useState({});
+  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [errorTitle, setErrorTitle] = useState(false);
 
   const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,23 +28,20 @@ export const FindMovie: React.FC
     if (query) {
       getMovie(query)
         .then(res => {
-          if ('Response' in res) {
-            if (res.Response === 'False') {
-              setFoundMovie({});
-              setErrorTitle(true);
-              // return;
-            } else {
-              const newMovie = {
-                title: res.Title,
-                description: res.Plot,
-                imgUrl: res.Poster,
-                imdbId: res.imdbID,
-                imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
-              };
+          if ('Response' in res && res.Response === 'False') {
+            setFoundMovie(null);
+            setErrorTitle(true);
+          } else {
+            const newMovie = {
+              title: res.Title,
+              description: res.Plot,
+              imgUrl: res.Poster,
+              imdbId: res.imdbID,
+              imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
+            };
 
-              setFoundMovie(newMovie);
-              setErrorTitle(false);
-            }
+            setFoundMovie(newMovie);
+            setErrorTitle(false);
           }
         });
     }
@@ -124,7 +121,11 @@ export const FindMovie: React.FC
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        <MovieCard movie={foundMovie} />
+
+        {foundMovie
+          && (
+            <MovieCard movie={foundMovie} />
+          )}
       </div>
     </>
   );

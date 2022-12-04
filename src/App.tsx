@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
-// import { FindMovie } from './components/FindMovie';
+import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import 'bulma';
 // import './FindMovie.scss'
@@ -20,7 +20,8 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        {/* <FindMovie addMovie={addMovie} /> */}
+        {/* <FindMovie addMovie={addMovie}/> */}
+        <FindMovie />
       </div>
     </div>
   );

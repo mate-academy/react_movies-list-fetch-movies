@@ -5,7 +5,7 @@ import classNames from 'classnames';
 // import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
-import { Movie } from '../../types/Movie';
+// import { Movie } from '../../types/Movie';
 
 // type Props = {
 //   addMovie: (movie: Movie) => void;
@@ -15,36 +15,38 @@ export const FindMovie: React.FC
 = () => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [foundMovie, setFoundMovie] = useState<Movie[]>([]);
+  const [foundMovie, setFoundMovie] = useState({});
   const [errorTitle, setErrorTitle] = useState(false);
 
   const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
 
-  const handleClickFindMovie = (query: any) => {
+  const handleClickFindMovie = () => {
     setIsLoading(true);
 
     if (query) {
       getMovie(query)
         .then(res => {
-          if(res.Response === 'False') {
-            setFoundMovie([]);
-            setErrorTitle(true);
-            // return;
-          }
+          if ('Response' in res) {
+            if (res.Response === 'False') {
+              setFoundMovie({});
+              setErrorTitle(true);
+              // return;
+            } else {
+              const newMovie = {
+                title: res.Title,
+                description: res.Plot,
+                imgUrl: res.Poster,
+                imdbId: res.imdbID,
+                imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
+              };
 
-            const newMovie = {
-              title: res.Title,
-              description: res.Plot,
-              imgUrl:
-              imdbUrl:
-              imdbId: res.imdbID,
+              setFoundMovie(newMovie);
+              setErrorTitle(false);
             }
-
-            setFoundMovie(newMovie);
-            setErrorTitle(false);
-      })
+          }
+        });
     }
 
     setIsLoading(false);

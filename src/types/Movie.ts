@@ -4,4 +4,8 @@ export interface Movie {
   imgUrl: string;
   imdbUrl: string;
   imdbId: string;
+  Poster: string;
+  Title: string;
+  Plot: string;
+  imdbID: string;
 }

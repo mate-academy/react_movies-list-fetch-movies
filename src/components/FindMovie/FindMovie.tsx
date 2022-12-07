@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
-import { MovieData } from '../../types/MovieData';
+import { Movie } from '../../types/Movie';
 
 type Props = {
-  addMovie: (movie: MovieData | null) => void,
+  addMovie: (movie: Movie | null) => void,
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
-  const [movie, setMovie] = useState<MovieData | null>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState<string>('');
   const [isError, setIsError] = useState(false);
 

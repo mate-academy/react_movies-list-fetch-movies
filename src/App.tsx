@@ -2,12 +2,12 @@ import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { MovieData } from './types/MovieData';
+import { Movie } from './types/Movie';
 
 export const App: React.FC = () => {
-  const [movies, setMovie] = useState<(MovieData | null)[]>([]);
+  const [movies, setMovie] = useState<(Movie | null)[]>([]);
 
-  const addMovie = (movie: MovieData | null) => {
+  const addMovie = (movie: Movie | null) => {
     setMovie(prevState => {
       if (prevState.find(newMovie => newMovie?.imdbID === movie?.imdbID)) {
         return prevState;

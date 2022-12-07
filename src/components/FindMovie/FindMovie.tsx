@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { FormEvent, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
@@ -22,12 +22,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsLoading(false);
   };
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    setIsLoading(true);
-
-    getMovie(query)
-      .then(response => {
+  const handleSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setIsLoading(true);
+      getMovie(query).then(response => {
         if ('Error' in response) {
           setErrorMessage(true);
         } else {
@@ -41,9 +40,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             imdbId: response.imdbID,
           });
         }
-      })
-      .finally(() => setIsLoading(false));
-  };
+      }).finally(() => setIsLoading(false));
+    }, [movie, query],
+  );
 
   return (
     <>
@@ -70,7 +69,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          {(errorMessage) && (
+          {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

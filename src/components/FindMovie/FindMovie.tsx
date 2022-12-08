@@ -56,7 +56,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   };
 
   const onMovieAddHandler = () => {
-    if (movie !== null) {
+    if (movie) {
       onMovieAdd(movie);
       setMovie(null);
       setTitle('');
@@ -85,7 +85,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
             />
           </div>
 
-          {(isLoaded && movie === null) && (
+          {(isLoaded && !movie) && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -101,15 +101,13 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
                 'is-loading': isLoading,
               })}
               onClick={onSearchHandler}
-              disabled={title === ''}
+              disabled={!title}
             >
-              {!isSearched
-                ? 'Find a movie'
-                : 'Search again'}
+              {!isSearched ? 'Find a movie' : 'Search again'}
             </button>
           </div>
 
-          {(movie !== null) && (
+          {(movie) && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -124,7 +122,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
         </div>
       </form>
 
-      {movie !== null && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

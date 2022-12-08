@@ -5,14 +5,14 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies, addMovie] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const onMovieAdd = (movie: Movie) => {
     const isMovieExisting = movies
       .some(existingMovie => existingMovie.title === movie.title);
 
     if (!isMovieExisting) {
-      addMovie(prevMovies => [...prevMovies, movie]);
+      setMovies(prevMovies => [...prevMovies, movie]);
     }
   };
 

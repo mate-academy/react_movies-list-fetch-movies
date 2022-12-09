@@ -14,10 +14,8 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [value, setValue] = useState<string>('');
-  const initialMovie = {} as Movie;
-  const [foundMovie, setFoundMovie] = useState<Movie>(initialMovie);
+  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const isfoundMovies = Object.keys(foundMovie).length > 0;
   const [hasError, setHasError] = useState(false);
 
   const normolisingData = ({
@@ -42,7 +40,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   };
 
   const reset = () => {
-    setFoundMovie(initialMovie);
+    setFoundMovie(null);
     setValue('');
   };
 
@@ -65,6 +63,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   };
 
   const handleClickAdd = () => {
+    if (!foundMovie) {
+      return;
+    }
+
     const copy = movies.find((movie) => movie.imdbId === foundMovie.imdbId);
 
     if (copy) {
@@ -122,11 +124,11 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               disabled={!value}
               onClick={handleClickFind}
             >
-              {isfoundMovies ? 'Search again' : 'Find a movie'}
+              {foundMovie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
-          {isfoundMovies && (
+          {foundMovie && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -141,7 +143,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         </div>
       </form>
 
-      {isfoundMovies && (
+      {foundMovie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={foundMovie} />

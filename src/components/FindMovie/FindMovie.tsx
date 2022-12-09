@@ -34,11 +34,9 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   });
 
   const handlingResult = (response: MovieData | ResponseError) => {
-    if ('Response' in response && response.Response === 'False') {
+    if ('Error' in response) {
       setHasError(true);
-    }
-
-    if ('Title' in response) {
+    } else {
       setFoundMovie(normolisingData(response));
     }
   };

@@ -18,7 +18,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [hasError, setHasError] = useState(false);
 
-  const normolisingData = ({
+  const normoliseData = ({
     Title,
     Plot,
     Poster,
@@ -31,11 +31,11 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     imdbId: imdbID,
   });
 
-  const handlingResult = (response: MovieData | ResponseError) => {
+  const handleResult = (response: MovieData | ResponseError) => {
     if ('Error' in response) {
       setHasError(true);
     } else {
-      setFoundMovie(normolisingData(response));
+      setFoundMovie(normoliseData(response));
     }
   };
 
@@ -58,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setIsLoading(true);
 
     getMovie(value)
-      .then((result) => handlingResult(result))
+      .then((result) => handleResult(result))
       .finally(() => setIsLoading(false));
   };
 

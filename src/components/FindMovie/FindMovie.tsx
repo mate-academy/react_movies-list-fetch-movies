@@ -9,10 +9,10 @@ import './FindMovie.scss';
 
 type Props = {
   onAddMovies: Movie[]
-  setListMovies: Dispatch<SetStateAction<Movie[]>>
+  setMovies: Dispatch<SetStateAction<Movie[]>>
 };
 
-export const FindMovie: React.FC<Props> = ({ onAddMovies, setListMovies }) => {
+export const FindMovie: React.FC<Props> = ({ onAddMovies, setMovies }) => {
   const [query, setQuery] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +66,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovies, setListMovies }) => {
     const isMovieInList = onAddMovies
       .find(existMovie => existMovie.imdbId === movie?.imdbId);
 
-    setListMovies(movie && !isMovieInList
+    setMovies(movie && !isMovieInList
       ? (a: Movie[]) => [...a, movie] : onAddMovies);
 
     setMovie(null);

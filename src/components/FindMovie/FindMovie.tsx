@@ -48,6 +48,7 @@ export const FindMovie: React.FC<Props> = memo(({
 
   const handleFormSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     getMovieFromServer();
   };
 

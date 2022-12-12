@@ -52,8 +52,8 @@ export const FindMovie: React.FC<Props> = ({ onAddMovies, setMovies }) => {
   };
 
   const handleQuery = (e: string) => {
-    setQuery(e);
     setErrorMessage(false);
+    setQuery(e);
   };
 
   const handleFindMovie = () => {

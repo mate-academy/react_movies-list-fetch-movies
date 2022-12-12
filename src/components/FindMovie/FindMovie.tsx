@@ -15,34 +15,37 @@ export const FindMovie: React.FC<Props> = memo(({
   visibleMovies,
 }) => {
   const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
 
   const getMovieFromServer = async () => {
-    setLoading(true);
-
+    setIsLoading(true);
     const movieFromServer = await getMovie(query);
 
     try {
       if ('Title' in movieFromServer) {
-        setLoading(true);
+        const {
+          Title,
+          Plot,
+          Poster,
+          imdbID,
+        } = movieFromServer;
 
         setMovie({
-          title: movieFromServer.Title,
-          description: movieFromServer.Plot,
-          imgUrl: movieFromServer.Poster === 'N/A'
+          title: Title,
+          description: Plot,
+          imgUrl: Poster === 'N/A'
             ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-            : movieFromServer.Poster,
-          imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
-          imdbId: movieFromServer.imdbID,
+            : Poster,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          imdbId: imdbID,
         });
       } else {
         setIsError(true);
-        setLoading(false);
       }
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -106,9 +109,14 @@ export const FindMovie: React.FC<Props> = memo(({
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames('button is-light', {
-                'is-loading': loading,
-              })}
+              className={
+                classNames(
+                  'button is-light',
+                  {
+                    'is-loading': isLoading,
+                  },
+                )
+              }
               disabled={!query}
             >
               {movie

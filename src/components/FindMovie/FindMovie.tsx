@@ -12,8 +12,9 @@ export type Props = {
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [movieTitle, setMovieTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>();
-  const [loader, setLoader] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isSearchingAgain, setIsSearchingAgain] = useState(false);
 
   const handleChangeMovieTitle = useCallback(
     (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,11 +24,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   );
 
   async function findMovie(search: string) {
-    setLoader(true);
+    setIsLoading(true);
 
     const movieData = await getMovie(search.toLowerCase().trim());
 
-    setLoader(false);
+    setIsLoading(false);
 
     if ('Error' in movieData) {
       setHasError(true);
@@ -47,6 +48,8 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       setMovie(newMovie);
 
       setHasError(false);
+
+      setIsSearchingAgain(true);
     }
   }
 
@@ -62,6 +65,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       setMovieTitle('');
       setMovie(null);
       setHasError(false);
+      setIsSearchingAgain(false);
     }
   }, [movie]);
 
@@ -99,10 +103,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               type="submit"
               disabled={!movieTitle}
               className={
-                classNames('button is-light', { 'is-loading finally': loader })
+                classNames('button is-light',
+                  { 'is-loading finally': isLoading })
               }
             >
-              {!movieTitle ? 'Search again' : 'Find a movie'}
+              {isSearchingAgain ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 

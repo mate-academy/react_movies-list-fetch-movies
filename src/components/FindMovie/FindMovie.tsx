@@ -21,16 +21,22 @@ export const FindMovie: React.FC
   const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
+  // console.log (foundMovie)
+  //   console.log (query);
 
   const handleClickFindMovie = () => {
     setIsLoading(true);
+    // console.log (foundMovie);
+    // console.log (query);
 
     if (query) {
       getMovie(query)
         .then(res => {
-          if ('Response' in res && res.Response === 'False') {
-            setFoundMovie(null);
-            setErrorTitle(true);
+          if ('Error' in res) {
+            if (res.Response === 'False') {
+              setFoundMovie(null);
+              setErrorTitle(true);
+            }
           } else {
             const newMovie = {
               title: res.Title,
@@ -134,3 +140,5 @@ export const FindMovie: React.FC
 // const inputToLowercase = query.toLocaleLowerCase();
 
 // const film = await getMovie(query);
+
+// .finally(() => setIsLoading(false));

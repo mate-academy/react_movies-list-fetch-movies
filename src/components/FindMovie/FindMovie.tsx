@@ -39,8 +39,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         });
       }
     } catch (error: unknown) {
-      // eslint-disable-next-line no-alert
-      alert(`Network Error: ${error}`);
+      throw new Error('Network error');
     } finally {
       setIsLoading(false);
     }

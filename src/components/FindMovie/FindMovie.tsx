@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
+import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
@@ -14,6 +15,9 @@ export const FindMovie: React.FC<Props>
   const [isLoading, setIsLoading] = useState(false);
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [errorTitle, setErrorTitle] = useState(false);
+
+  const defaultPoster
+  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
   const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -34,7 +38,7 @@ export const FindMovie: React.FC<Props>
             const newMovie = {
               title: res.Title,
               description: res.Plot,
-              imgUrl: res.Poster,
+              imgUrl: res.Poster || defaultPoster,
               imdbId: res.imdbID,
               imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
             };

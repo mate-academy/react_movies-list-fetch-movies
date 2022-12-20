@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
-// import { useState } from 'react';
 import classNames from 'classnames';
-// import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 
-// type Props = {
-//   addMovie: (movie: Movie) => void;
-// };
+type Props = {
+  setMovie: any;
+};
 
-export const FindMovie: React.FC
-= () => {
+export const FindMovie: React.FC<Props>
+= ({ setMovie }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
@@ -21,22 +19,18 @@ export const FindMovie: React.FC
   const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
-  // console.log (foundMovie)
-  //   console.log (query);
 
-  const handleClickFindMovie = () => {
+  const handleClickFindMovie
+  = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
     setIsLoading(true);
-    // console.log (foundMovie);
-    // console.log (query);
 
     if (query) {
       getMovie(query)
         .then(res => {
           if ('Error' in res) {
-            if (res.Response === 'False') {
-              setFoundMovie(null);
-              setErrorTitle(true);
-            }
+            setFoundMovie(null);
+            setErrorTitle(true);
           } else {
             const newMovie = {
               title: res.Title,
@@ -53,6 +47,19 @@ export const FindMovie: React.FC
     }
 
     setIsLoading(false);
+  };
+
+  const handleClickAddMovie = (movie: Movie) => {
+    setMovie((previous: []) => {
+      const newMovie = {
+        ...movie,
+      };
+
+      return [...previous, newMovie];
+    });
+
+    setQuery('');
+    setFoundMovie(null);
   };
 
   return (
@@ -97,6 +104,7 @@ export const FindMovie: React.FC
                   Find a movie
                 </button>
               ) : (
+
                 <button
                   data-cy="searchButton"
                   type="submit"
@@ -108,6 +116,19 @@ export const FindMovie: React.FC
                   Find a movie
                 </button>
               )}
+            {/*
+            {foundMovie && query && (
+            <button
+            data-cy="searchButton"
+            type="submit"
+            className={classNames('button is-light', {
+              'is-loading': isLoading,
+            })}
+            onClick={handleClickFindMovie}
+            >
+            Search again
+            </button>
+            )} */}
 
           </div>
 
@@ -117,6 +138,7 @@ export const FindMovie: React.FC
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
+                onClick={() => handleClickAddMovie(foundMovie)}
               >
                 Add to the list
               </button>
@@ -124,21 +146,13 @@ export const FindMovie: React.FC
           </div>
         </div>
       </form>
-
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-
-        {foundMovie
+      {foundMovie
           && (
-            <MovieCard movie={foundMovie} />
+            <div className="container" data-cy="previewContainer">
+              <h2 className="title">Preview</h2>
+              <MovieCard movie={foundMovie} />
+            </div>
           )}
-      </div>
     </>
   );
 };
-
-// const inputToLowercase = query.toLocaleLowerCase();
-
-// const film = await getMovie(query);
-
-// .finally(() => setIsLoading(false));

@@ -93,43 +93,21 @@ export const FindMovie: React.FC<Props>
 
         <div className="field is-grouped">
           <div className="control">
-            {!query
-              ? (
-                <button
-                  data-cy="searchButton"
-                  type="submit"
-                  className="button is-light"
-                  disabled
-                >
-                  Find a movie
-                </button>
-              ) : (
-
-                <button
-                  data-cy="searchButton"
-                  type="submit"
-                  className={classNames('button is-light', {
-                    'is-loading': isLoading,
-                  })}
-                  onClick={handleClickFindMovie}
-                >
-                  Find a movie
-                </button>
-              )}
-            {/*
-            {foundMovie && query && (
             <button
-            data-cy="searchButton"
-            type="submit"
-            className={classNames('button is-light', {
-              'is-loading': isLoading,
-            })}
-            onClick={handleClickFindMovie}
+              data-cy="searchButton"
+              type="submit"
+              className={classNames('button is-light', {
+                'is-loading': isLoading,
+              })}
+              onClick={handleClickFindMovie}
+              disabled={!query}
             >
-            Search again
+              {foundMovie && query && !errorTitle ? (
+                <p>Search again</p>
+              ) : (
+                <p>Find a movie</p>
+              )}
             </button>
-            )} */}
-
           </div>
 
           <div className="control">

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './FindMovie.scss';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';

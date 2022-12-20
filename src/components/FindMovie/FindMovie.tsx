@@ -6,7 +6,7 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 
 type Props = {
-  setMovie: any;
+  setMovie: React.Dispatch<React.SetStateAction<Movie[]>>;
 };
 
 export const FindMovie: React.FC<Props>
@@ -50,7 +50,7 @@ export const FindMovie: React.FC<Props>
   };
 
   const handleClickAddMovie = (movie: Movie) => {
-    setMovie((previous: []) => {
+    setMovie(previous => {
       const newMovie = {
         ...movie,
       };

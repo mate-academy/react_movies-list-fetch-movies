@@ -11,19 +11,3 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
       Error: 'unexpected error',
     }));
 }
-
-// const getMovie = (query) => {
-
-// }
-
-// export const getMovie = async () => {
-//   const response = await fetch(API_URL);
-
-//   if (!response.ok) {
-//     throw new Error(`${response.status} - ${response.statusText}`);
-//   }
-
-//   const body = await response.json();
-
-//   return body;
-// };

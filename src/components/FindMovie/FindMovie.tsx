@@ -7,10 +7,11 @@ import { Movie } from '../../types/Movie';
 
 type Props = {
   setMovie: React.Dispatch<React.SetStateAction<Movie[]>>;
+  movies: Movie[];
 };
 
 export const FindMovie: React.FC<Props>
-= ({ setMovie }) => {
+= ({ setMovie, movies }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
@@ -53,13 +54,9 @@ export const FindMovie: React.FC<Props>
   };
 
   const handleClickAddMovie = (movie: Movie) => {
-    setMovie(previous => {
-      const newMovie = {
-        ...movie,
-      };
-
-      return [...previous, newMovie];
-    });
+    if (!movies.find(mov => mov.imdbId === movie.imdbId)) {
+      setMovie(prev => [...prev, movie]);
+    }
 
     setQuery('');
     setFoundMovie(null);

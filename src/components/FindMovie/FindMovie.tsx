@@ -1,10 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import classnames from 'classnames';
+import { getMovie } from '../../api';
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  addMovie: (movie: Movie | undefined) => void,
+};
+
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+  const [query, setQuery] = useState('');
+  const [search, setSearch] = useState<Movie | undefined>();
+  const [isFailed, setIsFailed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const defaultPicture
+    = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+  const addMovieOnClick = () => {
+    addMovie(search);
+
+    setSearch(undefined);
+    setIsLoading(false);
+    setIsFailed(false);
+  };
+
+  const loadMovie = async (value: React.FormEvent) => {
+    value.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const movie = await getMovie(query);
+
+      if ('Error' in movie) {
+        setIsFailed(true);
+      } else {
+        setSearch({
+          title: movie.Title,
+          description: movie.Plot,
+          imgUrl: movie.Poster === 'N/A' ? defaultPicture : movie.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+          imdbId: movie.imdbID,
+        });
+
+        setIsFailed(false);
+      }
+
+      setQuery('');
+    } catch {
+      throw Error('Error');
+    }
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          loadMovie(event);
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,12 +73,17 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isFailed && !query && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
+
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +91,39 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classnames({
+                button: true,
+                'is-light': true,
+                'is-loading': isLoading && !search && !isFailed,
+              })}
+              disabled={query === ''}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {search && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={addMovieOnClick}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
+
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {search && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={search} />
+        </div>
+      )}
     </>
   );
 };

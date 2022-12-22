@@ -22,6 +22,7 @@ export const FindMovie: React.FC<Props>
 
   const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
+    setErrorTitle(false);
   };
 
   const handleClickFindMovie
@@ -47,10 +48,11 @@ export const FindMovie: React.FC<Props>
             setFoundMovie(newMovie);
             setErrorTitle(false);
           }
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     }
-
-    setIsLoading(false);
   };
 
   const handleClickAddMovie = (movie: Movie) => {
@@ -82,8 +84,7 @@ export const FindMovie: React.FC<Props>
             />
           </div>
 
-          {errorTitle
-          && (
+          {errorTitle && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -100,7 +101,7 @@ export const FindMovie: React.FC<Props>
                 'is-loading': isLoading,
               })}
               onClick={handleClickFindMovie}
-              disabled={!query}
+              disabled={!query.trim()}
             >
               {foundMovie && query && !errorTitle ? (
                 <p>Search again</p>
@@ -124,13 +125,12 @@ export const FindMovie: React.FC<Props>
           </div>
         </div>
       </form>
-      {foundMovie
-          && (
-            <div className="container" data-cy="previewContainer">
-              <h2 className="title">Preview</h2>
-              <MovieCard movie={foundMovie} />
-            </div>
-          )}
+      {foundMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={foundMovie} />
+        </div>
+      )}
     </>
   );
 };

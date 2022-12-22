@@ -7,19 +7,34 @@ import { Movie } from './types/Movie';
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const uniqMovies = Array.from(new Set(movies));
+  const addMovie = (movie: Movie | undefined) => {
+    if (!movie) {
+      return;
+    }
+
+    const uniqMovieStatus = movies.some(
+      item => item.imdbId === movie?.imdbId,
+    );
+
+    if (!uniqMovieStatus) {
+      setMovies(prev => ([
+        ...prev,
+        movie,
+      ]));
+    }
+  };
 
   return (
     <div className="page">
       {movies && (
         <div className="page-content">
-          <MoviesList movies={uniqMovies} />
+          <MoviesList movies={movies} />
         </div>
       )}
 
       <div className="sidebar">
         <FindMovie
-          setMovies={setMovies}
+          addMovie={addMovie}
         />
       </div>
     </div>

@@ -6,11 +6,10 @@ import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
 type Props = {
-  setMovies: (value: any) => void,
+  addMovie: (movie: Movie | undefined) => void,
 };
 
-
-export const FindMovie: React.FC<Props> = ({ setMovies }) => {
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState<Movie | undefined>();
   const [isFailed, setIsFailed] = useState(false);
@@ -20,42 +19,38 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
     = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
   const addMovieOnClick = () => {
-    setMovies((prevArray: Movie[]) => {
-      const uniqMovieStatus = [...prevArray].some(
-        item => item.imdbId === search?.imdbId,
-      );
-
-      if (uniqMovieStatus) {
-        return prevArray;
-      }
-
-      return [...prevArray, search];
-    });
+    addMovie(search);
 
     setSearch(undefined);
     setIsLoading(false);
     setIsFailed(false);
   };
 
-  const loadMovie = async () => {
+  const loadMovie = async (value: React.FormEvent) => {
+    value.preventDefault();
     setIsLoading(true);
-    const movie = await getMovie(query);
 
-    if ('Error' in movie) {
-      setIsFailed(true);
-    } else {
-      setSearch({
-        title: movie.Title,
-        description: movie.Plot,
-        imgUrl: movie.Poster === 'N/A' ? defaultPicture : movie.Poster,
-        imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
-        imdbId: movie.imdbID,
-      });
+    try {
+      const movie = await getMovie(query);
 
-      setIsFailed(false);
+      if ('Error' in movie) {
+        setIsFailed(true);
+      } else {
+        setSearch({
+          title: movie.Title,
+          description: movie.Plot,
+          imgUrl: movie.Poster === 'N/A' ? defaultPicture : movie.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+          imdbId: movie.imdbID,
+        });
+
+        setIsFailed(false);
+      }
+
+      setQuery('');
+    } catch {
+      throw Error('Error');
     }
-
-    setQuery('');
   };
 
   return (
@@ -63,8 +58,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
       <form
         className="find-movie"
         onSubmit={(event) => {
-          event.preventDefault();
-          loadMovie();
+          loadMovie(event);
         }}
       >
         <div className="field">
@@ -84,7 +78,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
             />
           </div>
 
-          {isFailed && query === '' && (
+          {isFailed && !query && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

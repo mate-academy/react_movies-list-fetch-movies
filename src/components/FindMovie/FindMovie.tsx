@@ -24,8 +24,6 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     try {
       if ('Error' in findMovieData) {
         setShowError(true);
-        // eslint-disable-next-line no-console
-        console.log('error');
       } else {
         setShowError(false);
 
@@ -64,6 +62,11 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setInputValue('');
   }
 
+  const changeInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value);
+    setShowError(false);
+  };
+
   return (
     <>
       <form
@@ -83,10 +86,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value);
-                setShowError(false);
-              }}
+              onChange={(event) => changeInputValue(event)}
             />
           </div>
 

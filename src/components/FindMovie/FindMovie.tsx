@@ -7,10 +7,10 @@ import { MovieData } from '../../types/MovieData';
 
 type Props = {
   movies: Movie[],
-  addMovie: (movie: Movie[]) => void,
+  onSetMovies: (movie: Movie[]) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
+export const FindMovie: React.FC<Props> = ({ movies, onSetMovies }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [hasError, setHasError] = useState(false);
@@ -32,7 +32,10 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
     };
   };
 
-  const loadMovie = async () => {
+  const onLoadMovie = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
     try {
       const movieDataFromServer = await getMovie(query);
 
@@ -48,17 +51,11 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
     }
   };
 
-  const onFindMovie = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    loadMovie();
-    setIsLoading(true);
-  };
-
   const onAddMovie = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
     if (movie && !movies.some(film => film.imdbId === movie.imdbId)) {
-      addMovie([...movies, movie]);
+      onSetMovies([...movies, movie]);
     }
 
     setQuery('');
@@ -67,7 +64,7 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={onLoadMovie}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -102,7 +99,6 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
               type="submit"
               className={`button is-light ${isLoading && 'is-loading'}`}
               disabled={!query}
-              onClick={onFindMovie}
             >
               {!movie
                 ? 'Find a movie'

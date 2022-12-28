@@ -8,12 +8,8 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie) => {
-    let isMovieInList = false;
-
-    movies.forEach(item => {
-      if (item.imdbId === movie.imdbId) {
-        isMovieInList = true;
-      }
+    const isMovieInList = movies.some(item => {
+      return item.imdbId === movie.imdbId;
     });
 
     if (!isMovieInList) {

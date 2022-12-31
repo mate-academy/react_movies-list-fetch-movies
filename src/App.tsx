@@ -7,8 +7,8 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const hasMovie = (imdbId: string) => {
-    return !!movies.find(movie => movie.imdbId === imdbId);
+  const checkAlreadyExists = (imdbId: string) => {
+    return movies.some(movie => movie.imdbId === imdbId);
   };
 
   return (
@@ -18,7 +18,10 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie setMovies={setMovies} hasMovie={hasMovie} />
+        <FindMovie
+          setMovies={setMovies}
+          checkAlreadyExists={checkAlreadyExists}
+        />
       </div>
     </div>
   );

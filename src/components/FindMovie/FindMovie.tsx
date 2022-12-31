@@ -10,14 +10,17 @@ import { Movie } from '../../types/Movie';
 
 type Props = {
   setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
-  hasMovie: (imdbId: string) => boolean;
+  checkAlreadyExists: (imdbId: string) => boolean;
 };
 
-export const FindMovie: React.FC<Props> = ({ setMovies, hasMovie }) => {
+export const FindMovie: React.FC<Props> = ({
+  setMovies,
+  checkAlreadyExists,
+}) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<MovieData | null>();
   const [loading, setLoading] = useState(false);
-  const [isQueryAbsent, setIsQueryAbsent] = useState(true);
+  const [isQueryAbsent, setIsQueryAbsent] = useState(false);
 
   function isMovie(
     object: MovieData | ResponseError,
@@ -26,7 +29,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, hasMovie }) => {
   }
 
   const handleAddMovie = () => {
-    if (movie && !hasMovie(movie.imdbID)) {
+    if (movie && !checkAlreadyExists(movie.imdbID)) {
       setMovies(prev => [...prev, movieDataToMovie(movie)]);
     }
 
@@ -35,7 +38,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, hasMovie }) => {
   };
 
   const handleQueryChange = (text: string) => {
-    setIsQueryAbsent(true);
+    setIsQueryAbsent(false);
     setQuery(text);
   };
 
@@ -43,6 +46,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, hasMovie }) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
+
     setLoading(true);
     getMovie(query.trim())
       .then(result => {
@@ -54,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, hasMovie }) => {
               : 'https://via.placeholder.com/360x270.png?text=no%20preview',
           });
         } else {
-          setIsQueryAbsent(false);
+          setIsQueryAbsent(true);
         }
       })
       .finally(() => {
@@ -82,7 +86,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, hasMovie }) => {
             />
           </div>
 
-          {!isQueryAbsent && (
+          {isQueryAbsent && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -95,16 +99,15 @@ export const FindMovie: React.FC<Props> = ({ setMovies, hasMovie }) => {
               data-cy="searchButton"
               type="submit"
               className={classNames(
-                'button',
-                'is-light',
+                'button is-light',
                 { 'is-loading': loading },
               )}
               disabled={loading || !query}
               onClick={(e) => handleMovieRequest(e)}
             >
-              {!movie
-                ? 'Find a movie'
-                : 'Search again'}
+              {movie
+                ? 'Search again'
+                : 'Find a movie'}
             </button>
           </div>
 

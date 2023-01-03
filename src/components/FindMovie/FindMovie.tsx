@@ -18,8 +18,8 @@ export const FindMovie: React.FC<Props> = ({ onAddMovies, setMovies }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
-  function isError(a: MovieData | ResponseError): a is ResponseError {
-    return (a as ResponseError).Error !== undefined;
+  function isError(data: MovieData | ResponseError): data is ResponseError {
+    return (data as ResponseError).Error !== undefined;
   }
 
   const normalizedMovie = (data: MovieData): Movie => {
@@ -38,22 +38,22 @@ export const FindMovie: React.FC<Props> = ({ onAddMovies, setMovies }) => {
 
   const fetchData = async () => {
     setIsLoading(true);
-    const data = await getMovie(query);
-    // const x = isError(data);
 
-    // console.log(query);
-    // console.log('TRUE OR FALSE with isError', x);
-    setErrorMessage(isError(data));
-    if (!isError(data)) {
-      setMovie(normalizedMovie(data));
+    try {
+      const data = await getMovie(query);
+
+      setErrorMessage(isError(data));
+      if (!isError(data)) {
+        setMovie(normalizedMovie(data));
+      }
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
-  const handleQuery = (e: string) => {
+  const handleQuery = (event: string) => {
     setErrorMessage(false);
-    setQuery(e);
+    setQuery(event);
   };
 
   const handleFindMovie = () => {
@@ -71,8 +71,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovies, setMovies }) => {
 
     setMovie(null);
   };
-
-  // console.log(movie);
 
   return (
     <>
@@ -94,8 +92,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovies, setMovies }) => {
             />
           </div>
 
-          {errorMessage
-          && (
+          {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

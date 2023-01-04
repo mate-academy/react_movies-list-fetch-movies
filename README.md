@@ -11,7 +11,7 @@
 1. If a movie is not found, an error message is shown below the input.
     - it is hidden after changing the title.
 1. If a movie is found, a preview is shown as a `MovieCard` and an add button.
-    - [the deafult picture](https://via.placeholder.com/360x270.png?text=no%20preview) is used, if the found movie has no poster.
+    - [the default picture](https://via.placeholder.com/360x270.png?text=no%20preview) is used, if the found movie has no poster.
 1. The add button **adds** the movie to the list, **clears** the form and **removes** the preview.
 1. A movie should not be added to the list twice, just clear the data;
 

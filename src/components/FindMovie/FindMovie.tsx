@@ -58,7 +58,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
         imdbId: response.imdbID,
       };
 
-      setIsLoading(false);
       setMovie(movieFromServer);
       setIsInitialized(true);
     } catch (error) {

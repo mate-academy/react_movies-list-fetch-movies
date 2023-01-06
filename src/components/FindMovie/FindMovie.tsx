@@ -40,9 +40,9 @@ export const FindMovie: FC<Props> = (
           imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
           imdbId: data.imdbID,
         });
+      } else {
+        setHasError(true);
       }
-    } catch {
-      setHasError(true);
     } finally {
       setIsFindMovie(false);
     }

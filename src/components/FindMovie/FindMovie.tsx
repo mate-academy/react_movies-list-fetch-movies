@@ -28,20 +28,23 @@ export const FindMovie: FC<Props> = (
 
   const handleGetMovie = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsFindMovie(true);
     const data = await getMovie(title);
 
-    if ('Error' in data) {
+    try {
+      if (!('Error' in data)) {
+        setMovie({
+          title: data.Title,
+          description: data.Plot,
+          imgUrl: data.Poster,
+          imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+          imdbId: data.imdbID,
+        });
+      }
+    } catch {
       setHasError(true);
-    } else {
-      setMovie({
-        title: data.Title,
-        description: data.Plot,
-        imgUrl: data.Poster,
-        imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
-        imdbId: data.imdbID,
-      });
-
-      setIsFindMovie(true);
+    } finally {
+      setIsFindMovie(false);
     }
   };
 
@@ -99,7 +102,8 @@ export const FindMovie: FC<Props> = (
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button is-light',
+                { 'is-loading': isFindMovie })}
               disabled={title.length === 0}
             >
               Find a movie
@@ -107,7 +111,7 @@ export const FindMovie: FC<Props> = (
           </div>
 
           <div className="control">
-            {isFindMovie && (
+            {movie && (
               <button
                 data-cy="addButton"
                 type="button"

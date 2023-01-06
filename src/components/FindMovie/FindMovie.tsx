@@ -18,13 +18,12 @@ export const FindMovie: FC<Props> = (
 ) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
-  const [isFindMovie, setFindMovie] = useState(false);
-  const [isError, setError] = useState(false);
+  const [isFindMovie, setIsFindMovie] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
     setTitle(event.target.value);
-    setError(false);
+    setHasError(false);
   };
 
   const handleGetMovie = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -32,7 +31,7 @@ export const FindMovie: FC<Props> = (
     const data = await getMovie(title);
 
     if ('Error' in data) {
-      setError(true);
+      setHasError(true);
     } else {
       setMovie({
         title: data.Title,
@@ -42,7 +41,7 @@ export const FindMovie: FC<Props> = (
         imdbId: data.imdbID,
       });
 
-      setFindMovie(true);
+      setIsFindMovie(true);
     }
   };
 
@@ -59,7 +58,7 @@ export const FindMovie: FC<Props> = (
 
     setMovie(null);
     setTitle('');
-    setFindMovie(false);
+    setIsFindMovie(false);
   };
 
   return (
@@ -77,7 +76,7 @@ export const FindMovie: FC<Props> = (
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is-danger': isError,
+                'is-danger': hasError,
               })}
               value={title}
               onChange={onInputChange}
@@ -85,7 +84,7 @@ export const FindMovie: FC<Props> = (
             />
           </div>
 
-          {isError && (
+          {hasError && (
             <p
               className="help is-danger"
               data-cy="errorMessage"
@@ -122,10 +121,12 @@ export const FindMovie: FC<Props> = (
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

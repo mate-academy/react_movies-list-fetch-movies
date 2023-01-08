@@ -5,7 +5,7 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  onFind: (arg0: string) => void;
+  onFind: (value: string) => void;
   movie: Movie | null;
   onAdd: () => void;
   isLoading: boolean

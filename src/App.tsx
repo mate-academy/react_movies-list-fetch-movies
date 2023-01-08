@@ -10,29 +10,31 @@ export const App = () => {
   const [currentMovie, setCurrentMovie] = useState<null | Movie>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const findMovieHandler = (userQuery: string) => {
+  // eslint-disable-next-line max-len
+  const defaultPicture = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+  const findMovieHandler = async (userQuery: string) => {
     setIsLoading(true);
 
-    getMovie(userQuery).then(data => {
-      if ('Error' in data) {
-        setCurrentMovie(null);
+    const data = await getMovie(userQuery);
 
-        return;
-      }
+    if ('Error' in data) {
+      setCurrentMovie(null);
+      setIsLoading(false);
 
-      // eslint-disable-next-line max-len
-      const defaultPicture = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+      return;
+    }
 
-      const newMovie: Movie = {
-        title: data.Title,
-        description: data.Plot,
-        imgUrl: data.Poster === 'N/A' ? defaultPicture : data.Poster,
-        imdbId: data.imdbID,
-        imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
-      };
+    const newMovie: Movie = {
+      title: data.Title,
+      description: data.Plot,
+      imgUrl: data.Poster === 'N/A' ? defaultPicture : data.Poster,
+      imdbId: data.imdbID,
+      imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+    };
 
-      setCurrentMovie(newMovie);
-    }).finally(() => setIsLoading(false));
+    setCurrentMovie(newMovie);
+    setIsLoading(false);
   };
 
   const addMovieHandler = () => {

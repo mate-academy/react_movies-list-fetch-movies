@@ -1,13 +1,8 @@
 import ReactDOM from 'react-dom';
 import 'bulma/css/bulma.css';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { App } from './App';
 
-const queryClient = new QueryClient();
-
 ReactDOM.render(
-  <QueryClientProvider client={queryClient}>
-    <App />
-  </QueryClientProvider>,
+  <App />,
   document.getElementById('root'),
 );

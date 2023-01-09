@@ -1,25 +1,38 @@
+import { useState } from 'react';
 import './FindMovie.scss';
+import cn from 'classnames';
 import { useMovie } from '../../hooks/useMovie';
 import { MovieCard } from '../MovieCard';
 
 export const FindMovie: React.FC = () => {
-  // const [query, setQuery] = useState('');
-  const { movie, isLoading, isError } = useMovie('hello');
+  const [searchValue, setSearchValue] = useState('');
+  const {
+    movie,
+    isLoading,
+    isError,
+    setQuery,
+    clearError,
+  } = useMovie();
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
+  const isMovie = movie.title !== '';
 
-  if (isError) {
-    return <p>Something went wrong...</p>;
-  }
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setQuery(searchValue);
+    setSearchValue('');
+  };
+
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+    clearError();
+  };
 
   // eslint-disable-next-line no-console
   console.log(movie);
 
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={(event) => onSubmit(event)}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -32,12 +45,17 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={searchValue}
+              onChange={(event) => onSearchChange(event)}
+              autoComplete="off"
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -46,27 +64,34 @@ export const FindMovie: React.FC = () => {
               data-cy="searchButton"
               type="submit"
               className="button is-light"
+              disabled={searchValue === ''}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {isMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className={cn('button is-primary', {
+                  'is-loading': isLoading,
+                })}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        <MovieCard movie={movie} />
-      </div>
+      {isMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

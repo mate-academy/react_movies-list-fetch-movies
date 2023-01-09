@@ -3,8 +3,13 @@ import './FindMovie.scss';
 import cn from 'classnames';
 import { useMovie } from '../../hooks/useMovie';
 import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  onAdd: (movie: Movie) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [searchValue, setSearchValue] = useState('');
   const {
     movie,
@@ -27,8 +32,9 @@ export const FindMovie: React.FC = () => {
     clearError();
   };
 
-  // eslint-disable-next-line no-console
-  console.log(movie);
+  const onAddMovie = () => {
+    onAdd(movie);
+  };
 
   return (
     <>
@@ -78,6 +84,7 @@ export const FindMovie: React.FC = () => {
                 className={cn('button is-primary', {
                   'is-loading': isLoading,
                 })}
+                onClick={onAddMovie}
               >
                 Add to the list
               </button>

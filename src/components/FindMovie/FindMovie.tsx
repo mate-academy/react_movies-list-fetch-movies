@@ -1,7 +1,22 @@
-import React from 'react';
 import './FindMovie.scss';
+import { useMovie } from '../../hooks/useMovie';
+import { MovieCard } from '../MovieCard';
 
 export const FindMovie: React.FC = () => {
+  // const [query, setQuery] = useState('');
+  const { movie, isLoading, isError } = useMovie('hello');
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Something went wrong...</p>;
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(movie);
+
   return (
     <>
       <form className="find-movie">
@@ -50,7 +65,7 @@ export const FindMovie: React.FC = () => {
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        <MovieCard movie={movie} />
       </div>
     </>
   );

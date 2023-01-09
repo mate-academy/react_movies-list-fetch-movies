@@ -10,6 +10,7 @@ export interface UseMovie {
   isError: boolean;
   setQuery: (query: string) => void;
   clearError: () => void;
+  clearMovie: () => void;
 }
 
 const isMovieData = (data: MovieData | ResponseError): data is MovieData => {
@@ -43,6 +44,10 @@ export const useMovie = (): UseMovie => {
 
   const clearError = () => {
     setIsError(false);
+  };
+
+  const clearMovie = () => {
+    setMovieData(null);
   };
 
   const movie = movieDataToMovie(movieData);
@@ -80,5 +85,6 @@ export const useMovie = (): UseMovie => {
     isError,
     setQuery,
     clearError,
+    clearMovie,
   };
 };

@@ -7,9 +7,10 @@ import { Movie } from '../../types/Movie';
 
 type Props = {
   onAdd: (movie: Movie) => void;
+  isMovieExists: (movie: Movie) => boolean;
 };
 
-export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+export const FindMovie: React.FC<Props> = ({ onAdd, isMovieExists }) => {
   const [searchValue, setSearchValue] = useState('');
   const {
     movie,
@@ -17,6 +18,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     isError,
     setQuery,
     clearError,
+    clearMovie,
   } = useMovie();
 
   const isMovie = movie.title !== '';
@@ -33,7 +35,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   };
 
   const onAddMovie = () => {
-    onAdd(movie);
+    if (!isMovieExists(movie)) {
+      onAdd(movie);
+    }
+
+    clearMovie();
   };
 
   return (
@@ -69,7 +75,9 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={cn('button is-light', {
+                'is-loading': isLoading,
+              })}
               disabled={searchValue === ''}
             >
               Find a movie
@@ -81,9 +89,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               <button
                 data-cy="addButton"
                 type="button"
-                className={cn('button is-primary', {
-                  'is-loading': isLoading,
-                })}
+                className="button is-primary"
                 onClick={onAddMovie}
               >
                 Add to the list

@@ -32,13 +32,21 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
       };
     };
 
-    getMovie(query)
-      .then((res) => (
-        ('imdbID' in res)
-          ? setMovie(newAddedMovie(res))
-          : setHasError(true)
-      ))
-      .finally(() => setLoading(false));
+    const getQuery = async () => {
+      try {
+        const data = await getMovie(query);
+
+        if ('imdbID' in data) {
+          setMovie(newAddedMovie(data));
+        } else {
+          setHasError(true);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getQuery();
   };
 
   const handleChangeQuery = (e: React.ChangeEvent<HTMLInputElement>) => {

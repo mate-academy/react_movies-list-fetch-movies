@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   FC,
 } from 'react';
+
 import cn from 'classnames';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
@@ -13,8 +14,8 @@ interface Props {
   handleTitleChange: (event: ChangeEvent<HTMLInputElement>) => void;
   isTitleCorrect: boolean;
   movie: Movie | null;
-  isLoading: boolean;
-  handleAddToList: () => void;
+  isMovieLoading: boolean;
+  handleAddMovie: () => void;
 }
 
 export const FindMovie: FC<Props> = ({
@@ -23,8 +24,8 @@ export const FindMovie: FC<Props> = ({
   handleTitleChange,
   isTitleCorrect,
   movie,
-  isLoading,
-  handleAddToList,
+  isMovieLoading,
+  handleAddMovie,
 }) => {
   return (
     <>
@@ -67,7 +68,7 @@ export const FindMovie: FC<Props> = ({
               className={cn(
                 'button',
                 'is-light',
-                { 'is-loading': isLoading },
+                { 'is-loading': isMovieLoading },
               )}
               disabled={!title}
             >
@@ -87,7 +88,7 @@ export const FindMovie: FC<Props> = ({
                     data-cy="addButton"
                     type="button"
                     className="button is-primary"
-                    onClick={handleAddToList}
+                    onClick={handleAddMovie}
                   >
                     Add to the list
                   </button>

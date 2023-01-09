@@ -2,7 +2,9 @@ import {
   useState,
   ChangeEvent,
   FC,
+  useCallback,
 } from 'react';
+
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -11,11 +13,11 @@ import { getMovie } from './api';
 
 export const App: FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [movie, setMovie] = useState<Movie | null>(null);
 
   const [title, setTitle] = useState('');
-  const [isLoading, setisLoading] = useState(false);
+  const [isMovieLoading, setIsMovieLoading] = useState(false);
   const [isTitleCorrect, setIsTitleCorrect] = useState(true);
-  const [movie, setMovie] = useState<Movie | null>(null);
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -24,11 +26,13 @@ export const App: FC = () => {
 
   const loadMovie = async () => {
     try {
-      setIsTitleCorrect(true);
-      setisLoading(true);
+      setIsMovieLoading(true);
+
       const loadedMovie = await getMovie(title);
 
       if (loadedMovie.Response === 'True') {
+        setIsTitleCorrect(true);
+
         const {
           Title,
           Poster,
@@ -55,7 +59,7 @@ export const App: FC = () => {
         setIsTitleCorrect(false);
       }
     } finally {
-      setisLoading(false);
+      setIsMovieLoading(false);
     }
   };
 
@@ -65,7 +69,7 @@ export const App: FC = () => {
     loadMovie();
   };
 
-  const handleAddToList = () => {
+  const handleAddMovie = useCallback(() => {
     const isNewMovie = !movies
       .find(addedMovie => addedMovie.title === movie?.title);
 
@@ -80,7 +84,7 @@ export const App: FC = () => {
 
     setMovie(null);
     setTitle('');
-  };
+  }, [movie]);
 
   return (
     <div className="page">
@@ -95,8 +99,8 @@ export const App: FC = () => {
           handleTitleChange={handleTitleChange}
           isTitleCorrect={isTitleCorrect}
           movie={movie}
-          isLoading={isLoading}
-          handleAddToList={handleAddToList}
+          isMovieLoading={isMovieLoading}
+          handleAddMovie={handleAddMovie}
         />
       </div>
     </div>

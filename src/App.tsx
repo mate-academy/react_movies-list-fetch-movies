@@ -46,7 +46,7 @@ export const App = () => {
           return newMovies;
         }
 
-        newMovies.push(currentMovie);
+        return [...prevMovies, currentMovie];
       }
 
       return newMovies;

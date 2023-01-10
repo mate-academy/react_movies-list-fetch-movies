@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props> = ({
   onFind, movie, onAdd, isLoading,
 }) => {
   const [enteredValue, setEnteredValue] = useState('');
-  const [attempteSearch, setAttemptedSearch] = useState(false);
+  const [attemptedSearch, setAttemptedSearch] = useState(false);
 
   const valueChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputField = e.target as HTMLInputElement;
@@ -57,7 +57,7 @@ export const FindMovie: React.FC<Props> = ({
             />
           </div>
 
-          {!movie && !isLoading && attempteSearch && (
+          {!movie && !isLoading && attemptedSearch && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

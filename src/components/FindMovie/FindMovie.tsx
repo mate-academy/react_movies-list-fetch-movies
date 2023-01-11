@@ -15,7 +15,7 @@ const defaultImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
   const [query, setQuery] = useState('');
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorOnLoading, setErrorOnLoading] = useState(false);
 
@@ -46,7 +46,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
 
   const clearFormOnAddMovie = () => {
     setQuery('');
-    setMovie(undefined);
+    setMovie(null);
   };
 
   const moviesImdbId = movies.map(film => film.imdbId);

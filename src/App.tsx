@@ -1,20 +1,18 @@
 import {
   useState,
-  // ChangeEvent,
   FC,
-  // useCallback,
+  useCallback,
 } from 'react';
 
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
-// import { getMovie } from './api';
 
 export const App: FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const addMovie = (movie: Movie) => {
+  const addMovie = useCallback((movie: Movie) => {
     const isNewMovie = !movies
       .find(addedMovie => addedMovie.title === movie?.title);
 
@@ -26,7 +24,7 @@ export const App: FC = () => {
         ]
       ));
     }
-  };
+  }, []);
 
   return (
     <div className="page">

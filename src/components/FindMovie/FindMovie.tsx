@@ -21,7 +21,9 @@ export const FindMovie: FC<Props> = ({ setMovies }) => {
   const createCard = (newMovie: MovieData) => ({
     title: newMovie.Title,
     description: newMovie.Plot,
-    imgUrl: newMovie.Poster || placeholder,
+    imgUrl: newMovie.Poster === 'N/A'
+      ? placeholder
+      : newMovie.Poster,
     imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
     imdbId: newMovie.imdbID,
   });
@@ -50,6 +52,7 @@ export const FindMovie: FC<Props> = ({ setMovies }) => {
       });
       setMovie(null);
       setQuery('');
+      setIsVisible(false);
     }
   };
 

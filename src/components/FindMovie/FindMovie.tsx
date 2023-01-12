@@ -1,6 +1,7 @@
 import {
   ChangeEvent,
   FC,
+  useState,
 } from 'react';
 
 import cn from 'classnames';
@@ -8,25 +9,78 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
+import { getMovie } from '../../api';
+
 interface Props {
-  handleTtitleSubmit: (event:ChangeEvent<HTMLFormElement>) => void;
-  title: string;
-  handleTitleChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  isTitleCorrect: boolean;
-  movie: Movie | null;
-  isMovieLoading: boolean;
-  handleAddMovie: () => void;
+  addMovie: (movie: Movie) => void;
 }
 
-export const FindMovie: FC<Props> = ({
-  handleTtitleSubmit,
-  title,
-  handleTitleChange,
-  isTitleCorrect,
-  movie,
-  isMovieLoading,
-  handleAddMovie,
-}) => {
+export const FindMovie: FC<Props> = ({ addMovie }) => {
+  const [movie, setMovie] = useState<Movie | null>(null);
+
+  const [title, setTitle] = useState('');
+  const [isMovieLoading, setIsMovieLoading] = useState(false);
+  const [isTitleCorrect, setIsTitleCorrect] = useState(true);
+
+  const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    setIsTitleCorrect(true);
+  };
+
+  const loadMovie = async () => {
+    try {
+      setIsMovieLoading(true);
+
+      const loadedMovie = await getMovie(title);
+
+      if (loadedMovie.Response === 'True') {
+        setIsTitleCorrect(true);
+
+        const {
+          Title,
+          Poster,
+          Plot,
+          imdbID,
+        } = loadedMovie;
+
+        const imdbUrl = `https://www.imdb.com/title/${imdbID}`;
+
+        const imgUrl = Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : Poster;
+
+        setMovie({
+          title: Title,
+          description: Plot,
+          imgUrl,
+          imdbUrl,
+          imdbId: imdbID,
+        });
+      }
+
+      if (loadedMovie.Response === 'False') {
+        setIsTitleCorrect(false);
+      }
+    } finally {
+      setIsMovieLoading(false);
+    }
+  };
+
+  const handleTtitleSubmit = (event:ChangeEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    loadMovie();
+  };
+
+  const handleAddMovie = () => {
+    if (movie) {
+      addMovie(movie);
+    }
+
+    setTitle('');
+    setMovie(null);
+  };
+
   return (
     <>
       <form

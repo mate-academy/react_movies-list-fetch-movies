@@ -1,11 +1,29 @@
-import { useState } from 'react';
+import {
+  useState,
+  FC,
+} from 'react';
+
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
-export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+export const App: FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const addMovie = (movie: Movie) => {
+    const isNewMovie = !movies
+      .find(addedMovie => addedMovie.title === movie?.title);
+
+    if (movie && isNewMovie) {
+      setMovies(state => (
+        [
+          ...state,
+          movie,
+        ]
+      ));
+    }
+  };
 
   return (
     <div className="page">
@@ -14,7 +32,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );

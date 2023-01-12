@@ -83,7 +83,10 @@ export const FindMovie: FC<Props> = ({ setMovies }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setIsVisible(false);
+              }}
             />
           </div>
 

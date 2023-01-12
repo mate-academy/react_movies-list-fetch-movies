@@ -18,9 +18,9 @@ interface Props {
 
 export const FindMovie: FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
+  const [isMovieLoading, setIsMovieLoading] = useState(false);
 
   const [title, setTitle] = useState('');
-  const [isMovieLoading, setIsMovieLoading] = useState(false);
   const [isTitleCorrect, setIsTitleCorrect] = useState(true);
 
   const handleTitleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +65,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     }
   };
 
-  const handleTtitleSubmit = (event:ChangeEvent<HTMLFormElement>) => {
+  const handleTitleSubmit = (event:ChangeEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     loadMovie();
@@ -84,7 +84,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={handleTtitleSubmit}
+        onSubmit={handleTitleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -105,11 +105,11 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
           {
             !isTitleCorrect
-            && (
-              <p className="help is-danger" data-cy="errorMessage">
-                Can&apos;t find a movie with such a title
-              </p>
-            )
+              && (
+                <p className="help is-danger" data-cy="errorMessage">
+                  Can&apos;t find a movie with such a title
+                </p>
+              )
           }
         </div>
 
@@ -156,10 +156,8 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           && (
             <div className="container" data-cy="previewContainer">
               <h2 className="title">Preview</h2>
-              {
-                movie
-                && <MovieCard movie={movie} />
-              }
+
+              <MovieCard movie={movie} />
             </div>
           )
       }

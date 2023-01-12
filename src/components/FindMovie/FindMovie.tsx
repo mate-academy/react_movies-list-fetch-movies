@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   FC,
   useState,
+  useCallback,
 } from 'react';
 
 import cn from 'classnames';
@@ -70,14 +71,14 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
     loadMovie();
   };
 
-  const handleAddMovie = () => {
+  const handleAddMovie = useCallback(() => {
     if (movie) {
       addMovie(movie);
     }
 
     setTitle('');
     setMovie(null);
-  };
+  }, [movie]);
 
   return (
     <>

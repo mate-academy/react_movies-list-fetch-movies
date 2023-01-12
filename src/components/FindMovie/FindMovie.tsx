@@ -33,7 +33,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
 
       const loadedMovie = await getMovie(title);
 
-      if (loadedMovie.Response === 'True') {
+      if (!loadedMovie.Error) {
         setIsTitleCorrect(true);
 
         const {
@@ -56,9 +56,7 @@ export const FindMovie: FC<Props> = ({ addMovie }) => {
           imdbUrl,
           imdbId: imdbID,
         });
-      }
-
-      if (loadedMovie.Response === 'False') {
+      } else {
         setIsTitleCorrect(false);
       }
     } finally {

@@ -15,35 +15,33 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [erorr, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const loadMovie = async () => {
+  const loadMovie = () => {
     setLoading(true);
 
-    const result = await getMovie(query);
+    getMovie(query)
+      .then(result => {
+        if ('Title' in result) {
+          const {
+            Title,
+            Plot,
+            Poster,
+            imdbID,
+          } = result;
 
-    try {
-      if ('Title' in result) {
-        const {
-          Title,
-          Plot,
-          Poster,
-          imdbID,
-        } = result;
+          setMovie({
+            title: Title,
+            description: Plot,
+            imgUrl: Poster === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : Poster,
+            imdbId: imdbID,
+            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          });
+        }
 
-        setMovie({
-          title: Title,
-          description: Plot,
-          imgUrl: Poster === 'N/A'
-            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-            : Poster,
-          imdbId: imdbID,
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-        });
-      } else {
         setError(true);
-      }
-    } finally {
-      setLoading(false);
-    }
+      })
+      .finally(() => setLoading(false));
   };
 
   return (

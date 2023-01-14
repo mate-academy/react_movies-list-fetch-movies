@@ -37,9 +37,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             imdbId: imdbID,
             imdbUrl: `https://www.imdb.com/title/${imdbID}`,
           });
+        } else {
+          setError(true);
         }
-
-        setError(true);
       })
       .finally(() => setLoading(false));
   };

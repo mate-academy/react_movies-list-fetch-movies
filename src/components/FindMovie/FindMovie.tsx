@@ -51,11 +51,20 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
 
   const moviesImdbId = movies.map(film => film.imdbId);
 
+  const handleAddMovie = (movieToAdd: Movie) => {
+    if (moviesImdbId.includes(movieToAdd.imdbId)) {
+      clearFormOnAddMovie();
+    } else {
+      onAdd(movieToAdd);
+      clearFormOnAddMovie();
+    }
+  };
+
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => handleSubmit(event)}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -95,7 +104,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
               )}
               disabled={!query.trim()}
             >
-              {(isErrorOnLoading || movie) ? 'Search again' : 'Find a movie'}
+              {movie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
@@ -105,14 +114,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  if (moviesImdbId.includes(movie.imdbId)) {
-                    clearFormOnAddMovie();
-                  } else {
-                    onAdd(movie);
-                    clearFormOnAddMovie();
-                  }
-                }}
+                onClick={() => handleAddMovie(movie)}
               >
                 Add to the list
               </button>

@@ -102,7 +102,7 @@ export const FindMovie: FC<Props> = ({ setMovies }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              disabled={query.length === 0}
+              disabled={!query.length}
               className={cn('button is-light', {
                 'is-loading': isLoading,
               })}

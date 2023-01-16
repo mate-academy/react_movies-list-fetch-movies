@@ -92,7 +92,7 @@ export const FindMovie: FC<Props> = ({ setMovies }) => {
 
           {isVisible && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {`Can't find a movie with such a title`}
             </p>
           )}
         </div>

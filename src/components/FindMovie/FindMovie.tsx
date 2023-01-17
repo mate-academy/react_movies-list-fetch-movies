@@ -47,8 +47,9 @@ export const FindMovie: FC<Props> = memo(({ onAddMovie }) => {
         imdbUrl: `https://www.imdb.com/title/${imdbID}`,
         imdbId: imdbID,
       });
-    } catch (error) {
-      setErrorMessage(error.message);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setErrorMessage(error?.message ?? 'unexpected error');
     } finally {
       setIsLoading(false);
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import './FindMovie.scss';
 import cn from 'classnames';
 
@@ -13,11 +13,12 @@ type Props = {
 
 const defaultImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
+export const FindMovie: React.FC<Props> = memo(({ movies, onAdd }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorOnLoading, setErrorOnLoading] = useState(false);
+  const [isFilmInList, setIsFilmInList] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,15 +50,30 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
     setMovie(null);
   };
 
-  const moviesImdbId = movies.map(film => film.imdbId);
+  const handleInputChange = (value: string) => {
+    if (isFilmInList) {
+      setIsFilmInList(false);
+    }
+
+    setQuery(value);
+
+    if (isErrorOnLoading) {
+      setErrorOnLoading(false);
+    }
+  };
+
+  const moviesImdbId = useMemo(() => (
+    movies.map(film => film.imdbId)
+  ), [movies]);
 
   const handleAddMovie = (movieToAdd: Movie) => {
-    if (moviesImdbId.includes(movieToAdd.imdbId)) {
-      clearFormOnAddMovie();
-    } else {
+    if (!moviesImdbId.includes(movieToAdd.imdbId)) {
       onAdd(movieToAdd);
-      clearFormOnAddMovie();
+    } else {
+      setIsFilmInList(true);
     }
+
+    clearFormOnAddMovie();
   };
 
   return (
@@ -79,10 +95,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => {
-                setQuery(event.currentTarget.value);
-                setErrorOnLoading(false);
-              }}
+              onChange={(event) => handleInputChange(event.target.value)}
             />
           </div>
 
@@ -121,6 +134,10 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
             </div>
           )}
         </div>
+
+        {isFilmInList && (
+          <p className="help is-danger">There is this film in the list</p>
+        )}
       </form>
 
       {movie && (
@@ -131,4 +148,4 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
       )}
     </>
   );
-};
+});

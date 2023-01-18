@@ -8,8 +8,8 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = useCallback((newMovie: Movie) => {
-    setMovies(current => [
-      ...current,
+    setMovies(currentMovies => [
+      ...currentMovies,
       newMovie,
     ]);
   }, []);

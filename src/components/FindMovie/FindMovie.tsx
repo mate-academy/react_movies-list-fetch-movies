@@ -136,7 +136,7 @@ export const FindMovie: React.FC<Props> = memo(({ movies, onAdd }) => {
         </div>
 
         {isFilmInList && (
-          <p className="help is-danger">There is this film in the list</p>
+          <p className="help is-danger">This film is already in the list</p>
         )}
       </form>
 

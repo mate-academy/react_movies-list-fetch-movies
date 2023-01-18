@@ -102,12 +102,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               })}
               disabled={!query.length}
             >
-              {(movie)
-                ? 'Search again' : 'Find a movie'}
+              {(movie) ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
-          {(movie !== null) && (
+          {movie && (
             <div className="control">
               <button
                 data-cy="addButton"

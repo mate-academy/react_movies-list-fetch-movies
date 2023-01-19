@@ -53,34 +53,6 @@ export const FindMovie: FC<Props> = memo(
         .finally(() => setIsLoading(false));
     };
 
-    // const handleMovieAdding = () => {
-    //   onAdd((movies) => {
-    //     if (!movie) {
-    //       return movies;
-    //     }
-
-    //     const movieToAdd = {
-    //       ...movie,
-    //     };
-
-    //     setTitle('');
-    //     setMovie(null);
-
-    //     const isMovieAdded = movies.some((film => (
-    //       film.imdbId === movie.imdbId
-    //     )));
-
-    //     if (isMovieAdded) {
-    //       return movies;
-    //     }
-
-    //     return [
-    //       ...movies,
-    //       movieToAdd,
-    //     ];
-    //   });
-    // };
-
     const handleMovieAdding = (movieToAdd: Movie) => {
       onAdd(movieToAdd);
 

@@ -6,7 +6,9 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  onAddMovie: React.Dispatch<React.SetStateAction<Movie[]>>;
+  onAddMovie: (movieId: Movie) => void;
+  errorAddMovie: boolean;
+  setErrorAddExist: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const defaultPicture = (
@@ -14,7 +16,7 @@ const defaultPicture = (
 );
 
 export const FindMovie: React.FC<Props> = memo(
-  ({ onAddMovie }) => {
+  ({ onAddMovie, errorAddMovie, setErrorAddExist }) => {
     const [movie, setMovie] = useState<Movie | null>(null);
     const [inputValue, setInputValue] = useState('');
     const [isError, setIsError] = useState(false);
@@ -49,32 +51,23 @@ export const FindMovie: React.FC<Props> = memo(
       setInputValue('');
     };
 
-    const handleClickAddMovie = () => {
-      onAddMovie((prev) => {
-        if (movie && !prev.some(m => m.imdbId === movie.imdbId)) {
-          return [...prev, movie];
-        }
-
-        return prev;
-      });
-
-      clear();
-    };
-
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
 
       setIsError(false);
     };
 
+    const handleSibmitForm = (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+
+      handleClickSumbit();
+    };
+
     return (
       <>
         <form
           className="find-movie"
-          onSubmit={(event) => {
-            event.preventDefault();
-            handleClickSumbit();
-          }}
+          onSubmit={handleSibmitForm}
         >
           <div className="field">
             <label className="label" htmlFor="movie-title">
@@ -89,13 +82,18 @@ export const FindMovie: React.FC<Props> = memo(
                 placeholder="Enter a title to search"
                 className="input is-dander"
                 value={inputValue}
-                onChange={handleChangeInput}
+                onChange={(event => {
+                  handleChangeInput(event);
+                  setErrorAddExist(false);
+                })}
               />
             </div>
 
-            {isError && (
+            {(isError || errorAddMovie) && (
               <p className="help is-danger" data-cy="errorMessage">
-                Can&apos;t find a movie with such a title
+                {errorAddMovie
+                  ? 'the movie is already in your list'
+                  : 'Can&apos;t find a movie with such a title'}
               </p>
             )}
           </div>
@@ -109,6 +107,9 @@ export const FindMovie: React.FC<Props> = memo(
                   'button is-light',
                   { 'is-loading': isLoading },
                 )}
+                onClick={() => {
+                  window.console.log(movie);
+                }}
                 disabled={!inputValue}
 
               >
@@ -124,7 +125,11 @@ export const FindMovie: React.FC<Props> = memo(
                   data-cy="addButton"
                   type="button"
                   className="button is-primary"
-                  onClick={handleClickAddMovie}
+                  onClick={() => {
+                    onAddMovie(movie);
+
+                    clear();
+                  }}
                 >
                   Add to the list
                 </button>

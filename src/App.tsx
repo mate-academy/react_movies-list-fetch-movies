@@ -6,7 +6,24 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   // const [array, setArray] = useState<MovieData | ResponseError>();
-  const [movies, setMovie] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [errorAddExist, setErrorAddExist] = useState(false);
+
+  const onAddMovie = (movie: Movie) => {
+    setMovies(prev => {
+      const isMovieExist = !prev.some(m => m.imdbId === movie.imdbId);
+
+      if (movie && isMovieExist) {
+        return [...prev, movie];
+      }
+
+      setErrorAddExist(prevError => !prevError);
+
+      return prev;
+    });
+
+    window.console.log(errorAddExist);
+  };
 
   return (
     <div className="page">
@@ -18,7 +35,9 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          onAddMovie={setMovie}
+          setErrorAddExist={setErrorAddExist}
+          onAddMovie={onAddMovie}
+          errorAddMovie={errorAddExist}
         />
       </div>
     </div>

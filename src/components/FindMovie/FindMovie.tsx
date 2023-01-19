@@ -6,7 +6,7 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 interface Props {
-  onAdd: React.Dispatch<React.SetStateAction<Movie[]>>,
+  onAdd: (movie: Movie) => void,
 }
 
 export const FindMovie: FC<Props> = memo(
@@ -53,32 +53,39 @@ export const FindMovie: FC<Props> = memo(
         .finally(() => setIsLoading(false));
     };
 
-    const handleMovieAdding = () => {
-      onAdd((movies) => {
-        if (!movie) {
-          return movies;
-        }
+    // const handleMovieAdding = () => {
+    //   onAdd((movies) => {
+    //     if (!movie) {
+    //       return movies;
+    //     }
 
-        const movieToAdd = {
-          ...movie,
-        };
+    //     const movieToAdd = {
+    //       ...movie,
+    //     };
 
-        setTitle('');
-        setMovie(null);
+    //     setTitle('');
+    //     setMovie(null);
 
-        const isMovieAdded = movies.some((film => (
-          film.imdbId === movie.imdbId
-        )));
+    //     const isMovieAdded = movies.some((film => (
+    //       film.imdbId === movie.imdbId
+    //     )));
 
-        if (isMovieAdded) {
-          return movies;
-        }
+    //     if (isMovieAdded) {
+    //       return movies;
+    //     }
 
-        return [
-          ...movies,
-          movieToAdd,
-        ];
-      });
+    //     return [
+    //       ...movies,
+    //       movieToAdd,
+    //     ];
+    //   });
+    // };
+
+    const handleMovieAdding = (movieToAdd: Movie) => {
+      onAdd(movieToAdd);
+
+      setTitle('');
+      setMovie(null);
     };
 
     const handleInputOfData = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,7 +143,7 @@ export const FindMovie: FC<Props> = memo(
                     data-cy="addButton"
                     type="button"
                     className="button is-primary"
-                    onClick={handleMovieAdding}
+                    onClick={() => handleMovieAdding(movie)}
                   >
                     Add to the list
                   </button>

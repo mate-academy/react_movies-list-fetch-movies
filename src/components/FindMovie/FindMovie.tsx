@@ -121,7 +121,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         </div>
       </form>
 
-      {(movie !== null) && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

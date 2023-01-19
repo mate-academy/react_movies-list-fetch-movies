@@ -54,6 +54,7 @@ export const FindMovie: React.FC<Props> = memo(
     const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
 
+      setErrorAddExist(false);
       setIsError(false);
     };
 
@@ -62,6 +63,16 @@ export const FindMovie: React.FC<Props> = memo(
 
       handleClickSumbit();
     };
+
+    const handleClickAddMovie = () => {
+      if (movie) {
+        onAddMovie(movie);
+      }
+
+      clear();
+    };
+
+    const isMovieExistOrError = isError || errorAddMovie;
 
     return (
       <>
@@ -82,14 +93,11 @@ export const FindMovie: React.FC<Props> = memo(
                 placeholder="Enter a title to search"
                 className="input is-dander"
                 value={inputValue}
-                onChange={(event => {
-                  handleChangeInput(event);
-                  setErrorAddExist(false);
-                })}
+                onChange={handleChangeInput}
               />
             </div>
 
-            {(isError || errorAddMovie) && (
+            {isMovieExistOrError && (
               <p className="help is-danger" data-cy="errorMessage">
                 {errorAddMovie
                   ? 'the movie is already in your list'
@@ -107,9 +115,6 @@ export const FindMovie: React.FC<Props> = memo(
                   'button is-light',
                   { 'is-loading': isLoading },
                 )}
-                onClick={() => {
-                  window.console.log(movie);
-                }}
                 disabled={!inputValue}
 
               >
@@ -125,11 +130,7 @@ export const FindMovie: React.FC<Props> = memo(
                   data-cy="addButton"
                   type="button"
                   className="button is-primary"
-                  onClick={() => {
-                    onAddMovie(movie);
-
-                    clear();
-                  }}
+                  onClick={handleClickAddMovie}
                 >
                   Add to the list
                 </button>

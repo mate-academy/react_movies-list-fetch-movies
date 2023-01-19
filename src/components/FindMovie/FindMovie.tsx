@@ -25,7 +25,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   const [moviePreview, setMoviePreview] = useState(initialPreview);
 
   const visiblePreview = moviePreview.imdbId;
-  const activeControls = isMovieFound && visiblePreview;
 
   const handleMovieSearch = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -33,7 +32,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
     event.preventDefault();
 
     setIsMovieLoading(true);
-    setMoviePreview(initialPreview);
 
     getMovie(input)
       .then(newMovie => {
@@ -138,7 +136,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
             </button>
           </div>
 
-          {activeControls && (
+          {(isMovieFound && visiblePreview) && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -153,7 +151,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
         </div>
       </form>
 
-      {activeControls && (
+      {visiblePreview && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           {visiblePreview && <MovieCard movie={moviePreview} />}

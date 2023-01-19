@@ -1,7 +1,101 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  setMovies: Dispatch<SetStateAction<Movie[]>>,
+  movies: Movie[],
+};
+
+export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
+  const [input, setInput] = useState('');
+  const [isMovieFound, setIsMovieFound] = useState<null | boolean>(null);
+  const [isMovieLoading, setIsMovieLoading] = useState(false);
+
+  const initialPreview = {
+    title: '',
+    description: '',
+    imgUrl: '',
+    imdbUrl: '',
+    imdbId: '',
+  };
+
+  const [moviePreview, setMoviePreview] = useState(initialPreview);
+
+  const visiblePreview = moviePreview.imdbId;
+  const activeControls = isMovieFound && visiblePreview;
+
+  const handleMovieSearch = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+
+    setIsMovieLoading(true);
+    setMoviePreview(initialPreview);
+
+    getMovie(input)
+      .then(newMovie => {
+        if ('imdbID' in newMovie) {
+          const {
+            Title,
+            Plot,
+            imdbID,
+            Poster,
+          } = newMovie;
+
+          let image;
+
+          if (!Poster.includes('https://')) {
+            image = (
+              'https://via.placeholder.com/360x270.png?text=no%20preview'
+            );
+          } else {
+            image = Poster;
+          }
+
+          setMoviePreview(
+            {
+              title: Title,
+              description: Plot,
+              imgUrl: image,
+              imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+              imdbId: imdbID,
+            },
+          );
+        } else {
+          setIsMovieFound(false);
+        }
+      })
+      .finally(() => setIsMovieLoading(false));
+  };
+
+  const handleAddToList = () => {
+    const duplicateMovie = movies.find(movieOnFile => (
+      movieOnFile.imdbId === visiblePreview
+    ));
+
+    if (duplicateMovie || !visiblePreview) {
+      setMoviePreview(initialPreview);
+
+      return;
+    }
+
+    setMovies([
+      ...movies,
+      moviePreview,
+    ]);
+
+    setMoviePreview(initialPreview);
+    setInput('');
+  };
+
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(event.currentTarget.value);
+    setIsMovieFound(true);
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -17,12 +111,16 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={input}
+              onChange={handleInput}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isMovieFound === false && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +128,37 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={isMovieLoading
+                ? 'button is-light is-loading'
+                : 'button is-light'}
+              disabled={!input}
+              onClick={handleMovieSearch}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {activeControls && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAddToList}
+              >
+                Add to the list
+              </button>
+            </div>
+          ) }
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {activeControls && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          {visiblePreview && <MovieCard movie={moviePreview} />}
+        </div>
+      )}
     </>
   );
 };

@@ -7,14 +7,15 @@ import './FindMovie.scss';
 
 interface Props {
   onAdd: (movie: Movie) => void,
+  isMovieInTheList: boolean,
 }
 
 export const FindMovie: FC<Props> = memo(
-  ({ onAdd }) => {
+  ({ onAdd, isMovieInTheList }) => {
     const [title, setTitle] = useState('');
     const [movie, setMovie] = useState<Movie | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setErrorMessage] = useState(false);
 
     const handleGetMovie = (
       event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -48,12 +49,16 @@ export const FindMovie: FC<Props> = memo(
           });
         })
         .catch(() => {
-          setError(true);
+          setErrorMessage(true);
         })
         .finally(() => setIsLoading(false));
     };
 
     const handleMovieAdding = (movieToAdd: Movie) => {
+      if (!movie) {
+        return;
+      }
+
       onAdd(movieToAdd);
 
       setTitle('');
@@ -62,7 +67,7 @@ export const FindMovie: FC<Props> = memo(
 
     const handleInputOfData = (event: React.ChangeEvent<HTMLInputElement>) => {
       setTitle(event.currentTarget.value);
-      setError(false);
+      setErrorMessage(false);
     };
 
     return (
@@ -89,6 +94,14 @@ export const FindMovie: FC<Props> = memo(
               error && (
                 <p className="help is-danger" data-cy="errorMessage">
                   Can&apos;t find a movie with such a title
+                </p>
+              )
+            }
+
+            {
+              isMovieInTheList && (
+                <p className="help is-danger" data-cy="errorMessage">
+                  movie is already in your list
                 </p>
               )
             }

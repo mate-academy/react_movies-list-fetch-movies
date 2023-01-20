@@ -1,3 +1,4 @@
+/* eslint-disable curly */
 import { useState, useMemo } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
@@ -12,8 +13,8 @@ export const App = () => {
   const [error, setError] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [moviesList, setMoviesList] = useState<Movie[]>([]);
-  const [isLiading, setIsloading] = useState(false);
-  const [clickedButton, setCklickedButton] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isButtonClicked, setIsButtonClicked] = useState(true);
 
   useMemo(() => setError(false), [query]);
 
@@ -32,8 +33,8 @@ export const App = () => {
   }, [movieData]);
 
   const getMovieData = (title: string) => {
-    setIsloading(true);
-    setCklickedButton(false);
+    setIsLoading(true);
+    setIsButtonClicked(false);
 
     getMovie(title).then(data => {
       if ('Error' in data) {
@@ -42,27 +43,22 @@ export const App = () => {
 
       setMovieData(data);
     }).catch(() => setError(true))
-      .finally(() => setIsloading(false));
+      .finally(() => setIsLoading(false));
   };
 
   const addNewMovie = () => {
-    const findSameMovie = () => {
-      let result;
+    if (!movie) return;
 
-      if (movie !== null) {
-        result = moviesList.some((mov: Movie) => mov.imdbId === movie.imdbId);
-      }
+    const isMovieAlreadyInTheList = moviesList
+      .some((mov: Movie) => mov.imdbId === movie.imdbId);
 
-      return result;
-    };
-
-    if (!findSameMovie() && movie !== null) {
+    if (!isMovieAlreadyInTheList) {
       setMoviesList([...moviesList, movie]);
     }
 
     setMovie(null);
     setQuery('');
-    setCklickedButton(true);
+    setIsButtonClicked(true);
   };
 
   return (
@@ -79,8 +75,8 @@ export const App = () => {
           isError={error}
           movie={movie}
           addNewMovie={() => addNewMovie()}
-          isLoading={isLiading}
-          clickedButton={clickedButton}
+          isLoading={isLoading}
+          clickedButton={isButtonClicked}
         />
       </div>
     </div>

@@ -11,7 +11,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   const [input, setInput] = useState('');
-  const [isMovieFound, setIsMovieFound] = useState<null | boolean>(null);
+  const [isMovieFound, setIsMovieFound] = useState<boolean>(true);
   const [isMovieLoading, setIsMovieLoading] = useState(false);
 
   const initialPreview = {
@@ -64,6 +64,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
           );
         } else {
           setIsMovieFound(false);
+          setInput('');
         }
       })
       .finally(() => setIsMovieLoading(false));
@@ -114,7 +115,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
             />
           </div>
 
-          {isMovieFound === false && (
+          {!isMovieFound && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

@@ -4,8 +4,6 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
-import 'semantic-ui-css/semantic.min.css';
-
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 

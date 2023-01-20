@@ -23,7 +23,6 @@ export const FindMovie: React.FC<Props> = ({ onMovie }) => {
       const response = await getMovie(query);
 
       if ('Error' in response) {
-        // console.log('errr')
         setError(true);
         setLoading(false);
 

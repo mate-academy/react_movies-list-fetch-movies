@@ -19,6 +19,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
     e.preventDefault();
     setMovie(null);
     setIsLading(true);
+    setError(false);
 
     getMovie(query)
       .then((res) => {

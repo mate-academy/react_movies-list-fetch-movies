@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
@@ -13,27 +13,24 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLading] = useState(false);
-  const [error, setError] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleFindMovie = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMovie(null);
     setIsLading(true);
-    setError(false);
+    setIsError(false);
 
     getMovie(query)
       .then((res) => {
         if ('Error' in res) {
-          setIsLading(false);
-          setError(true);
+          setIsError(true);
 
           return;
         }
 
         if ('Title' in res) {
-          const {
-            Title, Plot, Poster, imdbID,
-          } = res;
+          const { Title, Plot, Poster, imdbID } = res;
 
           setMovie({
             title: Title,
@@ -69,6 +66,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
     setQuery('');
   };
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    setIsError(false);
+  };
+
   return (
     <>
       <form
@@ -91,16 +93,18 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={handleChange}
             />
           </div>
 
-          <p
-            className="help is-danger"
-            data-cy="errorMessage"
-          >
-            {error && 'Can`t find a movie with such a title'}
-          </p>
+          {isError && (
+            <p
+              className="help is-danger"
+              data-cy="errorMessage"
+            >
+              Can`t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">

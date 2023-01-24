@@ -12,11 +12,11 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const loadMovie = () => {
-    setLoading(true);
+    setIsLoading(true);
     getMovie(query)
       .then(res => {
         if ('Title' in res) {
@@ -30,10 +30,16 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             imdbId: res.imdbID,
           });
         } else {
-          setError(true);
+          setIsError(true);
         }
       })
-      .then(() => setLoading(false));
+      .finally(() => setIsLoading(false));
+  };
+
+  const handleAddMovie = () => {
+    addMovie(movie);
+    setMovie(null);
+    setQuery('');
   };
 
   return (
@@ -50,15 +56,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn('input', { 'is-dander': error })}
+              className={cn('input', { 'is-dander': isError })}
               value={query}
               onChange={(e => {
                 setQuery(e.target.value);
-                setError(false);
+                setIsError(false);
               })}
             />
           </div>
-          {error && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -72,7 +78,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               data-cy="searchButton"
               type="submit"
               className={cn(
-                'button is-light', { 'is-loading': loading },
+                'button is-light', { 'is-loading': isLoading },
               )}
               disabled={!query}
               onClick={(e) => {
@@ -80,7 +86,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 loadMovie();
               }}
             >
-              {!movie ? ('Find a movie') : ('Search again')}
+              {!movie ? 'Find a movie' : 'Search again'}
             </button>
           </div>
           {movie && (
@@ -89,11 +95,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  addMovie(movie);
-                  setMovie(null);
-                  setQuery('');
-                }}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>

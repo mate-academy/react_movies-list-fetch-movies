@@ -21,6 +21,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setQuery(event.target.value);
     setError(false);
     setMovie(null);
+    setMovieExists(false);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {

@@ -18,8 +18,8 @@ export const FindMovie: FC<Props> = memo(({ onAddMovie }) => {
 
   const handleSearchQueryChange
     = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setErrorMessage('');
       setSearchQuery(event.target.value);
+      setErrorMessage('');
     };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -28,7 +28,7 @@ export const FindMovie: FC<Props> = memo(({ onAddMovie }) => {
     setIsLoading(true);
 
     try {
-      const response = await getMovie(searchQuery);
+      const response = await getMovie(searchQuery.trim());
 
       if ('Error' in response) {
         throw new Error(response.Error);
@@ -101,7 +101,7 @@ export const FindMovie: FC<Props> = memo(({ onAddMovie }) => {
                 'is-light',
                 { 'is-loading': isLoading },
               )}
-              disabled={!searchQuery}
+              disabled={!searchQuery.trim()}
             >
               Find a movie
             </button>

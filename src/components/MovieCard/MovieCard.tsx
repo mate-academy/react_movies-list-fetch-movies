@@ -7,7 +7,7 @@ type Props = {
   key: string,
 };
 
-export const MovieCard: React.FC<Props> = ({ 
+export const MovieCard: React.FC<Props> = ({
   movie,
   key,
 }) => (

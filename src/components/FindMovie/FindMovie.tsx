@@ -18,7 +18,7 @@ export const FindMovie: React.FC<Props> = ({
   movies,
 }) => {
   const [query, setQuery] = useState('');
-  const [IsError, setIsError] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [preview, setPreview] = useState<Movie | null>(null);
 
@@ -50,7 +50,7 @@ export const FindMovie: React.FC<Props> = ({
     event.preventDefault();
     setIsLoading(true);
     getMovie(query)
-      .then((res: MovieData | ResponseIsError)=> {
+      .then((res: MovieData | ResponseIsError) => {
         if ('Title' in res) {
           movieLoading(res);
         } else {
@@ -105,7 +105,7 @@ export const FindMovie: React.FC<Props> = ({
             />
           </div>
 
-          {IsError && (
+          {isError && (
             <p className="help is-danger" data-cy="IsErrorMessage">
               Can&apos;t find a movie with such a title
             </p>

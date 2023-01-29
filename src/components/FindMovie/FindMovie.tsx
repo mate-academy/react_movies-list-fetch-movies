@@ -75,7 +75,7 @@ export const FindMovie: React.FC<Props> = ({
     setQuery('');
   };
 
-  const onChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
     setQuery(value);
@@ -101,7 +101,7 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={onChangeQuery}
+              onChange={handleChangeQuery}
             />
           </div>
 

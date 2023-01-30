@@ -1,4 +1,4 @@
-export interface ResponseError {
+export interface ResponseIsError {
   Response: 'False',
-  Error: string,
+  IsError: string,
 }

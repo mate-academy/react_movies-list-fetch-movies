@@ -6,7 +6,9 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const onAdd = (movie: Movie) => setMovies([...movies, movie]);
+  const onAdd = (movie: Movie) => setMovies(
+    prevMovies => ([...prevMovies, movie]),
+  );
   const isAlreadyInList = (imdbId: string) => {
     return movies.some(movie => movie.imdbId === imdbId);
   };

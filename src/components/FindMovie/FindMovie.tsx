@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import cn from 'classnames';
+import classNames from 'classnames';
 import { getMovie } from '../../api';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
@@ -29,17 +29,20 @@ export const FindMovie: React.FC<Props> = ({ addMovie, isInList }) => {
 
   const normalizeData = (data: MovieData): Movie => {
     const {
-      Title, Plot, Poster, imdbID,
+      Title: title,
+      Plot: plot,
+      Poster: poster,
+      imdbID: imdbId,
     } = data;
-    const imdbUrl = `https://www.imdb.com/title/${imdbID}`;
-    const imgUrl = (Poster === 'N/A'
+    const imdbUrl = `https://www.imdb.com/title/${imdbId}`;
+    const imgUrl = (poster === 'N/A'
       ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-      : Poster);
+      : poster);
 
     return {
-      title: Title,
-      description: Plot,
-      imdbId: imdbID,
+      title,
+      description: plot,
+      imdbId,
       imgUrl,
       imdbUrl,
     };
@@ -82,6 +85,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie, isInList }) => {
     setQuery('');
   };
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setIsTyping(true);
+  };
+
   return (
     <>
       <form
@@ -96,10 +104,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, isInList }) => {
           <div className="control">
             <input
               value={query}
-              onChange={event => {
-                setQuery(event.target.value);
-                setIsTyping(true);
-              }}
+              onChange={handleChange}
               data-cy="titleField"
               type="text"
               id="movie-title"
@@ -120,7 +125,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, isInList }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={cn(
+              className={classNames(
                 'button', 'is-light',
                 { 'is-loading': isLoading },
               )}

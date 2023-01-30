@@ -22,7 +22,7 @@ export const FindMovie: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [preview, setPreview] = useState<Movie | null>(null);
 
-  const movieLoading = (response: MovieData) => {
+  const handleMovieLoading = (response: MovieData) => {
     const {
       Poster: imgUrl,
       Title: title,
@@ -52,7 +52,7 @@ export const FindMovie: React.FC<Props> = ({
     getMovie(query)
       .then((res: MovieData | ResponseIsError) => {
         if ('Title' in res) {
-          movieLoading(res);
+          handleMovieLoading(res);
         } else {
           setIsError(true);
         }
@@ -62,7 +62,7 @@ export const FindMovie: React.FC<Props> = ({
       });
   };
 
-  const onAdd = () => {
+  const handleMovieAdd = () => {
     if (preview
       && !movies.some(film => film.imdbId === preview.imdbId)) {
       setMovies((prevMovies) => ([
@@ -106,7 +106,7 @@ export const FindMovie: React.FC<Props> = ({
           </div>
 
           {isError && (
-            <p className="help is-danger" data-cy="IsErrorMessage">
+            <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
           )}
@@ -134,7 +134,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={onAdd}
+                onClick={handleMovieAdd}
               >
                 Add to the list
               </button>

@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import classNames from 'classnames';
+import { Button } from '../Button';
+import { MovieCard } from '../MovieCard';
+import { AppContext } from '../AppProvider';
 import './FindMovie.scss';
 
 export const FindMovie: React.FC = () => {
+  const {
+    query,
+    movie,
+    handleInput,
+    handleSearch,
+    isMovieExist,
+    isSearch,
+    addingMovie,
+  } = useContext(AppContext);
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={handleSearch}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,41 +34,55 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={query}
+              onChange={handleInput}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isMovieExist && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
           <div className="control">
-            <button
+            <Button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames(
+                'button',
+                'is-light',
+                { 'is-loading': isSearch },
+              )}
+              disabled={!query}
             >
-              Find a movie
-            </button>
+              {movie ? 'Search again' : 'Find a movie'}
+            </Button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          { movie && (
+            <div className="control">
+              <Button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={addingMovie}
+              >
+                Add to the list
+              </Button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

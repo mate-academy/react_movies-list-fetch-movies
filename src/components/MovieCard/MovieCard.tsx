@@ -6,7 +6,7 @@ type Props = {
   movie: Movie,
 };
 
-export const MovieCard: React.FC<Props> = ({ movie }) => (
+export const MovieCard: React.FC<Props> = React.memo(({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
@@ -16,6 +16,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           alt="Film logo"
         />
       </figure>
+
     </div>
     <div className="card-content">
       <div className="media">
@@ -41,4 +42,4 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       </div>
     </div>
   </div>
-);
+));

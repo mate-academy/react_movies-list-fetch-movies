@@ -8,7 +8,7 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import 'bulma';
 
-// type MovieDataProps = MovieData | ResponseError | null;
+const defaultImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 type Props = {
   addMovie: (movie: Movie) => void;
@@ -18,7 +18,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [hadFirstSearch, setHadFirstSearch] = useState(false);
   const [showError, setShowError] = useState(false);
-  // const [movieData, setMovieData] = useState<MovieDataProps>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -27,15 +26,20 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     const response = await getMovie(titleQuery);
 
     if (!response.hasOwnProperty('Error')) {
+      const imdbUrl = `https://www.imdb.com/title/${response.imdbID}`;
+
       const newMovie = {
         title: response.Title,
         description: response.Plot,
         imgUrl: response.Poster,
-        imdbUrl: 'string',
+        imdbUrl,
         imdbId: response.imdbID,
       };
 
-      // we save a copy of the movie to render the MovieCard
+      if (newMovie.imgUrl === 'N/A') {
+        newMovie.imgUrl = defaultImg;
+      }
+
       setMovie(newMovie);
     } else {
       setShowError(true);
@@ -68,9 +72,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className="input is-dander"
               value={query}
               onChange={(event) => {
-                const lowerCase = event.target.value.toLowerCase();
-
-                setQuery(lowerCase);
+                setQuery(event.target.value);
                 setShowError(false);
               }}
             />

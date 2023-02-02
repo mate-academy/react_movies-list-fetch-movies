@@ -13,10 +13,10 @@ export const App = () => {
 
   const addMovie = (movie: Movie) => {
     if (!hasMovie(movie.imdbId)) {
-      setMovies([
-        ...movies,
+      setMovies((prevMovies) => ([
+        ...prevMovies,
         movie,
-      ]);
+      ]));
     }
   };
 

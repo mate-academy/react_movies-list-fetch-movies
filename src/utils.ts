@@ -4,7 +4,7 @@ import { Movie } from './types/Movie';
 const DEFAULT_IMG_URL
   = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-export const dataToMovie = ({
+export const getMovieFromData = ({
   Title,
   Plot,
   Poster,

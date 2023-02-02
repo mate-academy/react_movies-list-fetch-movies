@@ -6,7 +6,7 @@ import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
-import { dataToMovie } from '../../utils';
+import { getMovieFromData } from '../../utils';
 
 type Props = {
   addMovie: (movie: Movie) => void,
@@ -24,30 +24,30 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setHasError(false);
   };
 
-  const handleSearch = (event: React.FormEvent) => {
+  const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsSearching(true);
 
-    getMovie(query)
-      .then(movieData => {
-        if ('Error' in movieData) {
-          throw new Error(movieData.Error);
-        }
+    try {
+      const movieData = await getMovie(query);
 
-        setMovie(
-          dataToMovie(movieData),
-        );
-      })
-      .catch(() => {
-        setHasError(true);
-      })
-      .finally(() => {
-        setIsSearching(false);
-      });
+      if ('Error' in movieData) {
+        throw new Error(movieData.Error);
+      }
+
+      setMovie(
+        getMovieFromData(movieData),
+      );
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
+
     if (hasError) {
       setHasError(false);
     }

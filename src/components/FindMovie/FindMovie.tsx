@@ -1,78 +1,101 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
+import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  addMovie: (movie: Movie | null) => void;
+  addMovie: (setMovieFunc: (movies: Movie[]) => Movie[]) => void
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
-  const [query, setQuery] = useState('');
+export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [erorr, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isTitleWrong, setIsTitleWrong] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const handleQueryChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(event.target.value);
+      setIsTitleWrong(false);
+    }, [],
+  );
 
-  const loadMovie = () => {
-    setLoading(true);
+  const onSearch = useCallback((event: React.ChangeEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
 
-    getMovie(query)
-      .then(result => {
-        if ('Title' in result) {
-          const {
-            Title,
-            Plot,
-            Poster,
-            imdbID,
-          } = result;
+    if (searchQuery !== '') {
+      getMovie(searchQuery)
+        .then(result => {
+          const posterPlaceholder
+          = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-          setMovie({
-            title: Title,
-            description: Plot,
-            imgUrl: Poster === 'N/A'
-              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-              : Poster,
-            imdbId: imdbID,
-            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          });
-        } else {
-          setError(true);
-        }
-      })
-      .finally(() => setLoading(false));
+          if ('Response' in result && result.Response === 'False') {
+            setIsTitleWrong(true);
+          } else {
+            const {
+              Poster, Title, Plot, imdbID,
+            } = result as MovieData;
+
+            setMovie({
+              title: Title,
+              description: Plot,
+              imgUrl: (Poster !== 'N/A')
+                ? Poster
+                : posterPlaceholder,
+              imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+              imdbId: imdbID,
+            });
+          }
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [searchQuery]);
+
+  const onAdd = () => {
+    addMovie((state: Movie[]) => {
+      const isInMovies = state.some(item => (
+        item.imdbId === movie?.imdbId));
+
+      if (!isInMovies && movie) {
+        return (
+          [...state,
+            movie]
+        );
+      }
+
+      return state;
+    });
+
+    setMovie(null);
+    setSearchQuery('');
   };
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={onSearch}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
           </label>
-
           <div className="control">
             <input
-              className={classNames(
-                'input',
-                {
-                  'is-dander': erorr,
-                },
-              )}
               data-cy="titleField"
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              value={query}
-              onChange={e => {
-                setQuery(e.target.value);
-                setError(false);
-              }}
+              className="input is-dander"
+              value={searchQuery}
+              onChange={handleQueryChange}
             />
           </div>
 
-          {erorr && (
+          {isTitleWrong && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -82,21 +105,16 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              className={classNames(
-                'button is-light',
-                {
-                  'is-loading': loading,
-                },
-              )}
               data-cy="searchButton"
               type="submit"
-              disabled={!query}
-              onClick={(e) => {
-                e.preventDefault();
-                loadMovie();
-              }}
+              className={classNames('button is-light', {
+                'is-loading': isLoading,
+              })}
+              disabled={searchQuery === ''}
             >
-              {!movie ? ('Find a movie') : ('Search again')}
+              {!movie
+                ? 'Find a movie'
+                : 'Search again'}
             </button>
           </div>
 
@@ -106,11 +124,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  addMovie(movie);
-                  setQuery('');
-                  setMovie(null);
-                }}
+                onClick={onAdd}
               >
                 Add to the list
               </button>
@@ -127,4 +141,4 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       )}
     </>
   );
-};
+});

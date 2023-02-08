@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import { MovieData } from '../../types/MovieData';
 import './FindMovie.scss';
 
 type Props = {
@@ -20,31 +21,35 @@ export const FindMovie: React.FC<Props> = ({
   const [searching, setSearching] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
+  const getNormalizedMovie = (movieData: MovieData): Movie => {
+    return {
+      title: movieData.Title,
+      description: movieData.Plot,
+      imgUrl: movieData.Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : movieData.Poster,
+      imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
+      imdbId: movieData.imdbID,
+    };
+  };
+
   const searchHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSearching(true);
 
     try {
       const foundMovie = await getMovie(query);
-      let normalizeMovie = null;
+      let normalizedMovie = null;
 
       if ('Error' in foundMovie) {
         if (foundMovie.Error === 'Movie not found!') {
           setNotFound(true);
         }
       } else {
-        normalizeMovie = {
-          title: foundMovie.Title,
-          description: foundMovie.Plot,
-          imgUrl: foundMovie.Poster === 'N/A'
-            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-            : foundMovie.Poster,
-          imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
-          imdbId: foundMovie.imdbID,
-        };
+        normalizedMovie = getNormalizedMovie(foundMovie);
       }
 
-      setFoundMovie(normalizeMovie);
+      setFoundMovie(normalizedMovie);
     } finally {
       setSearching(false);
     }

@@ -7,8 +7,12 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovie] = useState<Movie[]>([]);
 
-  const addMovie = (movie: Movie) => {
-    setMovie(curr => [...curr, movie]);
+  const addMovie = (finded: Movie) => {
+    const isRepited = movies.some(movie => movie.imdbId === finded.imdbId);
+
+    if (!isRepited) {
+      setMovie(curr => [...curr, finded]);
+    }
   };
 
   return (

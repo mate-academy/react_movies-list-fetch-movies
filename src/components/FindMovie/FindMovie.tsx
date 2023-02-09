@@ -9,7 +9,7 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  onAdd: (movie: Movie) => void
+  onAdd: (finded: Movie) => void,
 };
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {

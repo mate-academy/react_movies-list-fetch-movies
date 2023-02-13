@@ -5,13 +5,13 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies, setMovie] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
-  const addMovie = (finded: Movie) => {
-    const isRepited = movies.some(movie => movie.imdbId === finded.imdbId);
+  const handleAddMovie = (newMovie: Movie) => {
+    const isRepited = movies.some(movie => movie.imdbId === newMovie.imdbId);
 
     if (!isRepited) {
-      setMovie(curr => [...curr, finded]);
+      setMovies(prevMovies => [...prevMovies, newMovie]);
     }
   };
 
@@ -22,7 +22,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie onAdd={addMovie} />
+        <FindMovie onAdd={handleAddMovie} />
       </div>
     </div>
   );

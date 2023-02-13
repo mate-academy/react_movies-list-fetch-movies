@@ -13,14 +13,10 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
-  const [inputTitle, setInputTitle] = useState<string>('');
+  const [inputTitle, setInputTitle] = useState('');
   const [findedMovie, setFindedMovie] = useState<Movie | null>(null);
-  const [isMovieFinded, setIsMovieFinded] = useState<boolean>(true);
-
-  let findButtonClasses = classNames(
-    'button is-light',
-    { 'is-loading': false },
-  );
+  const [isMovieFinded, setIsMovieFinded] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputTitle(event.target.value);
@@ -31,10 +27,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const findMovie = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    findButtonClasses = classNames(
-      'button is-light',
-      { 'is-loading': true },
-    );
+    setIsLoading(true);
 
     getMovie(inputTitle)
       .then(result => {
@@ -52,10 +45,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         }
       })
       .finally(() => {
-        findButtonClasses = classNames(
-          'button is-light',
-          { 'is-loading': false },
-        );
+        setIsLoading(false);
       });
   };
 
@@ -100,11 +90,14 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={findButtonClasses}
+              className={classNames(
+                'button is-light',
+                { 'is-loading': isLoading },
+              )}
               onClick={findMovie}
               disabled={!inputTitle.length}
             >
-              Find a movie
+              {findedMovie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 

@@ -9,16 +9,15 @@ type Props = {
   onClickAddMovie: (movie: Movie) => void,
 };
 
+const DEFAUT_POSTER_IMG = 'https://via.placeholder.com/'
++ '360x270.png?text=no%20preview';
+const MOVIE_IMDB_URL = 'https://www.imdb.com/title/';
+
 export const FindMovie: React.FC<Props> = ({ onClickAddMovie }) => {
   const [loadedMovie, setLoadedMovie] = useState<Movie | null>(null);
   const [hasSuccessResponse, setHasSuccessResponse] = useState(true);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  const {
-    REACT_APP_DEFAULT_POSTER_IMG,
-    REACT_APP_MOVIE_IMDBURL,
-  } = process.env;
 
   const handleFindMovie = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -43,9 +42,9 @@ export const FindMovie: React.FC<Props> = ({ onClickAddMovie }) => {
         title: Title,
         description: Plot,
         imgUrl: Poster === 'N/A'
-          ? REACT_APP_DEFAULT_POSTER_IMG as string
+          ? DEFAUT_POSTER_IMG
           : Poster,
-        imdbUrl: `${REACT_APP_MOVIE_IMDBURL}${imdbID}`,
+        imdbUrl: `${MOVIE_IMDB_URL}${imdbID}`,
         imdbId: imdbID,
       };
 

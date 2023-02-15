@@ -1,12 +1,12 @@
 import classNames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  addMovie: (movie: Movie) => void;
+  addMovie: (movie: Movie | null) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
@@ -15,14 +15,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setError] = useState(false);
 
-  const addMovieHandler = useCallback(() => {
-    if (movie) {
-      addMovie(movie);
-    }
-
+  const addMovieHandler = () => {
+    addMovie(movie);
     setMovie(null);
     setQuery('');
-  }, []);
+  };
 
   const loadMovie = () => {
     setIsLoading(true);

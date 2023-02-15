@@ -13,7 +13,16 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [isError, setError] = useState(false);
+
+  const addMovieHandler = () => {
+    if (movie) {
+      addMovie(movie);
+    }
+
+    setMovie(null);
+    setQuery('');
+  };
 
   const loadMovie = () => {
     setIsLoading(true);
@@ -67,7 +76,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          {error && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -98,11 +107,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  addMovie(movie);
-                  setMovie(null);
-                  setQuery('');
-                }}
+                onClick={addMovieHandler}
               >
                 Add to the list
               </button>

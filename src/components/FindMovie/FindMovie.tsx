@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
@@ -15,11 +15,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setError] = useState(false);
 
-  const addMovieHandler = () => {
+  const addMovieHandler = useCallback(() => {
     addMovie(movie);
     setMovie(null);
     setQuery('');
-  };
+  }, [movie]);
 
   const loadMovie = () => {
     setIsLoading(true);

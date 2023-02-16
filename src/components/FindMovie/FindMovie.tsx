@@ -26,6 +26,26 @@ export const FindMovie: React.FC<Props> = ({
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const eventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+
+    if (value.trim().length === 0) {
+      setSearchText('');
+
+      return;
+    }
+
+    value.trim();
+    setSearchText(value);
+    setIsError(false);
+  };
+
+  const handleClick = (foundMovie: Movie) => {
+    reset();
+    addMovie(foundMovie);
+    setMovie(null);
+  };
+
   const searchMovie = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -76,10 +96,7 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={searchText}
-              onChange={event => {
-                setSearchText(event.target.value);
-                setIsError(false);
-              }}
+              onChange={eventChange}
             />
           </div>
 
@@ -114,9 +131,7 @@ export const FindMovie: React.FC<Props> = ({
                 type="button"
                 className="button is-primary"
                 onClick={() => {
-                  reset();
-                  addMovie(movie);
-                  setMovie(null);
+                  handleClick(movie);
                 }}
               >
                 Add to the list

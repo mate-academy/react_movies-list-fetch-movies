@@ -34,11 +34,6 @@ export const FindMovie: React.FC<Props> = ({
       if ('Error' in movieFromServer) {
         throw new Error('Can&apos;t find movie such a title');
       } else {
-        if (movieFromServer.Poster === 'N/A') {
-          movieFromServer.Poster
-            = 'https://via.placeholder.com/360x270.png?text=no%20preview';
-        }
-
         const newMovie: Movie = {
           title: movieFromServer.Title,
           description: movieFromServer.Plot,
@@ -87,6 +82,7 @@ export const FindMovie: React.FC<Props> = ({
               className="input is-dander"
               onChange={(event => {
                 setQuery(event.target.value);
+                setHasLoadingError(false);
               })}
               value={query}
             />

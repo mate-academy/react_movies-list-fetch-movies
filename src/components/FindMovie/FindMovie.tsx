@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import classNames from 'classnames';
 
 import './FindMovie.scss';
@@ -7,6 +7,7 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 import { getMovieFromData } from '../../utils';
+import { ErrorMessage } from '../../types/ErrorMessage';
 
 type Props = {
   addMovie: (movie: Movie) => void,
@@ -15,14 +16,20 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(ErrorMessage.NONE);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isSearching, setIsSearching] = useState(false);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setMovie(null);
     setQuery('');
     setHasError(false);
-  };
+  }, []);
+
+  const showError = useCallback((error: ErrorMessage) => {
+    setHasError(true);
+    setErrorMessage(error);
+  }, []);
 
   const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -32,33 +39,34 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       const movieData = await getMovie(query);
 
       if ('Error' in movieData) {
-        throw new Error(movieData.Error);
+        showError(ErrorMessage.NO_MOVIE);
+
+        return;
       }
 
       setMovie(
         getMovieFromData(movieData),
       );
     } catch {
-      setHasError(true);
+      showError(ErrorMessage.UNEXPECTED);
     } finally {
       setIsSearching(false);
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-
-    if (hasError) {
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setQuery(event.target.value);
       setHasError(false);
-    }
-  };
+    }, [],
+  );
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     if (movie) {
       addMovie(movie);
       reset();
     }
-  };
+  }, [movie]);
 
   return (
     <>
@@ -85,7 +93,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           {hasError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
         </div>

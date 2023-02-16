@@ -3,11 +3,10 @@ import { ResponseError } from './types/ReponseError';
 
 const API_URL = 'https://www.omdbapi.com/?i=tt3896198&apikey=a3734d37';
 
-export function getMovie(query: string): Promise<MovieData | ResponseError> {
-  return fetch(`${API_URL}&t=${query}`)
-    .then(res => res.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
-}
+export const getMovie = async (
+  query: string,
+): Promise<MovieData | ResponseError> => {
+  const response = await fetch(`${API_URL}&t=${query}`);
+
+  return response.json();
+};

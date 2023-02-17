@@ -12,7 +12,7 @@ export const App = () => {
       return;
     }
 
-    setMovies([...movies, movie]);
+    setMovies(prevMovies => [...prevMovies, movie]);
   };
 
   return (

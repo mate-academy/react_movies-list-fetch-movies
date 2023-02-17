@@ -8,20 +8,17 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [query, setQuery] = useState('');
 
-  const addMovie = (movie: Movie) => {
-    const index = movies.findIndex(v => v.imdbId === movie.imdbId);
+  const handleAddMovie = (newMovie: Movie) => {
+    const isMovieInList = movies.some(({ imdbId }) => {
+      return imdbId === newMovie.imdbId;
+    });
 
-    if (index !== -1) {
-      return;
+    if (!isMovieInList) {
+      setMovies((prevMovies) => [...prevMovies, newMovie]);
     }
-
-    setMovies([
-      ...movies,
-      movie,
-    ]);
   };
 
-  const reset = useCallback(() => {
+  const handleReset = useCallback(() => {
     setQuery('');
   }, []);
 
@@ -35,8 +32,8 @@ export const App = () => {
         <FindMovie
           searchText={query}
           setSearchText={setQuery}
-          reset={reset}
-          addMovie={addMovie}
+          onReset={handleReset}
+          onAddMovie={handleAddMovie}
         />
       </div>
     </div>

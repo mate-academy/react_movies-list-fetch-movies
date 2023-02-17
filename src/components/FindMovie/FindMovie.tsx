@@ -8,19 +8,21 @@ import { MovieCard } from '../MovieCard';
 type Props = {
   searchText: string;
   setSearchText: (text: string) => void;
-  reset: () => void;
-  addMovie: (movie: Movie) => void;
+  onReset: () => void;
+  onAddMovie: (movie: Movie) => void;
 };
 
 const defaultPicture = (
   'https://via.placeholder.com/360x270.png?text=no%20preview'
 );
 
+const BASE_IMBD_URL = 'https://www.imdb.com/title/';
+
 export const FindMovie: React.FC<Props> = ({
   searchText,
   setSearchText,
-  reset,
-  addMovie,
+  onReset,
+  onAddMovie,
 }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isError, setIsError] = useState(false);
@@ -29,24 +31,23 @@ export const FindMovie: React.FC<Props> = ({
   const eventChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
-    if (value.trim().length === 0) {
+    if (!value.trim().length) {
       setSearchText('');
 
       return;
     }
 
-    value.trim();
     setSearchText(value);
     setIsError(false);
   };
 
   const handleClick = (foundMovie: Movie) => {
-    reset();
-    addMovie(foundMovie);
+    onReset();
+    onAddMovie(foundMovie);
     setMovie(null);
   };
 
-  const searchMovie = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSearchMovie = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     const movieFromServer = await getMovie(searchText);
@@ -64,10 +65,10 @@ export const FindMovie: React.FC<Props> = ({
       const newMovie = {
         title: Title,
         description: Plot,
-        imgUrl: Poster !== 'N/A'
-          ? Poster
-          : defaultPicture,
-        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+        imgUrl: Poster === 'N/A'
+          ? defaultPicture
+          : Poster,
+        imdbUrl: `${BASE_IMBD_URL}${imdbID}`,
         imdbId: imdbID,
       };
 
@@ -81,7 +82,7 @@ export const FindMovie: React.FC<Props> = ({
     <>
       <form
         className="find-movie"
-        onSubmit={searchMovie}
+        onSubmit={handleSearchMovie}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">

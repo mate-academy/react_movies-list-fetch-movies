@@ -4,18 +4,15 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
+import { createMovieFromData } from '../../helpers/createMovieFromData';
 
 type Props = {
   onClickAddMovie: (movie: Movie) => void,
 };
 
-const DEFAUT_POSTER_IMG = 'https://via.placeholder.com/'
-+ '360x270.png?text=no%20preview';
-const MOVIE_IMDB_URL = 'https://www.imdb.com/title/';
-
 export const FindMovie: React.FC<Props> = ({ onClickAddMovie }) => {
   const [loadedMovie, setLoadedMovie] = useState<Movie | null>(null);
-  const [hasSuccessResponse, setHasSuccessResponse] = useState(true);
+  const [hasError, setHasError] = useState(true);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -24,33 +21,16 @@ export const FindMovie: React.FC<Props> = ({ onClickAddMovie }) => {
 
     try {
       setIsLoading(true);
-      setHasSuccessResponse(true);
+      setHasError(true);
       const movieData = await getMovie(query);
 
       if ('Error' in movieData) {
         throw new Error(`Can't find movie such a ${query}`);
       }
 
-      const {
-        Title,
-        Poster,
-        Plot,
-        imdbID,
-      } = movieData;
-
-      const newMovie: Movie = {
-        title: Title,
-        description: Plot,
-        imgUrl: Poster === 'N/A'
-          ? DEFAUT_POSTER_IMG
-          : Poster,
-        imdbUrl: `${MOVIE_IMDB_URL}${imdbID}`,
-        imdbId: imdbID,
-      };
-
-      setLoadedMovie(newMovie);
+      setLoadedMovie(createMovieFromData(movieData));
     } catch (error) {
-      setHasSuccessResponse(false);
+      setHasError(false);
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +39,7 @@ export const FindMovie: React.FC<Props> = ({ onClickAddMovie }) => {
   const resetForm = () => {
     setQuery('');
     setLoadedMovie(null);
-    setHasSuccessResponse(true);
+    setHasError(true);
   };
 
   const handleAddMovie = () => {
@@ -73,8 +53,8 @@ export const FindMovie: React.FC<Props> = ({ onClickAddMovie }) => {
   const handleOnChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
 
-    if (!hasSuccessResponse) {
-      setHasSuccessResponse(true);
+    if (!hasError) {
+      setHasError(true);
     }
   };
 
@@ -101,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ onClickAddMovie }) => {
             />
           </div>
 
-          {!hasSuccessResponse && (
+          {!hasError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

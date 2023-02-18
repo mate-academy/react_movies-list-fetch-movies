@@ -46,12 +46,10 @@ export const FindMovie: React.FC<Props> = (
       const movieDataFromServer = await getMovie(searchQuery);
 
       if (isResponseOk(movieDataFromServer)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const newMovie = normalizeMovieData(movieDataFromServer as MovieData);
 
         setMovie(newMovie);
       } else {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         setResponseError(true);
       }
     } catch {
@@ -146,8 +144,7 @@ export const FindMovie: React.FC<Props> = (
       {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-          <MovieCard movie={movie!} />
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

@@ -25,24 +25,28 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleFormSubmit = async () => {
     setIsLoad(true);
-    const movieData: MovieData | ResponseError = await getMovie(query);
+    try {
+      const movieData: MovieData | ResponseError = await getMovie(query);
 
-    if ('Title' in movieData) {
-      if (movieData.Poster === 'N/A') {
-        // eslint-disable-next-line max-len
-        movieData.Poster = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+      if ('Title' in movieData) {
+        if (movieData.Poster === 'N/A') {
+          // eslint-disable-next-line max-len
+          movieData.Poster = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+        }
+
+        const newMovie: Movie = {
+          title: movieData.Title,
+          description: movieData.Plot,
+          imgUrl: movieData.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
+          imdbId: movieData.imdbID,
+        };
+
+        setFoundMovie(newMovie);
+      } else {
+        throw Error(movieData.Error);
       }
-
-      const newMovie: Movie = {
-        title: movieData.Title,
-        description: movieData.Plot,
-        imgUrl: movieData.Poster,
-        imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
-        imdbId: movieData.imdbID,
-      };
-
-      setFoundMovie(newMovie);
-    } else {
+    } catch (error) {
       setMovieNotFound(true);
     }
   };
@@ -56,17 +60,19 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setQuery('');
   };
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    handleFormSubmit()
+      .finally(() => {
+        setIsLoad(false);
+      });
+  };
+
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          handleFormSubmit()
-            .finally(() => {
-              setIsLoad(false);
-            });
-        }}
+        onSubmit={onFormSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -125,13 +131,16 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           )}
         </div>
       </form>
-      {foundMovie
-      && (
-        <div className="container" data-cy="previewContainer">
-          <h2 className="title">Preview</h2>
-          <MovieCard movie={foundMovie} />
-        </div>
-      )}
+      <div
+        className={cn('container',
+          {
+            'is-hidden': !foundMovie,
+          })}
+        data-cy="previewContainer"
+      >
+        <h2 className="title">Preview</h2>
+        <MovieCard movie={foundMovie} />
+      </div>
     </>
   );
 };

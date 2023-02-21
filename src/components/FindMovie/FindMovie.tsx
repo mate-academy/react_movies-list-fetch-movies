@@ -1,74 +1,78 @@
-import { FC, useState, Dispatch } from 'react';
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
-import cn from 'classnames';
-import { MovieCard } from '../MovieCard';
-import { getMovie, placeholder } from '../../api';
-
-import { Movie } from '../../types/Movie';
-import { MovieData } from '../../types/MovieData';
-
 type Props = {
-  setMovies: Dispatch<React.SetStateAction<Movie[]>>,
+  onAdd: (newMovie: Movie) => void,
 };
 
-export const FindMovie: FC<Props> = ({ setMovies }) => {
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
+  const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
 
-  const createCard = (newMovie: MovieData) => ({
-    title: newMovie.Title,
-    description: newMovie.Plot,
-    imgUrl: newMovie.Poster === 'N/A'
-      ? placeholder
-      : newMovie.Poster,
-    imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
-    imdbId: newMovie.imdbID,
-  });
-
-  const fetchMovie = async (title: string) => {
-    const movieData = await getMovie(title);
-
-    if ((movieData as MovieData).imdbID) {
-      setMovie(createCard(movieData as MovieData));
-      setIsLoading(false);
-      setIsVisible(false);
-
-      return;
-    }
-
-    setIsLoading(false);
-    setIsVisible(true);
-  };
-
-  const addMovie = () => {
-    if (movie) {
-      setMovies((current) => {
-        return current.some(({ imdbId }) => imdbId === movie.imdbId)
-          ? current
-          : [...current, movie];
-      });
-      setMovie(null);
-      setQuery('');
-      setIsVisible(false);
-    }
-  };
-
-  const handleSubmit = (
-    event: React.FormEvent<HTMLFormElement>,
-  ) => {
+  const handleFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    fetchMovie(query);
     setIsLoading(true);
+
+    try {
+      const normalizedQuery = query
+        .split(' ')
+        .map(word => word.trim())
+        .join(' ');
+      const response = await getMovie(normalizedQuery);
+
+      if ('Error' in response) {
+        setIsError(true);
+        throw new Error(
+          'There is no movie with such title, please, try one more time',
+        );
+      } else {
+        const {
+          Poster,
+          Title,
+          Plot,
+          imdbID,
+        } = response;
+        const poster = Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : Poster;
+        const newMovie = {
+          title: Title,
+          description: Plot,
+          imgUrl: poster,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          imdbId: imdbID,
+        };
+
+        setIsLoading(false);
+        setMovie(newMovie);
+      }
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const hadleAddButton = () => {
+    if (movie !== null) {
+      onAdd(movie);
+    }
+
+    setMovie(null);
+    setQuery('');
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={handleSubmit}
+        onSubmit={handleFormSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -85,14 +89,14 @@ export const FindMovie: FC<Props> = ({ setMovies }) => {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                setIsVisible(false);
+                setIsError(false);
               }}
             />
           </div>
 
-          {isVisible && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
-              {'Can\'t find a movie with such a title'}
+              Can&apos;t find a movie with such a title
             </p>
           )}
         </div>
@@ -102,29 +106,30 @@ export const FindMovie: FC<Props> = ({ setMovies }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              disabled={!query.length}
-              className={cn('button is-light', {
-                'is-loading': isLoading,
-              })}
+              className={classNames(
+                'button is-light',
+                { 'is-loading': isLoading },
+              )}
+              disabled={!query}
             >
-              {movie
-                ? 'Search again'
-                : 'Find a movie'}
+              {!movie
+                ? 'Find a movie'
+                : 'Search again'}
             </button>
           </div>
 
-          {movie && (
-            <div className="control">
+          <div className="control">
+            {movie && (
               <button
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={addMovie}
+                onClick={hadleAddButton}
               >
                 Add to the list
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </form>
 

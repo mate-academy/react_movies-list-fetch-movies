@@ -1,7 +1,7 @@
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=8d837d8a';
+const API_URL = 'http://www.omdbapi.com/?apikey=8d837d8a';
 
 export const placeholder
 = 'https://via.placeholder.com/360x270.png?text=no%20preview';

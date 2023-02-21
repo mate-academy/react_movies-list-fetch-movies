@@ -14,7 +14,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [movieNotFound, setMovieNotFound] = useState(false);
-  const [isLoad, setIsLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const buttonDisabled = query.length > 0;
 
   useEffect(() => {
@@ -24,9 +24,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   }, [query]);
 
   const handleFormSubmit = async () => {
-    setIsLoad(true);
+    setIsLoading(true);
     try {
-      const movieData: MovieData | ResponseError = await getMovie(query);
+      const movieData: MovieData | ResponseError = await getMovie(query)
+        .finally(() => {
+          setIsLoading(false);
+        });
 
       if ('Title' in movieData) {
         if (movieData.Poster === 'N/A') {
@@ -62,10 +65,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const onFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    handleFormSubmit()
-      .finally(() => {
-        setIsLoad(false);
-      });
+    handleFormSubmit();
   };
 
   return (
@@ -108,7 +108,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={cn(
                 'button is-light disabled',
                 {
-                  'is-loading': isLoad,
+                  'is-loading': isLoading,
                 },
               )}
             >
@@ -116,31 +116,25 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             </button>
           </div>
 
-          {foundMovie
-          && (
-            <div className="control">
-              <button
-                data-cy="addButton"
-                type="button"
-                className="button is-primary"
-                onClick={addMovieToList}
-              >
-                Add to the list
-              </button>
-            </div>
-          )}
+          <div className="control">
+            <button
+              data-cy="addButton"
+              type="button"
+              className={cn('button is-primary',
+                { 'is-hidden': !foundMovie })}
+              onClick={addMovieToList}
+            >
+              Add to the list
+            </button>
+          </div>
         </div>
       </form>
-      <div
-        className={cn('container',
-          {
-            'is-hidden': !foundMovie,
-          })}
-        data-cy="previewContainer"
-      >
-        <h2 className="title">Preview</h2>
-        <MovieCard movie={foundMovie} />
-      </div>
+      {foundMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={foundMovie} />
+        </div>
+      )}
     </>
   );
 };

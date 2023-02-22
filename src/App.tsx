@@ -8,14 +8,14 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const addMovie = useCallback((newMovie: Movie) => {
+  const addMovie = (newMovie: Movie) => {
     const isMovieInList = movies
       .some(movie => movie.imdbId === newMovie.imdbId);
 
     if (!isMovieInList) {
       setMovies(currentMovies => [...currentMovies, newMovie]);
     }
-  }, []);
+  };
 
   const changeSearchQuery = useCallback((newQuery: string) => {
     setSearchQuery(newQuery);

@@ -21,8 +21,7 @@ export const FindMovie: React.FC<Props> = (
   },
 ) => {
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [responseError, setResponseError]
-    = useState(false);
+  const [responseError, setResponseError] = useState(false);
   const [hasLoadingError, setHasLoadingError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(true);
 
@@ -132,7 +131,7 @@ export const FindMovie: React.FC<Props> = (
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddButtonClick()}
+                onClick={handleAddButtonClick}
               >
                 Add to the list
               </button>

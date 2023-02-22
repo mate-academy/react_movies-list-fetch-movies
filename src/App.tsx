@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -8,11 +8,18 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const addMovie = (newMovie: Movie) => {
-    if (!movies.some(movie => movie.imdbId === newMovie.imdbId)) {
+  const addMovie = useCallback((newMovie: Movie) => {
+    const isMovieInList = movies
+      .some(movie => movie.imdbId === newMovie.imdbId);
+
+    if (!isMovieInList) {
       setMovies(currentMovies => [...currentMovies, newMovie]);
     }
-  };
+  }, []);
+
+  const changeSearchQuery = useCallback((newQuery: string) => {
+    setSearchQuery(newQuery);
+  }, []);
 
   return (
     <div className="page">
@@ -23,7 +30,7 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           query={searchQuery}
-          setSearchQuery={setSearchQuery}
+          setSearchQuery={changeSearchQuery}
           addMovie={addMovie}
         />
       </div>

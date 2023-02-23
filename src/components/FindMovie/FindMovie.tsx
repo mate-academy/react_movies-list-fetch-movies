@@ -43,7 +43,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     return selectedMovie;
   };
 
-  const getMovieByName = async (event: { preventDefault: () => void; }) => {
+  const getMovieByName = async (event:
+  React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setIsMovieFetching(true);
 

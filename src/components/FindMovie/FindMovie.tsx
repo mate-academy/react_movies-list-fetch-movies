@@ -17,7 +17,7 @@ export const FindMovie: React.FC<Props> = ({
 }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [onLoading, setOnLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [onError, setOnError] = useState(false);
 
   const createNewMovie = (foundMovieData:MovieData | null) => {
@@ -42,7 +42,7 @@ export const FindMovie: React.FC<Props> = ({
       };
 
       setMovie(newMovieItem);
-      setOnLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -59,13 +59,13 @@ export const FindMovie: React.FC<Props> = ({
     } catch (error) {
       setOnError(true);
     } finally {
-      setOnLoading(false);
+      setIsLoading(false);
     }
   };
 
   const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setOnLoading(true);
+    setIsLoading(true);
     loadMovie(query);
   };
 
@@ -125,7 +125,7 @@ export const FindMovie: React.FC<Props> = ({
               data-cy="searchButton"
               type="submit"
               className={classNames('is-light', 'button',
-                { 'is-loading': onLoading })}
+                { 'is-loading': isLoading })}
               disabled={query.trim() === ''}
             >
               {!movie

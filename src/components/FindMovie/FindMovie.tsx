@@ -58,9 +58,6 @@ export const FindMovie: React.FC<Props> = ({
       }
     } catch (error) {
       setOnError(true);
-      // setMovie(null);
-      // eslint-disable-next-line no-alert
-      alert(error);
     } finally {
       setOnLoading(false);
     }

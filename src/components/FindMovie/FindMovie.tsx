@@ -70,11 +70,7 @@ export const FindMovie: React.FC<Props> = ({
   };
 
   const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onError && query === e.target.value) {
-      setOnError(true);
-    } else {
-      setOnError(false);
-    }
+    setOnError(onError && query === e.target.value);
 
     setQuery((prevQuery => {
       return prevQuery === e.target.value
@@ -126,7 +122,7 @@ export const FindMovie: React.FC<Props> = ({
               type="submit"
               className={classNames('is-light', 'button',
                 { 'is-loading': isLoading })}
-              disabled={query.trim() === ''}
+              disabled={!query.trim().length}
             >
               {!movie
                 ? 'Find a movie'

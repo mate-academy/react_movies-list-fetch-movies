@@ -16,8 +16,6 @@ export const App = () => {
     if (!isExistMovie) {
       setIsMovieNew(true);
       setMovies((prevMovies) => [...prevMovies, movie]);
-    } else {
-      setIsMovieNew(false);
     }
   };
 

@@ -24,21 +24,19 @@ export const FindMovie: React.FC<Props> = ({
   const [isLoad, setIsLoad] = useState(false);
   const [catchError, setCatchError] = useState(false);
 
-  const LoadMovie = async () => {
+  const loadMovie = async () => {
     setIsLoad(true);
 
-    if (query !== ' ' && query.length > 0) {
-      const movieData = await getMovie(query);
+    const movieData = await getMovie(query.trim());
 
-      setIsLoad(false);
+    setIsLoad(false);
 
-      if (isResponceOK(movieData)) {
-        const normalizedMovie = normalizeData(movieData as MovieData);
+    if (isResponceOK(movieData)) {
+      const normalizedMovie = normalizeData(movieData as MovieData);
 
-        setMovie(normalizedMovie);
-      } else {
-        setCatchError(true);
-      }
+      setMovie(normalizedMovie);
+    } else {
+      setCatchError(true);
     }
 
     handleQueryChange('');
@@ -46,7 +44,7 @@ export const FindMovie: React.FC<Props> = ({
 
   const onFindMovie = (event: React.FormEvent) => {
     event.preventDefault();
-    LoadMovie();
+    loadMovie();
   };
 
   const onButtonAdd = () => {
@@ -55,8 +53,18 @@ export const FindMovie: React.FC<Props> = ({
     }
   };
 
+  const onInput = (value: string) => {
+    handleQueryChange(value);
+    setCatchError(false);
+  };
+
   const onResetMovie = () => {
     setMovie(null);
+  };
+
+  const onAddButtonClick = () => {
+    onButtonAdd();
+    onResetMovie();
   };
 
   return (
@@ -75,11 +83,7 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => (
-                // eslint-disable-next-line no-sequences
-                handleQueryChange(event.target.value),
-                setCatchError(false)
-              )}
+              onChange={(event) => onInput(event.target.value)}
             />
           </div>
           {catchError && (
@@ -112,11 +116,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => (
-                // eslint-disable-next-line no-sequences
-                  onButtonAdd(),
-                  onResetMovie()
-                )}
+                onClick={() => onAddButtonClick()}
               >
                 Add to the list
               </button>
@@ -125,7 +125,7 @@ export const FindMovie: React.FC<Props> = ({
         </div>
       </form>
 
-      {movie !== null && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

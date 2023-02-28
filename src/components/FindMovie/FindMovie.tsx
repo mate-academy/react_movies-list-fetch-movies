@@ -5,15 +5,21 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { getNormalizeMovie } from '../../utils/getNormalizeMovie';
+import { ErrorMessage } from '../../types/ErrorMessage';
 
 type Props = {
-  addMovie: (movie: Movie) => void
+  addMovie: (movie: Movie) => void,
+  errorMessage: ErrorMessage,
+  changeErrorMessage: (message: ErrorMessage) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({
+  addMovie,
+  errorMessage,
+  changeErrorMessage,
+}) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSearch = async (event: React.FormEvent) => {
@@ -24,8 +30,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       const movieFromServer = await getMovie(query);
 
       if ('Error' in movieFromServer) {
-        setHasError(true);
         setIsLoading(false);
+        changeErrorMessage(ErrorMessage.NOMOVIE);
 
         return;
       }
@@ -51,7 +57,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const handleInput = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setQuery(event.target.value);
-      setHasError(false);
+      changeErrorMessage(ErrorMessage.NONE);
     }, [],
   );
 
@@ -75,9 +81,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          {hasError && (
+          {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
         </div>

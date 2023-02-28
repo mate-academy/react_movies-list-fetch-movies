@@ -5,7 +5,18 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [query, setQuery] = useState('');
+
+  const handleQueryChange = (value: string) => {
+    setQuery(value);
+  };
+
+  const handleAddMovie = (newMovie: Movie) => {
+    setMovies(current => (
+      [...current.filter((el) => el.imdbId !== newMovie.imdbId), newMovie]
+    ));
+  };
 
   return (
     <div className="page">
@@ -14,7 +25,11 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          query={query}
+          handleQueryChange={handleQueryChange}
+          addNewMovie={handleAddMovie}
+        />
       </div>
     </div>
   );

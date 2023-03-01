@@ -30,7 +30,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsLoading(false);
 
     if ('Title' in response) {
-      console.log(response.Poster);
       setAnswear({
         title: response.Title,
         description: response.Plot,

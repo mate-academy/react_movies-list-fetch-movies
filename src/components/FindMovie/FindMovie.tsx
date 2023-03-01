@@ -6,15 +6,20 @@ import { ResponseError } from '../../types/ReponseError';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
+enum Response {
+  title = 'Title',
+  error = 'Error',
+}
+
 type Props = {
   addMovie: (movie:Movie) => void
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string>('');
   const [answear, setAnswear] = useState<Movie | {} | ResponseError>({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   const onChangeHandel = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -29,7 +34,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     setIsLoading(false);
 
-    if ('Title' in response) {
+    if (Response.title in response) {
       setAnswear({
         title: response.Title,
         description: response.Plot,
@@ -41,7 +46,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       });
     }
 
-    if ('Error' in response) {
+    if (Response.error in response) {
       setAnswear(response);
       setError(true);
     }

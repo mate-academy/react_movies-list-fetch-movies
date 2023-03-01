@@ -9,7 +9,7 @@ export const App = () => {
 
   const addMovie = (movie: Movie) => {
     if (!movies.some((el:Movie) => el.imdbId === movie.imdbId)) {
-      setMovies([...movies, movie]);
+      setMovies((prev) => [...prev, movie]);
     }
   };
 

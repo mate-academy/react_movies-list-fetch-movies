@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Classnames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
-import { ResponseError } from '../../types/ReponseError';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
@@ -16,10 +15,10 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
-  const [search, setSearch] = useState<string>('');
-  const [answear, setAnswear] = useState<Movie | {} | ResponseError>({});
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
+  const [search, setSearch] = useState('');
+  const [movie, setMovie] = useState<Movie | {}>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   const onChangeHandel = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -35,7 +34,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsLoading(false);
 
     if (Response.title in response) {
-      setAnswear({
+      setMovie({
         title: response.Title,
         description: response.Plot,
         imgUrl: response.Poster !== 'N/A'
@@ -47,25 +46,27 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
 
     if (Response.error in response) {
-      setAnswear(response);
+      setMovie(response);
       setError(true);
     }
   };
 
-  const addAndClear = (movie: Movie) => {
-    addMovie(movie);
+  const addAndClear = (newMovie: Movie) => {
+    addMovie(newMovie);
     setSearch('');
-    setAnswear({});
+    setMovie({});
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    requstByMovie();
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-          requstByMovie();
-        }}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -105,13 +106,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             </button>
           </div>
 
-          {'title' in answear && (
+          {'title' in movie && (
             <div className="control">
               <button
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => addAndClear(answear)}
+                onClick={() => addAndClear(movie)}
               >
                 Add to the list
               </button>
@@ -120,11 +121,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      {'title' in answear
+      {'title' in movie
            && (
              <div className="container" data-cy="previewContainer">
                <h2 className="title">Preview</h2>
-               <MovieCard movie={answear} />
+               <MovieCard movie={movie} />
              </div>
            )}
     </>

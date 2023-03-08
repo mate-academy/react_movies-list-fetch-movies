@@ -1,9 +1,4 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  MouseEvent,
-  useState,
-} from 'react';
+import { useState } from 'react';
 
 import './App.scss';
 
@@ -22,21 +17,10 @@ import { FindMovie } from './components/FindMovie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [query, setQuery] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
 
-  const onChangeQuery = (e: ChangeEvent<HTMLInputElement>) => {
-    if (isError) {
-      setError(false);
-    }
-
-    setQuery(e.target.value);
-  };
-
-  const onFindMovie = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onFindMovie = async (query: string) => {
     if (movie) {
       setMovie(null);
     }
@@ -44,9 +28,9 @@ export const App = () => {
     setLoading(true);
 
     try {
-      const request = await getMovie(query);
+      const response = await getMovie(query);
 
-      if ('Error' in request) {
+      if ('Error' in response) {
         setError(true);
       } else {
         const {
@@ -54,7 +38,7 @@ export const App = () => {
           Title,
           Plot,
           imdbID,
-        }: MovieData = request;
+        }: MovieData = response;
 
         const foundMovie: Movie = {
           title: Title,
@@ -75,9 +59,7 @@ export const App = () => {
     }
   };
 
-  const onAddMovie = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
+  const onAddMovie = () => {
     const isSameMovie = movies.some(listMovie => {
       return listMovie.imdbId === movie?.imdbId;
     });
@@ -89,7 +71,6 @@ export const App = () => {
       ]));
     }
 
-    setQuery('');
     setMovie(null);
   };
 
@@ -101,13 +82,13 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          query={query}
-          onChangeQuery={onChangeQuery}
-          onFindMovie={onFindMovie}
           movie={movie}
+          onFindMovie={onFindMovie}
+          onAddMovie={onAddMovie}
           isLoading={isLoading}
           isError={isError}
-          onAddMovie={onAddMovie}
+          changeLoading={setLoading}
+          changeError={setError}
         />
       </div>
     </div>

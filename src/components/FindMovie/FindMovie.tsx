@@ -3,35 +3,60 @@ import React, {
   ChangeEvent,
   FormEvent,
   MouseEvent,
+  useState,
 } from 'react';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  query: string;
-  onChangeQuery: (e: ChangeEvent<HTMLInputElement>) => void;
-  onFindMovie: (e: FormEvent<HTMLFormElement>) => void;
   movie: Movie | null;
+  onFindMovie: (query: string) => void;
+  onAddMovie: () => void;
   isLoading: boolean;
   isError: boolean;
-  onAddMovie: (e: MouseEvent<HTMLButtonElement>) => void;
+  changeLoading: (value: boolean) => void;
+  changeError: (value: boolean) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({
-  query,
-  onChangeQuery: onChangeValue,
-  onFindMovie,
   movie,
+  onFindMovie,
+  onAddMovie,
   isLoading,
   isError,
-  onAddMovie,
+  changeLoading,
+  changeError,
 }) => {
+  const [query, setQuery] = useState('');
+
+  const onChangeQuery = (e: ChangeEvent<HTMLInputElement>) => {
+    if (isError) {
+      changeError(false);
+    }
+
+    setQuery(e.target.value);
+  };
+
+  const submitForm = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    changeLoading(true);
+    onFindMovie(query);
+  };
+
+  const handleButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    onAddMovie();
+    setQuery('');
+  };
+
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={onFindMovie}
+        onSubmit={submitForm}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -46,7 +71,7 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={onChangeValue}
+              onChange={onChangeQuery}
             />
           </div>
 
@@ -79,7 +104,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={onAddMovie}
+                onClick={handleButtonClick}
               >
                 Add to the list
               </button>

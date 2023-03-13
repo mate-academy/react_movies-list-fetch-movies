@@ -12,20 +12,20 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
-  const [titleMovie, setTitleMovie] = useState('');
+  const [query, setQuery] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
-  const [isErrorSearch, setIsErrorSearch] = useState(false);
   const [errorMessage, setErrorMessage]
   = useState<ErrorMessage>(ErrorMessage.NONE);
   const [isSearching, setIsSearching] = useState(false);
 
   const resetForm = () => {
-    setTitleMovie('');
+    setQuery('');
+    setNewMovie(null);
   };
 
   const handleChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-    setTitleMovie(event.target.value);
-    setIsErrorSearch(false);
+    setQuery(event.target.value);
+    setErrorMessage(ErrorMessage.NONE);
   };
 
   const getMovieFromData = ({
@@ -44,7 +44,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   });
 
   const showError = (error: ErrorMessage) => {
-    setIsErrorSearch(true);
     setErrorMessage(error);
   };
 
@@ -52,7 +51,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     event.preventDefault();
     setIsSearching(true);
     try {
-      const movieData = await getMovie(titleMovie);
+      const movieData = await getMovie(query);
 
       if ('Error' in movieData) {
         showError(ErrorMessage.NO_MOVIE);
@@ -61,7 +60,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       }
 
       setNewMovie(getMovieFromData(movieData));
-      setIsErrorSearch(false);
+      showError(ErrorMessage.NONE);
     } catch {
       showError(ErrorMessage.UNEXPECTED);
     } finally {
@@ -76,7 +75,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
     onAdd(newMovie);
     resetForm();
-    setNewMovie(null);
+    showError(ErrorMessage.NONE);
   };
 
   return (
@@ -97,11 +96,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
-              value={titleMovie}
+              value={query}
               onChange={handleChange}
             />
           </div>
-          {isErrorSearch && (
+          {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
               {errorMessage}
             </p>
@@ -117,7 +116,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
                 'button is-light"',
                 { 'is-loading': isSearching },
               )}
-              disabled={!titleMovie}
+              disabled={!query}
             >
               {!newMovie
                 ? 'Find a movie'

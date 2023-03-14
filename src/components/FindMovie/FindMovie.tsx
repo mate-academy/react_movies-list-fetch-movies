@@ -44,18 +44,21 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsMovieExist(false);
   };
 
-  const handleAddMovie = (newMovie: Movie) => {
+  const handleAddMovie = () => {
+    if (!movie) {
+      return;
+    }
+
     addMovie(prev => {
-      if (prev.some(
-        cur => cur.imdbId === newMovie.imdbId,
-      )) {
+      if (prev.some(cur => cur.imdbId === movie.imdbId)) {
         setIsMovieExist(true);
 
         return prev;
       }
 
-      return [...prev, newMovie];
+      return [...prev, movie];
     });
+
     setMovie(null);
     setQuery('');
   };
@@ -123,7 +126,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddMovie(movie)}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>

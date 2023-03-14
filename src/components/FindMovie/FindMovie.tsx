@@ -40,8 +40,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setIsTitleError(false);
-    setMovie(null);
-    setIsMovieExist(false);
   };
 
   const handleAddMovie = () => {
@@ -50,7 +48,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }
 
     addMovie(prev => {
-      if (prev.some(cur => cur.imdbId === movie.imdbId)) {
+      if (prev.some(current => current.imdbId === movie.imdbId)) {
         setIsMovieExist(true);
 
         return prev;

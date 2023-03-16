@@ -11,7 +11,10 @@ const defaultPictureUrl
 
 const createMovie = (data: MovieData): Movie => {
   const {
-    Title, Poster, Plot, imdbID,
+    Title,
+    Poster,
+    Plot,
+    imdbID,
   } = data;
   const hasPoster = Poster !== 'N/A';
   const imdbUrl = `https://www.imdb.com/title/${imdbID}`;

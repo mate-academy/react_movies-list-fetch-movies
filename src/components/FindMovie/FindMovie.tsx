@@ -18,17 +18,22 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onMovieAdd }) => {
 
   const handleFindMovie = async () => {
     setIsLoading(true);
-    const movieData = await getMovie(query);
 
-    if ('Error' in movieData) {
+    try {
+      const movieData = await getMovie(query);
+
+      if ('Error' in movieData) {
+        throw Error();
+      } else {
+        const movie = createMovie(movieData);
+
+        setSearchedMovie(movie);
+      }
+    } catch {
       setHasError(true);
-    } else {
-      const movie = createMovie(movieData);
-
-      setSearchedMovie(movie);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const handleInputUpdate = (e: ChangeEvent<HTMLInputElement>) => {

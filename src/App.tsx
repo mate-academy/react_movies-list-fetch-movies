@@ -12,13 +12,9 @@ export const App = () => {
       (movie) => movie.imdbId === newMovie.imdbId,
     );
 
-    if (isMovieAdded) {
-      return false;
+    if (!isMovieAdded) {
+      setMovies((current) => [...current, newMovie]);
     }
-
-    setMovies((current) => [...current, newMovie]);
-
-    return true;
   };
 
   return (

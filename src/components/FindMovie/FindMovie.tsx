@@ -2,35 +2,12 @@ import React, { ChangeEvent, useState } from 'react';
 import cn from 'classnames';
 import { getMovie } from '../../api';
 import './FindMovie.scss';
-import { MovieData } from '../../types/MovieData';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
-
-const defaultPictureUrl
-  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
-
-const createMovie = (data: MovieData): Movie => {
-  const {
-    Title,
-    Poster,
-    Plot,
-    imdbID,
-  } = data;
-  const hasPoster = Poster !== 'N/A';
-  const imdbUrl = `https://www.imdb.com/title/${imdbID}`;
-  const imgUrl = hasPoster ? Poster : defaultPictureUrl;
-
-  return {
-    title: Title,
-    description: Plot,
-    imgUrl,
-    imdbUrl,
-    imdbId: imdbID,
-  };
-};
+import { createMovie } from '../../utils/createMovie';
 
 type FindMovieProps = {
-  onMovieAdd: (movie: Movie) => boolean;
+  onMovieAdd: (movie: Movie) => void;
 };
 
 export const FindMovie: React.FC<FindMovieProps> = ({ onMovieAdd }) => {
@@ -55,7 +32,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onMovieAdd }) => {
   };
 
   const handleInputUpdate = (e: ChangeEvent<HTMLInputElement>) => {
-    if (hasError === true) {
+    if (hasError) {
       setHasError(false);
     }
 
@@ -68,9 +45,18 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onMovieAdd }) => {
     setQuery('');
   };
 
+  const handleButtonClick = () => {
+    if (searchedMovie) {
+      handleMovieAdd(searchedMovie);
+    }
+  };
+
   return (
     <>
-      <form className="find-movie" onSubmit={(e) => e.preventDefault()}>
+      <form
+        className="find-movie"
+        onSubmit={(e) => e.preventDefault()}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -120,7 +106,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onMovieAdd }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleMovieAdd(searchedMovie)}
+                onClick={handleButtonClick}
               >
                 Add to the list
               </button>

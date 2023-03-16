@@ -5,8 +5,14 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type Props = {
-  error: [boolean, React.Dispatch<React.SetStateAction<boolean>>],
-  preview: [boolean, React.Dispatch<React.SetStateAction<boolean>>],
+  error: {
+    error: boolean,
+    setIsErrorMessage: React.Dispatch<React.SetStateAction<boolean>>,
+  },
+  preview: {
+    preview: boolean,
+    setIsPreview: React.Dispatch<React.SetStateAction<boolean>>,
+  },
   movie: Movie | null,
   isLoading: boolean,
   onFindMovie: (value: string) => void,
@@ -21,13 +27,11 @@ export const FindMovie: FC<Props> = ({
   onFindMovie,
   addMovie,
 }) => {
-  const [isPreview, removePreview] = preview;
-  const [isErrorMessage, setErrorMessage] = error;
   const [valueInput, setValueInput] = useState<string>('');
 
   const hendlerInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValueInput(e.currentTarget.value);
-    setErrorMessage(false);
+    error.setIsErrorMessage(false);
   };
 
   const hendlerFindMovie = (
@@ -40,7 +44,7 @@ export const FindMovie: FC<Props> = ({
   const addMovieToList = () => {
     setValueInput('');
     addMovie();
-    removePreview(false);
+    preview.setIsPreview(false);
   };
 
   return (
@@ -63,7 +67,7 @@ export const FindMovie: FC<Props> = ({
             />
           </div>
 
-          {isErrorMessage && (
+          {error.error && (
             <p
               className="help is-danger"
               data-cy="errorMessage"
@@ -90,7 +94,7 @@ export const FindMovie: FC<Props> = ({
             </button>
           </div>
 
-          {isPreview && (
+          {preview.preview && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -106,7 +110,7 @@ export const FindMovie: FC<Props> = ({
         </div>
       </form>
 
-      {isPreview && (
+      {preview.preview && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie || null} />

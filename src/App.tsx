@@ -6,11 +6,8 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const error = useState<boolean>(false);
-  const [, setIsErrorMessage] = error;
-  const preview = useState<boolean>(false);
-  const [, setIsPreview] = preview;
-
+  const [error, setIsErrorMessage] = useState<boolean>(false);
+  const [preview, setIsPreview] = useState<boolean>(false);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [previewMovie, setPreviewMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,11 +30,12 @@ export const App = () => {
           imdbId: movie.imdbID,
         });
         setIsPreview(true);
-        setIsLoading(false);
       })
       .catch(() => {
         setIsPreview(false);
         setIsErrorMessage(true);
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   };
@@ -65,8 +63,8 @@ export const App = () => {
           isLoading={isLoading}
           onFindMovie={findMoviePreview}
           addMovie={addMovieToList}
-          error={error}
-          preview={preview}
+          error={{ error, setIsErrorMessage }}
+          preview={{ preview, setIsPreview }}
         />
       </div>
     </div>

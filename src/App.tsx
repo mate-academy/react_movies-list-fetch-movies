@@ -1,6 +1,4 @@
 import React from 'react';
-// import { MoviesList } from './components/MoviesList';
-// import { Movie } from './types/Movie';
 import './App.scss';
 import { FindMovie } from './components/FindMovie';
 

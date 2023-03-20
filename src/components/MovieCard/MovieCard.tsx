@@ -15,6 +15,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
   } = movie;
 
   const isTitle = (imgUrl !== 'N/A');
+  // why we should use image from another server, but not from this program?
   // const posterDef = 'images/noPreview.png';
   const posterDef = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 

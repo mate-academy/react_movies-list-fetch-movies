@@ -14,11 +14,9 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
   const [movie, setMovie] = useState<Movie>();
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [prevTitle, setPrevTitle] = useState('');
 
   const changeMovie = async (inputValue: string) => {
     setIsLoading(true);
-    setPrevTitle(inputValue);
 
     const newMovie = await getMovie(inputValue)
       .finally(() => setIsLoading(false));
@@ -51,9 +49,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
     e.preventDefault();
     const titleEdited = searchTitle.trim().toLowerCase();
 
-    if (titleEdited !== prevTitle) {
-      changeMovie(titleEdited);
-    }
+    changeMovie(titleEdited);
   };
 
   const clearingSideBar = () => {

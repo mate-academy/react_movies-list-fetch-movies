@@ -14,28 +14,18 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
     imdbUrl,
   } = movie;
 
-  const isTitle = (imgUrl !== 'N/A');
-  // why we should use image from another server, but not from this program?
-  // const posterDef = 'images/noPreview.png';
+  const isImage = (imgUrl !== 'N/A');
   const posterDef = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
   return (
     <div className="card" data-cy="movieCard">
       <div className="card-image">
         <figure className="image is-4by3">
-          {isTitle ? (
-            <img
-              data-cy="moviePoster"
-              src={imgUrl}
-              alt="Film logo"
-            />
-          ) : (
-            <img
-              data-cy="moviePoster"
-              src={posterDef}
-              alt="Film logo"
-            />
-          )}
+          <img
+            data-cy="moviePoster"
+            src={isImage ? imgUrl : posterDef}
+            alt="Film logo"
+          />
         </figure>
       </div>
       <div className="card-content">

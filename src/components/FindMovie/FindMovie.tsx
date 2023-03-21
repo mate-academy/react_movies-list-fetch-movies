@@ -18,29 +18,34 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
   const changeMovie = async (inputValue: string) => {
     setIsLoading(true);
 
-    const newMovie = await getMovie(inputValue)
-      .finally(() => setIsLoading(false));
+    try {
+      const newMovie = await getMovie(inputValue);
 
-    if ('Error' in newMovie) {
+      if ('Error' in newMovie) {
+        setIsError(true);
+      } else {
+        setIsError(false);
+        const {
+          Title,
+          Plot,
+          Poster,
+          imdbID,
+        } = newMovie;
+
+        const imdbUrl = `https://www.imdb.com/title/${imdbID}`;
+
+        setMovie({
+          title: Title,
+          description: Plot,
+          imgUrl: Poster,
+          imdbUrl,
+          imdbId: imdbID,
+        });
+      }
+    } catch (error) {
       setIsError(true);
-    } else {
-      setIsError(false);
-      const {
-        Title,
-        Plot,
-        Poster,
-        imdbID,
-      } = newMovie;
-
-      const imdbUrl = `https://www.imdb.com/title/${imdbID}`;
-
-      setMovie({
-        title: Title,
-        description: Plot,
-        imgUrl: Poster,
-        imdbUrl,
-        imdbId: imdbID,
-      });
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -9,10 +9,10 @@ export const App = () => {
 
   const pushMovie = (movie: Movie) => {
     if (movies.length > 0) {
-      const imbdIdMovie = movies
+      const isMoviePresent = movies
         .some((elem) => elem.imdbId === movie.imdbId);
 
-      return (imbdIdMovie
+      return (isMoviePresent
         ? null
         : setMovies((item) => [...item, movie])
       );

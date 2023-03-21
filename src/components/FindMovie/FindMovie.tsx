@@ -25,10 +25,13 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
       setIsError(true);
     } else {
       setIsError(false);
-
       const {
-        Title, Plot, Poster, imdbID,
+        Title,
+        Plot,
+        Poster,
+        imdbID,
       } = newMovie;
+
       const imdbUrl = `https://www.imdb.com/title/${imdbID}`;
 
       setMovie({
@@ -52,7 +55,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
     changeMovie(titleEdited);
   };
 
-  const clearingSideBar = () => {
+  const clearSideBar = () => {
     setIsError(false);
     setSearchTitle('');
     setMovie(undefined);
@@ -63,7 +66,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
       addMovies(movie);
     }
 
-    clearingSideBar();
+    clearSideBar();
   };
 
   return (
@@ -120,7 +123,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => addToList()}
+                onClick={addToList}
               >
                 Add to the list
               </button>
@@ -132,7 +135,8 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
       { movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          { movie && <MovieCard movie={movie} />}
+
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

@@ -96,7 +96,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({
           )}
         </div>
       </form>
-      {errorMessage
+      {movie && !errorMessage
         ? (
           <div className="container" data-cy="previewContainer">
             <h2 className="title">Preview</h2>

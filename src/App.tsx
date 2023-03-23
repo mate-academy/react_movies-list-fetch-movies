@@ -42,6 +42,9 @@ export const App: React.FC = () => {
 
   const addMovie = (addedMovie: Movie) => {
     if (movies.some((element) => element.imdbId === addedMovie.imdbId)) {
+      setQuery('');
+      setMovie(null);
+
       return;
     }
 

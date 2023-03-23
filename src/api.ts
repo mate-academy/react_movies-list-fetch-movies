@@ -15,10 +15,6 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
     }));
 }
 
-export enum Error {
-  Loading = 'Can&apos;t find a movie with such a title',
-}
-
 export const NormalizeMovieData = (movieData: MovieData): Movie => {
   return ({
     title: movieData.Title,

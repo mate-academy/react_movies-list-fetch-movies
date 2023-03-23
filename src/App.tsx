@@ -4,7 +4,7 @@ import debounce from 'lodash.debounce';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
-import { Error, getMovie, NormalizeMovieData } from './api';
+import { getMovie, NormalizeMovieData } from './api';
 import { MovieData } from './types/MovieData';
 import { Loader } from './components/Loader/Loader';
 
@@ -12,7 +12,7 @@ export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [query, setQuery] = useState('');
   const [appliedQuery, setAppliedQuery] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,10 +28,12 @@ export const App: React.FC = () => {
     setIsLoading(true);
     getMovie(appliedQuery)
       .then((data) => {
-        setMovie(NormalizeMovieData(data as MovieData));
+        if ((data as MovieData).imdbID) {
+          setMovie(NormalizeMovieData(data as MovieData));
+        }
       })
       .catch(() => (
-        setErrorMessage(Error.Loading)
+        setErrorMessage(true)
       ))
       .finally(() => {
         setIsLoading(false);
@@ -39,6 +41,10 @@ export const App: React.FC = () => {
   };
 
   const addMovie = (addedMovie: Movie) => {
+    if (movies.some((element) => element.imdbId === addedMovie.imdbId)) {
+      return;
+    }
+
     setMovies([
       ...movies,
       addedMovie,
@@ -68,6 +74,7 @@ export const App: React.FC = () => {
               movie={movie as Movie}
               addMovie={addMovie}
               setErrorMessage={setErrorMessage}
+              isLoading={isLoading}
             />
           )}
       </div>

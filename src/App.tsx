@@ -6,7 +6,6 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import { getMovie, NormalizeMovieData } from './api';
 import { MovieData } from './types/MovieData';
-import { Loader } from './components/Loader/Loader';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -65,21 +64,17 @@ export const App: React.FC = () => {
       </div>
 
       <div className="sidebar">
-        {isLoading
-          ? (<Loader />)
-          : (
-            <FindMovie
-              query={query}
-              setQuery={setQuery}
-              applyQuery={applyQuery}
-              onSubmit={handleSubmit}
-              errorMessage={errorMessage}
-              movie={movie as Movie}
-              addMovie={addMovie}
-              setErrorMessage={setErrorMessage}
-              isLoading={isLoading}
-            />
-          )}
+        <FindMovie
+          query={query}
+          setQuery={setQuery}
+          applyQuery={applyQuery}
+          onSubmit={handleSubmit}
+          errorMessage={errorMessage}
+          movie={movie as Movie}
+          addMovie={addMovie}
+          setErrorMessage={setErrorMessage}
+          isLoading={isLoading}
+        />
       </div>
     </div>
   );

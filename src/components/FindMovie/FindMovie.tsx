@@ -96,7 +96,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({
           )}
         </div>
       </form>
-      {movie && !errorMessage
+      {/* {movie && !errorMessage
         ? (
           <div className="container" data-cy="previewContainer">
             <h2 className="title">Preview</h2>
@@ -107,7 +107,20 @@ export const FindMovie: React.FC<FindMovieProps> = ({
           <p className="help is-danger" data-cy="errorMessage">
             Can&apos;t find a movie with such a title
           </p>
-        )}
+        )} */}
+
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
+
+      {errorMessage && (
+        <p className="help is-danger" data-cy="errorMessage">
+          Can&apos;t find a movie with such a title
+        </p>
+      )}
     </>
   );
 };

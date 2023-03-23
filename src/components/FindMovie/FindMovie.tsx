@@ -53,7 +53,10 @@ export const FindMovie: React.FC<FindMovieProps> = ({
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-dander"
+              className={classNames(
+                'input',
+                { 'is-dander': errorMessage },
+              )}
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
@@ -71,8 +74,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({
               data-cy="searchButton"
               type="submit"
               className={classNames(
-                'button',
-                { 'is-light': !isLoading },
+                'button is-light',
                 { 'is-loading': isLoading },
               )}
               onClick={onSubmit}
@@ -96,18 +98,6 @@ export const FindMovie: React.FC<FindMovieProps> = ({
           )}
         </div>
       </form>
-      {/* {movie && !errorMessage
-        ? (
-          <div className="container" data-cy="previewContainer">
-            <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
-          </div>
-        )
-        : (
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
-        )} */}
 
       {movie && (
         <div className="container" data-cy="previewContainer">

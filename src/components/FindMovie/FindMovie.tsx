@@ -11,6 +11,7 @@ type FindMovieProps = {
   errorMessage: string,
   movie: Movie,
   addMovie: (movie: Movie) => void,
+  setErrorMessage: (message: string) => void,
 };
 
 export const FindMovie: React.FC<FindMovieProps> = ({
@@ -21,6 +22,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({
   errorMessage,
   movie,
   addMovie,
+  setErrorMessage,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -53,6 +55,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({
               onChange={(event) => {
                 setQuery(event.target.value);
                 applyQuery(event.target.value);
+                setErrorMessage('');
               }}
               ref={inputRef}
             />

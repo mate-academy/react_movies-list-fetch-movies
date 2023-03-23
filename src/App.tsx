@@ -67,6 +67,7 @@ export const App: React.FC = () => {
               errorMessage={errorMessage}
               movie={movie as Movie}
               addMovie={addMovie}
+              setErrorMessage={setErrorMessage}
             />
           )}
       </div>

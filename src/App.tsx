@@ -30,10 +30,9 @@ export const App: React.FC = () => {
         if ((data as MovieData).imdbID) {
           setMovie(NormalizeMovieData(data as MovieData));
         }
+
+        setErrorMessage(true);
       })
-      .catch(() => (
-        setErrorMessage(true)
-      ))
       .finally(() => {
         setIsLoading(false);
       });

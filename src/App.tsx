@@ -6,6 +6,7 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import { Error, getMovie, NormalizeMovieData } from './api';
 import { MovieData } from './types/MovieData';
+import { Loader } from './components/Loader/Loader';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -13,6 +14,7 @@ export const App: React.FC = () => {
   const [appliedQuery, setAppliedQuery] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const applyQuery = useCallback(
     debounce(
@@ -23,6 +25,7 @@ export const App: React.FC = () => {
   );
 
   const handleSubmit = () => {
+    setIsLoading(true);
     getMovie(appliedQuery)
       .then((data) => {
         setMovie(NormalizeMovieData(data as MovieData));
@@ -31,8 +34,7 @@ export const App: React.FC = () => {
         setErrorMessage(Error.Loading)
       ))
       .finally(() => {
-        setAppliedQuery('');
-        setQuery('');
+        setIsLoading(false);
       });
   };
 
@@ -41,6 +43,10 @@ export const App: React.FC = () => {
       ...movies,
       addedMovie,
     ]);
+
+    setAppliedQuery('');
+    setQuery('');
+    setMovie(null);
   };
 
   return (
@@ -50,15 +56,19 @@ export const App: React.FC = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie
-          query={query}
-          setQuery={setQuery}
-          applyQuery={applyQuery}
-          onSubmit={handleSubmit}
-          errorMessage={errorMessage}
-          movie={movie as Movie}
-          addMovie={addMovie}
-        />
+        {isLoading
+          ? (<Loader />)
+          : (
+            <FindMovie
+              query={query}
+              setQuery={setQuery}
+              applyQuery={applyQuery}
+              onSubmit={handleSubmit}
+              errorMessage={errorMessage}
+              movie={movie as Movie}
+              addMovie={addMovie}
+            />
+          )}
       </div>
     </div>
   );

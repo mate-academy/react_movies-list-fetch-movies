@@ -1,11 +1,19 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const addMovie = useCallback((newMovie: Movie) => {
+    const isAdded = movies.some(movie => movie.imdbId === newMovie.imdbId);
+
+    if (!isAdded) {
+      setMovies(prevMovies => [...prevMovies, newMovie]);
+    }
+  }, [movies]);
 
   return (
     <div className="page">
@@ -14,7 +22,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie onAdd={addMovie} />
       </div>
     </div>
   );

@@ -1,44 +1,45 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Movie } from '../../types/Movie';
+import { MoveCardImg } from './components/MoveCardImg';
+import { MoveCardDescription } from './components/MoveCardDescription';
 import './MovieCard.scss';
 
-type Props = {
-  movie: Movie,
-};
+interface Props {
+  movie: Movie;
+}
 
-export const MovieCard: React.FC<Props> = ({ movie }) => (
-  <div className="card" data-cy="movieCard">
-    <div className="card-image">
-      <figure className="image is-4by3">
-        <img
-          data-cy="moviePoster"
-          src={movie.imgUrl}
+export const MovieCard: React.FC<Props> = memo(
+  ({ movie }) => (
+    <div className="card" data-cy="movieCard">
+      <div className="card-image">
+        <MoveCardImg
           alt="Film logo"
+          url={movie.imgUrl}
+          className="is-4by3"
+          data-cy="moviePoster"
         />
-      </figure>
-    </div>
-    <div className="card-content">
-      <div className="media">
-        <div className="media-left">
-          <figure className="image is-48x48">
-            <img
-              src="images/imdb-logo.jpeg"
+      </div>
+      <div className="card-content">
+        <div className="media">
+          <div className="media-left">
+            <MoveCardImg
               alt="imdb"
+              className="is-48x48"
+              url="images/imdb-logo.jpeg"
             />
-          </figure>
+          </div>
+          <div className="media-content">
+            <p className="title is-8" data-cy="movieTitle">
+              {movie.title}
+            </p>
+          </div>
         </div>
-        <div className="media-content">
-          <p className="title is-8" data-cy="movieTitle">{movie.title}</p>
-        </div>
-      </div>
 
-      <div className="content" data-cy="movieDescription">
-        {movie.description}
-        <br />
-        <a href={movie.imdbUrl} data-cy="movieURL">
-          IMDB
-        </a>
+        <MoveCardDescription
+          imdbUrl={movie.imdbUrl}
+          description={movie.description}
+        />
       </div>
     </div>
-  </div>
+  ),
 );

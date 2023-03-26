@@ -1,0 +1,1 @@
+export { MoveCardDescription } from './MoveCardDescription';

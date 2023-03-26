@@ -1,0 +1,1 @@
+export { MoveCardImg } from './MoveCardImg';

@@ -15,7 +15,9 @@ function getMovieFromMovieDetails({
   return {
     title: Title,
     description: Plot,
-    imgUrl: Poster,
+    imgUrl: Poster !== 'N/A'
+      ? Poster
+      : 'https://via.placeholder.com/360x270.png?text=no%20preview',
     imdbUrl: `https://www.imdb.com/title/${imdbID}`,
     imdbId: imdbID,
   };
@@ -118,11 +120,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
           </div>
         </div>
       </form>
-
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

@@ -17,7 +17,8 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [movie, setMovie] = useState<Movie | undefined>();
   const [failedRequest, setFailedRequest] = useState(false);
 
-  const addMovie = async (request: string) => {
+  const fetchMovie = async (request: string) => {
+    setLoading(true);
     const film = await getMovie(request);
 
     if ('Title' in film) {
@@ -41,11 +42,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
     }
 
     setLoading(false);
-  };
-
-  const searchMovie = () => {
-    addMovie(query);
-    setLoading(true);
   };
 
   const queryTittle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +94,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                 className={classNames('button is-light',
                   { 'is-loading': loading })}
                 disabled={!query.length}
-                onClick={searchMovie}
+                onClick={() => fetchMovie(query)}
               >
                 Find a movie
               </button>
@@ -112,7 +108,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                   className={classNames('button is-light',
                     { 'is-loading': loading })}
                   disabled={!query.length}
-                  onClick={searchMovie}
+                  onClick={() => fetchMovie(query)}
                 >
                   Search again
                 </button>

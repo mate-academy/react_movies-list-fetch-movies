@@ -17,7 +17,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [movie, setMovie] = useState<Movie | undefined>();
   const [failedRequest, setFailedRequest] = useState(false);
 
-  const fetchMovie = async (request: string) => {
+  const fetchMovie = async (
+    request: string,
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
     setLoading(true);
     const film = await getMovie(request);
 
@@ -60,7 +64,10 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => fetchMovie(query, event)}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -94,7 +101,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                 className={classNames('button is-light',
                   { 'is-loading': loading })}
                 disabled={!query.length}
-                onClick={() => fetchMovie(query)}
               >
                 Find a movie
               </button>
@@ -108,7 +114,6 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                   className={classNames('button is-light',
                     { 'is-loading': loading })}
                   disabled={!query.length}
-                  onClick={() => fetchMovie(query)}
                 >
                   Search again
                 </button>

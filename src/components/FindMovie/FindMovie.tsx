@@ -139,18 +139,3 @@ export const FindMovie: React.FC<Props> = ({
     </>
   );
 };
-
-// getMovie(query)
-//   .then((movieData: MovieData) => {
-//     const findedMovie: Movie = {
-//       title: movieData.Title,
-//       description: movieData.Plot,
-//       imgUrl: movieData.Poster,
-//       imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
-//       imdbId: movieData.imdbID,
-//     };
-
-//     setMovie(findedMovie);
-
-//     console.log(movieData);
-//   });

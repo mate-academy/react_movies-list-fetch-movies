@@ -12,13 +12,13 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ setMovies }) => {
-  const [request, setRequest] = useState('');
+  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | undefined>();
   const [failedRequest, setFailedRequest] = useState(false);
 
-  const addMovie = async (query: string) => {
-    const film = await getMovie(query);
+  const addMovie = async (request: string) => {
+    const film = await getMovie(request);
 
     if ('Title' in film) {
       const {
@@ -28,28 +28,38 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
         imdbID,
       } = film;
 
-      if (film.Poster === 'N/A') {
-        setMovie({
-          title: Title,
-          description: Plot,
-          imgUrl: 'https://via.placeholder.com/360x270.png?text=no%20preview',
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          imdbId: imdbID,
-        });
-      } else {
-        setMovie({
-          title: Title,
-          description: Plot,
-          imgUrl: Poster,
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          imdbId: imdbID,
-        });
-      }
+      setMovie({
+        title: Title,
+        description: Plot,
+        imgUrl: (Poster !== 'N/A' ? Poster
+          : 'https://via.placeholder.com/360x270.png?text=no%20preview'),
+        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+        imdbId: imdbID,
+      });
     } else {
       setFailedRequest(true);
     }
 
     setLoading(false);
+  };
+
+  const searchMovie = () => {
+    addMovie(query);
+    setLoading(true);
+  };
+
+  const queryTittle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setFailedRequest(false);
+  };
+
+  const addMovieTolist = () => {
+    if (movie) {
+      setMovies(movie);
+    }
+
+    setQuery('');
+    setMovie(undefined);
   };
 
   return (
@@ -67,11 +77,8 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
-              value={request}
-              onChange={(event) => {
-                setRequest(event.target.value);
-                setFailedRequest(false);
-              }}
+              value={query}
+              onChange={queryTittle}
             />
           </div>
 
@@ -90,11 +97,8 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                 type="submit"
                 className={classNames('button is-light',
                   { 'is-loading': loading })}
-                disabled={!request.length}
-                onClick={() => {
-                  addMovie(request);
-                  setLoading(true);
-                }}
+                disabled={!query.length}
+                onClick={searchMovie}
               >
                 Find a movie
               </button>
@@ -107,11 +111,8 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                   type="submit"
                   className={classNames('button is-light',
                     { 'is-loading': loading })}
-                  disabled={!request.length}
-                  onClick={() => {
-                    addMovie(request);
-                    setLoading(true);
-                  }}
+                  disabled={!query.length}
+                  onClick={searchMovie}
                 >
                   Search again
                 </button>
@@ -122,11 +123,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                   data-cy="addButton"
                   type="button"
                   className="button is-primary"
-                  onClick={() => {
-                    setMovies(movie);
-                    setRequest('');
-                    setMovie(undefined);
-                  }}
+                  onClick={addMovieTolist}
                 >
                   Add to the list
                 </button>

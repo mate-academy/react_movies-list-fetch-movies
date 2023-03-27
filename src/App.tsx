@@ -8,15 +8,9 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovies = (movie: Movie) => {
-    let count = false;
+    const findMovie = movies.find(element => element.imdbId === movie.imdbId);
 
-    for (let i = 0; i < movies.length; i += 1) {
-      if (movies[i].imdbId === movie.imdbId) {
-        count = true;
-      }
-    }
-
-    if (!count) {
+    if (!findMovie) {
       setMovies([...movies, movie]);
     }
   };

@@ -39,7 +39,7 @@ export const FindMovie: React.FC<Props> = ({
   onAddMovie,
 }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [loading, isLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [hasLoadingError, setLoadingError] = useState(false);
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
@@ -52,16 +52,19 @@ export const FindMovie: React.FC<Props> = ({
 
   const handleFindMovie = async (event: FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    isLoading(true);
+    setLoading(true);
     setLoadingError(false);
 
-    const searchResult = await getMovie(query)
-      .finally(() => isLoading(false));
+    try {
+      const searchResult = await getMovie(query);
 
-    if (Object.prototype.hasOwnProperty.call(searchResult, 'Error')) {
-      setLoadingError(true);
-    } else {
-      setMovie(normalizeMovie(searchResult as MovieData));
+      if ('Error' in searchResult) {
+        setLoadingError(true);
+      } else {
+        setMovie(normalizeMovie(searchResult));
+      }
+    } finally {
+      setLoading(false);
     }
   };
 

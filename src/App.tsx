@@ -18,6 +18,8 @@ export const App = () => {
         newMovie,
       ]);
     }
+
+    setQuery('');
   };
 
   return (

@@ -32,6 +32,7 @@ export const FindMovie: React.FC<{
           (items) => {
             const {
               Poster, Title, Plot, imdbID,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             }: any = items;
 
             setFindedFilm((prevState) => {

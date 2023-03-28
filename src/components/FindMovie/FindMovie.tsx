@@ -1,7 +1,81 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
+import { MovieData } from '../../types/MovieData';
 
-export const FindMovie: React.FC = () => {
+const initialForm = {
+  title: '',
+  description: '',
+  imgUrl: '',
+  imdbUrl: '',
+  imdbId: '',
+};
+
+export const FindMovie: React.FC<{
+  setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
+}> = ({ setMovies }) => {
+  const [findedFilm, setFindedFilm] = useState<Movie>(initialForm);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const searchNewfFilm = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    getMovie(inputValue)
+      .then(
+        (items) => {
+          const {
+            Poster, Title, Plot, imdbID,
+          } = items as MovieData;
+
+          setFindedFilm((prevState) => {
+            const image = Poster !== 'N/A' ? Poster
+              : 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+            return {
+              ...prevState,
+              title: Title,
+              description: Plot,
+              imgUrl: image,
+              imdbUrl: `http://www.imdb.com/title/${imdbID}`,
+              imdbId: imdbID,
+            };
+          });
+        },
+      )
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const isRendering = findedFilm.title && findedFilm.title !== undefined;
+
+  const handleAddFilm = () => {
+    if (isRendering) {
+      setMovies((prevMovie) => {
+        if (prevMovie.some((elem) => elem.imdbId === findedFilm.imdbId)) {
+          return prevMovie;
+        }
+
+        return [
+          ...prevMovie,
+          findedFilm,
+        ];
+      });
+    }
+
+    setInputValue('');
+    setFindedFilm(initialForm);
+  };
+
+  const isFirstError = findedFilm.title === undefined;
+
   return (
     <>
       <form className="find-movie">
@@ -17,12 +91,16 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={inputValue}
+              onChange={(event) => setInputValue(event.currentTarget.value)}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isFirstError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +108,39 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames(
+                'button',
+                'is-light',
+                { 'is-loading': isLoading },
+              )}
+              onClick={searchNewfFilm}
+              disabled={inputValue === ''}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          { inputValue && isRendering && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAddFilm}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
-
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {isRendering
+        && (
+          <div className="container" data-cy="previewContainer">
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={findedFilm} />
+          </div>
+        )}
     </>
   );
 };

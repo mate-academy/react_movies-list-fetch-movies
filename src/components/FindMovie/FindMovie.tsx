@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
@@ -12,44 +12,50 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
-  const [movie, setMovie] = useState<Movie>();
-  const [query, changeQuery] = useState('');
-  const [hasError, changeErrorStatus] = useState(false);
-  const [isLoading, changeLoadingStatus] = useState(false);
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [query, setQuery] = useState('');
+  const [hasError, setErrorStatus] = useState(false);
+  const [isLoading, setLoadingStatus] = useState(false);
 
-  const handleQuery = (value: string) => {
-    changeQuery(value);
-    changeErrorStatus(false);
+  const handleQuery = (event: ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setErrorStatus(false);
   };
 
   const handleMovie = async () => {
-    changeLoadingStatus(true);
+    setLoadingStatus(true);
 
     try {
       const result = await getMovie(query);
 
       if ((result as MovieData).Title) {
         setMovie(normalizeMovieData(result as MovieData));
-        changeErrorStatus(false);
+        setErrorStatus(false);
       } else {
-        changeErrorStatus(true);
+        setErrorStatus(true);
       }
     } catch (error) {
-      changeErrorStatus(true);
+      setErrorStatus(true);
     } finally {
-      changeLoadingStatus(false);
+      setLoadingStatus(false);
     }
   };
 
   const addMovie = ():void => {
     onAdd(movie as Movie);
-    changeQuery('');
-    setMovie(undefined);
+    setQuery('');
+    setMovie(null);
   };
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleMovie();
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -63,7 +69,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => handleQuery(event.target.value)}
+              onChange={handleQuery}
             />
           </div>
           {hasError && (
@@ -82,10 +88,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
                 'button is-light',
                 { 'is-loading': isLoading },
               )}
-              onClick={(event) => {
-                event.preventDefault();
-                handleMovie();
-              }}
               disabled={!query}
             >
               {movie ? 'Search again' : 'Find a movie'}

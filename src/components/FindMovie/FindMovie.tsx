@@ -54,7 +54,7 @@ export const FindMovie: React.FC<{
       });
   };
 
-  const isRendering = findedFilm.title !== '' && findedFilm.title !== undefined;
+  const isRendering = findedFilm.title && findedFilm.title !== undefined;
 
   const handleAddFilm = () => {
     if (isRendering) {
@@ -120,7 +120,7 @@ export const FindMovie: React.FC<{
             </button>
           </div>
 
-          { inputValue !== '' && isRendering && (
+          { inputValue && isRendering && (
             <div className="control">
               <button
                 data-cy="addButton"

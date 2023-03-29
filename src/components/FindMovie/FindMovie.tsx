@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
+import { ResponseError } from '../../types/ReponseError';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
@@ -16,7 +17,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [hasError, setError] = useState(false);
 
-  const normilizedData = (movieOnQuery: MovieData) => {
+  const normilizedData = (movieOnQuery: MovieData | ResponseError) => {
+    if ('Error' in movieOnQuery) {
+      setError(true);
+
+      return;
+    }
+
     const createMovie = {
       title: movieOnQuery.Title,
       description: movieOnQuery.Plot,
@@ -35,11 +42,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       setLoading(true);
       const data = await getMovie(search);
 
-      if ('Error' in data) {
-        setError(true);
-      } else {
-        normilizedData(data);
-      }
+      normilizedData(data);
+    } catch {
+      setError(true);
     } finally {
       setLoading(false);
     }
@@ -54,6 +59,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     addMovie(selectedMovie);
     setMovie(null);
     setQuery('');
+  };
+
+  const handleChange = (search: string) => {
+    setQuery(search);
+    setError(false);
   };
 
   return (
@@ -75,10 +85,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               value={query}
               placeholder="Enter a title to search"
               className="input is-dander"
-              onChange={({ target }) => {
-                setQuery(target.value);
-                setError(false);
-              }}
+              onChange={({ target }) => handleChange(target.value)}
             />
           </div>
 

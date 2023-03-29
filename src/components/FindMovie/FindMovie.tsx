@@ -1,37 +1,62 @@
 import classNames from 'classnames';
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+} from 'react';
+import debounce from 'lodash.debounce';
+import { getMovie, NormalizeMovieData } from '../../api';
+import { MovieData } from '../../types/MovieData';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 type FindMovieProps = {
-  query: string
-  setQuery: (event: string) => void,
-  applyQuery: (event: string) => void,
-  onSubmit: () => void,
-  errorMessage: boolean,
-  movie: Movie,
   addMovie: (movie: Movie) => void,
-  setErrorMessage: (boolean: boolean) => void,
-  isLoading: boolean,
 };
 
-export const FindMovie: React.FC<FindMovieProps> = ({
-  query,
-  setQuery,
-  applyQuery,
-  onSubmit,
-  errorMessage,
-  movie,
-  addMovie,
-  setErrorMessage,
-  isLoading,
-}) => {
+export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [query, setQuery] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [appliedQuery, setAppliedQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+
+  const handleSubmit = () => {
+    setIsLoading(true);
+    getMovie(appliedQuery)
+      .then((data) => {
+        if ((data as MovieData).imdbID) {
+          setMovie(NormalizeMovieData(data as MovieData));
+        } else {
+          setErrorMessage(true);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const applyQuery = useCallback(
+    debounce(
+      setAppliedQuery,
+      1000,
+    ),
+    [appliedQuery],
+  );
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
+
+  const handleAddingMovie = (movietoAdd: Movie) => {
+    addMovie(movietoAdd);
+    setAppliedQuery('');
+    setQuery('');
+    setMovie(null);
+  };
 
   return (
     <>
@@ -39,7 +64,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({
         className="find-movie"
         onSubmit={(event) => {
           event.preventDefault();
-          onSubmit();
+          handleSubmit();
         }}
       >
         <div className="field">
@@ -77,8 +102,8 @@ export const FindMovie: React.FC<FindMovieProps> = ({
                 'button is-light',
                 { 'is-loading': isLoading },
               )}
-              onClick={onSubmit}
-              disabled={query.length === 0}
+              onClick={handleSubmit}
+              disabled={query.length === 0 || undefined}
             >
               Find a movie
             </button>
@@ -90,7 +115,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => addMovie(movie)}
+                onClick={() => handleAddingMovie(movie)}
               >
                 Add to the list
               </button>

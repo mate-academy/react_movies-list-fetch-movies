@@ -29,7 +29,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -56,10 +56,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const handleAddMovie = () => {
-    if (movie !== undefined) {
+    if (movie) {
       addMovie(movie);
       setQuery('');
-      setMovie(undefined);
+      setMovie(null);
     }
   };
 
@@ -100,14 +100,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 { 'is-loading': isLoading },
               )}
               onClick={handleFindMovie}
-              disabled={query.trim() === ''}
+              disabled={!query.trim()}
             >
               Find a movie
             </button>
           </div>
 
           <div className="control">
-            {movie !== undefined && (
+            {movie && (
               <button
                 data-cy="addButton"
                 type="button"

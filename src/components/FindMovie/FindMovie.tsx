@@ -2,10 +2,8 @@ import classNames from 'classnames';
 import React, {
   useEffect,
   useRef,
-  useCallback,
   useState,
 } from 'react';
-import debounce from 'lodash.debounce';
 import { getMovie, NormalizeMovieData } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { Movie } from '../../types/Movie';
@@ -20,13 +18,12 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [appliedQuery, setAppliedQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
 
   const handleSubmit = () => {
     setIsLoading(true);
-    getMovie(appliedQuery)
+    getMovie(query)
       .then((data) => {
         if ((data as MovieData).imdbID) {
           setMovie(NormalizeMovieData(data as MovieData));
@@ -39,21 +36,12 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
       });
   };
 
-  const applyQuery = useCallback(
-    debounce(
-      setAppliedQuery,
-      1000,
-    ),
-    [appliedQuery],
-  );
-
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
 
   const handleAddingMovie = (movietoAdd: Movie) => {
     addMovie(movietoAdd);
-    setAppliedQuery('');
     setQuery('');
     setMovie(null);
   };
@@ -85,7 +73,6 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                applyQuery(event.target.value);
                 setErrorMessage(false);
               }}
               ref={inputRef}

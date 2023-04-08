@@ -19,7 +19,9 @@ export const createMovie = (movieData: MovieData) => {
 
   const imdbUrl = `https://www.imdb.com/title/${imdbId}`;
 
-  const movie = new Movie(title, description, imgUrl, imdbUrl, imdbId);
+  const movie: Movie = {
+    title, description, imgUrl, imdbUrl, imdbId,
+  };
 
   return movie;
 };

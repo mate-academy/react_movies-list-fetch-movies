@@ -27,9 +27,7 @@ export const App: React.FC = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie
-          addMovie={addMovie}
-        />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );

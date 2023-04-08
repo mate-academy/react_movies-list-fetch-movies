@@ -45,6 +45,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       const foundMovie = createMovie(serverResponse);
 
       setMovie(foundMovie);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn(error);
     } finally {
       setIsLoading(false);
     }

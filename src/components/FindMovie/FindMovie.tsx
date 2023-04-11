@@ -3,9 +3,7 @@ import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
-import { ResponseError } from '../../types/ReponseError';
 import { getMovie, normalizeMovieData } from '../../api';
-
 import './FindMovie.scss';
 
 type Props = {
@@ -24,7 +22,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       setIsLoading(true);
 
       getMovie(query.trim())
-        .then((data: MovieData | ResponseError) => {
+        .then((data) => {
           if ('Error' in data) {
             setError(true);
             setMovieData(null);
@@ -43,11 +41,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     }, [query],
   );
 
-  const handleAddMovie = useCallback(() => {
-    if (movieData) {
-      const movieToAdd: Movie = normalizeMovieData(movieData);
+  const movie = movieData ? normalizeMovieData(movieData) : null;
 
-      addMovie(movieToAdd);
+  const handleAddMovie = useCallback(() => {
+    if (movieData && movie) {
+      addMovie(movie);
     }
 
     setQuery('');
@@ -59,6 +57,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setError(false);
     setMovieData(null);
   }, []);
+
+  const isDisable = query === '';
 
   return (
     <>
@@ -96,7 +96,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={classNames('button', 'is-light', {
                 'is-loading': isLoading,
               })}
-              disabled={query === ''}
+              disabled={isDisable}
             >
               Find a movie
             </button>
@@ -117,10 +117,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      {movieData && (
+      {(movieData && movie) && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={normalizeMovieData(movieData)} />
+
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

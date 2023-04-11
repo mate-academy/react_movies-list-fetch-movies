@@ -14,10 +14,12 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
 }
 
 export function normalizeMovieData(movieData: MovieData): Movie {
+  const poster = movieData.Poster !== 'N/A';
+
   return {
     title: movieData.Title,
     description: movieData.Plot,
-    imgUrl: movieData.Poster !== 'N/A'
+    imgUrl: poster
       ? movieData.Poster
       : 'https://via.placeholder.com/360x270.png?text=no%20preview',
     imdbId: movieData.imdbID,

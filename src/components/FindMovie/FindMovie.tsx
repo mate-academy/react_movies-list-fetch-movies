@@ -11,6 +11,7 @@ type Props = {
   addMovie: () => void,
   isMovieFind: boolean,
   isError: boolean,
+  isFirstSearch: boolean,
 };
 
 export const FindMovie: React.FC<Props> = ({
@@ -21,6 +22,7 @@ export const FindMovie: React.FC<Props> = ({
   addMovie,
   isMovieFind,
   isError,
+  isFirstSearch,
 }) => {
   return (
     <>
@@ -63,7 +65,7 @@ export const FindMovie: React.FC<Props> = ({
               onClick={findMovie}
               disabled={!newTitle}
             >
-              Find a movie
+              {isFirstSearch ? 'Find a movie' : 'Search again'}
             </button>
           </div>
 
@@ -83,7 +85,7 @@ export const FindMovie: React.FC<Props> = ({
       </form>
 
       <div className="container" data-cy="previewContainer">
-        {newMovie && <h2 className="title">Preview</h2>}
+        {newMovie && (<h2 className="title">Preview</h2>)}
         {newMovie && <MovieCard movie={newMovie} />}
       </div>
     </>

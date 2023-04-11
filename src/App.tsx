@@ -11,6 +11,7 @@ export const App = () => {
   const [newTitle, setNewTitle] = useState('');
   const [isMovieFind, setIsMovieFind] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [isFirstSearch, setIsFirstSearch] = useState(true);
 
   const changeTitle = (event:React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(event.target.value);
@@ -40,6 +41,7 @@ export const App = () => {
       })
       .finally(() => {
         setIsMovieFind(true);
+        setIsFirstSearch(false);
       });
   };
 
@@ -56,6 +58,7 @@ export const App = () => {
 
       setNewTitle('');
       setNewMovie(null);
+      setIsFirstSearch(true);
     }
   };
 
@@ -74,6 +77,7 @@ export const App = () => {
           addMovie={addMovie}
           isMovieFind={isMovieFind}
           isError={isError}
+          isFirstSearch={isFirstSearch}
         />
       </div>
     </div>

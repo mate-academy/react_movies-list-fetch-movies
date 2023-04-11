@@ -6,7 +6,7 @@ import { MovieCard } from '../MovieCard';
 type Props = {
   findMovie: (event: React.MouseEvent<HTMLButtonElement>) => void,
   newTitle: string,
-  changeTitle: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  changeSearchString: (event: React.ChangeEvent<HTMLInputElement>) => void,
   newMovie: Movie | null,
   addMovie: () => void,
   isMovieFind: boolean,
@@ -17,7 +17,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({
   findMovie,
   newTitle,
-  changeTitle,
+  changeSearchString,
   newMovie,
   addMovie,
   isMovieFind,
@@ -40,7 +40,7 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={newTitle}
-              onChange={changeTitle}
+              onChange={changeSearchString}
             />
           </div>
 

@@ -13,7 +13,7 @@ export const App = () => {
   const [isError, setIsError] = useState(false);
   const [isFirstSearch, setIsFirstSearch] = useState(true);
 
-  const changeTitle = (event:React.ChangeEvent<HTMLInputElement>) => {
+  const changeSearchString = (event:React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(event.target.value);
     setIsError(false);
   };
@@ -30,7 +30,7 @@ export const App = () => {
           setIsError(true);
         } else {
           setNewMovie({
-            title: newTitle,
+            title: res.Title,
             description: res.Plot,
             imgUrl: res.Poster,
             imdbUrl: `https://www.imdb.com/title/${res.imdbID}/`,
@@ -72,7 +72,7 @@ export const App = () => {
         <FindMovie
           findMovie={findMovie}
           newTitle={newTitle}
-          changeTitle={changeTitle}
+          changeSearchString={changeSearchString}
           newMovie={newMovie}
           addMovie={addMovie}
           isMovieFind={isMovieFind}

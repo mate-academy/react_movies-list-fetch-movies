@@ -11,7 +11,7 @@ export const App = () => {
     const hasMovie = movies.some(film => film.imdbId === movie.imdbId);
 
     if (!hasMovie) {
-      setMovies([...movies, movie]);
+      setMovies(prevState => [...prevState, movie]);
     }
   };
 

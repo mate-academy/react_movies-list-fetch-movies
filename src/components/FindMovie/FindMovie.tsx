@@ -31,10 +31,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             setError(false);
           }
         })
-        .catch(() => {
-          setError(true);
-          setMovieData(null);
-        })
         .finally(() => {
           setIsLoading(false);
         });

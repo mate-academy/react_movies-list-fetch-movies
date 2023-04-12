@@ -65,7 +65,9 @@ export const FindMovie: React.FC<Props> = ({
               onClick={findMovie}
               disabled={!newTitle}
             >
-              {isFirstSearch ? 'Find a movie' : 'Search again'}
+              {isFirstSearch
+                ? 'Find a movie'
+                : 'Search again'}
             </button>
           </div>
 

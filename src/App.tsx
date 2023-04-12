@@ -39,6 +39,11 @@ export const App = () => {
           setIsMovieFind(true);
         }
       })
+      .catch(() => {
+        setNewMovie(null);
+        setIsMovieFind(true);
+        setIsError(true);
+      })
       .finally(() => {
         setIsMovieFind(true);
         setIsFirstSearch(false);

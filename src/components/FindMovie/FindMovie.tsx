@@ -120,7 +120,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               })}
               disabled={!trimmedQuery}
             >
-              Find a movie
+              {!movie ? 'Find a movie' : 'Search again'}
             </button>
           </div>
 

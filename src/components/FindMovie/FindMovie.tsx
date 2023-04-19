@@ -13,7 +13,7 @@ import { MovieData } from '../../types/MovieData';
 
 type Props = {
   movies:Movie[];
-  onAddMovieToList: (query:Movie | null) => void;
+  onAddMovieToList: (query:Movie) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({
@@ -45,6 +45,14 @@ export const FindMovie: React.FC<Props> = ({
     }, [],
   );
 
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (value.length > 0) {
+      loadMovie(value);
+    }
+  };
+
   const normalizeMovie = useCallback(
     (movie:MovieData) => {
       return (
@@ -61,6 +69,17 @@ export const FindMovie: React.FC<Props> = ({
     }, [],
   );
 
+  const addMovieToList = (foundMovie:MovieData) => {
+    const movieInList = movies
+      .find(movie => movie.imdbId === foundMovie.imdbID);
+
+    if (movieInList === undefined) {
+      onAddMovieToList(normalizeMovie(foundMovie));
+    }
+
+    setFindMovie(null);
+  };
+
   useEffect(() => {
     if (movieIsError && movieIsError.Response === 'False') {
       setMovieIsError(null);
@@ -72,13 +91,7 @@ export const FindMovie: React.FC<Props> = ({
       <form
         method="get"
         className="find-movie"
-        onSubmit={(event) => {
-          event.preventDefault();
-
-          if (value.length > 0) {
-            loadMovie(value);
-          }
-        }}
+        onSubmit={(event) => onSubmit(event)}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -124,16 +137,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  const movieInList = movies
-                    .find(movie => movie.imdbId === findMovie.imdbID);
-
-                  if (movieInList === undefined) {
-                    onAddMovieToList(normalizeMovie(findMovie));
-                  }
-
-                  setFindMovie(null);
-                }}
+                onClick={() => addMovieToList(findMovie)}
               >
                 Add to the list
               </button>

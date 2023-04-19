@@ -24,9 +24,7 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           movies={movies}
-          onAddMovieToList={
-            (newMovie:Movie | null) => addMovieToMovies(newMovie)
-          }
+          onAddMovieToList={addMovieToMovies}
         />
       </div>
     </div>

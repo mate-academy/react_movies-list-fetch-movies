@@ -128,7 +128,7 @@ export const FindMovie: React.FC<Props> = ({
                   const movieInList = movies
                     .find(movie => movie.imdbId === findMovie.imdbID);
 
-                  if (movieInList) {
+                  if (movieInList === undefined) {
                     onAddMovieToList(normalizeMovie(findMovie));
                   }
 

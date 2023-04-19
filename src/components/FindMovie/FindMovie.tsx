@@ -40,11 +40,14 @@ export const FindMovie: FC<Props> = ({
     getMovie(query)
       .then(response => {
         if ('Error' in response) {
-          setHasError(true);
-        } else {
-          setNewMovie(getMovieFromData(response));
+          return Promise.reject();
         }
-      });
+
+        const parsedMovie = getMovieFromData(response);
+
+        return setNewMovie(parsedMovie);
+      })
+      .catch(() => setHasError(true));
   };
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

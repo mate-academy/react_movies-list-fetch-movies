@@ -9,12 +9,12 @@ export const App = () => {
   const [query, setQuery] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
 
-  const hasSuchMovie = useCallback(({ title }: Movie, movieList: Movie[]) => {
-    return movieList.some(movie => movie.title === title);
-  }, []);
+  const checkHasSuchMovie = useCallback(({ title }: Movie) => (
+    movies.some(movie => movie.title === title)
+  ), [movies]);
 
   const addMovie = useCallback(() => {
-    if (newMovie && !hasSuchMovie(newMovie, movies)) {
+    if (newMovie && !checkHasSuchMovie(newMovie)) {
       setMovies((current) => [...current, newMovie]);
     }
 

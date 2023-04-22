@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import './App.scss';
-import { MoviesList } from './components/MoviesList';
-import { FindMovie } from './components/FindMovie';
+
 import { Movie } from './types/Movie';
+import { MoviesList } from './components/MoviesList';
+
+import { FindMovie } from './components/FindMovie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);

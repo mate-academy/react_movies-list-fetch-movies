@@ -18,18 +18,20 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({
   movies, query, setMovies, setQuery,
 }) => {
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isError, setIsError] = useState<ResponseError>();
   const [isLoading, setIsLoading] = useState(false);
 
-  const addMovie = (movieData: MovieData) => (setMovie({
-    title: movieData.Title,
-    description: movieData.Plot,
-    imgUrl: movieData.Poster === 'N/A'
+  const addMovie = ({
+    Title, Plot, Poster, imdbID,
+  }: MovieData) => (setMovie({
+    title: Title,
+    description: Plot,
+    imgUrl: Poster === 'N/A'
       ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-      : movieData.Poster,
-    imdbUrl: 'https://www.imdb.com',
-    imdbId: movieData.imdbID,
+      : Poster,
+    imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+    imdbId: imdbID,
   }));
 
   const getMovieData = async (enteredQuery: string) => {
@@ -49,18 +51,26 @@ export const FindMovie: React.FC<Props> = ({
     }
   };
 
+  const handleButtonFindMovie = (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    getMovieData(query);
+  };
+
   const onAddMovie = (movieInfo: Movie) => {
     const isAlreadyAdded = movies.some(
       ({ imdbId }) => imdbId === movieInfo.imdbId,
     );
 
     if (isAlreadyAdded) {
+      setMovie(null);
+      setQuery('');
+
       return;
     }
 
     setMovies([...movies, movieInfo]);
     setQuery('');
-    setMovie(undefined);
+    setMovie(null);
   };
 
   return (
@@ -97,10 +107,7 @@ export const FindMovie: React.FC<Props> = ({
               type="submit"
               className={classNames('button is-light',
                 { 'is-loading': isLoading })}
-              onClick={(event) => {
-                event.preventDefault();
-                getMovieData(query);
-              }}
+              onClick={handleButtonFindMovie}
               disabled={!query}
             >
               Find a movie

@@ -14,20 +14,20 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ addMovie, moviesList }) => {
   const [titleSearchQuery, setSearchField] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [errorMessage, setErrorMessage] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isError, setError] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleSearchFieldChange
   = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
-    setErrorMessage(false);
+    setError(false);
     setSearchField(value);
   };
 
   const createMovie = async (input = titleSearchQuery) => {
-    if (errorMessage) {
-      setErrorMessage(false);
+    if (isError) {
+      setError(false);
     }
 
     setLoading(true);
@@ -57,7 +57,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, moviesList }) => {
       }
 
       if ('Error' in movieData) {
-        setErrorMessage(true);
+        setError(true);
       }
     } finally {
       setLoading(false);
@@ -96,7 +96,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, moviesList }) => {
             />
           </div>
 
-          {errorMessage && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -110,7 +110,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, moviesList }) => {
               type="submit"
               className={classNames(
                 'button is-light',
-                { 'is-loading': loading },
+                { 'is-loading': isLoading },
               )}
               onClick={() => createMovie()}
               disabled={!titleSearchQuery}

@@ -46,6 +46,7 @@ export const FindMovie: React.FC<Props> = ({
       }
     } catch (error) {
       setIsError(error as ResponseError);
+      setQuery('');
     } finally {
       setIsLoading(false);
     }
@@ -54,6 +55,17 @@ export const FindMovie: React.FC<Props> = ({
   const handleButtonFindMovie = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     getMovieData(query);
+  };
+
+  const reset = () => {
+    setQuery('');
+    setMovie(null);
+  };
+
+  const changeQuery = (event:
+  { target: { value: React.SetStateAction<string>; }; }) => {
+    setQuery(event.target.value);
+    setIsError(undefined);
   };
 
   const onAddMovie = (movieInfo: Movie) => {
@@ -69,8 +81,7 @@ export const FindMovie: React.FC<Props> = ({
     }
 
     setMovies([...movies, movieInfo]);
-    setQuery('');
-    setMovie(null);
+    reset();
   };
 
   return (
@@ -89,9 +100,7 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-              }}
+              onChange={changeQuery}
             />
           </div>
 

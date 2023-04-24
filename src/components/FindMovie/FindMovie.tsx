@@ -119,7 +119,7 @@ export const FindMovie: React.FC<Props> = ({
               onClick={handleButtonFindMovie}
               disabled={!query}
             >
-              Find a movie
+              {!movie ? 'Find a movie' : 'Search again'}
             </button>
           </div>
 

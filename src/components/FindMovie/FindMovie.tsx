@@ -13,13 +13,13 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [movieLoading, isMovieloading] = useState(false);
+  const [isMovieLoading, setIsMovieloading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const clearSearch = () => {
     setMovie(null);
     setQuery('');
-    isMovieloading(false);
+    setIsMovieloading(false);
   };
 
   const handleUserInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
 
   const handleUsersearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    isMovieloading(true);
+    setIsMovieloading(true);
 
     getMovie(query)
       .then(response => {
@@ -56,7 +56,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
           });
         }
       })
-      .finally(() => isMovieloading(false));
+      .finally(() => setIsMovieloading(false));
   };
 
   return (
@@ -92,9 +92,9 @@ export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
               type="submit"
               className={classNames(
                 'button is-light',
-                { 'is-loading': movieLoading },
+                { 'is-loading': isMovieLoading },
               )}
-              disabled={query.trim() === ''}
+              disabled={!query.trim()}
             >
               Find a movie
             </button>

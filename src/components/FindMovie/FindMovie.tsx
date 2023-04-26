@@ -6,26 +6,26 @@ import { MovieCard } from '../MovieCard';
 
 type Props = {
   query: string;
-  changeHandler: (e: React.FormEvent<HTMLInputElement>) => void;
+  handleChange: (e: React.FormEvent<HTMLInputElement>) => void;
   movie: Movie | null;
-  toFindMovie: (e: React.FormEvent<HTMLFormElement>) => void;
-  movieNotFounded: boolean;
+  findMovie: (e: React.FormEvent<HTMLFormElement>) => void;
+  movieNotFound: boolean;
   addMovie: () => void;
 };
 
 export const FindMovie: React.FC<Props> = React.memo(({
-  query, changeHandler, movie, toFindMovie, movieNotFounded, addMovie,
+  query, handleChange, movie, findMovie, movieNotFound, addMovie,
 }) => {
   const [isLoading, setLoading] = useState(false);
-  const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
-    await toFindMovie(e);
+    await findMovie(e);
     setLoading(false);
   };
 
   return (
     <>
-      <form className="find-movie" onSubmit={submitHandler}>
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -40,11 +40,11 @@ export const FindMovie: React.FC<Props> = React.memo(({
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={changeHandler}
+              onChange={handleChange}
             />
           </div>
 
-          {movieNotFounded && (
+          {movieNotFound && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -59,8 +59,7 @@ export const FindMovie: React.FC<Props> = React.memo(({
               className={classNames('button is-light', {
                 'is-loading': isLoading === true,
               })}
-              // eslint-disable-next-line no-unneeded-ternary
-              disabled={query === '' ? true : false}
+              disabled={query === ''}
             >
               Find a movie
             </button>

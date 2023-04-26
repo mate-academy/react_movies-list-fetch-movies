@@ -4,7 +4,6 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import { MovieData } from './types/MovieData';
-// import { ResponseError } from './types/ReponseError';
 
 import { getMovie } from './api';
 
@@ -12,38 +11,38 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [query, setQuery] = useState('');
   const [submitedQuery, setSubmitedQuery] = useState('');
-  const [findedMovie, setFindedMovie] = useState<MovieData | null>(null);
-  const [movieNotFounded, setMovieNotFounded] = useState(false);
+  const [foundMovie, setFoundMovie] = useState<MovieData | null>(null);
+  const [movieNotFound, setMovieNotFound] = useState(false);
 
-  const changeHandler = (e: React.FormEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
     setQuery(e.currentTarget.value);
   };
 
-  const toFindMovie = async (e: React.FormEvent<HTMLFormElement>) => {
+  const findMovie = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const movie = await getMovie(query) as MovieData;
 
     if (movie.Title) {
-      setFindedMovie(movie);
-      setMovieNotFounded(false);
+      setFoundMovie(movie);
+      setMovieNotFound(false);
       setSubmitedQuery(query);
     } else {
-      setMovieNotFounded(true);
+      setMovieNotFound(true);
     }
   };
 
   const movie = useMemo(() => {
-    if (!findedMovie) {
+    if (!foundMovie) {
       return null;
     }
 
     return {
-      title: findedMovie.Title,
-      description: findedMovie.Plot,
-      imgUrl: findedMovie.Poster,
-      imdbUrl: `https://www.imdb.com/title/${findedMovie.imdbID}`,
-      imdbId: findedMovie.imdbID,
+      title: foundMovie.Title,
+      description: foundMovie.Plot,
+      imgUrl: foundMovie.Poster,
+      imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
+      imdbId: foundMovie.imdbID,
     };
   }, [submitedQuery, query]);
 
@@ -62,15 +61,15 @@ export const App = () => {
         });
       }
 
-      setFindedMovie(null);
+      setFoundMovie(null);
       setQuery('');
       setSubmitedQuery('');
     }
   };
 
   useEffect(() => {
-    setFindedMovie(null);
-    setMovieNotFounded(false);
+    setFoundMovie(null);
+    setMovieNotFound(false);
     setSubmitedQuery('');
   }, [query]);
 
@@ -83,10 +82,10 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           query={query}
-          changeHandler={changeHandler}
+          handleChange={handleChange}
           movie={movie}
-          toFindMovie={toFindMovie}
-          movieNotFounded={movieNotFounded}
+          findMovie={findMovie}
+          movieNotFound={movieNotFound}
           addMovie={addMovie}
         />
       </div>

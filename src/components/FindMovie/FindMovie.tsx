@@ -91,10 +91,12 @@ export const FindMovie: React.FC<Props> = ({
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {selectedMovie && <MovieCard movie={selectedMovie} />}
-      </div>
+      {selectedMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+            <MovieCard movie={selectedMovie} />
+        </div>
+      )}
     </>
   );
 };

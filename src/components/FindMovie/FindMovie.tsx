@@ -28,8 +28,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie, error, setError }) => {
       } else {
         setMovie(normalizeMovieData(dataFromServer as MovieData));
       }
-    } catch (err: any) {
-      throw new Error(err);
     } finally {
       setIsLoading(false);
     }

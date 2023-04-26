@@ -7,13 +7,19 @@ type Props = {
 };
 
 export const MovieCard: React.FC<Props> = ({ movie }) => {
-  const imgUrl = movie?.imgUrl === 'N/A'
-    ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-    : movie?.imgUrl;
-
   if (!movie) {
     return <div>No movie fetched, check your connection.</div>;
   }
+
+  const {
+    imgUrl,
+    title,
+    imdbUrl,
+    description,
+  } = movie;
+  const finalImgUrl = imgUrl === 'N/A'
+    ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+    : imgUrl;
 
   return (
     <div className="card" data-cy="movieCard">
@@ -21,7 +27,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
         <figure className="image is-4by3">
           <img
             data-cy="moviePoster"
-            src={imgUrl}
+            src={finalImgUrl}
             alt="Film logo"
           />
         </figure>
@@ -37,14 +43,14 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
             </figure>
           </div>
           <div className="media-content">
-            <p className="title is-8" data-cy="movieTitle">{movie.title}</p>
+            <p className="title is-8" data-cy="movieTitle">{title}</p>
           </div>
         </div>
 
         <div className="content" data-cy="movieDescription">
-          {movie.description}
+          {description}
           <br />
-          <a href={movie.imdbUrl} data-cy="movieURL">
+          <a href={imdbUrl} data-cy="movieURL">
             IMDB
           </a>
         </div>

@@ -8,16 +8,15 @@ import { normalizeMovieData } from '../../utils/normalizeMovieData';
 import { MovieData } from '../../types/MovieData';
 
 type Props = {
-  addMovie: React.Dispatch<React.SetStateAction<Movie[]>>
+  addMovie: (newMovie: Movie) => void;
+  error: string;
+  setError: React.Dispatch<React.SetStateAction<string>>
 };
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({ addMovie, error, setError }) => {
   const [query, setQuery] = useState('');
-  const [movie, setMovie] = useState<Movie | null>(
-    null,
-  );
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
 
   const findMovie = async () => {
     setIsLoading(true);
@@ -25,13 +24,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       const dataFromServer = await getMovie(query);
 
       if ('Error' in dataFromServer) {
-        setError(true);
+        setError(dataFromServer.Error);
       } else {
         setMovie(normalizeMovieData(dataFromServer as MovieData));
       }
-    } catch (err) {
-      setError(true);
-      throw err;
+    } catch (err: any) {
+      throw new Error(err);
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +40,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   ) => {
     setQuery(event.target.value);
     if (error) {
-      setError(false);
+      setError('');
     }
   };
 
@@ -52,9 +50,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const handleOnClickAddMovie = () => {
-    addMovie((movies : Movie[]) => {
-      return [...movies, movie as Movie];
-    });
+    if (!movie) {
+      return;
+    }
+
+    addMovie(movie);
     setMovie(null);
     setQuery('');
   };
@@ -81,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {error}
             </p>
           )}
         </div>

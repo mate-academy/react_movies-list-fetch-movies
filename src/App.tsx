@@ -10,7 +10,6 @@ import { getMovie } from './api';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [query, setQuery] = useState('');
-  const [submitedQuery, setSubmitedQuery] = useState('');
   const [foundMovie, setFoundMovie] = useState<MovieData | null>(null);
   const [movieNotFound, setMovieNotFound] = useState(false);
 
@@ -26,7 +25,6 @@ export const App = () => {
     if (movie.Title) {
       setFoundMovie(movie);
       setMovieNotFound(false);
-      setSubmitedQuery(query);
     } else {
       setMovieNotFound(true);
     }
@@ -44,7 +42,7 @@ export const App = () => {
       imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
       imdbId: foundMovie.imdbID,
     };
-  }, [submitedQuery, query]);
+  }, [foundMovie?.imdbID]);
 
   const addMovie = () => {
     if (movie) {
@@ -63,14 +61,12 @@ export const App = () => {
 
       setFoundMovie(null);
       setQuery('');
-      setSubmitedQuery('');
     }
   };
 
   useEffect(() => {
     setFoundMovie(null);
     setMovieNotFound(false);
-    setSubmitedQuery('');
   }, [query]);
 
   return (

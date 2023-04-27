@@ -57,7 +57,7 @@ export const FindMovie: React.FC<Props> = React.memo(({
               data-cy="searchButton"
               type="submit"
               className={classNames('button is-light', {
-                'is-loading': isLoading === true,
+                'is-loading': isLoading,
               })}
               disabled={query === ''}
             >

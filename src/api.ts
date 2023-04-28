@@ -13,6 +13,7 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
     }));
 }
 
+// Format s the movie data in a consistent way to make it easier to work with.
 export const normalizeMovie = (movieData: MovieData): Movie => {
   return {
     title: movieData.Title,

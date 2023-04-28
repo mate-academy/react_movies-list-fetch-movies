@@ -16,7 +16,7 @@ Implement the `FindMovie` component to load movies from [OMDb API](http://www.om
     - the API return `MovieData` or `ReposnseError` (see the `types`)
     - don't forget to normalize received `MovieData`
     - use [the deafult picture](https://via.placeholder.com/360x270.png?text=no%20preview) if the found movie has no poster.
-1. The add button should **add** the movie to the list, **clear** the form and **remove** the preview;
+1.
 1. Don't add a movie to the list twice (compare by `imdbId`), just clear the data;
 
 ## Instructions

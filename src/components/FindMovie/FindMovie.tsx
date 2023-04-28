@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
 import { getMovie, normalizeMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
@@ -13,6 +14,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [hasError, setHasError] = useState(false);
+  const [duplicateMovieError, setDuplicateMovieError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const sanitizeQuery = (queryToSanitize: string) => {
     return queryToSanitize.replace(/[^a-zA-Z0-9 ]/g, '').trim();
@@ -20,7 +24,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    setIsLoading(true);
     const sanitizedQuery = sanitizeQuery(query);
 
     // asynchronous API call to search for query
@@ -31,17 +35,32 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         } else {
           setHasError(true);
         }
+      })
+      .finally(() => {
+        setIsLoading(false); // stop loading
       });
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setMovie(null);
+    setHasError(false);
+    setDuplicateMovieError('');
   };
 
   const handleAddMovie = () => {
     if (movie) {
+      const isAlreadyInList = movies.some((m) => m.imdbId === movie.imdbId);
+
+      if (isAlreadyInList) {
+        setDuplicateMovieError('This movie is already in the list!');
+        setMovie(null);
+
+        return;
+      }
+
       addMovie(movie);
+      setMovies([...movies, movie]);
       setMovie(null);
       setQuery('');
     }
@@ -64,7 +83,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', {
+                'is-danger': hasError,
+              })}
               value={query}
               onChange={handleChange}
             />
@@ -75,6 +96,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               {'Can\'t find a movie with such a title'}
             </p>
           )}
+
+          {duplicateMovieError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {duplicateMovieError}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -82,7 +109,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button', 'is-light', {
+                'is-loading': isLoading,
+              })}
               disabled={!query.trim()}
             >
               Find a movie

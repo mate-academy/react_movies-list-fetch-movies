@@ -7,10 +7,10 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const handleMoviesAdd = (movie: Movie) => {
-    const existingMovie = movies.find(item => item.imdbId === movie.imdbId);
+  const onAddMovie = (movie: Movie) => {
+    const hasMovie = movies.find(item => item.imdbId === movie.imdbId);
 
-    if (!existingMovie) {
+    if (!hasMovie) {
       setMovies((prev) => {
         return [...prev, movie];
       });
@@ -24,7 +24,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie handleMoviesAdd={handleMoviesAdd} />
+        <FindMovie handleMovieAdd={onAddMovie} />
       </div>
     </div>
   );

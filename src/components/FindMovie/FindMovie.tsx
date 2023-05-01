@@ -5,13 +5,12 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
-// import { ResponseError } from '../../types/ReponseError';
 
 type Props = {
-  handleMoviesAdd: (movie: Movie) => void,
+  handleMovieAdd: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ handleMoviesAdd }) => {
+export const FindMovie: React.FC<Props> = ({ handleMovieAdd }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoadingMovie, setIsLoadingMovie] = useState(false);
@@ -26,15 +25,17 @@ export const FindMovie: React.FC<Props> = ({ handleMoviesAdd }) => {
     const newMovie = {
       title: Title,
       description: Plot,
-      imgUrl: Poster,
-      imdbUrl: '',
+      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
       imdbId: imdbID,
+      imgUrl: Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : Poster,
     };
 
     setMovie(newMovie);
   };
 
-  const loadMovies = async () => {
+  const loadMovie = async () => {
     setIsLoadingMovie(true);
     setHasLoadingError(false);
     try {
@@ -42,7 +43,6 @@ export const FindMovie: React.FC<Props> = ({ handleMoviesAdd }) => {
         .finally(() => setIsLoadingMovie(false));
 
       if ('Error' in movieData) {
-        setMovie(null);
         throw new Error('Error');
       } else {
         getNewMovie(movieData as MovieData);
@@ -56,12 +56,12 @@ export const FindMovie: React.FC<Props> = ({ handleMoviesAdd }) => {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    loadMovies();
+    loadMovie();
     setIsLoadingMovie(true);
   };
 
   const handleAddFilm = (film: Movie) => {
-    handleMoviesAdd(film);
+    handleMovieAdd(film);
     setQuery('');
     setMovie(null);
     setIsLoadingMovie(false);
@@ -83,7 +83,10 @@ export const FindMovie: React.FC<Props> = ({ handleMoviesAdd }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setHasLoadingError(false);
+              }}
             />
           </div>
 
@@ -104,7 +107,7 @@ export const FindMovie: React.FC<Props> = ({ handleMoviesAdd }) => {
               onClick={handleFindMovie}
               disabled={!query}
             >
-              { isLoadingMovie && query ? 'Search Movie' : 'Find a movie' }
+              { movie ? 'Search Movie' : 'Find a movie' }
             </button>
           </div>
 

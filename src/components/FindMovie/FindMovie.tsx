@@ -39,7 +39,15 @@ export const FindMovie: React.FC<Props> = ({
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          event.preventDefault();
+          setQuery(value);
+          setIsRequested(true);
+          setIsNowRequested(true);
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -73,12 +81,6 @@ export const FindMovie: React.FC<Props> = ({
                 'button is-light',
                 { 'is-loading': isNowRequested },
               )}
-              onClick={(event) => {
-                event.preventDefault();
-                setQuery(value);
-                setIsRequested(true);
-                setIsNowRequested(true);
-              }}
               disabled={value === ''}
             >
               Find a movie
@@ -93,11 +95,19 @@ export const FindMovie: React.FC<Props> = ({
                 className="button is-primary"
                 onClick={() => {
                   setMovies(
-                    prevMovies => [...prevMovies, movieFound],
+                    prevMovies => {
+                      if (prevMovies.map(prevMovie => prevMovie.title)
+                        .includes(movieFound.title)) {
+                        return prevMovies;
+                      }
+
+                      return [...prevMovies, movieFound];
+                    },
                   );
                   setQuery('');
                   setValue('');
                   setMovie(undefined);
+                  setIsRequested(false);
                   setIsNowRequested(false);
                 }}
               >

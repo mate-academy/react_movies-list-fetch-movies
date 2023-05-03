@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -20,39 +20,58 @@ export const App = () => {
     return (data as MovieData).Title !== undefined;
   };
 
-  useEffect(() => {
-    if (isSubmitted && query.length) {
-      getMovie(query)
-        .then((movieFromServer) => {
-          if (isMovieData(movieFromServer)) {
-            setMovie({
-              title: movieFromServer.Title,
-              description: movieFromServer.Plot,
-              imgUrl:
-                movieFromServer.Poster !== 'N/A'
-                  ? movieFromServer.Poster
-                  : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-              imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
-              imdbId: movieFromServer.imdbID,
-            });
-            setShowError(false);
-          } else {
-            setShowError(true);
-          }
-        })
-        .catch(() => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setIsSubmitted(true);
+    getMovie(query)
+      .then((movieFromServer) => {
+        if (isMovieData(movieFromServer)) {
+          const {
+            Title, Plot, Poster, imdbID,
+          } = movieFromServer;
+
+          setMovie({
+            title: Title,
+            description: Plot,
+            imgUrl:
+              Poster !== 'N/A'
+                ? Poster
+                : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+            imdbId: imdbID,
+          });
+          setShowError(false);
+        } else {
           setShowError(true);
-        })
-        .finally(() => {
-          setIsSubmitted(false);
-        });
+        }
+      })
+      .catch(() => {
+        setShowError(true);
+      })
+      .finally(() => {
+        setIsSubmitted(false);
+      });
+  };
+
+  const handleAdd = () => {
+    if (movie) {
+      setMovies([...movies, movie]);
+
+      if (movies.length
+        && movies.some(({ imdbId }) => movie.imdbId === imdbId)) {
+        setMovies(movies);
+      }
     }
-  }, [isSubmitted]);
+
+    setQuery('');
+    setMovie(null);
+  };
 
   return (
     <div className="page">
       <div className="page-content">
-        {movies.length > 0 && (
+        {!!movies.length && (
           <MoviesList movies={movies} />
         )}
       </div>
@@ -62,13 +81,11 @@ export const App = () => {
           query={query}
           setQuery={setQuery}
           movie={movie}
-          setMovie={setMovie}
-          movies={movies}
-          setMovies={setMovies}
           isSubmitted={isSubmitted}
-          setIsSubmitted={setIsSubmitted}
           showError={showError}
           setShowError={setShowError}
+          handleAdd={handleAdd}
+          handleSubmit={handleSubmit}
         />
       </div>
     </div>

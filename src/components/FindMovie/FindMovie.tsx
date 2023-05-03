@@ -9,43 +9,23 @@ interface Props {
   query: string;
   setQuery: (query: string) => void;
   movie: Movie | null;
-  setMovie: (movie: Movie | null) => void;
-  movies: Movie[];
-  setMovies: (movies: Movie[]) => void;
   isSubmitted: boolean;
-  setIsSubmitted: (isFetching: boolean) => void;
   showError: boolean;
   setShowError: (showError: boolean) => void;
+  handleAdd: () => void;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
 
 export const FindMovie: React.FC<Props> = ({
-  query, setQuery, movie, setMovies, movies, setIsSubmitted, isSubmitted,
-  setMovie, showError, setShowError,
+  query, setQuery, movie, isSubmitted, showError,
+  setShowError, handleAdd, handleSubmit,
 
 }) => {
   useEffect(() => {
-    setShowError(false);
-  }, [query]);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    setIsSubmitted(true);
-  };
-
-  const handleAdd = () => {
-    if (movie) {
-      setMovies([...movies, movie]);
-
-      if (movies.length
-        && movies.some(({ imdbId }) => movie.imdbId === imdbId)) {
-        setMovies(movies);
-      }
+    if (query) {
+      setShowError(false);
     }
-
-    setQuery('');
-    setMovie(null);
-  };
+  }, [query]);
 
   return (
     <>

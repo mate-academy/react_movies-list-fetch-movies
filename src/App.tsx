@@ -5,7 +5,21 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const handleMovieAdd = (movie: Movie) => {
+    setMovies((prevMovies: Movie[]) => {
+      const isMoviePresent = prevMovies.find(
+        (currMovie) => currMovie.imdbId === movie.imdbId,
+      );
+
+      if (!isMoviePresent) {
+        return [...prevMovies, movie];
+      }
+
+      return prevMovies;
+    });
+  };
 
   return (
     <div className="page">
@@ -14,7 +28,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie onMovieAdd={handleMovieAdd} />
       </div>
     </div>
   );

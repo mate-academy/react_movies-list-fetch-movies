@@ -23,7 +23,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const sendRequest = (value: string) => {
     getMovie(value)
       .then(res => {
-        setResponse(() => res);
+        setResponse(res);
       })
       .finally(() => setIsLoading(false));
   };
@@ -57,14 +57,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         saveMovie(response);
       } else {
         setIsError(true);
+        setMovie(undefined);
       }
     }
   }, [response]);
 
-  const onQueryChange = (value: string) => {
-    setIsDisabled(() => !value);
+  const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsDisabled(() => !e.target.value);
     setIsError(false);
-    setQuery(() => value);
+    setQuery(() => e.target.value);
   };
 
   const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -89,7 +90,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={(e) => onFormSubmit(e)}
+        onSubmit={onFormSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -104,7 +105,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={(e) => onQueryChange(e.target.value)}
+              onChange={onQueryChange}
             />
           </div>
 
@@ -123,7 +124,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               disabled={isDisabled}
               className={`button is-light${isLoading ? ' is-loading' : ''}`}
             >
-              {isSearched || 'Find a movie'}
+              {!isSearched && 'Find a movie'}
               {isSearched || isLoading ? 'Search again' : ''}
             </button>
           </div>
@@ -135,7 +136,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => onAddClick()}
+                onClick={onAddClick}
               >
                 Add to the list
               </button>

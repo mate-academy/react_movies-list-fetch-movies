@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
-// import { useFetch } from '../../services/api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { useFetch } from '../../custom-hooks/useFetch';

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
-import { getMovie, normalizeData } from '../../api';
+// import { useFetch } from '../../services/api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import { useFetch } from '../../custom-hooks/useFetch';
 
 interface Props {
   onMovieAdition: (newMovie: Movie) => void;
@@ -15,6 +16,7 @@ export const FindMovie: React.FC<Props> = React.memo(
     const [movie, setMovie] = useState<Movie | null>(null);
     const [isError, setIsError] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const fetchMovie = useFetch();
 
     const handleTitleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
       setTitle(event.target.value);
@@ -23,21 +25,7 @@ export const FindMovie: React.FC<Props> = React.memo(
 
     const handleSubmitForm = async (event: React.FormEvent) => {
       event.preventDefault();
-      setIsLoading(true);
-
-      try {
-        const response = await getMovie(title.trim());
-
-        if ('Error' in response) {
-          throw new Error(response.Error);
-        }
-
-        setMovie(normalizeData(response));
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
+      await fetchMovie(title, setMovie, setIsError, setIsLoading);
     };
 
     const handleAddMovieButton = (newMovie: Movie) => {

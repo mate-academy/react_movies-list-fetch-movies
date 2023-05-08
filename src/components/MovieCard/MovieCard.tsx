@@ -6,6 +6,9 @@ type Props = {
   movie: Movie,
 };
 
+const defaultImgSrc
+  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
@@ -14,6 +17,11 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           data-cy="moviePoster"
           src={movie.imgUrl}
           alt="Film logo"
+          onError={(event: React.SyntheticEvent<HTMLImageElement>) => {
+            const newTarget = event.target as HTMLImageElement;
+
+            newTarget.src = defaultImgSrc;
+          }}
         />
       </figure>
     </div>

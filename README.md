@@ -4,7 +4,7 @@
 
 Implement the `FindMovie` component to load movies from [OMDb API](http://www.omdbapi.com/) (You need to register and get an API key).
 
-1. When a user enters a title and submits the form, send a request to `https://www.omdbapi.com/?apikey=[yourkey]&t=[title]`;
+1. When a user enters a title and submits the form, send a request to `https://www.omdbapi.com/?apikey=3bc85056&t=[title]`;
     - use the `getMovie` method from the `api.ts`;
 1. The submit button should be disabled when the title field is empty;
 1. Show a spinner on the submit button while waiting for the respose;

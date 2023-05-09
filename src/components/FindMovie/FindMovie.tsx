@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import cn from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
@@ -9,7 +9,7 @@ interface Props {
   onSetMovie: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({ onSetMovie }) => {
+export const FindMovie: React.FC<Props> = memo(({ onSetMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoadingError, setIsLoadingError] = useState(false);
@@ -130,4 +130,4 @@ export const FindMovie: React.FC<Props> = ({ onSetMovie }) => {
       )}
     </>
   );
-};
+});

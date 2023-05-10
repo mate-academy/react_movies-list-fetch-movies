@@ -1,37 +1,44 @@
-import classNames from 'classnames';
-import React, { ChangeEventHandler, FormEventHandler, useState } from 'react';
+import cn from 'classnames';
+import {
+  FC,
+  ChangeEventHandler,
+  FormEventHandler,
+  useState,
+  memo,
+} from 'react';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
-
-// eslint-disable-next-line max-len
-const DEFAULT_PREVIEW = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+import { MOVIE_DEFAULT_PREVIEW } from '../../constants/movies.constant';
 
 interface Props {
   onMovieAdd: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
+const NativeFindMovie: FC<Props> = ({ onMovieAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
 
-  const [field, setField] = useState('');
+  const [query, setQuery] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
+
     setIsLoading(true);
-    getMovie(field)
+
+    getMovie(query)
       .then((response: MovieData | ResponseError) => {
         if ('Error' in response) {
           setError(response.Error);
         } else {
           const poster = response.Poster === 'N/A'
-            ? DEFAULT_PREVIEW : response.Poster;
+            ? MOVIE_DEFAULT_PREVIEW
+            : response.Poster;
 
           const formattedMovie = {
             title: response.Title,
@@ -48,17 +55,17 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   };
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-    setField(event.target.value);
+    setQuery(event.target.value);
     setError(null);
   };
 
-  const handleMovieAdd = () => {
+  const handleAddMovie = () => {
     if (!movie) {
       return;
     }
 
     onMovieAdd(movie);
-    setField('');
+    setQuery('');
     setMovie(null);
   };
 
@@ -77,7 +84,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
-              value={field}
+              value={query}
               onChange={handleInputChange}
             />
           </div>
@@ -93,10 +100,10 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames('button is-light', {
+              className={cn('button is-light', {
                 'is-loading': isLoading,
               })}
-              disabled={field === ''}
+              disabled={!query}
             >
               {movie ? 'Search again' : 'Find a movie'}
             </button>
@@ -108,7 +115,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={handleMovieAdd}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>
@@ -126,3 +133,5 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
     </>
   );
 };
+
+export const FindMovie = memo(NativeFindMovie);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -7,7 +7,7 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const handleMovieAdd = (movie: Movie) => {
+  const handleMovieAdd = useCallback((movie: Movie) => {
     setMovies((prevMovies: Movie[]) => {
       const isMoviePresent = prevMovies.find(
         (currMovie) => currMovie.imdbId === movie.imdbId,
@@ -19,7 +19,7 @@ export const App = () => {
 
       return prevMovies;
     });
-  };
+  }, []);
 
   return (
     <div className="page">

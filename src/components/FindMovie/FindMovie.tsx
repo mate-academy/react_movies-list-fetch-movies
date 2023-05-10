@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
@@ -8,15 +8,15 @@ import { ResponseError } from '../../types/ReponseError';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
-  movies: Movie[];
   onAdd: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
+export const FindMovie: FC<Props> = ({ onAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [searchedQuery, setQuery] = useState('');
   const [isError, setIsError] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
+
   const isValidData = (data: MovieData | ResponseError): data is MovieData => {
     return (data as MovieData).Title !== undefined;
   };
@@ -67,12 +67,8 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
     setSubmitted(true);
   };
 
-  const handleAddMovie = (newMovie: Movie) => {
-    const hasMovie = movies.some(currentMovie => (
-      currentMovie.imdbId === newMovie.imdbId
-    ));
-
-    if (!hasMovie && movie) {
+  const handleAddMovie = () => {
+    if (movie) {
       onAdd(movie);
     }
 
@@ -102,11 +98,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
               onChange={(event) => setQuery(event.target.value)}
             />
           </div>
-          {isError ? (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {'Can\'t find a movie with such a title'}
             </p>
-          ) : ''}
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -120,7 +116,9 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
               )}
               disabled={!searchedQuery}
             >
-              Find a movie
+              {!movie
+                ? 'Find a movie'
+                : 'Search again'}
             </button>
           </div>
 
@@ -130,7 +128,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddMovie(movie)}
+                onClick={() => handleAddMovie()}
               >
                 Add to the list
               </button>

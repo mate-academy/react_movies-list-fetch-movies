@@ -6,49 +6,58 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
+const BASE_IMDB_LINK = 'https://www.imdb.com/title/';
+// eslint-disable-next-line max-len
+const DEFAULT_IMAGE_LINK = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 type Props = {
   onAdd: (newMovie: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+export const FindMovie: React.FC<Props> = React.memo(({ onAdd }) => {
   const [query, setQuery] = useState('');
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [isMovieError, setIsMovieError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const findMovie = async () => {
+    const preparedQuery = query.toLowerCase().trim();
+    const movieData = await getMovie(preparedQuery);
+
+    if ('Error' in movieData) {
+      setIsMovieError(true);
+      setFoundMovie(null);
+      setIsLoading(false);
+    } else {
+      const imgUrl = movieData.Poster !== 'N/A'
+        ? movieData.Poster
+        : DEFAULT_IMAGE_LINK;
+
+      const movie: Movie = {
+        title: movieData.Title,
+        description: movieData.Plot,
+        imgUrl,
+        imdbUrl: `${BASE_IMDB_LINK}${movieData.imdbID}`,
+        imdbId: movieData.imdbID,
+      };
+
+      if (foundMovie?.imdbId !== movie.imdbId) {
+        setFoundMovie(movie);
+      }
+
+      setIsLoading(false);
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsLoading(true);
-    const preparedQuery = query.toLowerCase().trim();
 
-    (async () => {
-      const movieData = await getMovie(preparedQuery);
-
-      if ('Error' in movieData) {
-        setIsMovieError(true);
-        setFoundMovie(null);
-        setIsLoading(false);
-      } else {
-        const imgUrl = movieData.Poster !== 'N/A'
-          ? movieData.Poster
-          : 'https://via.placeholder.com/360x270.png?text=no%20preview';
-
-        const movie: Movie = {
-          title: movieData.Title,
-          description: movieData.Plot,
-          imgUrl,
-          imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
-          imdbId: movieData.imdbID,
-        };
-
-        setFoundMovie(movie);
-        setIsLoading(false);
-      }
-    })();
+    findMovie();
   };
 
-  const handInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setIsMovieError(false);
   };
@@ -69,7 +78,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={query}
-              onChange={handInputChange}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -122,4 +131,4 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       )}
     </>
   );
-};
+});

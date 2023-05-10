@@ -1,6 +1,6 @@
 import React from 'react';
-import './FindMovie.scss';
 import classNames from 'classnames';
+import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 

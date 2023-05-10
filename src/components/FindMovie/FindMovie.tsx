@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEventHandler } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
@@ -6,16 +6,13 @@ import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
 import { MovieCard } from '../MovieCard';
+import { DEFAULT_IMG } from './FindMovie.constants';
 
 interface Props {
   onMovieAdd: (movie: Movie) => void;
 }
 
-const defaultImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
-
-export const FindMovie: React.FC<Props> = ({
-  onMovieAdd,
-}) => {
+export const FindMovie: React.FC<Props> = React.memo(({ onMovieAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +24,7 @@ export const FindMovie: React.FC<Props> = ({
     }
   }, [query]);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
     setIsLoading(true);
 
@@ -37,7 +34,9 @@ export const FindMovie: React.FC<Props> = ({
           setError(data.Error);
           setMovie(null);
         } else {
-          const poster = data.Poster === 'N/A' ? defaultImg : data.Poster;
+          const poster = data.Poster === 'N/A'
+            ? DEFAULT_IMG
+            : data.Poster;
 
           const newMovie = {
             title: data.Title,
@@ -53,6 +52,14 @@ export const FindMovie: React.FC<Props> = ({
       .finally(() => {
         setIsLoading(false);
       });
+  };
+
+  const handleAddMovie = () => {
+    if (movie) {
+      onMovieAdd(movie);
+      setMovie(null);
+      setQuery('');
+    }
   };
 
   return (
@@ -108,13 +115,7 @@ export const FindMovie: React.FC<Props> = ({
                 type="button"
                 className="button is-primary"
                 disabled={!movie}
-                onClick={() => {
-                  if (movie) {
-                    onMovieAdd(movie);
-                    setMovie(null);
-                    setQuery('');
-                  }
-                }}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>
@@ -131,4 +132,4 @@ export const FindMovie: React.FC<Props> = ({
       )}
     </>
   );
-};
+});

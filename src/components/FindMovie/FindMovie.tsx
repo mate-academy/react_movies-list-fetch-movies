@@ -18,37 +18,37 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     setIsLoading(true);
 
-    getMovie(query)
-      .then(response => {
-        if ('Error' in response) {
-          setIsError(true);
+    const movieData = await getMovie(query);
 
-          return;
-        }
+    if ('Error' in movieData) {
+      setIsError(true);
+      setIsLoading(false);
 
-        const {
-          Title,
-          Plot,
-          Poster,
-          imdbID,
-        } = response;
+      return;
+    }
 
-        setMovie({
-          title: Title,
-          description: Plot,
-          imgUrl: Poster !== 'N/A'
-            ? Poster
-            : DEFAULT_PICTURE,
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          imdbId: response.imdbID,
-        });
-      })
-      .finally(() => setIsLoading(false));
+    const {
+      Title,
+      Plot,
+      Poster,
+      imdbID,
+    } = movieData;
+
+    setMovie({
+      title: Title,
+      description: Plot,
+      imgUrl: Poster !== 'N/A'
+        ? Poster
+        : DEFAULT_PICTURE,
+      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+      imdbId: imdbID,
+    });
+
+    setIsLoading(false);
   };
 
   const handleInput: ChangeEventHandler<HTMLInputElement> = (event) => {

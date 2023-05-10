@@ -16,7 +16,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [query, setQuery] = useState('');
   const [selectedMovie, selectMovie] = useState<Movie | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  const [isNotFound, setIsNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const convertMovieFormat = ({
@@ -34,28 +34,25 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     imdbId: imdbID,
   });
 
-  const findMovie = async (inputQuery: string) => {
-    try {
-      await getMovie(inputQuery)
-        .then(response => {
-          if ('Error' in response) {
-            return Promise.reject();
-          }
+  const findMovie = (inputQuery: string) => {
+    getMovie(inputQuery)
+      .then(response => {
+        if ('Error' in response) {
+          return Promise.reject();
+        }
 
-          const movie = convertMovieFormat(response);
+        const movie = convertMovieFormat(response);
 
-          return selectMovie(movie);
-        });
-    } catch {
-      setNotFound(true);
-    }
+        return selectMovie(movie);
+      })
+      .catch(() => setIsNotFound(true))
+      .finally(() => setIsLoading(false));
   };
 
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    findMovie(query)
-      .finally(() => setIsLoading(false));
+    findMovie(query);
   };
 
   const addMovie = () => {
@@ -73,7 +70,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => submitHandler(event)}
+        onSubmit={submitHandler}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -90,12 +87,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                setNotFound(false);
+                setIsNotFound(false);
               }}
             />
           </div>
 
-          {notFound && (
+          {isNotFound && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

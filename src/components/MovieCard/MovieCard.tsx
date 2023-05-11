@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
+import { defaultImgSrc } from '../FindMovie/FindMovies.constants';
 
 type Props = {
   movie: Movie,
@@ -14,6 +15,11 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           data-cy="moviePoster"
           src={movie.imgUrl}
           alt="Film logo"
+          onError={(event: SyntheticEvent<HTMLImageElement>) => {
+            const newTarget = event.target as HTMLImageElement;
+
+            newTarget.src = defaultImgSrc;
+          }}
         />
       </figure>
     </div>

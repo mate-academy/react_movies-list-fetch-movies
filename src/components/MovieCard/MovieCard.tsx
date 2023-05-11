@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
+import { defaultImgSrc } from '../FindMovie/FindMovies.constants';
 
 type Props = {
   movie: Movie,
 };
-
-const defaultImgSrc
-  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
@@ -17,7 +15,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           data-cy="moviePoster"
           src={movie.imgUrl}
           alt="Film logo"
-          onError={(event: React.SyntheticEvent<HTMLImageElement>) => {
+          onError={(event: SyntheticEvent<HTMLImageElement>) => {
             const newTarget = event.target as HTMLImageElement;
 
             newTarget.src = defaultImgSrc;

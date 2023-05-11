@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import './FindMovie.scss';
 import cn from 'classnames';
 import { getMovie } from '../../api';
-import { ResponseError } from '../../types/ReponseError';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
@@ -10,27 +9,27 @@ interface Props {
   onAddMovie: (movie: Movie) => void
 }
 
-export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+export const FindMovie: React.FC<Props> = React.memo(({ onAddMovie }) => {
   const [query, setQuery] = useState('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState<ResponseError | null>(null);
+  const [error, setError] = useState(false);
 
-  const handleGetMovie = (event: { preventDefault: () => void; }) => {
+  const handleGetMovie = (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
     getMovie(query)
-      .then(res => {
-        if ('Error' in res) {
-          setError(res);
+      .then(response => {
+        if ('Error' in response) {
+          setError(true);
         } else {
           setMovie({
-            title: res.Title,
-            description: res.Plot,
-            imgUrl: res.Poster,
-            imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
-            imdbId: res.imdbID,
+            title: response.Title,
+            description: response.Plot,
+            imgUrl: response.Poster,
+            imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+            imdbId: response.imdbID,
           });
         }
       })
@@ -65,7 +64,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               className="input is-dander"
               value={query}
               onChange={(event) => {
-                setError(null);
+                setError(false);
                 setQuery(event.target.value);
               }}
             />
@@ -73,7 +72,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {'Can\'t find a movie with such a title'}
             </p>
           )}
         </div>
@@ -116,4 +115,4 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       )}
     </>
   );
-};
+});

@@ -32,7 +32,6 @@ export const App = () => {
       const response: MovieData | ResponseError = await getMovie(hasQuery);
 
       if ('Error' in response) {
-        setIsLoading(false);
         setIsErrorMessage(true);
         setIsFoundMovie(false);
 
@@ -61,6 +60,8 @@ export const App = () => {
       setIsLoading(false);
     } catch {
       throw new Error('error');
+    } finally {
+      setIsLoading(false);
     }
   };
 

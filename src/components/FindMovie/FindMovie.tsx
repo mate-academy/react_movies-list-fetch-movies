@@ -8,10 +8,10 @@ import { MovieCard } from '../MovieCard';
 const PICTURE = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 interface Props {
-  addMovie: (movie: Movie) => void;
+  onAddMovie: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isError, setIsError] = useState<boolean>(false);
@@ -55,9 +55,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsError(false);
   };
 
-  const handlerAddMovie = () => {
+  const handlerOnAddMovie = () => {
     if (movie) {
-      addMovie(movie);
+      onAddMovie(movie);
       setMovie(null);
       setQuery('');
     }
@@ -112,7 +112,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={handlerAddMovie}
+                onClick={handlerOnAddMovie}
               >
                 Add to the list
               </button>

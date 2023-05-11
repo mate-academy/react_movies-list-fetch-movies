@@ -34,7 +34,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             title: result.Title,
             description: result.Plot,
             imgUrl: result.Poster === 'N/A'
-              ? 'https://placehold.co/600x400'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
               : result.Poster,
             imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
             imdbId: result.imdbID,
@@ -118,10 +118,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        {movie && (<h2 className="title">Preview</h2>)}
-        <MovieCard movie={movie} />
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

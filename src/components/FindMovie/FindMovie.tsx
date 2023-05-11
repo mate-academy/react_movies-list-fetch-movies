@@ -1,10 +1,38 @@
-import React from 'react';
+// import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
+import React from 'react';
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  hasQuery: string
+  movie: Movie | null
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  getNewMovie: (e: React.FormEvent) => void
+  addNewMovie: () => void
+  isFoundMovie: boolean
+  isLoading: boolean
+  isErrorMessage: boolean
+};
+
+export const FindMovie: React.FC<Props> = ({
+  hasQuery,
+  movie,
+  handleChange,
+  getNewMovie,
+  addNewMovie,
+  isFoundMovie,
+  isLoading,
+  isErrorMessage,
+}) => {
+  const searchButton = movie
+    ? 'Search again'
+    : 'Find a movie';
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={getNewMovie}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,12 +45,16 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={hasQuery}
+              onChange={handleChange}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {!isFoundMovie && hasQuery && isErrorMessage && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +62,37 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button', 'is-light', {
+                'is-loading': isLoading,
+              })}
+              disabled={!hasQuery.length}
             >
-              Find a movie
+              {searchButton}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={addNewMovie}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

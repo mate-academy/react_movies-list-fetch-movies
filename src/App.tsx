@@ -9,37 +9,35 @@ import { ResponseError } from './types/ReponseError';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [query, setQuery] = useState<string>('');
+  const [hasQuery, setHasQuery] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [notFoundMovie, setNotFoundMovie] = useState(false);
-  const [finished, setFinished] = useState(true);
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [isFoundMovie, setIsFoundMovie] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    setShowErrorMessage(false);
+    setHasQuery(e.target.value);
+    setIsErrorMessage(false);
   };
 
   const getNewMovie = async (e: React.FormEvent) => {
     e.preventDefault();
-    setNotFoundMovie(true);
-    setFinished(false);
+    setIsLoading(true);
 
     try {
-      if (!query) {
+      if (!hasQuery) {
         return;
       }
 
-      const response: MovieData | ResponseError = await getMovie(query);
+      const response: MovieData | ResponseError = await getMovie(hasQuery);
 
       if ('Error' in response) {
-        setFinished(true);
-        setShowErrorMessage(true);
+        setIsLoading(false);
+        setIsErrorMessage(true);
+        setIsFoundMovie(false);
 
         return;
       }
-
-      setFinished(true);
 
       const {
         Poster,
@@ -59,15 +57,15 @@ export const App = () => {
         imdbUrl,
         imdbId: imdbID,
       });
-      setNotFoundMovie(false);
-      setShowErrorMessage(false);
+      setIsErrorMessage(false);
+      setIsLoading(false);
     } catch {
       throw new Error('error');
     }
   };
 
   const addNewMovie = () => {
-    if (movie !== null) {
+    if (movie) {
       const exist = movies.some((el) => el.title === movie.title);
 
       if (exist) {
@@ -77,7 +75,7 @@ export const App = () => {
       }
 
       setMovie(null);
-      setQuery('');
+      setHasQuery('');
     }
   };
 
@@ -89,14 +87,14 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          query={query}
+          hasQuery={hasQuery}
           movie={movie}
           handleChange={handleChange}
           getNewMovie={getNewMovie}
           addNewMovie={addNewMovie}
-          notFoundMovie={notFoundMovie}
-          finished={finished}
-          showErrorMessage={showErrorMessage}
+          isFoundMovie={isFoundMovie}
+          isLoading={isLoading}
+          isErrorMessage={isErrorMessage}
         />
       </div>
     </div>

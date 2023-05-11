@@ -6,28 +6,30 @@ import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
 type Props = {
-  query: string
+  hasQuery: string
   movie: Movie | null
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   getNewMovie: (e: React.FormEvent) => void
   addNewMovie: () => void
-  notFoundMovie: boolean
-  finished: boolean
-  showErrorMessage: boolean
+  isFoundMovie: boolean
+  isLoading: boolean
+  isErrorMessage: boolean
 };
 
-export const FindMovie: React.FC<Props> = (
-  {
-    query,
-    movie,
-    handleChange,
-    getNewMovie,
-    addNewMovie,
-    notFoundMovie,
-    finished,
-    showErrorMessage,
-  },
-) => {
+export const FindMovie: React.FC<Props> = ({
+  hasQuery,
+  movie,
+  handleChange,
+  getNewMovie,
+  addNewMovie,
+  isFoundMovie,
+  isLoading,
+  isErrorMessage,
+}) => {
+  const searchButton = movie
+    ? 'Search again'
+    : 'Find a movie';
+
   return (
     <>
       <form className="find-movie" onSubmit={getNewMovie}>
@@ -43,12 +45,12 @@ export const FindMovie: React.FC<Props> = (
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
-              value={query}
+              value={hasQuery}
               onChange={handleChange}
             />
           </div>
 
-          {notFoundMovie && query && showErrorMessage && (
+          {!isFoundMovie && hasQuery && isErrorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -61,15 +63,15 @@ export const FindMovie: React.FC<Props> = (
               data-cy="searchButton"
               type="submit"
               className={classNames('button', 'is-light', {
-                'is-loading': !finished,
+                'is-loading': isLoading,
               })}
-              disabled={Boolean(!query.length)}
+              disabled={!hasQuery.length}
             >
-              Find a movie
+              {searchButton}
             </button>
           </div>
 
-          {Boolean(movie) && (
+          {movie && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -84,7 +86,7 @@ export const FindMovie: React.FC<Props> = (
         </div>
       </form>
 
-      {movie !== null && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
 

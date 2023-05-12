@@ -56,7 +56,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setQuery('');
   };
 
-  const emptyInput = query.trim().length === 0;
+  const emptyInput = !query.trim().length;
 
   return (
     <>

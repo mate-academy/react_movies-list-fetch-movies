@@ -10,8 +10,10 @@ export const App = () => {
   const handleAddMovie = (newMovie: Movie) => {
     if (newMovie) {
       setMovies(prevMovies => {
-        return prevMovies
-          .some(({ imdbId }) => imdbId === newMovie.imdbId)
+        const isMovieInTheList = prevMovies
+          .some(({ imdbId }) => imdbId === newMovie.imdbId);
+
+        return isMovieInTheList
           ? prevMovies
           : [...prevMovies, newMovie];
       });
@@ -25,7 +27,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie handlerAdd={handleAddMovie} />
+        <FindMovie onAdd={handleAddMovie} />
       </div>
     </div>
   );

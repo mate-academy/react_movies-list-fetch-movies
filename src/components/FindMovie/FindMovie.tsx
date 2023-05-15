@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 import cn from 'classnames';
 import { Movie } from '../../types/Movie';
 import './FindMovie.scss';
@@ -6,59 +6,75 @@ import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
-  handlerAdd: (newMovie: Movie) => void;
+  onAdd: (newMovie: Movie) => void;
 }
 
 const baseImgUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export const FindMovie: FC<Props> = ({
-  handlerAdd,
+  onAdd,
 }) => {
   const [hasError, setHasError] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleQueryChange = (value: string) => {
+  const handleQueryChange = useCallback((value: string) => {
     setSearchQuery(value);
 
     if (value) {
       setHasError(false);
     }
-  };
+  }, []);
 
-  const handleAddMovieToTheList = () => {
+  const handleAdd = useCallback(() => {
     if (selectedMovie) {
-      handlerAdd(selectedMovie);
+      onAdd(selectedMovie);
       setSelectedMovie(null);
       setSearchQuery('');
     }
-  };
+  }, [selectedMovie]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback(async (event:
+  React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
-    getMovie(searchQuery).then(data => {
-      if ('Error' in data) {
+
+    try {
+      const receivedMovie = await getMovie(searchQuery);
+
+      if ('Error' in receivedMovie) {
         setHasError(true);
-      } else {
-        const imgMovieUrl = data.Poster !== 'N/A'
-          ? data.Poster
-          : baseImgUrl;
+        setErrorMessage('Can&apos;t find a movie with such a title');
 
-        const newMovie: Movie = {
-          title: data.Title,
-          description: data.Plot,
-          imgUrl: imgMovieUrl,
-          imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
-          imdbId: data.imdbID,
-        };
-
-        setSelectedMovie(newMovie);
+        return;
       }
-    })
-      .finally(() => setIsLoading(false));
-  };
+
+      const {
+        Poster,
+        Title,
+        Plot,
+        imdbID,
+      } = receivedMovie;
+
+      const imgMovieUrl = Poster !== 'N/A'
+        ? Poster
+        : baseImgUrl;
+
+      const newMovie: Movie = {
+        title: Title,
+        description: Plot,
+        imgUrl: imgMovieUrl,
+        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+        imdbId: imdbID,
+      };
+
+      setSelectedMovie(newMovie);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   return (
     <>
@@ -85,7 +101,7 @@ export const FindMovie: FC<Props> = ({
 
           {hasError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
         </div>
@@ -95,8 +111,9 @@ export const FindMovie: FC<Props> = ({
             <button
               data-cy="searchButton"
               type="submit"
-              className={cn('button', 'is-light',
-                { 'is-loading': isLoading })}
+              className={cn('button', 'is-light', {
+                'is-loading': isLoading,
+              })}
               disabled={!searchQuery}
             >
               {!selectedMovie
@@ -111,7 +128,7 @@ export const FindMovie: FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={handleAddMovieToTheList}
+                onClick={handleAdd}
               >
                 Add to the list
               </button>

@@ -1,10 +1,97 @@
-import React from 'react';
+import {
+  FC,
+  FormEvent,
+  useCallback,
+  useState,
+} from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
 
-export const FindMovie: React.FC = () => {
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
+import { DEFAULT_PICTURE, FILM_URL } from '../../defaultUrl';
+import { Error } from '../../types/ErrorEnum';
+
+interface FindMovieProps {
+  addMovie: (movie: Movie) => void;
+}
+
+const renderSwitch = (err: string) => {
+  switch (err) {
+    case Error.EMPTY:
+      return Error.EMPTY;
+    case Error.FIND:
+      return Error.FIND;
+    default:
+      return Error.NONE;
+  }
+};
+
+export const FindMovie: FC<FindMovieProps> = ({ addMovie }) => {
+  const [query, setQuery] = useState('');
+  const [typeOfError, setTypeOfError] = useState(Error.NONE);
+  const [isSubmitedForm, setSubmitedForm] = useState(false);
+  const [movie, setMovie] = useState<Movie | null>(null);
+
+  const changeQuery = (queryFromUser: string) => {
+    setQuery(queryFromUser);
+    setTypeOfError(Error.NONE);
+  };
+
+  const loadMoviesFromServer = useCallback(async (queryFromUser) => {
+    if (!queryFromUser.trim()) {
+      setTypeOfError(Error.EMPTY);
+      setSubmitedForm(false);
+      setQuery('');
+
+      return;
+    }
+
+    const movieFromServer = await getMovie(queryFromUser);
+
+    if ('Error' in movieFromServer) {
+      setTypeOfError(Error.FIND);
+      setSubmitedForm(false);
+
+      return;
+    }
+
+    const {
+      Title,
+      Plot,
+      imdbID,
+      Poster,
+    } = movieFromServer;
+
+    setMovie({
+      title: Title,
+      description: Plot,
+      imgUrl: Poster === 'N/A' ? DEFAULT_PICTURE : Poster,
+      imdbUrl: `${FILM_URL}/${imdbID}`,
+      imdbId: imdbID,
+    });
+
+    setSubmitedForm(false);
+  }, []);
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    setSubmitedForm(true);
+    loadMoviesFromServer(query);
+  };
+
+  const handleAddMovie = () => {
+    if (movie) {
+      addMovie(movie);
+      setMovie(null);
+      setQuery('');
+    }
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,12 +104,16 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-dander"
+              value={query}
+              onChange={(event) => changeQuery(event.target.value)}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {typeOfError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {renderSwitch(typeOfError)}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +121,38 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button is-light', {
+                'is-loading': isSubmitedForm,
+              })}
+              disabled={!query}
             >
-              Find a movie
+              {movie
+                ? 'Search again'
+                : 'Find a movie'}
             </button>
           </div>
 
           <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
+            {movie && (
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAddMovie}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

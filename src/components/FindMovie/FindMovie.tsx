@@ -1,14 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
-
-const BASE_IMDB_LINK = 'https://www.imdb.com/title/';
-// eslint-disable-next-line max-len
-const DEFAULT_IMAGE_LINK = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+import { BASE_IMDB_LINK, DEFAULT_IMAGE_LINK } from '../../App.constants';
 
 type Props = {
   onAdd: (newMovie: Movie) => void;
@@ -16,51 +12,65 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = React.memo(({ onAdd }) => {
   const [query, setQuery] = useState('');
-  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
-  const [isMovieError, setIsMovieError] = useState(false);
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const findMovie = async () => {
-    const preparedQuery = query.toLowerCase().trim();
-    const movieData = await getMovie(preparedQuery);
-
-    if ('Error' in movieData) {
-      setIsMovieError(true);
-      setFoundMovie(null);
-      setIsLoading(false);
-    } else {
-      const imgUrl = movieData.Poster !== 'N/A'
-        ? movieData.Poster
-        : DEFAULT_IMAGE_LINK;
-
-      const movie: Movie = {
-        title: movieData.Title,
-        description: movieData.Plot,
-        imgUrl,
-        imdbUrl: `${BASE_IMDB_LINK}${movieData.imdbID}`,
-        imdbId: movieData.imdbID,
-      };
-
-      if (foundMovie?.imdbId !== movie.imdbId) {
-        setFoundMovie(movie);
-      }
-
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsLoading(true);
 
-    findMovie();
+    const preparedQuery = query.toLowerCase().trim();
+
+    if (preparedQuery.length === 0) {
+      setErrorMessage('Movie name can\'t be empty or consist only of spaces');
+      setIsLoading(false);
+
+      return;
+    }
+
+    const movieData = await getMovie(preparedQuery);
+
+    if ('Error' in movieData) {
+      setErrorMessage('Can\'t find a movie with such a title');
+      setMovie(null);
+      setIsLoading(false);
+
+      return;
+    }
+
+    const imgUrl = movieData.Poster !== 'N/A'
+      ? movieData.Poster
+      : DEFAULT_IMAGE_LINK;
+
+    const tempMovie: Movie = {
+      title: movieData.Title,
+      description: movieData.Plot,
+      imgUrl,
+      imdbUrl: `${BASE_IMDB_LINK}${movieData.imdbID}`,
+      imdbId: movieData.imdbID,
+    };
+
+    if (movie?.imdbId !== tempMovie.imdbId) {
+      setMovie(tempMovie);
+    }
+
+    setIsLoading(false);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-    setIsMovieError(false);
+    setErrorMessage('');
   };
+
+  const handleAdd = (movieToAdd: Movie) => {
+    onAdd(movieToAdd);
+    setMovie(null);
+    setQuery('');
+  };
+
+  const isAddButtonDisabled = !query.length || !!errorMessage.length;
 
   return (
     <>
@@ -82,9 +92,9 @@ export const FindMovie: React.FC<Props> = React.memo(({ onAdd }) => {
             />
           </div>
 
-          {isMovieError && (
+          {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
 
@@ -98,23 +108,19 @@ export const FindMovie: React.FC<Props> = React.memo(({ onAdd }) => {
               className={classNames('button is-light', {
                 'is-loading': isLoading,
               })}
-              disabled={isMovieError || query.length === 0}
+              disabled={isAddButtonDisabled}
             >
               Find a movie
             </button>
           </div>
 
-          {foundMovie && (
+          {movie && (
             <div className="control">
               <button
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  onAdd(foundMovie);
-                  setFoundMovie(null);
-                  setQuery('');
-                }}
+                onClick={() => handleAdd(movie)}
               >
                 Add to the list
               </button>
@@ -123,10 +129,10 @@ export const FindMovie: React.FC<Props> = React.memo(({ onAdd }) => {
         </div>
       </form>
 
-      {foundMovie && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={foundMovie} />
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

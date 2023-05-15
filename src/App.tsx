@@ -15,7 +15,7 @@ export const App = () => {
 
       return [...prevMovies, newMovie];
     });
-  }, []);
+  }, [movies]);
 
   return (
     <div className="page">

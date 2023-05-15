@@ -7,7 +7,7 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const onAddMovie = (newMovie: Movie) => {
+  const handleAddMovie = (newMovie: Movie) => {
     if (newMovie) {
       setMovies(prevMovies => {
         return prevMovies
@@ -25,7 +25,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie handlerAdd={onAddMovie} />
+        <FindMovie handlerAdd={handleAddMovie} />
       </div>
     </div>
   );

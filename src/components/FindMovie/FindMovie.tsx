@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import cn from 'classnames';
 import { Movie } from '../../types/Movie';
 import './FindMovie.scss';
@@ -11,7 +11,7 @@ interface Props {
 
 const baseImgUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-export const FindMovie: React.FC<Props> = ({
+export const FindMovie: FC<Props> = ({
   handlerAdd,
 }) => {
   const [hasError, setHasError] = useState(false);
@@ -27,8 +27,12 @@ export const FindMovie: React.FC<Props> = ({
     }
   };
 
-  const handleFindMovie = () => {
-
+  const handleAddMovieToTheList = () => {
+    if (selectedMovie) {
+      handlerAdd(selectedMovie);
+      setSelectedMovie(null);
+      setSearchQuery('');
+    }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -93,7 +97,6 @@ export const FindMovie: React.FC<Props> = ({
               type="submit"
               className={cn('button', 'is-light',
                 { 'is-loading': isLoading })}
-              onClick={handleFindMovie}
               disabled={!searchQuery}
             >
               {!selectedMovie
@@ -108,11 +111,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  handlerAdd(selectedMovie);
-                  setSelectedMovie(null);
-                  setSearchQuery('');
-                }}
+                onClick={handleAddMovieToTheList}
               >
                 Add to the list
               </button>

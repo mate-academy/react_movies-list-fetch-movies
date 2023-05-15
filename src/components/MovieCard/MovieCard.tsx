@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
 
@@ -6,7 +6,7 @@ type Props = {
   movie: Movie,
 };
 
-export const MovieCard: React.FC<Props> = ({ movie }) => (
+export const MovieCard: FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">

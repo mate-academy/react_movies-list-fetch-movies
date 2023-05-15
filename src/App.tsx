@@ -7,7 +7,7 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const addMovie = useCallback((newMovie: Movie) => {
+  const handleMovie = useCallback((newMovie: Movie) => {
     setMovies(prevMovies => {
       const isMovieInMovies = prevMovies.some(({ imdbId }) => (
         imdbId === newMovie.imdbId));
@@ -25,7 +25,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie addMovie={addMovie} />
+        <FindMovie addMovie={handleMovie} />
       </div>
     </div>
   );

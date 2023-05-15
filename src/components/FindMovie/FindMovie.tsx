@@ -10,32 +10,48 @@ import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import { DEFAULT_PICTURE, FILM_URL } from '../../defaultUrl';
+import { Error } from '../../types/ErrorEnum';
 
 interface FindMovieProps {
   addMovie: (movie: Movie) => void;
 }
 
-const FILM_URL = 'https://www.imdb.com/title';
-// eslint-disable-next-line max-len
-const DEFAULT_PICTURE = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+const renderSwitch = (err: string) => {
+  switch (err) {
+    case Error.EMPTY:
+      return Error.EMPTY;
+    case Error.FIND:
+      return Error.FIND;
+    default:
+      return Error.NONE;
+  }
+};
 
 export const FindMovie: FC<FindMovieProps> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
-  const [hasError, setError] = useState(false);
-  const [isFindedFilm, setIsFindedFilm] = useState(false);
+  const [typeOfError, setTypeOfError] = useState(Error.NONE);
   const [isSubmitedForm, setSubmitedForm] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
 
   const changeQuery = (queryFromUser: string) => {
     setQuery(queryFromUser);
-    setError(false);
+    setTypeOfError(Error.NONE);
   };
 
   const loadMoviesFromServer = useCallback(async (queryFromUser) => {
+    if (!queryFromUser.trim()) {
+      setTypeOfError(Error.EMPTY);
+      setSubmitedForm(false);
+      setQuery('');
+
+      return;
+    }
+
     const movieFromServer = await getMovie(queryFromUser);
 
     if ('Error' in movieFromServer) {
-      setError(true);
+      setTypeOfError(Error.FIND);
       setSubmitedForm(false);
 
       return;
@@ -55,28 +71,27 @@ export const FindMovie: FC<FindMovieProps> = ({ addMovie }) => {
       imdbUrl: `${FILM_URL}/${imdbID}`,
       imdbId: imdbID,
     });
-    setIsFindedFilm(true);
+
     setSubmitedForm(false);
   }, []);
 
-  const handleSubmitFindMovie = (event: FormEvent) => {
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    loadMoviesFromServer(query);
     setSubmitedForm(true);
+    loadMoviesFromServer(query);
   };
 
-  const handleButtonAddMovie = () => {
+  const handleAddMovie = () => {
     if (movie) {
       addMovie(movie);
-      setIsFindedFilm(false);
-      setMovie(movie);
+      setMovie(null);
       setQuery('');
     }
   };
 
   return (
     <>
-      <form className="find-movie" onSubmit={handleSubmitFindMovie}>
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -94,10 +109,9 @@ export const FindMovie: FC<FindMovieProps> = ({ addMovie }) => {
             />
           </div>
 
-          {hasError
-          && (
+          {typeOfError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {renderSwitch(typeOfError)}
             </p>
           )}
         </div>
@@ -112,19 +126,19 @@ export const FindMovie: FC<FindMovieProps> = ({ addMovie }) => {
               })}
               disabled={!query}
             >
-              {isFindedFilm
+              {movie
                 ? 'Search again'
                 : 'Find a movie'}
             </button>
           </div>
 
           <div className="control">
-            {isFindedFilm && (
+            {movie && (
               <button
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={handleButtonAddMovie}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>
@@ -133,8 +147,7 @@ export const FindMovie: FC<FindMovieProps> = ({ addMovie }) => {
         </div>
       </form>
 
-      {isFindedFilm
-      && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

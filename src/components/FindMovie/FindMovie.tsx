@@ -11,9 +11,9 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [query, setQuery] = useState<string>('');
-  const [hasError, setHasError] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [query, setQuery] = useState('');
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHasError(false);
@@ -24,31 +24,39 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     event.preventDefault();
     setIsLoading(true);
 
+    const isInvalidQuery = !query || query.trim().length === 0;
+
+    if (isInvalidQuery) {
+      throw new Error('Invalid query');
+    }
+
     const newMovieFromServer = await getMovie(query);
 
     if ('Error' in newMovieFromServer) {
       setHasError(true);
-    } else {
-      const {
-        Poster,
-        Title,
-        Plot,
-        imdbID,
-      } = newMovieFromServer;
+      setIsLoading(false);
 
-      const newMovie = {
-        title: Title,
-        description: Plot,
-        imgUrl: Poster !== 'N/A'
-          ? Poster
-          : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-        imdbId: imdbID,
-      };
-
-      setMovie(newMovie);
+      return;
     }
 
+    const {
+      Poster,
+      Title,
+      Plot,
+      imdbID,
+    } = newMovieFromServer;
+
+    const newMovie = {
+      title: Title,
+      description: Plot,
+      imgUrl: Poster !== 'N/A'
+        ? Poster
+        : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+      imdbId: imdbID,
+    };
+
+    setMovie(newMovie);
     setIsLoading(false);
   };
 

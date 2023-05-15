@@ -27,6 +27,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     const isInvalidQuery = !query || query.trim().length === 0;
 
     if (isInvalidQuery) {
+      setIsLoading(false);
       throw new Error('Invalid query');
     }
 

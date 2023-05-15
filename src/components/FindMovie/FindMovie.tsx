@@ -6,14 +6,13 @@ import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
-  movies: Movie[];
-  setMovies: (movies: Movie[]) => void;
+  onAddMovie: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -21,10 +20,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
     setLoading(true);
 
-    getMovie(query)
+    getMovie(query.trim())
       .then(response => {
         if ('Error' in response) {
-          setError(true);
+          setIsError(true);
 
           return;
         }
@@ -47,9 +46,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       return;
     }
 
-    if (!movies.some(film => film.imdbId === movie.imdbId)) {
-      setMovies([...movies, movie]);
-    }
+    onAddMovie(movie);
 
     setMovie(null);
     setQuery('');
@@ -57,7 +54,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-    setError(false);
+    setIsError(false);
   };
 
   return (
@@ -83,7 +80,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
             />
           </div>
 
-          {error && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -98,7 +95,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               className={classNames('button is-light', {
                 'is-loading': loading,
               })}
-              disabled={!query}
+              disabled={!query.trim()}
             >
               {(!movie)
                 ? 'Find a movie'

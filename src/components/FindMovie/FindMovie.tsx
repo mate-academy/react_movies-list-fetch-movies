@@ -46,7 +46,7 @@ export const FindMovie: FC<Props> = ({
 
       if ('Error' in receivedMovie) {
         setHasError(true);
-        setErrorMessage('Can&apos;t find a movie with such a title');
+        setErrorMessage('Can\'t find a movie with such a title');
 
         return;
       }

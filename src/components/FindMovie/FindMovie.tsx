@@ -1,4 +1,9 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useState,
+} from 'react';
 import classNames from 'classnames';
 
 import { Movie } from '../../types/Movie';
@@ -14,52 +19,60 @@ interface Props {
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [isloading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setLoading(true);
+    setIsLoading(true);
 
-    getMovie(query.trim())
-      .then(response => {
-        if ('Error' in response) {
-          setError(true);
+    if (!query.trim()) {
+      setError('Please enter a movie title');
+      setIsLoading(false);
 
-          return;
-        }
-
-        const poster = response.Poster === 'N/A'
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : response.Poster;
-
-        const foundedMovie = {
-          title: response.Title,
-          description: response.Plot,
-          imgUrl: poster,
-          imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-          imdbId: response.imdbID,
-        };
-
-        setMovie(foundedMovie);
-      })
-      .finally(() => setLoading(false));
-  };
-
-  const handleAddMovie = () => {
-    if (!movie) {
       return;
     }
 
-    onAddMovie(movie);
+    try {
+      const response = await getMovie(query.trim());
+
+      if ('Error' in response) {
+        setError('Can\'t find a movie with such title');
+
+        return;
+      }
+
+      const poster = response.Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : response.Poster;
+
+      const foundedMovie = {
+        title: response.Title,
+        description: response.Plot,
+        imgUrl: poster,
+        imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+        imdbId: response.imdbID,
+      };
+
+      setMovie(foundedMovie);
+    } catch (fetchError) {
+      setError('Something went wrong');
+      throw fetchError;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddMovie = useCallback(() => {
+    onAddMovie(movie as Movie);
     setMovie(null);
     setQuery('');
-  };
+  }, [movie]);
 
   const handleQuery = (event: ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
-    setError(false);
+    setError('');
   };
 
   return (
@@ -87,7 +100,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {error}
             </p>
           )}
         </div>
@@ -98,7 +111,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               data-cy="searchButton"
               type="submit"
               className={classNames('button is-light', {
-                'is-loading': loading,
+                'is-loading': isloading,
               })}
               disabled={!query}
             >

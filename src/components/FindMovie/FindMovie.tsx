@@ -15,10 +15,17 @@ interface Props {
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [hasError, setHasError] = useState(false);
+  const [emptyTitleError, setEmptyTitleError] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const loadMovie = () => {
+    if (!query.trim()) {
+      setEmptyTitleError(true);
+
+      return;
+    }
+
     setIsLoading(true);
 
     getMovie(query)
@@ -89,6 +96,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               Can&apos;t find a movie with such a title
             </p>
           )}
+
+          {emptyTitleError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Title can&apos;t be empty
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -99,7 +112,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={cn('button', 'is-light', {
                 'is-loading': isLoading,
               })}
-              disabled={!query}
+              disabled={!query || emptyTitleError}
             >
               {movie
                 ? 'Search again'

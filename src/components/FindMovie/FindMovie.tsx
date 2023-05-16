@@ -23,9 +23,16 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
     const isValidQuery = query && query.trim().length;
 
+    if (!isValidQuery) {
+      setIsError(true);
+      setIsLoading(false);
+
+      return;
+    }
+
     const movieFromServer = await getMovie(query);
 
-    if ('Error' in movieFromServer || !isValidQuery) {
+    if ('Error' in movieFromServer) {
       setIsError(true);
       setIsLoading(false);
 
@@ -39,12 +46,14 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       Poster,
     } = movieFromServer;
 
+    const imgUrl = Poster !== 'N/A'
+      ? Poster
+      : PICTURE;
+
     setMovie({
       title: Title,
       description: Plot,
-      imgUrl: Poster !== 'N/A'
-        ? Poster
-        : PICTURE,
+      imgUrl,
       imdbUrl: `https://www.imdb.com/title/${imdbID}`,
       imdbId: imdbID,
     });

@@ -4,9 +4,7 @@ import { getMovie } from '../../api';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
-
-// eslint-disable-next-line max-len
-const DEFAULT_PREVIEW = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+import { DEFAULT_PREVIEW } from '../../default_preview_url';
 
 type Props = {
   movies: Movie[],
@@ -14,7 +12,7 @@ type Props = {
 };
 
 export const FindMovie: FC<Props> = ({ movies, onAddMovie }) => {
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,6 +24,12 @@ export const FindMovie: FC<Props> = ({ movies, onAddMovie }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!query.trim()) {
+      setError('Please enter a movie title');
+
+      return;
+    }
 
     setLoading(true);
 
@@ -55,7 +59,9 @@ export const FindMovie: FC<Props> = ({ movies, onAddMovie }) => {
 
   const handleAddMovie = () => {
     if (movie && !movies.find(({ imdbId }) => imdbId === movie.imdbId)) {
-      onAddMovie([...movies, movie]);
+      const updatedMovies = [...movies, movie];
+
+      onAddMovie(updatedMovies);
     }
 
     setMovie(null);
@@ -84,7 +90,7 @@ export const FindMovie: FC<Props> = ({ movies, onAddMovie }) => {
 
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {error}
             </p>
           )}
 

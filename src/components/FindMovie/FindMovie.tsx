@@ -14,16 +14,18 @@ interface Props {
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [isLoaded, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoaded, setIsLoading] = useState(false);
 
   const handlerSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
 
+    const isValidQuery = query && query.trim().length;
+
     const movieFromServer = await getMovie(query);
 
-    if ('Error' in movieFromServer) {
+    if ('Error' in movieFromServer || !isValidQuery) {
       setIsError(true);
       setIsLoading(false);
 
@@ -98,7 +100,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               className={cn('button is-light', {
                 'is-loading': isLoaded,
               })}
-              disabled={query.length === 0}
+              disabled={!query.length}
             >
               {!movie
                 ? 'Find a movie'

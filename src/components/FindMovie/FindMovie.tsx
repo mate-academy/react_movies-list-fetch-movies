@@ -12,13 +12,14 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isLoading, setIsLading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [prev] = useState<Movie[]>([]);
 
   const handleFindMovie = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMovie(null);
-    setIsLading(true);
+    setIsLoading(true);
     setIsError(false);
 
     getMovie(query)
@@ -49,22 +50,18 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
           });
         }
       })
-      .finally(() => setIsLading(false));
+      .finally(() => setIsLoading(false));
   };
 
   const handleAddMovieToList = () => {
     if (movie) {
-      setMovies((prev) => {
-        const hasMovie = prev.some(
-          (prevMovie) => prevMovie.imdbId === movie.imdbId,
-        );
+      const hasMovie = prev.some(
+        (prevMovie) => prevMovie.imdbId === movie.imdbId,
+      );
 
-        if (hasMovie) {
-          return prev;
-        }
-
-        return [...prev, movie];
-      });
+      if (!hasMovie) {
+        setMovies(() => [...prev, movie]);
+      }
     }
 
     setMovie(null);

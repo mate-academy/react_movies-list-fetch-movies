@@ -6,18 +6,14 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 
 interface Props {
-  addMovie: (movie: Movie) => void;
+  onAdd: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setError(false);
-  }, [query]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
@@ -27,37 +23,55 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const handleMovieAdd = () => {
     if (movie) {
-      addMovie(movie);
+      onAdd(movie);
       setMovie(null);
       setQuery('');
+    }
+  };
+
+  const loadMovie = async () => {
+    if (!query.trim()) {
+      setErrorMessage('Invalid movie title');
+
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const result = await getMovie(query);
+
+      if ('Error' in result) {
+        setErrorMessage('Cant find movie with such a title');
+      } else {
+        const dontHavePoster = result.Poster === 'N/A';
+        // eslint-disable-next-line max-len
+        const noPosterImage = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+        setMovie({
+          title: result.Title,
+          description: result.Plot,
+          imgUrl: dontHavePoster
+            ? noPosterImage
+            : result.Poster,
+          imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
+          imdbId: result.imdbID,
+        });
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setLoading(true);
-
-    getMovie(query)
-      .then(result => {
-        if ('Error' in result) {
-          setError(true);
-        } else {
-          setMovie({
-            title: result.Title,
-            description: result.Plot,
-            imgUrl: result.Poster === 'N/A'
-              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-              : result.Poster,
-            imdbUrl: `https://www.imdb.com/title/${result.imdbID}`,
-            imdbId: result.imdbID,
-          });
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    loadMovie();
   };
+
+  useEffect(() => {
+    setErrorMessage('');
+  }, [query]);
 
   return (
     <>
@@ -79,9 +93,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          {error && (
+          {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
         </div>
@@ -91,9 +105,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={cn('button',
-                { 'is-light': !isLoading },
-                { 'is-loading': isLoading })}
+              className={cn('button', {
+                'is-light': !isLoading,
+                'is-loading': isLoading,
+              })}
               disabled={!query}
             >
               {movie ? 'Search again' : 'Find a movie'}

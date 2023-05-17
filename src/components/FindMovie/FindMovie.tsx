@@ -60,11 +60,10 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
       );
 
       if (!hasMovie) {
-        setMovies(() => [...prev, movie]);
+        setMovies((prevMovies) => [...prevMovies, movie]);
       }
     }
 
-    setMovie(null);
     setQuery('');
   };
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { getMovie } from '../../api';
+import CN from 'classnames';
+import { getMovie, defaultPicture } from '../../api';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 import './FindMovie.scss';
@@ -8,27 +9,33 @@ type Props = {
   onAddMovie: (movie: Movie) => void;
 };
 
-const defaultPicture = 'https://via.placeholder.com/360x270.png?text=no%20preview'; // eslint-disable-line
-
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [isLoading, setISLoading] = useState(false);
-  const [isLoadingError, setIsLoadingError] = useState(false);
+  const [isError, setIsError] = useState('');
 
   const handleQueryInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsLoadingError(false);
+    setIsError('');
     setQuery(event.target.value);
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!query.trim()) {
+      setIsError('Please enter a movie title');
+      setISLoading(false);
+
+      return;
+    }
+
     setISLoading(true);
 
     const movieData = await getMovie(query);
 
     if ('Error' in movieData) {
-      setIsLoadingError(true);
+      setIsError('Can\'t find a movie with such title');
     } else {
       const newMovie = {
         title: movieData.Title,
@@ -76,18 +83,18 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${isLoadingError ? 'is-danger' : ''}`}
+              className={CN('input', { 'is-danger': isError })}
               value={query}
               onChange={handleQueryInput}
             />
           </div>
 
-          {isLoadingError && (
+          {isError && (
             <p
               className="help is-danger"
               data-cy="errorMessage"
             >
-              Can&apos;t find a movie with such a title
+              {isError}
             </p>
           )}
         </div>
@@ -97,7 +104,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={`button is-light ${isLoading ? 'is-loading' : ''}`}
+              className={CN('button', 'is-light', { 'is-loading': isLoading })}
               disabled={!query}
             >
               Find a movie

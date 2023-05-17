@@ -86,6 +86,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               className={CN('input', { 'is-danger': isError })}
               value={query}
               onChange={handleQueryInput}
+
             />
           </div>
 

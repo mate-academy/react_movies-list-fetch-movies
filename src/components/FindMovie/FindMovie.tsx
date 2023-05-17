@@ -36,45 +36,51 @@ export const FindMovie: FC<Props> = ({
     }
   }, [selectedMovie]);
 
-  const handleSubmit = useCallback(async (event:
-  React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsLoading(true);
+  const handleSubmit = useCallback(
+    async (event:React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setIsLoading(true);
 
-    try {
-      const receivedMovie = await getMovie(searchQuery);
-
-      if ('Error' in receivedMovie) {
+      if (!searchQuery.trim()) {
         setHasError(true);
-        setErrorMessage('Can\'t find a movie with such a title');
-
-        return;
+        setErrorMessage('Put the title please');
       }
 
-      const {
-        Poster,
-        Title,
-        Plot,
-        imdbID,
-      } = receivedMovie;
+      try {
+        const receivedMovie = await getMovie(searchQuery);
 
-      const imgMovieUrl = Poster !== 'N/A'
-        ? Poster
-        : baseImgUrl;
+        if ('Error' in receivedMovie) {
+          setHasError(true);
+          setErrorMessage('Can\'t find a movie with such a title');
 
-      const newMovie: Movie = {
-        title: Title,
-        description: Plot,
-        imgUrl: imgMovieUrl,
-        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-        imdbId: imdbID,
-      };
+          return;
+        }
 
-      setSelectedMovie(newMovie);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        const {
+          Poster,
+          Title,
+          Plot,
+          imdbID,
+        } = receivedMovie;
+
+        const imgMovieUrl = Poster !== 'N/A'
+          ? Poster
+          : baseImgUrl;
+
+        const newMovie: Movie = {
+          title: Title,
+          description: Plot,
+          imgUrl: imgMovieUrl,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          imdbId: imdbID,
+        };
+
+        setSelectedMovie(newMovie);
+      } finally {
+        setIsLoading(false);
+      }
+    }, [],
+  );
 
   return (
     <>

@@ -4,9 +4,7 @@ import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
-
-// eslint-disable-next-line max-len
-const DEFAULT_PICTURE = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+import { DEFAULT_PICTURE } from '../../types/DefaultTypes';
 
 type Props = {
   onAddMovie: (movie: Movie) => void;
@@ -17,8 +15,14 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [errorType, setErrorType] = useState('');
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    if (!query.trim()) {
+      setIsError(true);
+      setErrorType('Invalid title');
+    }
+
     event.preventDefault();
     setIsLoading(true);
 
@@ -27,6 +31,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     if ('Error' in movieData) {
       setIsError(true);
       setIsLoading(false);
+      setErrorType('Can not find a movie');
 
       return;
     }
@@ -38,7 +43,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       imdbID,
     } = movieData;
 
-    setMovie({
+    const currentMovie = {
       title: Title,
       description: Plot,
       imgUrl: Poster !== 'N/A'
@@ -46,7 +51,9 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
         : DEFAULT_PICTURE,
       imdbUrl: `https://www.imdb.com/title/${imdbID}`,
       imdbId: imdbID,
-    });
+    };
+
+    setMovie(currentMovie);
 
     setIsLoading(false);
   };
@@ -88,7 +95,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
           {isError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorType}
             </p>
           )}
         </div>

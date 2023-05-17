@@ -7,13 +7,13 @@ import { Movie } from './types/Movie';
 export const App: FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const findNewMovie = (newMovie: Movie) => {
+  const handleAdd = (newMovie: Movie) => {
     setMovies(currentMovie => {
-      const isCurrentMovieInList = currentMovie.find(item => (
+      const isAlreadyAdded = currentMovie.some(item => (
         item.imdbId === newMovie.imdbId
       ));
 
-      if (!isCurrentMovieInList) {
+      if (!isAlreadyAdded) {
         return [...currentMovie, newMovie];
       }
 
@@ -28,7 +28,7 @@ export const App: FC = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie newMovieHandler={findNewMovie} />
+        <FindMovie onAdd={handleAdd} />
       </div>
     </div>
   );

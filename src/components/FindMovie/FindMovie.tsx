@@ -13,14 +13,14 @@ import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
 interface Props {
-  newMovieHandler: (movie: Movie) => void;
+  onAdd: (movie: Movie) => void;
 }
 
-export const FindMovie: FC<Props> = ({ newMovieHandler }) => {
+export const FindMovie: FC<Props> = ({ onAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [query, setQuery] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
+  const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const addNewMovie = (data: MovieData | ResponseError) => {
     if ('Error' in data) {
@@ -31,24 +31,35 @@ export const FindMovie: FC<Props> = ({ newMovieHandler }) => {
       title: data.Title,
       description: data.Plot,
       imdbId: data.imdbID,
-      imgUrl: data.Poster,
+      imgUrl: data.Poster === 'N/A'
+        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+        : data.Poster,
       imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
     });
   };
 
-  const handleOnSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const isQueryInvalid = !query || query.trim().length === 0;
+
+  const handleOnSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isQueryInvalid) {
+      setIsLoading(false);
+
+      throw new Error('Movie title is invalid');
+    }
+
     setIsLoading(true);
-    getMovie(query)
-      .then(newMovie => {
-        addNewMovie(newMovie);
-      })
-      .catch(() => {
-        setIsError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+
+    try {
+      const newMovie = await getMovie(query);
+
+      addNewMovie(newMovie);
+    } catch {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -58,7 +69,7 @@ export const FindMovie: FC<Props> = ({ newMovieHandler }) => {
 
   const handleOnClick = () => {
     if (movie) {
-      newMovieHandler(movie);
+      onAdd(movie);
       setQuery('');
       setMovie(null);
     }

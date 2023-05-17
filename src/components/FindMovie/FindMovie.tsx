@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
-import classNames from 'classnames';
+import React, { FC, useState } from 'react';
+import cn from 'classnames';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
@@ -16,22 +16,21 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
   const [searchedQuery, setQuery] = useState('');
   const [isError, setIsError] = useState(false);
   const [isSubmitted, setSubmitted] = useState(false);
-
+  const [isValidQuery, setIsValidQuery] = useState(true);
   const isValidData = (data: MovieData | ResponseError): data is MovieData => {
     return (data as MovieData).Title !== undefined;
   };
 
-  useEffect(() => {
-    if (searchedQuery) {
-      setIsError(false);
+  const handleQueryInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.value.trim()) {
+      setIsValidQuery(true);
     }
-  }, [searchedQuery]);
+
+    setQuery(event.target.value);
+    setIsError(false);
+  };
 
   const findMovie = async () => {
-    if (!searchedQuery) {
-      return;
-    }
-
     try {
       const foundMovieData = await getMovie(searchedQuery);
 
@@ -63,7 +62,19 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!searchedQuery) {
+      return;
+    }
+
+    if (!searchedQuery.trim()) {
+      setIsValidQuery(false);
+      setSubmitted(false);
+
+      return;
+    }
+
     findMovie();
+    setIsValidQuery(true);
     setSubmitted(true);
   };
 
@@ -80,7 +91,7 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={event => handleSubmit(event)}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -95,12 +106,18 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
               placeholder="Enter a title to search"
               className="input is-dander"
               value={searchedQuery}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={handleQueryInput}
             />
           </div>
           {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               {'Can\'t find a movie with such a title'}
+            </p>
+          )}
+
+          {!isValidQuery && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Put correct movie name
             </p>
           )}
         </div>
@@ -110,7 +127,7 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames(
+              className={cn(
                 'button is-light',
                 { 'is-loading': isSubmitted },
               )}

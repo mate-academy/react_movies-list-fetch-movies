@@ -27,13 +27,15 @@ export const FindMovie: FC<Props> = ({ onAdd }) => {
       throw new Error(data.Error);
     }
 
+    const dataPoster = data.Poster === 'N/A'
+      ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+      : data.Poster;
+
     setMovie({
       title: data.Title,
       description: data.Plot,
       imdbId: data.imdbID,
-      imgUrl: data.Poster === 'N/A'
-        ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-        : data.Poster,
+      imgUrl: dataPoster,
       imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
     });
   };

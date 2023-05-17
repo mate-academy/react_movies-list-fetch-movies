@@ -13,6 +13,7 @@ type Props = {
   previevMovie: Movie | null,
   onLoading: () => void,
   isLoading: boolean,
+  badRequest: boolean,
 };
 
 export const FindMovie: React.FC<Props> = ({
@@ -24,10 +25,18 @@ export const FindMovie: React.FC<Props> = ({
   previevMovie,
   onLoading,
   isLoading,
+  badRequest,
 }) => {
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={(event) => {
+          onSubmit(query);
+          event.preventDefault();
+          onLoading();
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -45,9 +54,11 @@ export const FindMovie: React.FC<Props> = ({
             />
           </div>
 
-          {noMovieFound && (
+          {(noMovieFound || badRequest ) && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {badRequest
+                ? 'Put the right movie name'
+                : 'Can&apos;t find a movie with such a title'}
             </p>
           )}
         </div>
@@ -60,15 +71,11 @@ export const FindMovie: React.FC<Props> = ({
               className={classNames('button is-light', {
                 'is-loading': isLoading,
               })}
-              disabled={!query}
-              onClick={(event) => {
-                onSubmit(query);
-                event.preventDefault();
-                onLoading();
-              }}
+              disabled={!query.trim()}
             >
-              { previevMovie ? 'Search again' : 'Find a movie'}
+              {previevMovie ? 'Search again' : 'Find a movie'}
             </button>
+
           </div>
 
           {previevMovie && (
@@ -77,7 +84,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => onAddToList()}
+                onClick={onAddToList}
               >
                 Add to the list
               </button>

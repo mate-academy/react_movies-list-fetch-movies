@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './App.scss';
 import { FindMovie } from './components/FindMovie';
 import { MoviesList } from './components/MoviesList';
 import { Movie } from './types/Movie';
 import { getMovie } from './api';
 import { ResponseError } from './types/ReponseError';
+import { MovieData } from './types/MovieData';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -12,13 +13,23 @@ export const App = () => {
   const [query, setQuery] = useState('');
   const [noMovieFound, setNoMovieFound] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [badRequest, setBadRequest] = useState(false);
 
-  const isResponseError = (response: any): response is ResponseError => {
-    return response.Response === 'False';
+  const isResponseError = (
+    response: MovieData | ResponseError,
+  ): response is ResponseError => {
+    return (response as ResponseError).Response === 'False';
   };
 
-  const loadMovie = async (searchItem: string) => {
+  const loadMovie = useCallback(async (searchItem: string) => {
     const foundMovie = await getMovie(searchItem);
+
+    const {
+      Title,
+      Plot,
+      imdbID,
+      Poster,
+    } = foundMovie as MovieData;
 
     if (isResponseError(foundMovie)) {
       setNoMovieFound(true);
@@ -28,28 +39,28 @@ export const App = () => {
     }
 
     setPrevievMovie({
-      title: foundMovie.Title,
-      description: foundMovie.Plot,
-      imdbId: foundMovie.imdbID,
-      imgUrl: foundMovie.Poster
+      title: Title,
+      description: Plot,
+      imdbId: imdbID,
+      imgUrl: Poster
         || 'https://via.placeholder.com/360x270.png?text=no%20preview',
-      imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}/`,
+      imdbUrl: `https://www.imdb.com/title/${imdbID}/`,
     });
     setNoMovieFound(false);
     setIsLoading(false);
-  };
+  }, []);
 
-  const handleSearchByQuery = (searchItem: string) => {
+  const handleSearchByQuery = useCallback((searchItem: string) => {
     loadMovie(searchItem);
-  };
+  }, [loadMovie]);
 
   const handleSetQuery = (event:React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value.trim());
+    setQuery(event.target.value);
   };
 
   const handleAddToList = () => {
     if (!movies.find(movie => movie.imdbId === previevMovie?.imdbId)) {
-      setMovies([...movies, previevMovie!]);
+      setMovies((prevMovies) => [...prevMovies, previevMovie!]);
     }
 
     setPrevievMovie(null);
@@ -59,6 +70,14 @@ export const App = () => {
   const handleLoading = () => {
     setIsLoading(true);
   };
+
+  useEffect(() => {
+    if (query && query.trim().length === 0) {
+      setBadRequest(true);
+    } else {
+      setBadRequest(false);
+    }
+  }, [query]);
 
   return (
     <div className="page">
@@ -76,6 +95,7 @@ export const App = () => {
           previevMovie={previevMovie}
           onLoading={handleLoading}
           isLoading={isLoading}
+          badRequest={badRequest}
         />
       </div>
     </div>

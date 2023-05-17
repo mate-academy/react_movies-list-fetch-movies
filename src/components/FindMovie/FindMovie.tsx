@@ -13,25 +13,35 @@ export const FindMovie: React.FC<Props> = React.memo(({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState(false);
+  const [isError, setIsError] = useState<string | null>(null);
 
-  const handleGetMovie = (event: FormEvent) => {
+  const handleGetMovie = async (event: FormEvent) => {
     event.preventDefault();
+
+    if (!query.trim()) {
+      setQuery('');
+      setIsError('Please type movie name');
+
+      return;
+    }
+
     setIsLoading(true);
 
-    getMovie(query)
+    await getMovie(query.trim())
       .then(response => {
         if ('Error' in response) {
-          setError(true);
-        } else {
-          setMovie({
-            title: response.Title,
-            description: response.Plot,
-            imgUrl: response.Poster,
-            imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-            imdbId: response.imdbID,
-          });
+          setIsError("Can't find a movie with such a title");
+
+          return;
         }
+
+        setMovie({
+          title: response.Title,
+          description: response.Plot,
+          imgUrl: response.Poster,
+          imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+          imdbId: response.imdbID,
+        });
       })
       .finally(() => {
         setQuery('');
@@ -64,15 +74,15 @@ export const FindMovie: React.FC<Props> = React.memo(({ onAddMovie }) => {
               className="input is-dander"
               value={query}
               onChange={(event) => {
-                setError(false);
+                setIsError(null);
                 setQuery(event.target.value);
               }}
             />
           </div>
 
-          {error && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
-              {'Can\'t find a movie with such a title'}
+              {isError}
             </p>
           )}
         </div>

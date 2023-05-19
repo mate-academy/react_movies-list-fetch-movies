@@ -9,9 +9,9 @@ export const App = () => {
 
   const handleAddMovie = (movie: Movie) => {
     const isNewMovie = movies
-      .every(curMovie => curMovie.imdbId !== movie.imdbId);
+      .some(curMovie => curMovie.imdbId === movie.imdbId);
 
-    if (isNewMovie) {
+    if (!isNewMovie) {
       setMovies(currMovies => [...currMovies, movie]);
     }
   };

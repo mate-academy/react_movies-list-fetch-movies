@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CN from 'classnames';
+import cn from 'classnames';
 import { getMovie, defaultPicture } from '../../api';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
@@ -37,12 +37,14 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     if ('Error' in movieData) {
       setIsError('Can\'t find a movie with such title');
     } else {
+      const imgUrl = movieData.Poster !== 'N/A'
+        ? movieData.Poster
+        : defaultPicture;
+
       const newMovie = {
         title: movieData.Title,
         description: movieData.Plot,
-        imgUrl: movieData.Poster !== 'N/A'
-          ? movieData.Poster
-          : defaultPicture,
+        imgUrl,
         imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
         imdbId: movieData.imdbID,
       };
@@ -83,7 +85,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={CN('input', { 'is-danger': isError })}
+              className={cn('input', { 'is-danger': isError })}
               value={query}
               onChange={handleQueryInput}
             />
@@ -104,7 +106,9 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={CN('button', 'is-light', { 'is-loading': isLoading })}
+              className={cn('button', 'is-light', {
+                'is-loading': isLoading,
+              })}
               disabled={!query}
             >
               Find a movie

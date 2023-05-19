@@ -21,7 +21,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  function setMovie(response: MovieData | ResponseError) {
+  function handleSetMovie(response: MovieData | ResponseError) {
     if ('Error' in response) {
       setError(true);
 
@@ -48,17 +48,17 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     });
   }
 
-  function findMovie(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+  function handleFindMovie(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     setLoading(true);
     e.preventDefault();
     setError(false);
     getMovie(searchValue)
-      .then(response => setMovie(response))
+      .then(response => handleSetMovie(response))
       .catch(() => setError(true))
       .finally(() => setLoading(false));
   }
 
-  function addHandler() {
+  function handleAdd() {
     if (movie) {
       setSearchValue('');
       onAddMovie(movie);
@@ -66,7 +66,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     }
   }
 
-  function onChangeInput(value: string) {
+  function handleChange(value: string) {
     setError(false);
     setSearchValue(value);
   }
@@ -86,8 +86,8 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={cn('input', { 'is-danger': error })}
-              value={searchValue.trim()}
-              onChange={(e) => onChangeInput(e.target.value)}
+              value={searchValue}
+              onChange={(e) => handleChange(e.target.value)}
             />
           </div>
 
@@ -104,8 +104,8 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               data-cy="searchButton"
               type="submit"
               className={cn('button', 'is-light', { 'is-loading': loading })}
-              disabled={searchValue === ''}
-              onClick={(e) => findMovie(e)}
+              disabled={!searchValue}
+              onClick={(e) => handleFindMovie(e)}
             >
               {movie ? 'Search again' : 'Find a movie'}
             </button>
@@ -117,7 +117,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={addHandler}
+                onClick={handleAdd}
               >
                 Add to the list
               </button>

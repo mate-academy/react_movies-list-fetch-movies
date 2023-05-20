@@ -1,10 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
+import { Movie } from '../../types/Movie';
+import { MovieData } from '../../types/MovieData';
+import { getMovie } from '../../api';
+import { ResponseError } from '../../types/ReponseError';
+import { convert } from '../Convertation';
+import { MovieCard } from '../MovieCard/MovieCard';
 
-export const FindMovie: React.FC = () => {
+interface Props {
+  addMovie: (movie: Movie) => void;
+}
+
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+  const [query, setQuery] = useState('');
+  const [movieLoading, setMovieLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [result, setResult] = useState<MovieData | null>(null);
+  const [errorValue, setErrorValue] = useState('');
+
+  const sendQuery = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    setMovieLoading(true);
+
+    getMovie(query).then((response: MovieData | ResponseError) => {
+      if ('Title' in response) {
+        setResult(response);
+      } else {
+        setError(true);
+        setErrorValue(response.Error);
+      }
+    })
+      .finally(() => setMovieLoading(false));
+  };
+
+  const reset = () => {
+    setQuery('');
+    setResult(null);
+  };
+
+  const isDisabled = query.trim();
+
+  const addToMovieList = () => {
+    if (result) {
+      addMovie(convert(result));
+      reset();
+    }
+  };
+
+  useEffect(() => {
+    setError(false);
+  }, [query])
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={sendQuery}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +67,18 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input',
+                { 'is-danger': error })}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {errorValue}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +86,35 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button is-light',
+                { 'is-loading': movieLoading })}
+              disabled={!isDisabled}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {result && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={addToMovieList}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {result && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={convert(result)} />
+        </div>
+      )}
     </>
   );
 };

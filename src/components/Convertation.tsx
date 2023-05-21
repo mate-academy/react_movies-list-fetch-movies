@@ -1,7 +1,7 @@
 import { Movie } from '../types/Movie';
 import { MovieData } from '../types/MovieData';
 
-export const convert = (data: MovieData): Movie => {
+export const convertDataIntoMovie = (data: MovieData): Movie => {
   return {
     title: data.Title,
     description: data.Plot,

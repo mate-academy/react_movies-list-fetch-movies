@@ -5,7 +5,7 @@ import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { getMovie } from '../../api';
 import { ResponseError } from '../../types/ReponseError';
-import { convert } from '../Convertation';
+import { convertDataIntoMovie } from '../Convertation';
 import { MovieCard } from '../MovieCard/MovieCard';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
-  const [movieLoading, setMovieLoading] = useState(false);
+  const [isMovieLoading, setIsMovieLoading] = useState(false);
   const [error, setError] = useState(false);
   const [result, setResult] = useState<MovieData | null>(null);
   const [errorValue, setErrorValue] = useState('');
@@ -22,7 +22,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const sendQuery = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setMovieLoading(true);
+    setIsMovieLoading(true);
 
     getMovie(query).then((response: MovieData | ResponseError) => {
       if ('Title' in response) {
@@ -32,7 +32,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         setErrorValue(response.Error);
       }
     })
-      .finally(() => setMovieLoading(false));
+      .finally(() => setIsMovieLoading(false));
   };
 
   const reset = () => {
@@ -44,14 +44,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const addToMovieList = () => {
     if (result) {
-      addMovie(convert(result));
+      addMovie(convertDataIntoMovie(result));
       reset();
     }
   };
 
   useEffect(() => {
     setError(false);
-  }, [query])
+  }, [query]);
 
   return (
     <>
@@ -87,7 +87,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               data-cy="searchButton"
               type="submit"
               className={classNames('button is-light',
-                { 'is-loading': movieLoading })}
+                { 'is-loading': isMovieLoading })}
               disabled={!isDisabled}
             >
               Find a movie
@@ -112,7 +112,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       {result && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={convert(result)} />
+          <MovieCard movie={convertDataIntoMovie(result)} />
         </div>
       )}
     </>

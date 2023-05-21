@@ -8,16 +8,16 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const handleAdd = (newMovie: Movie) => {
-    setMovies(movie => {
-      const isAdded = movie.some(item => (
+    setMovies(prevMovies => {
+      const isAdded = prevMovies.some(item => (
         item.imdbId === newMovie.imdbId
       ));
 
       if (!isAdded) {
-        return [...movie, newMovie];
+        return [...prevMovies, newMovie];
       }
 
-      return movie;
+      return prevMovies;
     });
   };
 

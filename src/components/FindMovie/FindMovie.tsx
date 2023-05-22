@@ -42,9 +42,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   const isDisabled = Boolean(query.trim());
 
+  const convertedResult = result ? convertDataIntoMovie(result) : null!;
+
+
   const addToMovieList = () => {
     if (result) {
-      addMovie(convertDataIntoMovie(result));
+      addMovie(convertedResult);
       reset();
     }
   };
@@ -112,7 +115,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       {result && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={convertDataIntoMovie(result)} />
+          <MovieCard movie={convertedResult} />
         </div>
       )}
     </>

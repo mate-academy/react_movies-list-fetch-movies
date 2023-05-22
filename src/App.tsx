@@ -5,7 +5,13 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const onAdd = (movie: Movie) => setMovies(
+    prevMovies => ([...prevMovies, movie]),
+  );
+  const isAlreadyInList = (imdbId: string) => {
+    return movies.some(movie => movie.imdbId === imdbId);
+  };
 
   return (
     <div className="page">
@@ -14,7 +20,10 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          addMovie={onAdd}
+          isInList={isAlreadyInList}
+        />
       </div>
     </div>
   );

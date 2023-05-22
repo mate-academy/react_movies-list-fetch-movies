@@ -40,7 +40,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setResult(null);
   };
 
-  const isDisabled = query.trim();
+  const isDisabled = Boolean(query.trim());
 
   const addToMovieList = () => {
     if (result) {
@@ -90,7 +90,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 { 'is-loading': isMovieLoading })}
               disabled={!isDisabled}
             >
-              Find a movie
+              {!result ? 'Find a movie' : 'Search again'}
             </button>
           </div>
 

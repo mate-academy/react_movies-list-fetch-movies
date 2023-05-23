@@ -7,8 +7,8 @@ import { Movie } from './types/Movie';
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const addMovie = (movie: Movie): void => {
-    setMovies((prevMovies) => [...prevMovies, movie]);
+  const addMovie = (selectedMovie: Movie): void => {
+    setMovies((prevMovies) => [...prevMovies, selectedMovie]);
   };
 
   return (

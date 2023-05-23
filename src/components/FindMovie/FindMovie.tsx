@@ -6,7 +6,7 @@ import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 
 interface Props {
-  addMovie: (movie: Movie) => void;
+  addMovie: (selectedMovie: Movie) => void;
   movies: Movie[];
 }
 
@@ -14,7 +14,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
   const [title, setTitle] = useState('');
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;
@@ -52,7 +52,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
           imdbId: imdbID,
         };
 
-        setMovie(film);
+        setSelectedMovie(film);
       }
 
       if ('Error' in movieData) {
@@ -64,12 +64,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
   };
 
   const addMovieToList = () => {
-    if (movie && !movies.find((film) => film.imdbId === movie.imdbId)) {
-      addMovie(movie);
+    if (
+      selectedMovie
+      && !movies.find((film) => film.imdbId === selectedMovie.imdbId)
+    ) {
+      addMovie(selectedMovie);
     }
 
     // Reset (hide) movie card and reset title
-    setMovie(null);
+    setSelectedMovie(null);
     setTitle('');
   };
 
@@ -108,14 +111,14 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
               className={cn('button', 'is-light', {
                 'is-loading': isLoading,
               })}
-              disabled={hasError}
+              disabled={!title}
               onClick={() => preloadMovie()}
             >
               Find a movie
             </button>
           </div>
 
-          {movie && (
+          {selectedMovie && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -130,10 +133,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
         </div>
       </form>
 
-      {movie && (
+      {selectedMovie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={movie} />
+          <MovieCard selectedMovie={selectedMovie} />
         </div>
       )}
     </>

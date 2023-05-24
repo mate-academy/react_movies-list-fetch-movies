@@ -16,6 +16,8 @@ export const FindMovie: React.FC<Props> = ({ addingMovies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [errorMassage, setErrorMassage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const defaultImg
+    = 'https://via.placeholder.com/360x270.png?text=no%20preview';
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchedValue(event.target.value);
     setErrorMassage('');
@@ -27,7 +29,7 @@ export const FindMovie: React.FC<Props> = ({ addingMovies }) => {
       description: movieFromServer.Plot,
       imgUrl: movieFromServer.Poster !== 'N/A'
         ? movieFromServer.Poster
-        : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+        : defaultImg,
       imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
       imdbId: movieFromServer.imdbID,
     };
@@ -68,7 +70,7 @@ export const FindMovie: React.FC<Props> = ({ addingMovies }) => {
               onChange={handleSearch}
             />
           </div>
-          {errorMassage.length && (
+          {errorMassage.length > 0 && (
             <p className="help is-danger" data-cy="errorMessage">
               {errorMassage}
             </p>

@@ -16,7 +16,7 @@ type FindMovieProps = {
 };
 
 export const FindMovie = ({ onAdd }: FindMovieProps) => {
-  const [movieInput, setmovieInput] = useState('');
+  const [movieInput, setMovieInput] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [movieError, setMovieError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -42,7 +42,7 @@ export const FindMovie = ({ onAdd }: FindMovieProps) => {
     }
 
     setMovie(null);
-    setmovieInput('');
+    setMovieInput('');
   };
 
   return (
@@ -64,7 +64,7 @@ export const FindMovie = ({ onAdd }: FindMovieProps) => {
               }
               onChange={(e) => {
                 setMovieError(false);
-                setmovieInput(e.target.value);
+                setMovieInput(e.target.value);
               }}
               value={movieInput}
             />

@@ -5,14 +5,14 @@ import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
 
-interface P {
+interface Props {
   addMovie: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<P> = ({ addMovie }) => {
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [foundMovieError, setFoundMovieError] = useState(false);
+  const [foundMovieError, setFoundMovieError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAddToList = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -26,40 +26,48 @@ export const FindMovie: React.FC<P> = ({ addMovie }) => {
     setQuery('');
   };
 
-  const handleFindMovie = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    if (!query.trim()) {
+      setFoundMovieError('Put the movie name');
+
+      return;
+    }
+
     setIsLoading(true);
-    getMovie(query)
-      .then(response => {
-        setIsLoading(false);
-        if ('Error' in response) {
-          setFoundMovieError(true);
+    const response = await getMovie(query);
 
-          return;
-        }
+    setIsLoading(false);
+    if ('Error' in response) {
+      setFoundMovieError('Can\'t find a movie with such a title');
 
-        const {
-          Title,
-          Plot,
-          imdbID,
-          Poster,
-        } = response;
+      return;
+    }
 
-        const newMovie = {
-          title: Title,
-          description: Plot,
-          imgUrl: Poster,
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          imdbId: imdbID,
-        };
+    const {
+      Title,
+      Plot,
+      imdbID,
+      Poster,
+    } = response;
+    const imgUrl = Poster === 'N/A'
+      ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+      : Poster;
 
-        if (newMovie.imgUrl === 'N/A') {
-          // eslint-disable-next-line max-len
-          newMovie.imgUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
-        }
+    const newMovie = {
+      title: Title,
+      description: Plot,
+      imgUrl,
+      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+      imdbId: imdbID,
+    };
 
-        setMovie(newMovie);
-      });
+    if (newMovie.imgUrl === 'N/A') {
+      // eslint-disable-next-line max-len
+      newMovie.imgUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+    }
+
+    setMovie(newMovie);
   };
 
   return (
@@ -80,16 +88,14 @@ export const FindMovie: React.FC<P> = ({ addMovie }) => {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                setFoundMovieError(false);
+                setFoundMovieError(null);
               }}
             />
           </div>
 
-          {foundMovieError && (
-            <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
-            </p>
-          )}
+          <p className="help is-danger" data-cy="errorMessage">
+            {foundMovieError}
+          </p>
         </div>
 
         <div className="field is-grouped">
@@ -100,7 +106,7 @@ export const FindMovie: React.FC<P> = ({ addMovie }) => {
               className={classNames('button is-light', {
                 'is-loading': isLoading,
               })}
-              onClick={handleFindMovie}
+              onClick={handleSubmit}
               disabled={!query}
             >
               {!movie

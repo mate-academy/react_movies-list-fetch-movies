@@ -8,19 +8,19 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  addingMovies: (movie: Movie) => void,
+  handleAddMovie: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ addingMovies }) => {
+export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
   const [searchedValue, setSearchedValue] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [errorMassage, setErrorMassage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const defaultImg
     = 'https://via.placeholder.com/360x270.png?text=no%20preview';
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchedValue(event.target.value);
-    setErrorMassage('');
+    setErrorMessage('');
   };
 
   const preparingMovie = (movieFromServer: MovieData): Movie => {
@@ -39,7 +39,7 @@ export const FindMovie: React.FC<Props> = ({ addingMovies }) => {
     setIsLoading(true);
     getMovie(searchedValue).then(res => {
       if ((res as ResponseError).Error) {
-        setErrorMassage((res as ResponseError).Error);
+        setErrorMessage((res as ResponseError).Error);
       } else {
         setMovie(preparingMovie(res as MovieData));
       }
@@ -70,9 +70,9 @@ export const FindMovie: React.FC<Props> = ({ addingMovies }) => {
               onChange={handleSearch}
             />
           </div>
-          {errorMassage.length > 0 && (
+          {errorMessage.length > 0 && (
             <p className="help is-danger" data-cy="errorMessage">
-              {errorMassage}
+              {errorMessage}
             </p>
           )}
         </div>
@@ -102,7 +102,7 @@ export const FindMovie: React.FC<Props> = ({ addingMovies }) => {
                 type="button"
                 className="button is-primary"
                 onClick={() => {
-                  addingMovies(movie);
+                  handleAddMovie(movie);
                   clearSearch();
                 }}
               >

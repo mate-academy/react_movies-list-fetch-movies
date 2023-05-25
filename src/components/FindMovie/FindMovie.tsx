@@ -13,43 +13,55 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [hasLoadingError, setHasLoadingError] = useState(false);
-  const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [hasInputError, setHasInputError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleQueryInput = (event: ChangeEvent<HTMLInputElement>) => {
     setHasLoadingError(false);
+    setHasInputError(false);
     setQuery(event.target.value);
   };
 
   const handleGetMovie = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsButtonLoading(true);
+
+    if (!query.trim()) {
+      setHasInputError(true);
+
+      return;
+    }
+
+    setIsLoading(true);
 
     const newMovieData = await getMovie(query);
 
     if ('Error' in newMovieData) {
       setHasLoadingError(true);
-    } else {
-      const {
-        Poster,
-        Title,
-        Plot,
-        imdbID,
-      } = newMovieData;
+      setIsLoading(false);
 
-      const newMovie = {
-        title: Title,
-        description: Plot,
-        imgUrl: Poster !== 'N/A'
-          ? Poster
-          : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-        imdbId: imdbID,
-      };
-
-      setMovie(newMovie);
+      return;
     }
 
-    setIsButtonLoading(false);
+    const {
+      Poster,
+      Title,
+      Plot,
+      imdbID,
+    } = newMovieData;
+
+    const newMovie = {
+      title: Title,
+      description: Plot,
+      imgUrl: Poster !== 'N/A'
+        ? Poster
+        : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+      imdbId: imdbID,
+    };
+
+    setMovie(newMovie);
+
+    setIsLoading(false);
   };
 
   const handleClearMovieSearch = () => {
@@ -99,6 +111,15 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               Can&apos;t find a movie with such a title
             </p>
           )}
+
+          {hasInputError && (
+            <p
+              className="help is-danger"
+              data-cy="errorMessage"
+            >
+              Please enter a movie title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -106,11 +127,9 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames(
-                'button',
-                'is-light',
-                { 'is-loading': isButtonLoading },
-              )}
+              className={classNames('button', 'is-light', {
+                'is-loading': isLoading,
+              })}
               disabled={!query}
             >
               Find a movie

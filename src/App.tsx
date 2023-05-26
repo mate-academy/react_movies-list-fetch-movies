@@ -11,14 +11,12 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie) => {
-    const isMovieInMoviesArray
-    = movies.some(prevMovie => prevMovie.imdbId === movie.imdbId);
+    const isMovieAdded = movies.some(
+      (prevMovie) => prevMovie.imdbId === movie.imdbId,
+    );
 
-    if (!isMovieInMoviesArray) {
-      setMovies(prevState => ([
-        ...prevState,
-        movie,
-      ]));
+    if (!isMovieAdded) {
+      setMovies((prevState) => [...prevState, movie]);
     }
   };
 

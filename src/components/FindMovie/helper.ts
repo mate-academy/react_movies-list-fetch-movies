@@ -1,6 +1,7 @@
+import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 
-export const normalizeMovieData = (movieData: MovieData) => {
+export const normalizeMovieData = (movieData: MovieData): Movie => {
   const {
     Title,
     Plot,

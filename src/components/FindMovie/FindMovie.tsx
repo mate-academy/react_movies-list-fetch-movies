@@ -1,15 +1,11 @@
 import { useState } from 'react';
-
 import classNames from 'classnames';
-
-import './FindMovie.scss';
-
 import { MovieCard } from '../MovieCard';
-
 import { getMovie } from '../../api';
 import { normalizeMovieData } from './helper';
-
 import { Movie } from '../../types/Movie';
+
+import './FindMovie.scss';
 
 type FindMovieProps = {
   onAdd: (movie: Movie) => void;
@@ -36,7 +32,7 @@ export const FindMovie = ({ onAdd }: FindMovieProps) => {
       .finally(() => setLoading(false));
   };
 
-  const handleAdd = () => {
+  const addMovie = () => {
     if (movie) {
       onAdd(movie);
     }
@@ -100,7 +96,7 @@ export const FindMovie = ({ onAdd }: FindMovieProps) => {
                   data-cy="addButton"
                   type="button"
                   className="button is-primary"
-                  onClick={handleAdd}
+                  onClick={addMovie}
                 >
                   Add to the list
                 </button>

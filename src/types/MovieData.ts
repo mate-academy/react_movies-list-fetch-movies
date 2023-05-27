@@ -3,5 +3,5 @@ export interface MovieData {
   Title: string;
   Plot: string;
   imdbID: string;
-  Response: 'True';
+  Response: string;
 }

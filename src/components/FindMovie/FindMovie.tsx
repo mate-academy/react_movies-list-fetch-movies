@@ -1,43 +1,57 @@
-import { useState } from 'react';
+import {
+  Dispatch,
+  FormEventHandler,
+  SetStateAction,
+  useState,
+} from 'react';
 import classNames from 'classnames';
+
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 import { normalizeMovieData } from './helper';
 import { Movie } from '../../types/Movie';
-
 import './FindMovie.scss';
+import { MovieData } from '../../types/MovieData';
 
 type FindMovieProps = {
-  onAdd: (movie: Movie) => void;
+  setMovies: Dispatch<SetStateAction<Movie[]>>;
 };
 
-export const FindMovie = ({ onAdd }: FindMovieProps) => {
+export const FindMovie = ({ setMovies }: FindMovieProps) => {
   const [movieInput, setMovieInput] = useState('');
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [tempMovie, setTempMovie] = useState<Movie | null>(null);
   const [movieError, setMovieError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     setLoading(true);
 
     getMovie(movieInput)
-      .then(data => {
-        if (data.Response === 'True') {
-          setMovie(normalizeMovieData(data));
-        } else {
+      .then((data) => {
+        if (data.Response === 'False') {
           setMovieError(true);
+        } else {
+          setTempMovie(normalizeMovieData(data as MovieData));
         }
       })
       .finally(() => setLoading(false));
   };
 
   const addMovie = () => {
-    if (movie) {
-      onAdd(movie);
+    if (tempMovie) {
+      setMovies((prevState) => {
+        if (
+          !prevState.some((prevMovie) => prevMovie.imdbId === tempMovie.imdbId)
+        ) {
+          return [...prevState, tempMovie];
+        }
+
+        return prevState;
+      });
     }
 
-    setMovie(null);
+    setTempMovie(null);
     setMovieInput('');
   };
 
@@ -55,9 +69,7 @@ export const FindMovie = ({ onAdd }: FindMovieProps) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={
-                classNames('input', { 'is-danger': movieError })
-              }
+              className={classNames('input', { 'is-danger': movieError })}
               onChange={(e) => {
                 setMovieError(false);
                 setMovieInput(e.target.value);
@@ -66,13 +78,11 @@ export const FindMovie = ({ onAdd }: FindMovieProps) => {
             />
           </div>
 
-          {
-            movieError && (
-              <p className="help is-danger" data-cy="errorMessage">
-                Can&apos;t find a movie with such a title
-              </p>
-            )
-          }
+          {movieError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -80,40 +90,36 @@ export const FindMovie = ({ onAdd }: FindMovieProps) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={
-                classNames('button', 'is-light', { 'is-loading': loading })
-              }
+              className={classNames('button', 'is-light', {
+                'is-loading': loading,
+              })}
               disabled={!movieInput}
             >
               Find a movie
             </button>
           </div>
 
-          {
-            movie && (
-              <div className="control">
-                <button
-                  data-cy="addButton"
-                  type="button"
-                  className="button is-primary"
-                  onClick={addMovie}
-                >
-                  Add to the list
-                </button>
-              </div>
-            )
-          }
+          {tempMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={addMovie}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      {
-        movie && (
-          <div className="container" data-cy="previewContainer">
-            <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
-          </div>
-        )
-      }
+      {tempMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={tempMovie} />
+        </div>
+      )}
     </>
   );
 };

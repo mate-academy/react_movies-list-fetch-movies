@@ -14,13 +14,20 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
 }
 
 export const expetedMovie = (movieData: MovieData): Movie => {
+  const {
+    Title,
+    Plot,
+    Poster,
+    imdbID,
+  } = movieData;
+
   return {
-    title: movieData.Title,
-    description: movieData.Plot,
-    imgUrl: movieData.Poster === 'N/A'
+    title: Title,
+    description: Plot,
+    imgUrl: Poster === 'N/A'
       ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
       : movieData.Poster,
-    imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
-    imdbId: movieData.imdbID,
+    imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+    imdbId: imdbID,
   };
 };

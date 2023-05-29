@@ -5,11 +5,11 @@ import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard/MovieCard';
 
-interface Props {
+interface FindMovieProps {
   handleAddMovie: (movie: Movie) => void,
 }
 
-export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
+export const FindMovie: React.FC<FindMovieProps> = ({ handleAddMovie }) => {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -76,7 +76,7 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
               data-cy="searchButton"
               type="submit"
               className={`button is-light ${isLoading && 'is-loading'}`}
-              disabled={search.length === 0}
+              disabled={!search.length}
             >
               Find a movie
             </button>

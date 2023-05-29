@@ -38,16 +38,20 @@ export const App = () => {
     setIsLoading(true);
 
     getMovie(query)
-      .then(res => {
-        if ('imdbID' in res) {
+      .then(response => {
+        if ('imdbID' in response) {
+          const {
+            Title, Plot, Poster, imdbID,
+          } = response;
+
           const foundMovie = {
-            title: res.Title,
-            description: res.Plot,
-            imgUrl: res.Poster !== 'N/A'
-              ? res.Poster
+            title: Title,
+            description: Plot,
+            imgUrl: Poster !== 'N/A'
+              ? Poster
               : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-            imdbId: res.imdbID,
-            imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
+            imdbId: imdbID,
+            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
           };
 
           setIsMovieFound(true);

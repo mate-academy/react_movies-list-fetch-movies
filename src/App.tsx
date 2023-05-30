@@ -13,7 +13,7 @@ export const App = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isMovieFound, setIsMovieFound] = useState(false);
 
-  const resetForm = useCallback(() => {
+  const handleFormReset = useCallback(() => {
     setMovie(null);
     setQuery('');
     setIsMovieFound(false);
@@ -29,7 +29,7 @@ export const App = () => {
         setMovies(prevMovies => [...prevMovies, movieToAdd]);
       }
 
-      resetForm();
+      handleFormReset();
     }
   };
 

@@ -1,6 +1,4 @@
-import React, {
-  FormEvent, useCallback, useMemo, useState,
-} from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
@@ -57,14 +55,12 @@ export const FindMovie: React.FC<Props> = ({ addToList }) => {
     }
   }, [query]);
 
-  const handleQueryChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      setQuery(event.target.value);
-      setError(null);
-    }, [],
-  );
+  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setError(null);
+  };
 
-  const buttonDisabled = useMemo(() => query === '', [query]);
+  const buttonDisabled = () => query === '';
 
   const addMovie = (movies: Movie) => {
     if (movies !== null) {
@@ -110,7 +106,7 @@ export const FindMovie: React.FC<Props> = ({ addToList }) => {
                 'is-loading': loading,
               })}
               onClick={handleSearchSubmit}
-              disabled={buttonDisabled}
+              disabled={buttonDisabled()}
             >
               Find a movie
             </button>

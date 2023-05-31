@@ -19,13 +19,17 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
     setIsLoading(true);
     getMovie(query)
       .then(response => {
-        if (response.imdbID) {
+        const {
+          Title, Plot, Poster, imdbID,
+        } = response;
+
+        if (imdbID) {
           setMovie({
-            title: response.Title,
-            description: response.Plot,
-            imgUrl: response.Poster,
-            imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-            imdbId: response.imdbID,
+            title: Title,
+            description: Plot,
+            imgUrl: Poster,
+            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+            imdbId: imdbID,
           });
         } else {
           setError(true);

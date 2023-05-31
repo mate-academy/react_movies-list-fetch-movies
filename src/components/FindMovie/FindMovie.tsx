@@ -2,17 +2,20 @@ import React, { FormEvent, useState } from 'react';
 import './FindMovie.scss';
 import cn from 'classnames';
 import { Movie } from '../../types/Movie';
-// import { MovieData } from '../../types/MovieData';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
 import { MovieCard } from '../MovieCard';
 
 interface FindMovieProps {
-  addMovie: (movie: Movie) => void;
+  onMovieAdd: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
+interface Error {
+  errorMessage: string
+}
+
+export const FindMovie: React.FC<FindMovieProps> = ({ onMovieAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [movieTitle, setMovieTitle] = useState<string>('');
   const [notFoundMovie, setNotFoundMovie] = useState<string>('');
@@ -37,7 +40,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
         setMovie({
           title: Title,
           description: Plot,
-          imgUrl: Poster || defaultPoster,
+          imgUrl: Poster === 'N/A' ? defaultPoster : Poster,
           imdbUrl: `https://www.imdb.com/title/${imdbID}`,
           imdbId: imdbID,
         });
@@ -45,9 +48,14 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
         setNotFoundMovie(movieTitle);
       }
     } catch (error) {
-      return error;
+      if (error && typeof error === 'object' && 'errorMessage' in error) {
+        const customError = error as Error;
+
+        return <p>{customError.errorMessage}</p>;
+      }
     } finally {
       setIsLoading(false);
+      setMovieTitle('');
     }
 
     return 0;
@@ -79,7 +87,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
             />
           </div>
 
-          {movieTitle && movieTitle === notFoundMovie && (
+          {notFoundMovie && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -107,7 +115,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovie }) => {
                 type="button"
                 className="button is-primary"
                 onClick={() => {
-                  addMovie(movie);
+                  onMovieAdd(movie);
                   setMovie(null);
                 }}
               >

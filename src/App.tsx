@@ -7,9 +7,10 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const addMovie = useCallback((movie: Movie) => {
+  const handleMovieAdd = useCallback((movie: Movie) => {
     setMovies(prevMovies => {
-      const isOnTheList = prevMovies.some(m => m.imdbId === movie.imdbId);
+      const isOnTheList = prevMovies
+        .some(addedMovie => addedMovie.imdbId === movie.imdbId);
 
       if (isOnTheList) {
         return [...prevMovies];
@@ -26,7 +27,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie addMovie={addMovie} />
+        <FindMovie onMovieAdd={handleMovieAdd} />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
@@ -17,10 +18,6 @@ export const FindMovie: React.FC = () => {
 
     return getMovie(query)
       .then(data => {
-        if ('Error' in data) {
-          setErrorMessage(true);
-        }
-
         return data;
       })
       .catch(error => {
@@ -31,7 +28,7 @@ export const FindMovie: React.FC = () => {
       .finally(() => setIsLoading(false));
   };
 
-  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = await loadData();
 
@@ -66,7 +63,7 @@ export const FindMovie: React.FC = () => {
 
   return (
     <>
-      <form className="find-movie" onSubmit={onSubmit}>
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -78,10 +75,10 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', { 'is-danger': errorMessage })}
               value={query}
-              onChange={(e) => {
-                setQuery(e.currentTarget.value);
+              onChange={(event) => {
+                setQuery(event.currentTarget.value);
                 setErrorMessage(false);
               }}
             />

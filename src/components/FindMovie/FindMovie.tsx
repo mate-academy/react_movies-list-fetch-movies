@@ -10,8 +10,8 @@ interface Props {
   onAdd: (movie: Movie) => void;
 }
 
-// eslint-disable-next-line max-len
-const defaultPicture = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+const defaultPicture
+  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [movie, setMovie] = useState<Movie | null>(null);

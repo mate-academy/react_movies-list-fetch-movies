@@ -8,9 +8,14 @@ import './App.scss';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const handleAddMovie = (newMovie: Movie) => setMovies(
-    prev => [...prev, newMovie],
-  );
+  const handleAddMovie = (newMovie: Movie) => {
+    const isDublicate = movies
+      .some(movie => movie.imdbId === newMovie.imdbId);
+
+    if (!isDublicate) {
+      setMovies(prev => [...prev, newMovie]);
+    }
+  };
 
   return (
     <div className="page">

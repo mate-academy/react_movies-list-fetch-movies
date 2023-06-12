@@ -22,26 +22,46 @@ export const FindMovie: React.FC<Props> = ({
   const [
     searchedMovie,
     setSearchedMovie,
-  ] = useState<Movie | undefined>(undefined);
+  ] = useState<Movie | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const handleFindMovie = () => getMovie(query)
-    .then(data => {
-      if ('Error' in data) {
-        setSearchError(data);
-      } else {
-        if (searchError) {
-          setSearchError(undefined);
-        }
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const clearFindMovieComponent = (searchedMovie: Movie) => {
+    onAddMovie(searchedMovie);
+    setQuery('');
+    setSearchedMovie(null);
+  };
 
-        setSearchedMovie({
-          title: data.Title,
-          description: data.Plot,
-          imgUrl: data.Poster,
-          imdbUrl: `https://www.imdb.com/title/${data.imdbID}/`,
-          imdbId: data.imdbID,
+  const handleFindMovie = async (
+    e: React.SyntheticEvent,
+  ) => {
+    e.preventDefault();
+
+    setIsLoading(true);
+
+    try {
+      await getMovie(query)
+        .then(data => {
+          if ('Error' in data) {
+            setSearchError(data);
+          } else {
+            if (searchError) {
+              setSearchError(undefined);
+            }
+
+            setSearchedMovie({
+              title: data.Title,
+              description: data.Plot,
+              imgUrl: data.Poster,
+              imdbUrl: `https://www.imdb.com/title/${data.imdbID}/`,
+              imdbId: data.imdbID,
+            });
+          }
         });
-      }
-    });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearchMovie = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -52,10 +72,7 @@ export const FindMovie: React.FC<Props> = ({
   return (
     <>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleFindMovie();
-        }}
+        onSubmit={handleFindMovie}
         className="find-movie"
       >
         <div className="field">
@@ -69,46 +86,44 @@ export const FindMovie: React.FC<Props> = ({
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${searchError && 'is-danger'}`}
+              className={`input ${searchError && query.trim() && 'is-danger'}`}
               value={query}
               onChange={handleSearchMovie}
             />
           </div>
 
-          {searchError && (
+          {searchError && query.trim() ? (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
-          )}
+          ) : ''}
         </div>
 
-        <div className="field is-grouped">
+        <div className="field is-grouped loader-centr">
           <div className="control">
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={`button is-light ${isLoading && 'is-loading'}`}
+              disabled={!query.trim() && true}
             >
               Find a movie
             </button>
           </div>
 
-          {searchedMovie && (
-            <div className="control">
-              <button
-                data-cy="addButton"
-                type="button"
-                className="button is-primary"
-                onClick={() => {
-                  onAddMovie(searchedMovie);
-                  setQuery('');
-                  setSearchedMovie(undefined);
-                }}
-              >
-                Add to the list
-              </button>
-            </div>
-          )}
+          {searchedMovie
+            && (
+              <div className="control">
+                <button
+                  data-cy="addButton"
+                  type="button"
+                  className="button is-primary"
+                  onClick={() => clearFindMovieComponent(searchedMovie)}
+                >
+                  Add to the list
+                </button>
+              </div>
+            )}
         </div>
       </form>
 

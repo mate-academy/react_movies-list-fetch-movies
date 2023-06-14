@@ -85,7 +85,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               placeholder="Enter a title to query"
               className={classNames('input', { 'is-dander': inputError })}
               value={query}
-              onChange={hendlerQuery}
+              onChange={hendlerQuery}     
             />
           </div>
           {inputError && (

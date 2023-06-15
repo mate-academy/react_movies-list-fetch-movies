@@ -26,19 +26,25 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsLoading(true);
 
     getMovie(query).then(movieFromServer => {
-      if ('Error' in movieFromServer) {
+      try {
+        if ('Error' in movieFromServer) {
+          setMovie(null);
+          setError(true);
+        } else {
+          setFoundMovie(true);
+          setMovie({
+            title: movieFromServer.Title,
+            description: movieFromServer.Plot,
+            imgUrl: movieFromServer.Poster !== 'N/A'
+              ? movieFromServer.Poster
+              : defaultPicture,
+            imdbUrl: `${root}${movieFromServer.imdbID}`,
+            imdbId: movieFromServer.imdbID,
+          });
+        }
+      } catch {
         setError(true);
-      } else {
-        setFoundMovie(true);
-        setMovie({
-          title: movieFromServer.Title,
-          description: movieFromServer.Plot,
-          imgUrl: movieFromServer.Poster !== 'N/A'
-            ? movieFromServer.Poster
-            : defaultPicture,
-          imdbUrl: `${root}${movieFromServer.imdbID}`,
-          imdbId: movieFromServer.imdbID,
-        });
+        setMovie(null);
       }
     }).finally(() => setIsLoading(false));
   };

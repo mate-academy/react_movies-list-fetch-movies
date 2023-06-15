@@ -10,10 +10,10 @@ type Props = {
   setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
 };
 
-export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
-  const defaultPoster
+const defaultPoster
     = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
+export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
@@ -23,46 +23,45 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-
     setLoading(true);
 
-    const response = await getMovie(title);
+    try {
+      const response = await getMovie(title);
 
-    setLoading(false);
+      if ('Error' in response) {
+        setError(true);
+      } else {
+        const loadedMovie: Movie = {
+          title: response.Title,
+          description: response.Plot,
+          imdbId: response.imdbID,
+          imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+          imgUrl: response.Poster === 'N/A'
+            ? defaultPoster
+            : response.Poster,
+        };
 
-    if ('Error' in response) {
+        setMovie(loadedMovie);
+      }
+    } catch {
       setError(true);
-    } else {
-      const loadedMovie: Movie = {
-        title: response.Title,
-        description: response.Plot,
-        imdbId: response.imdbID,
-        imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-        imgUrl: response.Poster === 'N/A'
-          ? defaultPoster
-          : response.Poster,
-      };
-
-      setMovie(loadedMovie);
+    } finally {
+      setLoading(false);
     }
   };
 
   const addMovieHandler = () => {
-    if (movie !== null
+    if (movie
         && !movies.find((currentMovie) => movie.title === currentMovie.title)
     ) {
       setMovies(
         prevMovies => [...prevMovies, movie],
       );
-
-      setTitle('');
-      setMovie(null);
-      setError(false);
-    } else {
-      setTitle('');
-      setMovie(null);
-      setError(false);
     }
+
+    setTitle('');
+    setMovie(null);
+    setError(false);
   };
 
   return (
@@ -104,13 +103,13 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                 { 'is-loading': loading })}
               onClick={(event) => loadMovie(event)}
             >
-              {movie !== null ? 'Search again' : 'Find a movie'}
+              {movie ? 'Search again' : 'Find a movie'}
 
             </button>
           </div>
 
           <div className="control">
-            {movie !== null && (
+            {movie && (
               <button
                 data-cy="addButton"
                 type="button"

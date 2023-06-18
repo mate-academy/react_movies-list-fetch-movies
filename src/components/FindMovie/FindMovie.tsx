@@ -39,12 +39,16 @@ export const FindMovie: React.FC<Props> = ({ onAdded }) => {
       const loadMovie = await getMovie(query);
 
       if ('Error' in loadMovie) {
-        throw Error();
+        throw new Error('Movie not found');
       } else {
         setSearchedMovie(createMovie(loadMovie));
       }
     } catch (error) {
       setIsError(true);
+
+      setTimeout(() => {
+        setIsError(false);
+      }, 2000);
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +64,10 @@ export const FindMovie: React.FC<Props> = ({ onAdded }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => event.preventDefault()}
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleFindMovie();
+        }}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -101,11 +108,8 @@ export const FindMovie: React.FC<Props> = ({ onAdded }) => {
                 { 'is-loading': isLoading },
               )}
               disabled={!query}
-              onClick={handleFindMovie}
             >
-              {searchedMovie
-                ? 'No movies found!'
-                : 'Find a movie'}
+              Find a movie
             </button>
           </div>
 

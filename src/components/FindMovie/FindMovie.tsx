@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import './FindMovie.scss';
+import { MovieData } from '../../types/MovieData';
 
 const defaultPicture
 = 'https://via.placeholder.com/360x270.png?text=no%20preview';
@@ -20,33 +21,34 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [error, setError] = useState(false);
   const [foundMovie, setFoundMovie] = useState(false);
 
-  const onFormSubmit = (event: React.FormEvent) => {
+  const onFormSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     setIsLoading(true);
 
-    getMovie(query).then(movieFromServer => {
-      try {
-        if ('Error' in movieFromServer) {
-          setMovie(null);
-          setError(true);
-        } else {
-          setFoundMovie(true);
-          setMovie({
-            title: movieFromServer.Title,
-            description: movieFromServer.Plot,
-            imgUrl: movieFromServer.Poster !== 'N/A'
-              ? movieFromServer.Poster
-              : defaultPicture,
-            imdbUrl: `${root}${movieFromServer.imdbID}`,
-            imdbId: movieFromServer.imdbID,
-          });
-        }
-      } catch {
-        setError(true);
-        setMovie(null);
+    try {
+      const newMovie = await getMovie(query) as MovieData;
+
+      if ('Error' in newMovie) {
+        throw new Error();
       }
-    }).finally(() => setIsLoading(false));
+
+      setFoundMovie(true);
+      setMovie({
+        title: newMovie.Title,
+        description: newMovie.Plot,
+        imgUrl: newMovie.Poster !== 'N/A'
+          ? newMovie.Poster
+          : defaultPicture,
+        imdbUrl: `${root}${newMovie.imdbID}`,
+        imdbId: newMovie.imdbID,
+      });
+    } catch (e) {
+      setError(true);
+      setMovie(null);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const addOnClick = () => {

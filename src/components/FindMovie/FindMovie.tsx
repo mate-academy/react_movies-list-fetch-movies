@@ -5,12 +5,13 @@ import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
 import { getMovie } from '../../api';
+import { MovieData } from '../../types/MovieData';
 
 interface Props {
   onAdd: (movie: Movie) => void;
 }
 
-const defaultPicture
+const DEFAULT_PICTURE_URL
   = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
@@ -19,12 +20,30 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const handleQueryOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const prepareMovie = (movieData: MovieData): Movie => {
+    const title = movieData.Title;
+    const description = movieData.Plot;
+    const imgUrl = movieData.Poster !== 'N/A'
+      ? movieData.Poster
+      : DEFAULT_PICTURE_URL;
+    const imdbUrl = `https://www.imdb.com/title/${movieData.imdbID}`;
+    const imdbId = movieData.imdbID;
+
+    return {
+      title,
+      description,
+      imgUrl,
+      imdbUrl,
+      imdbId,
+    };
+  };
+
+  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setIsError(false);
   };
 
-  const handleAddButtonOnClick = () => {
+  const handleAddButtonClick = () => {
     if (!movie) {
       return;
     }
@@ -44,16 +63,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         if ('Error' in movieFromServer) {
           setIsError(true);
         } else {
-          setMovie({
-            title: movieFromServer.Title,
-            description: movieFromServer.Plot,
-            imgUrl: (movieFromServer.Poster !== 'N/A'
-              ? movieFromServer.Poster
-              : defaultPicture
-            ),
-            imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
-            imdbId: movieFromServer.imdbID,
-          });
+          setMovie(prepareMovie(movieFromServer));
         }
       })
       .finally(() => setIsLoading(false));
@@ -73,14 +83,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn(
-                'input',
-                {
-                  'is-danger': isError,
-                },
-              )}
+              className={cn('input', {
+                'is-danger': isError,
+              })}
               value={query}
-              onChange={handleQueryOnChange}
+              onChange={handleQueryChange}
             />
           </div>
 
@@ -96,16 +103,14 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={cn(
-                'button',
-                'is-light',
-                {
-                  'is-loading': isLoading,
-                },
-              )}
+              className={cn('button is-light', {
+                'is-loading': isLoading,
+              })}
               disabled={!query.trim()}
             >
-              {!movie ? 'Find a movie' : 'Search again'}
+              {movie
+                ? 'Search again'
+                : 'Find a movie'}
             </button>
           </div>
 
@@ -115,7 +120,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={handleAddButtonOnClick}
+                onClick={handleAddButtonClick}
               >
                 Add to the list
               </button>

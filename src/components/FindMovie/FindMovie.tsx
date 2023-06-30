@@ -54,9 +54,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   };
 
   const handleAddMovie = () => {
-    if (previewMovie) {
-      onAddMovie(previewMovie);
-    }
+    onAddMovie(previewMovie as Movie);
 
     setQuery('');
     setPreviewMovie(null);
@@ -79,6 +77,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
+              value={query}
               className={cn('input', {
                 'is-danger': onloadError,
               })}

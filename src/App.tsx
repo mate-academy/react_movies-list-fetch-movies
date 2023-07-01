@@ -8,7 +8,7 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie) => {
-    const isPresentInMovies = !!movies.find(checkMovie => (
+    const isPresentInMovies = !!movies.some(checkMovie => (
       checkMovie.imdbId === movie.imdbId
     ));
 

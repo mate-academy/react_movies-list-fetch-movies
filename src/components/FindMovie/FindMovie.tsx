@@ -2,7 +2,6 @@ import cn from 'classnames';
 import React, {
   ChangeEvent,
   FormEvent,
-  useCallback,
   useState,
 } from 'react';
 import './FindMovie.scss';
@@ -19,42 +18,40 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
   const [previewMovie, setPreviewMovie] = useState<Movie | null>();
   const [isLoading, setIsLoading] = useState(false);
-  const [onloadError, setOnloadError] = useState(false);
+  const [onloadError, setOnloadError] = useState('');
 
-  const handleSearchChange = useCallback((
+  const handleSearchChange = (
     event: ChangeEvent<HTMLInputElement>,
   ) => {
-    setOnloadError(false);
+    setOnloadError('');
     setQuery(event.target.value);
-  }, []);
+  };
 
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const fetchData = async () => {
-      try {
-        const data = await getMovie(query.trim());
+    try {
+      const data = await getMovie(query.trim());
 
-        if ('Error' in data) {
-          setOnloadError(true);
-        } else {
-          const preparedMovieData = normalizeMovie(data);
+      if ('Error' in data) {
+        setOnloadError(data.Error);
+      } else {
+        const preparedMovieData = normalizeMovie(data);
 
-          setPreviewMovie(preparedMovieData);
-        }
-      } catch (error) {
-        setOnloadError(true);
-      } finally {
-        setIsLoading(false);
+        setPreviewMovie(preparedMovieData);
       }
-    };
-
-    fetchData();
+    } catch (error) {
+      setOnloadError('Unexpected error, please retry');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleAddMovie = () => {
-    onAddMovie(previewMovie as Movie);
+    if (previewMovie) {
+      onAddMovie(previewMovie);
+    }
 
     setQuery('');
     setPreviewMovie(null);
@@ -87,7 +84,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
           {onloadError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {onloadError}
             </p>
           )}
         </div>

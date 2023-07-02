@@ -5,16 +5,19 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [moviesList, setMoviesList] = useState<Movie[]>([]);
 
   return (
     <div className="page">
       <div className="page-content">
-        <MoviesList movies={movies} />
+        <MoviesList movies={moviesList} />
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          setMoviesList={setMoviesList}
+          moviesList={moviesList}
+        />
       </div>
     </div>
   );

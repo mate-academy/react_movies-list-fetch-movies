@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
 import { MovieData } from '../../types/MovieData';
 
@@ -8,15 +7,19 @@ type Props = {
 };
 
 export const MovieCard: React.FC<Props> = ({ movie }) => {
+  const notAvailable = 'N/A';
+
   return (
     <div className="card" data-cy="movieCard">
       <div className="card-image">
         <figure className="image is-4by3">
           <img
             data-cy="moviePoster"
-            src={movie.Poster === 'N/A'
-              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-              : movie.Poster}
+            src={
+              movie.Poster === notAvailable
+                ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+                : movie.Poster
+            }
             alt="Film logo"
           />
         </figure>

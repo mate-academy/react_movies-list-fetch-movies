@@ -20,8 +20,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setLoading(true);
 
     const movieFromServer = await getMovie(title);
+    const imdb = 'imdbID';
 
-    if ('imdbID' in movieFromServer) {
+    if (imdb in movieFromServer) {
       setMovie(movieFromServer);
       setError(false);
     } else {

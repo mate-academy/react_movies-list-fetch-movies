@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-console */
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
-import { Response } from '../../types/Response';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
@@ -12,34 +9,30 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ setMovies }) => {
-  let response;
-  let statusResponse = false;
-  const [movie, setMovie] = useState<Movie>();
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [inputAlert, setInputAlert] = useState(false);
   const [inputValue, setInpuValue] = useState('');
+
   const requestFilm = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     getMovie(inputValue).then(res => {
-      if (res instanceof MovieData) {
-        response = res as Response;
-        console.log('Then', statusResponse, response);
-        statusResponse = true;
+      if ('Title' in res) {
+        const poster = res.Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : res.Poster;
+
         setMovie({
-          title: response.Title,
-          description: response.Plot,
-          imgUrl: response.Poster,
+          title: res.Title,
+          description: res.Plot,
+          imgUrl: poster,
           imdbUrl: 'images/imdb-logo.jpeg',
-          imdbId: response.imdbID,
+          imdbId: res.imdbID,
         });
+      } else {
+        setInputAlert(true);
       }
-    }).catch((error) => {
-      console.log('Catch', statusResponse, error);
-      setInputAlert(true);
-      statusResponse = false;
     });
   };
-
-  console.log(!![setInputAlert]);
 
   return (
     <>
@@ -57,7 +50,12 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               placeholder="Enter a title to search"
               className={`input ${inputAlert && 'is-danger'}`}
               value={inputValue}
-              onChange={e => setInpuValue(e.target.value)}
+              onChange={e => {
+                setInpuValue(e.target.value);
+                if (!e.target.value) {
+                  setInputAlert(false);
+                }
+              }}
             />
           </div>
 
@@ -84,10 +82,12 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               data-cy="addButton"
               type="button"
               className="button is-primary"
-              disabled={!statusResponse}
+              disabled={!movie}
               onClick={() => {
-                if (statusResponse && movie) {
+                if (movie) {
                   setMovies(prev => [...prev, movie]);
+                  setMovie(null);
+                  setInpuValue('');
                 }
               }}
             >

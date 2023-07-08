@@ -7,6 +7,7 @@ import { MovieCard } from '../MovieCard';
 type Props = {
   setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
 };
+const skeletonImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -18,7 +19,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
     getMovie(inputValue).then(res => {
       if ('Title' in res) {
         const poster = res.Poster === 'N/A'
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          ? skeletonImg
           : res.Poster;
 
         setMovie({

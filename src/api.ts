@@ -10,7 +10,7 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
     .catch(() => ({
       Response: 'False',
       Error: 'unexpected error',
-    }));
+    })) as Promise<MovieData | ResponseError>;
 }
 
 export const expeсtedMovie = (movieData: MovieData): Movie => {

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie, expeсtedMovie } from '../../api';
 import { Movie } from '../../types/Movie';
-import { MovieData } from '../../types/MovieData';
+// import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard/MovieCard';
 
 interface FindMovieProps {
@@ -27,8 +28,8 @@ export const FindMovie: React.FC<FindMovieProps> = ({ handleAddMovie }) => {
     setIsLoading(true);
     getMovie(search)
       .then(result => {
-        if ((result as MovieData).imdbID) {
-          setMovie(expeсtedMovie(result as MovieData));
+        if ('imdbID' in result) {
+          setMovie(expeсtedMovie(result));
         } else {
           setHasError(true);
         }
@@ -75,7 +76,13 @@ export const FindMovie: React.FC<FindMovieProps> = ({ handleAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={`button is-light ${isLoading && 'is-loading'}`}
+              className={classNames(
+                'button',
+                'is-light',
+                {
+                  'is-loading': isLoading,
+                },
+              )}
               disabled={!search.length}
             >
               Find a movie

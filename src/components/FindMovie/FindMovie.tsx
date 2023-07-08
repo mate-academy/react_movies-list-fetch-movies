@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import './FindMovie.scss';
 import { getMovie, expeсtedMovie } from '../../api';
 import { Movie } from '../../types/Movie';
-// import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard/MovieCard';
 
 interface FindMovieProps {

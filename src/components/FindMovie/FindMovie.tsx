@@ -70,7 +70,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
           </div>
 
           <p className="help is-danger" data-cy="errorMessage">
-            {inputAlert && `Can't ${inputValue} find a movie with such a title`}
+            {inputAlert && `Can't find a movie with such a title: ${inputValue}`}
           </p>
         </div>
 

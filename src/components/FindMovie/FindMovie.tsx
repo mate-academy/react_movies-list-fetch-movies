@@ -11,7 +11,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [inputAlert, setInputAlert] = useState(false);
-  const [inputValue, setInpuValue] = useState('');
+  const [inputValue, setInputValue] = useState('');
 
   const requestFilm = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -34,6 +34,21 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
     });
   };
 
+  const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    if (!e.target.value) {
+      setInputAlert(false);
+    }
+  };
+
+  const addButton = () => {
+    if (movie) {
+      setMovies(prev => [...prev, movie]);
+      setMovie(null);
+      setInputValue('');
+    }
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -50,17 +65,12 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               placeholder="Enter a title to search"
               className={`input ${inputAlert && 'is-danger'}`}
               value={inputValue}
-              onChange={e => {
-                setInpuValue(e.target.value);
-                if (!e.target.value) {
-                  setInputAlert(false);
-                }
-              }}
+              onChange={searchHandler}
             />
           </div>
 
           <p className="help is-danger" data-cy="errorMessage">
-            {inputAlert && `Can ${inputValue} find a movie with such a title`}
+            {inputAlert && `Can't ${inputValue} find a movie with such a title`}
           </p>
         </div>
 
@@ -71,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               type="submit"
               className="button is-light"
               disabled={!inputValue}
-              onClick={e => requestFilm(e)}
+              onClick={requestFilm}
             >
               Find a movie
             </button>
@@ -83,13 +93,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               type="button"
               className="button is-primary"
               disabled={!movie}
-              onClick={() => {
-                if (movie) {
-                  setMovies(prev => [...prev, movie]);
-                  setMovie(null);
-                  setInpuValue('');
-                }
-              }}
+              onClick={addButton}
             >
               Add to the list
             </button>

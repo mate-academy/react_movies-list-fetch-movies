@@ -84,10 +84,9 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         .find(movie => movie.imdbId === foundMovie?.imdbID) === undefined
     ) {
       setMovies(normalizeMovieData(foundMovie as MovieData));
-      reset();
-    } else {
-      reset();
     }
+
+    reset();
   };
 
   return (
@@ -134,13 +133,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               data-cy="searchButton"
               type="submit"
               className={classNames(
-                'button',
-                'is-light',
+                'button is-light',
                 {
                   'is-loading': isLoading,
                 },
               )}
-              disabled={query.length === 0}
+              disabled={!query.length}
             >
               Find a movie
             </button>

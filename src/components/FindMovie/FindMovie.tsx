@@ -6,14 +6,16 @@ import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
 type Props = {
+  movies: Movie[],
   onAdd: (movie: Movie) => void
 };
 
-export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+export const FindMovie: React.FC<Props> = ({ movies, onAdd }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<null | Movie>(null);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAddedMessage, setIsAddedMessage] = useState(false);
 
   const isButtonDisabled = !query.match(/\S/g);
 
@@ -22,6 +24,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
     if (hasError) {
       setHasError(false);
+    }
+
+    if (isAddedMessage) {
+      setIsAddedMessage(false);
     }
   };
 
@@ -41,12 +47,19 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   };
 
   const handleAdd = () => {
-    if (movie) {
+    const hasAdded = movies.some(addedMovie => (
+      addedMovie.imdbId === movie?.imdbId
+    ));
+
+    if (movie && !hasAdded) {
       onAdd(movie);
-      setQuery('');
-      setMovie(null);
-      setHasError(false);
+    } else {
+      setIsAddedMessage(true);
     }
+
+    setQuery('');
+    setMovie(null);
+    setHasError(false);
   };
 
   return (
@@ -74,6 +87,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           {hasError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
+            </p>
+          )}
+          {isAddedMessage && (
+            <p className="help is-danger" data-cy="errorMessage">
+              The movie is already added
             </p>
           )}
         </div>

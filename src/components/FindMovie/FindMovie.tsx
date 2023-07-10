@@ -17,12 +17,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const getHendlerSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     setIsError(false);
   };
 
-  const getHendlerSubmitButton = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsError(false);
 
@@ -91,7 +91,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     <>
       <form
         className="find-movie"
-        onSubmit={getHendlerSubmitButton}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -106,7 +106,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               placeholder="Enter a title to search"
               className="input is-danger"
               value={search}
-              onChange={getHendlerSearch}
+              onChange={handleSearch}
             />
           </div>
           {isError && (

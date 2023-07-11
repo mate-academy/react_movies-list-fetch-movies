@@ -24,7 +24,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsError(false);
+    setIsLoading(true);
 
     getMovie(search)
       .then((result => {
@@ -125,6 +125,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               className={classNames('button is-light', {
                 'is-loading': isLoading,
               })}
+              disabled={!search}
             >
               Find a movie
             </button>

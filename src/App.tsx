@@ -5,7 +5,24 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [error, setError] = useState<string>('');
+
+  const addMovie = (movie: Movie) => {
+    const currentMovies = movies;
+
+    if (currentMovies.find(currMovie => currMovie.title === movie.title)) {
+      setError('A movie with such a title already exists!');
+
+      return;
+    }
+
+    setMovies([...currentMovies, movie]);
+  };
+
+  const changeError = (errorMessage: string) => {
+    setError(errorMessage);
+  };
 
   return (
     <div className="page">
@@ -14,7 +31,11 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          error={error}
+          onChangeError={changeError}
+          onAddMovie={addMovie}
+        />
       </div>
     </div>
   );

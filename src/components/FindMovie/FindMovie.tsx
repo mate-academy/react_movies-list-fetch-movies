@@ -9,17 +9,23 @@ import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 
 interface FindMovieProps {
+  error: string;
+  onChangeError: (error: string) => void;
   onAddMovie: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
+export const FindMovie: React.FC<FindMovieProps> = ({
+  error,
+  onChangeError,
+  onAddMovie,
+}) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [error, setError] = useState<string | Error>('');
+
   const [isLoading, setIsLoading] = useState(false);
 
   const clearErrorMessage = () => {
-    setError('');
+    onChangeError('');
   };
 
   const formattedQuery = query
@@ -40,7 +46,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
       event.preventDefault();
 
       if (!formattedQuery) {
-        setError('Enter the correct movie title!');
+        onChangeError('Enter the correct movie title!');
 
         return;
       }
@@ -51,12 +57,12 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
         const newMovie = await getMovie(formattedQuery);
 
         if ((newMovie as ResponseError).Response === 'False') {
-          setError((newMovie as ResponseError).Error);
+          onChangeError((newMovie as ResponseError).Error);
         }
 
         setMovie(getMovieData(newMovie as MovieData));
       } catch {
-        setError('Error: fetching data from server!');
+        onChangeError('Error: fetching data from server!');
 
         setMovie(null);
       } finally {
@@ -101,7 +107,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
 
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {error}
             </p>
           )}
         </div>

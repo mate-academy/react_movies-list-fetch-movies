@@ -6,12 +6,22 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
+  const [error, setError] = useState<string>('');
 
   const addMovie = (movie: Movie) => {
-    setMovies([
-      ...movies,
-      movie,
-    ]);
+    const currentMovies = movies;
+
+    if (currentMovies.find(currMovie => currMovie.title === movie.title)) {
+      setError('A movie with such a title already exists!');
+
+      return;
+    }
+
+    setMovies([...currentMovies, movie]);
+  };
+
+  const changeError = (errorMessage: string) => {
+    setError(errorMessage);
   };
 
   return (
@@ -22,6 +32,8 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
+          error={error}
+          onChangeError={changeError}
           onAddMovie={addMovie}
         />
       </div>

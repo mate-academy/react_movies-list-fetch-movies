@@ -56,7 +56,7 @@ export const FindMovie: React.FC <Props> = ({ handleAddMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className="input"
               value={query}
               onChange={handleQuery}
             />

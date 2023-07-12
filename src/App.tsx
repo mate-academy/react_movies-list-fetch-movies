@@ -9,9 +9,10 @@ export const App = () => {
 
   const handleAddMovie = (movie: Movie) => {
     setMovies(prevState => {
-      const movieExist = prevState.find(state => state.imdbId === movie.imdbId);
+      const currentMovie = prevState
+        .find(state => state.imdbId === movie.imdbId);
 
-      return movieExist ? prevState : [
+      return currentMovie ? prevState : [
         ...prevState,
         movie,
       ];

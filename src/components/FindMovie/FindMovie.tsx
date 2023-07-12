@@ -42,6 +42,14 @@ export const FindMovie: React.FC <Props> = ({ handleAddMovie }) => {
     setQuery('');
   };
 
+  const handleAddButton = () => {
+    handleClear();
+
+    if (movie) {
+      handleAddMovie(movie);
+    }
+  };
+
   return (
     <>
       <form className="find-movie" onSubmit={handleFindMovie}>
@@ -91,10 +99,7 @@ export const FindMovie: React.FC <Props> = ({ handleAddMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  handleClear();
-                  handleAddMovie(movie);
-                }}
+                onClick={handleAddButton}
               >
                 Add to the list
               </button>

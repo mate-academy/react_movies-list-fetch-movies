@@ -26,7 +26,7 @@ export const newMovie = (movieData: MovieData): Movie => {
     description: Plot,
     imgUrl: Poster === 'N/A'
       ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-      : movieData.Poster,
+      : Poster,
     imdbUrl: `https://www.imdb.com/title/${imdbID}`,
     imdbId: imdbID,
   };

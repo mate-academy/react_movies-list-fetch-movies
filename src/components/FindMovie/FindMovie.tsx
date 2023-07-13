@@ -23,25 +23,29 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     event.preventDefault();
     setIsError(false);
     setIsLoading(true);
-    const res = await getMovie(query);
+    try {
+      const res = await getMovie(query);
 
-    if ((res as ResponseError).Error) {
+      if ((res as ResponseError).Error) {
+        setIsError(true);
+      } else {
+        const response = res as MovieData;
+        const img = response.Poster === 'N/A' ? defaultImg : response.Poster;
+        const movie: Movie = {
+          title: response.Title,
+          description: response.Plot,
+          imgUrl: img,
+          imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+          imdbId: response.imdbID,
+        };
+
+        setFindedMovie(movie);
+      }
+    } catch (error) {
       setIsError(true);
-    } else {
-      const response = res as MovieData;
-      const img = response.Poster === 'N/A' ? defaultImg : response.Poster;
-      const movie: Movie = {
-        title: response.Title,
-        description: response.Plot,
-        imgUrl: img,
-        imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
-        imdbId: response.imdbID,
-      };
-
-      setFindedMovie(movie);
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -13,7 +13,7 @@ export const App = () => {
 
   const addMovie = (foundMovie: Movie) => {
     if (!isDuplicate(foundMovie)) {
-      setMovies(addedeMovies => [...addedeMovies, foundMovie]);
+      setMovies(addedMovies => [...addedMovies, foundMovie]);
     }
   };
 
@@ -24,7 +24,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie onClick={addMovie} />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );

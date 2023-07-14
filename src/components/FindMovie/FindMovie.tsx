@@ -8,12 +8,12 @@ import { MovieCard } from '../MovieCard';
 import { MovieData } from '../../types/MovieData';
 
 type Props = {
-  onClick: (movie: Movie) => void;
+  addMovie: (movie: Movie) => void;
 };
 
 type NormalizeData = (movieDate: MovieData) => void;
 
-export const FindMovie: React.FC<Props> = ({ onClick }) => {
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,15 +55,16 @@ export const FindMovie: React.FC<Props> = ({ onClick }) => {
         if ('imdbID' in res) {
           normalizeData(res);
         } else {
-          setError('Can\'t find a movie with such a title');
+          throw new Error('Can\'t find a movie with such a title');
         }
       })
+      .catch((newError: Error) => setError(newError.message))
       .finally(() => setIsLoading(false));
   };
 
   const handleAddFilm = () => {
     if (movie !== null) {
-      onClick(movie);
+      addMovie(movie);
       setQuery('');
       setMovie(null);
     }

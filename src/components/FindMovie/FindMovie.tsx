@@ -18,8 +18,14 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [foundMovie, setFoundMovie] = useState<MovieData | null>(null);
   const [firstSearch, setFirstSearch] = useState(false);
 
-  const defaultPicture
-    = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+  const preparePosterUrl = (url: string) => {
+    const defaultPicture
+      = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+    return url === 'N/A'
+      ? defaultPicture
+      : url;
+  };
 
   const prepareMovie = (movie: MovieData) => {
     const {
@@ -32,7 +38,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     return {
       title: Title,
       description: Plot,
-      imgUrl: Poster || defaultPicture,
+      imgUrl: preparePosterUrl(Poster),
       imdbId: imdbID,
       imdbUrl: `https://www.imdb.com/title/${imdbID}`,
     };

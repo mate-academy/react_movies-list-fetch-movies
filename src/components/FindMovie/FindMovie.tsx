@@ -40,6 +40,9 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
   const addMovie = () => {
     if (movies.find(movie => movie.imdbId === foundMovie?.imdbID)) {
+      setQuery('');
+      setFoundMovie(null);
+
       return;
     }
 

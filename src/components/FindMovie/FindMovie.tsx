@@ -14,10 +14,10 @@ type Props = {
 type NormalizeData = (movieDate: MovieData) => void;
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     if (error) {

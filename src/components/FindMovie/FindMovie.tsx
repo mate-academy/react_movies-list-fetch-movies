@@ -29,6 +29,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
     }
   };
 
+  const changeQueryHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsError(false);
+    setQuery(e.target.value);
+  }
+
   const searchMovieHandler = (
     e: React.MouseEvent<HTMLButtonElement>,
     term: string,
@@ -84,7 +89,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
                 'is-danger': isError,
               })}
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => changeQueryHandler(e)}
             />
           </div>
 

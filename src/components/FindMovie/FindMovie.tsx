@@ -7,11 +7,12 @@ import { Movie } from '../../types/Movie';
 type Props = {
   formInput: string,
   onChangeInput: (value: string) => void,
-  onMoviesQuery: (e: React.MouseEvent<HTMLButtonElement >) => void,
+  onMoviesQuery: () => void,
   movie: null | Movie,
   setMovie: React.Dispatch<React.SetStateAction<Movie | null>>,
   setAllMovies: React.Dispatch<React.SetStateAction<Movie[]>>,
   allMovies: Movie[],
+  loading: boolean,
 };
 
 export const FindMovie: React.FC<Props> = ({
@@ -22,6 +23,7 @@ export const FindMovie: React.FC<Props> = ({
   setMovie,
   setAllMovies,
   allMovies,
+  loading,
 }) => {
   const [touched, setTouched] = useState(false);
 
@@ -35,9 +37,9 @@ export const FindMovie: React.FC<Props> = ({
     setTouched(false);
   };
 
-  const finedHandler = (e: React.MouseEvent<HTMLButtonElement >) => {
+  const finedHandler = () => {
     setTouched(true);
-    onMoviesQuery(e);
+    onMoviesQuery();
     setMovie(null);
   };
 
@@ -56,7 +58,7 @@ export const FindMovie: React.FC<Props> = ({
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is-danger': !movie && touched,
+                'is-danger': !movie && touched && !loading,
               })}
               value={formInput}
               onChange={(e) => {
@@ -66,7 +68,7 @@ export const FindMovie: React.FC<Props> = ({
             />
           </div>
 
-          {!movie && touched && (
+          {!movie && touched && !loading && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -79,9 +81,9 @@ export const FindMovie: React.FC<Props> = ({
               data-cy="searchButton"
               type="submit"
               className={classNames('button', 'is-light',
-                { 'is-loading': !movie && touched })}
+                { 'is-loading': loading })}
               disabled={!formInput.trim()}
-              onClick={(e) => finedHandler(e)}
+              onClick={() => finedHandler()}
             >
               {!touched ? 'Find a movie' : 'Search again'}
             </button>

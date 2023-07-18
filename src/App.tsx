@@ -11,23 +11,21 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [formInput, setFormInput] = useState('');
   const [newMovies, setNewMovies] = useState<MovieData | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const changeInput = (value: string) => {
     setFormInput(value);
   };
 
-  const moviesQuery = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const moviesQuery = () => {
+    setLoading(true);
     getMovie(formInput).then(res => {
       if (!Object.hasOwnProperty.call(res, 'Error')) {
         setNewMovies(res as MovieData);
       } else {
         setNewMovies(null);
       }
-    }).finally(() => {
-      const t = e.target as HTMLElement;
-
-      t.classList.remove('is-loading');
-    });
+    }).finally(() => setLoading(false));
   };
 
   const [movie, setMovie] = useState<null | Movie>(null);
@@ -61,6 +59,7 @@ export const App = () => {
           setMovie={setMovie}
           setAllMovies={setMovies}
           allMovies={movies}
+          loading={loading}
         />
       </div>
     </div>

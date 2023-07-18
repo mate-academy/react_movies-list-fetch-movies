@@ -20,10 +20,11 @@ export const FindMovie: React.FC<{
   const [movie, setMovie] = useState<Movie>(movieTemplate);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isNotFind, setIsNotFind] = useState(false);
 
   const searchFilm = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoading(false);
 
     getMovie(inputValue)
       .then((foundMovie) => {
@@ -44,6 +45,10 @@ export const FindMovie: React.FC<{
             imdbUrl: `http://www.imdb/title/${imdbID}`,
           };
         });
+
+        if (Title === movie.title) {
+          setIsNotFind(true);
+        }
       })
       .finally(() => {
         setIsLoading(false);
@@ -65,8 +70,6 @@ export const FindMovie: React.FC<{
     setMovie(movieTemplate);
   };
 
-  const isFind = movie.title === undefined;
-
   return (
     <>
       <form className="find-movie">
@@ -82,14 +85,18 @@ export const FindMovie: React.FC<{
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is-danger': isFind && inputValue,
+                'is-danger': isNotFind && inputValue,
               })}
               value={inputValue}
-              onChange={(e) => setInputValue(e.currentTarget.value)}
+              onChange={(e) => {
+                setMovie(movieTemplate);
+                setIsNotFind(false);
+                setInputValue(e.currentTarget.value);
+              }}
             />
           </div>
 
-          {isFind && inputValue && (
+          {isNotFind && inputValue && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -101,6 +108,7 @@ export const FindMovie: React.FC<{
             <button
               data-cy="searchButton"
               type="submit"
+              disabled={inputValue === ''}
               className={classNames('button is-light',
                 { 'is-loading': isLoading })}
               onClick={searchFilm}

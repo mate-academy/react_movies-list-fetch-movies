@@ -21,14 +21,14 @@ export const FindMovie: React.FC<{
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const searchFilm = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const searchFilm = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     setIsLoading(true);
 
     getMovie(inputValue)
       .then((foundMovie) => {
         const {
-          Poster,
+          Poster = 'https://via.placeholder.com/360x270.png?text=no%20preview',
           Title,
           Plot,
           imdbID,
@@ -41,6 +41,7 @@ export const FindMovie: React.FC<{
             title: Title,
             description: Plot,
             imdbId: imdbID,
+            imdbUrl: `http://www.imdb/title/${imdbID}`,
           };
         });
       })
@@ -50,9 +51,9 @@ export const FindMovie: React.FC<{
   };
 
   const handleFilm = () => {
-    if (movie.title === undefined) {
+    if (movie.title) {
       setMovies((prevMovie) => {
-        if (prevMovie.some(film => film.imdbId === movie.imdbId)) {
+        if (prevMovie.some((film) => film.imdbId === movie.imdbId)) {
           return prevMovie;
         }
 
@@ -63,6 +64,8 @@ export const FindMovie: React.FC<{
     setInputValue('');
     setMovie(movieTemplate);
   };
+
+  const isFind = movie.title === undefined;
 
   return (
     <>
@@ -78,13 +81,15 @@ export const FindMovie: React.FC<{
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', {
+                'is-danger': isFind && inputValue,
+              })}
               value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+              onChange={(e) => setInputValue(e.currentTarget.value)}
             />
           </div>
 
-          { movie.title === undefined && (
+          {isFind && inputValue && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -104,7 +109,7 @@ export const FindMovie: React.FC<{
             </button>
           </div>
 
-          { inputValue && movie.title === undefined && (
+          { inputValue && movie.title && (
             <div className="control">
               <button
                 data-cy="addButton"
@@ -119,7 +124,7 @@ export const FindMovie: React.FC<{
 
         </div>
       </form>
-      {movie.title === undefined && (
+      { movie.title && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
           <MovieCard movie={movie} />

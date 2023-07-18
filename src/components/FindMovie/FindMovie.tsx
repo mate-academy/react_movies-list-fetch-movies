@@ -18,9 +18,10 @@ export const FindMovie: React.FC<{
   setMovies: React.Dispatch<React.SetStateAction<Movie[]>>
 }> = ({ setMovies }) => {
   const [movie, setMovie] = useState<Movie>(movieTemplate);
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isNotFind, setIsNotFind] = useState(false);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isNotFind, setIsNotFind] = useState<boolean>(false);
+  const [alreadyAdded, setAlreadyAdded] = useState<boolean>(false);
 
   const searchFilm = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -42,7 +43,7 @@ export const FindMovie: React.FC<{
             title: Title,
             description: Plot,
             imdbId: imdbID,
-            imdbUrl: `http://www.imdb/title/${imdbID}`,
+            imdbUrl: `http://www.imdb.com/title/${imdbID}`,
           };
         });
 
@@ -59,6 +60,8 @@ export const FindMovie: React.FC<{
     if (movie.title) {
       setMovies((prevMovie) => {
         if (prevMovie.some((film) => film.imdbId === movie.imdbId)) {
+          setAlreadyAdded(true);
+
           return prevMovie;
         }
 
@@ -88,6 +91,7 @@ export const FindMovie: React.FC<{
                 'is-danger': isNotFind && inputValue,
               })}
               value={inputValue}
+              onFocus={() => setAlreadyAdded(false)}
               onChange={(e) => {
                 setIsNotFind(false);
                 setMovie(movieTemplate);
@@ -99,6 +103,12 @@ export const FindMovie: React.FC<{
           {isNotFind && inputValue && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
+            </p>
+          )}
+
+          {alreadyAdded && (
+            <p className="help is-danger" data-cy="errorMessage">
+              The movie has already been added
             </p>
           )}
         </div>

@@ -46,7 +46,7 @@ export const FindMovie: React.FC<{
           };
         });
 
-        if (Title === movie.title) {
+        if (!Title || Title === movie.title) {
           setIsNotFind(true);
         }
       })
@@ -89,8 +89,8 @@ export const FindMovie: React.FC<{
               })}
               value={inputValue}
               onChange={(e) => {
-                setMovie(movieTemplate);
                 setIsNotFind(false);
+                setMovie(movieTemplate);
                 setInputValue(e.currentTarget.value);
               }}
             />

@@ -28,7 +28,13 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           </figure>
         </div>
         <div className="media-content">
-          <p className="title is-8" data-cy="movieTitle">{movie.title}</p>
+          <p
+            className="title is-8"
+            data-cy="movieTitle"
+            style={{ overflowY: 'hidden' }}
+          >
+            {movie.title}
+          </p>
         </div>
       </div>
 

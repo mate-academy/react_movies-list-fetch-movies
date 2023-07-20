@@ -28,7 +28,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
     getMovie(query)
       .then(data => {
-        setIsFinding(false);
         if (Object.hasOwn(data, 'Error')) {
           setIsMovieNotFoud(true);
           setQuery('');
@@ -55,7 +54,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         }
       })
       .finally(() => {
-        setIsMovieNotFoud(true);
         setIsFinding(false);
       });
   };

@@ -53,6 +53,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
           setFoundMovie(newMovie);
         }
+      })
+      .finally(() => {
+        setIsMovieNotFoud(true);
+        setIsFinding(false);
       });
   };
 

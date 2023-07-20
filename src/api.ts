@@ -2,7 +2,7 @@ import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
 // const MY_KEY = 'b3cb4801';
-const API_URL = 'https://www.omdbapi.com/?apikey=b3cb48011';
+const API_URL = 'https://www.omdbapi.com/?apikey=b3cb4801';
 
 export function getMovie(query: string): Promise<MovieData | ResponseError> {
   return fetch(`${API_URL}&t=${query}`)

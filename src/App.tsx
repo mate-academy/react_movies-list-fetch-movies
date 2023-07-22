@@ -13,8 +13,8 @@ export const App = () => {
     }
 
     setMovies(currentMovies => [
-      movie,
       ...currentMovies,
+      movie,
     ]);
   };
 

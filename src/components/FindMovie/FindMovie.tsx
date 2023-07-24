@@ -6,24 +6,26 @@ import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 
+const HAS_NOT_FILE = 'N/A';
+
 type Props = {
-  onMovies: (m: Movie | null) => void,
+  onAddMovie: (m: Movie | null) => void,
 };
 
 export const FindMovie: React.FC<Props> = ({
-  onMovies,
+  onAddMovie,
 }) => {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState<string>('');
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [hasFindError, setHasFindError] = useState(false);
-  const [hasLoadingSubmit, setHasLoadingSubmit] = useState(false);
-  const [hasFirstLoad, setHasFirstLoad] = useState(true);
+  const [hasFindError, setHasFindError] = useState<boolean>(false);
+  const [hasLoadingSubmit, setHasLoadingSubmit] = useState<boolean>(false);
+  const [hasFirstLoad, setHasFirstLoad] = useState<boolean>(true);
 
   const createNewMovie = (movieDate: MovieData) => {
-    const newDescrip = movieDate.Plot === 'N/A'
+    const newDescrip = movieDate.Plot === HAS_NOT_FILE
       ? 'Unfortunately there is no description'
       : movieDate.Plot;
-    const newposter = movieDate.Poster === 'N/A'
+    const newposter = movieDate.Poster === HAS_NOT_FILE
       ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
       : movieDate.Poster;
 
@@ -63,7 +65,7 @@ export const FindMovie: React.FC<Props> = ({
   };
 
   const handlerAddClick = () => {
-    onMovies(selectedMovie);
+    onAddMovie(selectedMovie);
     setHasFindError(false);
     setTitle('');
     setSelectedMovie(null);

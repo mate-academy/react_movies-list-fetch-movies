@@ -25,7 +25,7 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          onMovies={handlerAddMovie}
+          onAddMovie={handlerAddMovie}
         />
       </div>
     </div>

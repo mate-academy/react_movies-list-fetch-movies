@@ -41,6 +41,7 @@ export const FindMovie: React.FC<Props> = ({
 
     if (isMovieInArray) {
       setMovie(null);
+      setTitle('');
 
       return;
     }

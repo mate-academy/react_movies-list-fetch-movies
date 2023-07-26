@@ -23,13 +23,30 @@ const getImgUrl = (url: string) => {
     : url;
 };
 
+const normalizedMovie = ({
+  Title,
+  Plot,
+  Poster,
+  imdbID,
+}: MovieData) => {
+  return {
+    title: Title,
+    description: Plot,
+    imgUrl: getImgUrl(Poster),
+    imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+    imdbId: imdbID,
+  };
+};
+
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<MovieData | null>(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleInput = (value: string) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
     setQuery(value);
     setIsError(false);
   };
@@ -43,21 +60,6 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         ? setMovie(movieData)
         : setIsError(true)))
       .finally(() => setIsLoading(false));
-  };
-
-  const normalizedMovieData = ({
-    Title,
-    Plot,
-    Poster,
-    imdbID,
-  }: MovieData) => {
-    return {
-      title: Title,
-      description: Plot,
-      imgUrl: getImgUrl(Poster),
-      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-      imdbId: imdbID,
-    };
   };
 
   const handleAddMovie = (newMovie: Movie) => {
@@ -87,7 +89,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                 'is-danger': isError,
               })}
               value={query}
-              onChange={(event) => handleInput(event.target.value)}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -118,7 +120,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddMovie(normalizedMovieData(movie))}
+                onClick={() => handleAddMovie(normalizedMovie(movie))}
               >
                 Add to the list
               </button>
@@ -130,7 +132,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={normalizedMovieData(movie)} />
+          <MovieCard movie={normalizedMovie(movie)} />
         </div>
       )}
     </>

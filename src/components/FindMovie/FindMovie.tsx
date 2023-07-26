@@ -1,40 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api';
+import { MovieData } from '../../types/MovieData';
+import { ResponseError } from '../../types/ReponseError';
 
 type Props = {
-  query: string;
-  onChangeInput: (str: string) => void;
-  onSubmit: (str: string) => void;
-  loading: boolean;
-  movie: Movie | null;
-  isError: boolean;
-  setIsError: (val: boolean) => void;
-  onAddMovie: () => void;
+  addMovie: (mov: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({
-  query,
-  onChangeInput,
-  onSubmit,
-  movie,
-  loading,
-  isError,
-  setIsError,
-  onAddMovie,
-}) => {
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+  const [query, setQuery] = useState<string>('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+
   const onChangeHandler
     = (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChangeInput(event.target.value);
+      setQuery(event.target.value);
       setIsError(false);
     };
+
+  const onSubmit = (queryString: string) => {
+    setLoading(true);
+
+    getMovie(queryString.toLowerCase())
+      .then((data: MovieData | ResponseError) => {
+        if ('Title' in data) {
+          const properPoster = data.Poster === 'N/A'
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+            : data.Poster;
+
+          setMovie({
+            title: data.Title,
+            description: data.Plot,
+            imgUrl: properPoster,
+            imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+            imdbId: data.imdbID,
+          });
+        } else {
+          setIsError(true);
+        }
+      }).finally(() => setLoading(false));
+  };
 
   const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit(query);
+  };
+
+  const onAddMovie = () => {
+    if (movie) {
+      addMovie(movie);
+    }
+
+    setQuery('');
+    setMovie(null);
   };
 
   return (

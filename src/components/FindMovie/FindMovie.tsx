@@ -24,7 +24,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
 
         setMovies(newMovies);
       }
-      
+
       setMovie(null);
       setIsError(false);
       setQuery('');

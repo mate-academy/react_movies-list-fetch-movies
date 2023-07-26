@@ -19,9 +19,12 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
 
   const addMovie = (film: Movie | null) => {
     if (film) {
-      const newMovies = [...movies, film];
+      if (movies.every(m => m.imdbId !== film.imdbId)) {
+        const newMovies = [...movies, film];
 
-      setMovies(newMovies);
+        setMovies(newMovies);
+      }
+      
       setMovie(null);
       setIsError(false);
       setQuery('');
@@ -32,7 +35,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   const changeQueryHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsError(false);
     setQuery(e.target.value);
-  }
+  };
 
   const searchMovieHandler = (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -59,7 +62,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
         const newMovie: Movie = {
           title: data.Title,
           description: data.Plot,
-          imgUrl: data.Poster || defaultImg,
+          imgUrl: defaultImg,
           imdbUrl,
           imdbId: data.imdbID,
         };

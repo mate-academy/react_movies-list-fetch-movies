@@ -23,7 +23,7 @@ export const FindMovie: React.FC<Props> = ({ handleAdd }) => {
     event?.preventDefault();
     seQueryForSearch(query);
     setLoading(true);
-    getMovie(query)
+    getMovie(query.trim())
       .then((data) => {
         if ('Error' in data) {
           setError(true);

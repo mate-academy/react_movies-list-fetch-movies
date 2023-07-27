@@ -7,15 +7,15 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const handlerAddMovie = (mov: Movie | null) => setMovies((currentMovies) => {
-    const newMovies = [...currentMovies];
+  const handlerAddMovie = (movie: Movie | null) => {
+    setMovies((currentMovies) => {
+      if (movie && !currentMovies.some(m => m.imdbId === movie.imdbId)) {
+        return [...currentMovies, movie];
+      }
 
-    if (mov && !newMovies.some(m => m.imdbId === mov.imdbId)) {
-      newMovies.push(mov);
-    }
-
-    return newMovies;
-  });
+      return currentMovies;
+    });
+  };
 
   return (
     <div className="page">

@@ -20,24 +20,33 @@ export const FindMovie: React.FC<Props> = ({
   const [movieData, setMovieData] = useState<MovieData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleChangeSearchInput = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setSearchQuery(event.target.value);
     setIsError(false);
+    setErrorMessage(null);
   };
 
   const handleSubmitButton = (
     event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
+    const normalizedQuery = searchQuery.trim();
+
+    if (!normalizedQuery) {
+      return;
+    }
+
     setIsLoading(true);
 
-    getMovie(searchQuery)
+    getMovie(normalizedQuery)
       .then((result => {
         if ('Error' in result) {
           setIsError(true);
+          setErrorMessage('Can\'t find a movie with such a title');
         } else {
           setMovieData(result);
           setIsError(false);
@@ -63,6 +72,11 @@ export const FindMovie: React.FC<Props> = ({
     const isNewMovieInMovies = movies.some(
       movie => movie.imdbId === newMovie?.imdbId,
     );
+
+    if (isNewMovieInMovies) {
+      setIsError(true);
+      setErrorMessage('You can\'t add the same movie to your movie list twice');
+    }
 
     if (newMovie && !isNewMovieInMovies) {
       setMovies((prevMovies) => [...prevMovies, newMovie]);
@@ -90,7 +104,7 @@ export const FindMovie: React.FC<Props> = ({
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className="input"
               value={searchQuery}
               onChange={handleChangeSearchInput}
             />
@@ -98,7 +112,7 @@ export const FindMovie: React.FC<Props> = ({
 
           {isError && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
 

@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
+import cn from 'classnames';
 import './FindMovie.scss';
+// import { Movie } from '../../types/Movie';
+// import { getMovie } from '../../api';
 
-export const FindMovie: React.FC = () => {
+// type Props = {
+//   movies: Movie[];
+//   setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
+// };
+
+export const FindMovie: React.FC = (
+  // movies,
+  // setMovies,
+) => {
+  const [value, setValue] = useState('');
+
+  // const addMovie = (newMovie: Movie) => {
+  //   setMovies([...movies, newMovie]);
+  // }
+
   return (
     <>
       <form className="find-movie">
@@ -17,6 +34,8 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
             />
           </div>
 
@@ -30,7 +49,9 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={cn('button', 'is-light')}
+              disabled={value.length === 0}
+              // onClick={() => {}}
             >
               Find a movie
             </button>

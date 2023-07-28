@@ -14,14 +14,14 @@ interface Props{
 
 export const FindMovie: React.FC<Props> = ({ handleAdd }) => {
   const [query, setQuery] = useState('');
-  const [queryForSearch, seQueryForSearch] = useState('');
+  // const [queryForSearch, seQueryForSearch] = useState('');
   const [movie, setMovie] = useState<MovieData | undefined>();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
-    seQueryForSearch(query);
+    // seQueryForSearch(query);
     setLoading(true);
     getMovie(query.trim())
       .then((data) => {
@@ -70,14 +70,17 @@ export const FindMovie: React.FC<Props> = ({ handleAdd }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is-danger': error && query === queryForSearch,
+                'is-danger': error,
               })}
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setError(false);
+              }}
             />
           </div>
 
-          {error && query === queryForSearch && (
+          {error && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

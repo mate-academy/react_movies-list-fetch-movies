@@ -122,27 +122,30 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              disabled={!movie}
-              onClick={onAddMovie}
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={onAddMovie}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {
-          movie && <MovieCard movie={movie} />
-        }
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          {
+            movie && <MovieCard movie={movie} />
+          }
 
-      </div>
+        </div>
+      )}
     </>
   );
 };

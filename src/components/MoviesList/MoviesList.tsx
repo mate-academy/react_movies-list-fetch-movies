@@ -1,20 +1,17 @@
-import React from 'react';
-
+/* eslint-disable no-console */
+import React, { useContext } from 'react';
 import './MoviesList.scss';
 import { MovieCard } from '../MovieCard';
-import { Movie } from '../../types/Movie';
+import { MovieContext } from '../../context/movieContext';
 
-type Props = {
-  movies: Movie[];
+export const MoviesList: React.FC = () => {
+  const { movies } = useContext(MovieContext);
+
+  return (
+    <div className="movies">
+      {movies.map((movie) => (
+        <MovieCard key={movie.imdbId} movie={movie} />
+      ))}
+    </div>
+  );
 };
-
-export const MoviesList: React.FC<Props> = ({ movies }) => (
-  <div className="movies">
-    {movies.map(movie => (
-      <MovieCard
-        key={movie.imdbId}
-        movie={movie}
-      />
-    ))}
-  </div>
-);

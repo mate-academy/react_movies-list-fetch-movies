@@ -1,4 +1,4 @@
-export type MovieData = {
+export interface MovieData {
   Poster: string;
   Title: string;
   Plot: string;

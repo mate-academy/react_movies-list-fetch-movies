@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import cn from 'classnames';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
@@ -10,37 +10,52 @@ type Props = {
   setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
 };
 
-export const FindMovie: React.FC<Props> = (
-  // movies,
-  // setMovies,
-) => {
+export const FindMovie: React.FC<Props> = ({
+  movies,
+  setMovies,
+}) => {
   const [query, setQuery] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
-    if (isLoading) {
-      getMovie(query)
-        .then((movieFromServer) => {
-          if (movieFromServer) {
-            setNewMovie({
-              title: movieFromServer.Title,
-              description: movieFromServer.Plot,
-              imgUrl: movieFromServer.Poster,
-              imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
-              imdbId: movieFromServer.imdbID,
-            });
-          }
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+  const handleOnClick = useCallback((event: React.FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    getMovie(query)
+      .then((movieFromServer) => {
+        if (!Object.hasOwn(movieFromServer, 'Error')) {
+          setNewMovie({
+            title: movieFromServer.Title,
+            description: movieFromServer.Plot,
+            imgUrl: (movieFromServer.Poster === 'N/A')
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : movieFromServer.Poster,
+            imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
+            imdbId: movieFromServer.imdbID,
+          });
+        } else {
+          setNewMovie(null);
+          setIsError(true);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [query]);
+
+  const addMovie = useCallback((addedMovie: Movie) => {
+    if (!movies.some(movie => movie.imdbId === addedMovie.imdbId)) {
+      setMovies([
+        ...movies,
+        addedMovie,
+      ]);
     }
-  }, [query, isLoading]);
 
-  // const addMovie = (newMovie: Movie) => {
-  //   setMovies([...movies, newMovie]);
-  // }
+    setNewMovie(null);
+    setQuery('');
+  }, [movies]);
 
   return (
     <>
@@ -56,15 +71,26 @@ export const FindMovie: React.FC<Props> = (
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn(
+                'input',
+                { 'is-danger': isError },
+              )}
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setIsError(false);
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isError && (
+            <p
+              className={cn('help', 'is-danger')}
+              data-cy="errorMessage"
+            >
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -72,23 +98,32 @@ export const FindMovie: React.FC<Props> = (
             <button
               data-cy="searchButton"
               type="button"
-              className={cn('button', 'is-light')}
+              className={cn(
+                'button',
+                'is-light',
+                {
+                  'is-loading': isLoading,
+                },
+              )}
               disabled={query.length === 0}
-              onClick={() => setIsLoading(true)}
+              onClick={handleOnClick}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {newMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => addMovie(newMovie)}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 

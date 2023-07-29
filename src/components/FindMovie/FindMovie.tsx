@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import './FindMovie.scss';
-// import { Movie } from '../../types/Movie';
-// import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { getMovie } from '../../api';
+import { MovieCard } from '../MovieCard';
 
-// type Props = {
-//   movies: Movie[];
-//   setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
-// };
+type Props = {
+  movies: Movie[];
+  setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
+};
 
-export const FindMovie: React.FC = (
+export const FindMovie: React.FC<Props> = (
   // movies,
   // setMovies,
 ) => {
-  const [value, setValue] = useState('');
+  const [query, setQuery] = useState('');
+  const [newMovie, setNewMovie] = useState<Movie | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) {
+      getMovie(query)
+        .then((movieFromServer) => {
+          if (movieFromServer) {
+            setNewMovie({
+              title: movieFromServer.Title,
+              description: movieFromServer.Plot,
+              imgUrl: movieFromServer.Poster,
+              imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
+              imdbId: movieFromServer.imdbID,
+            });
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [query, isLoading]);
 
   // const addMovie = (newMovie: Movie) => {
   //   setMovies([...movies, newMovie]);
@@ -34,8 +57,8 @@ export const FindMovie: React.FC = (
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
-              value={value}
-              onChange={(event) => setValue(event.target.value)}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
             />
           </div>
 
@@ -48,10 +71,10 @@ export const FindMovie: React.FC = (
           <div className="control">
             <button
               data-cy="searchButton"
-              type="submit"
+              type="button"
               className={cn('button', 'is-light')}
-              disabled={value.length === 0}
-              // onClick={() => {}}
+              disabled={query.length === 0}
+              onClick={() => setIsLoading(true)}
             >
               Find a movie
             </button>
@@ -71,7 +94,7 @@ export const FindMovie: React.FC = (
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        <MovieCard movie={newMovie} />
       </div>
     </>
   );

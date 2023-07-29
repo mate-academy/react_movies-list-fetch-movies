@@ -1,4 +1,4 @@
 export interface ResponseError {
-  Response: 'False',
+  Response: 'Can\'t find a movie',
   Error: string,
 }

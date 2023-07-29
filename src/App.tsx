@@ -10,8 +10,9 @@ import { getMovie } from './api';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [formInput, setFormInput] = useState('');
-  const [newMovies, setNewMovies] = useState<MovieData | null>(null);
+  const [newMovie, setNewMovie] = useState<MovieData | null>(null);
   const [loading, setLoading] = useState(false);
+  const [movie, setMovie] = useState<null | Movie>(null);
 
   const changeInput = (value: string) => {
     setFormInput(value);
@@ -21,28 +22,26 @@ export const App = () => {
     setLoading(true);
     getMovie(formInput).then(res => {
       if (!Object.hasOwnProperty.call(res, 'Error')) {
-        setNewMovies(res as MovieData);
+        setNewMovie(res as MovieData);
       } else {
-        setNewMovies(null);
+        setNewMovie(null);
       }
     }).finally(() => setLoading(false));
   };
 
-  const [movie, setMovie] = useState<null | Movie>(null);
-
   useEffect(() => {
-    if (newMovies) {
+    if (newMovie) {
       setMovie({
-        title: newMovies.Title,
-        description: newMovies.Plot,
-        imgUrl: newMovies.Poster === 'N/A'
+        title: newMovie.Title,
+        description: newMovie.Plot,
+        imgUrl: newMovie.Poster === 'N/A'
           ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : newMovies.Poster,
-        imdbUrl: `https://www.imdb.com/title/${newMovies.imdbID}`,
-        imdbId: newMovies.imdbID,
+          : newMovie.Poster,
+        imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
+        imdbId: newMovie.imdbID,
       });
     }
-  }, [newMovies]);
+  }, [newMovie]);
 
   return (
     <div className="page">

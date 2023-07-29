@@ -43,6 +43,11 @@ export const FindMovie: React.FC<Props> = ({
     setMovie(null);
   };
 
+  const changeHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChangeInput(e.target.value);
+    setTouched(false);
+  };
+
   return (
     <>
       <form className="find-movie" onSubmit={(e) => e.preventDefault()}>
@@ -61,10 +66,7 @@ export const FindMovie: React.FC<Props> = ({
                 'is-danger': !movie && touched && !loading,
               })}
               value={formInput}
-              onChange={(e) => {
-                onChangeInput(e.target.value);
-                setTouched(false);
-              }}
+              onChange={(e) => changeHandle(e)}
             />
           </div>
 
@@ -80,8 +82,9 @@ export const FindMovie: React.FC<Props> = ({
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames('button', 'is-light',
-                { 'is-loading': loading })}
+              className={classNames('button', 'is-light', {
+                'is-loading': loading,
+              })}
               disabled={!formInput.trim()}
               onClick={() => finedHandler()}
             >
@@ -104,14 +107,12 @@ export const FindMovie: React.FC<Props> = ({
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        {movie && (
-          <>
-            <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
-          </>
-        )}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

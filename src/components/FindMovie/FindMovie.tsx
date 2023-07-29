@@ -97,7 +97,7 @@ export const FindMovie: React.FC<Props> = ({
           <div className="control">
             <button
               data-cy="searchButton"
-              type="button"
+              type="submit"
               className={cn(
                 'button',
                 'is-light',
@@ -127,10 +127,13 @@ export const FindMovie: React.FC<Props> = ({
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        <MovieCard movie={newMovie} />
-      </div>
+      {newMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+
+          <MovieCard movie={newMovie} />
+        </div>
+      )}
     </>
   );
 };

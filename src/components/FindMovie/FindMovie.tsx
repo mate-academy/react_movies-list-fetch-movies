@@ -26,7 +26,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setErrorThroughSearch(false);
   }
 
-  const adddMovieToList = () => {
+  const addMovieToList = () => {
     addMovie(movie as Movie);
     setMovie(null);
     setSearchText('');
@@ -102,7 +102,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={adddMovieToList}
+                onClick={addMovieToList}
               >
                 Add to the list
               </button>

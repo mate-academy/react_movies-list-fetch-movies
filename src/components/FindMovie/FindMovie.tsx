@@ -1,31 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
+import { MovieData } from '../../types/MovieData';
+
+import { getMovie } from '../../api';
 
 type Props = {
-  formInput: string,
-  onChangeInput: (value: string) => void,
-  onMoviesQuery: () => void,
-  movie: null | Movie,
-  setMovie: React.Dispatch<React.SetStateAction<Movie | null>>,
   setAllMovies: React.Dispatch<React.SetStateAction<Movie[]>>,
   allMovies: Movie[],
-  loading: boolean,
 };
 
 export const FindMovie: React.FC<Props> = ({
-  formInput,
-  onChangeInput,
-  onMoviesQuery,
-  movie,
-  setMovie,
   setAllMovies,
   allMovies,
-  loading,
 }) => {
   const [touched, setTouched] = useState(false);
+  const [formInput, setFormInput] = useState('');
+  const [newMovie, setNewMovie] = useState<MovieData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [movie, setMovie] = useState<null | Movie>(null);
+
+  const changeInput = (value: string) => {
+    setFormInput(value);
+  };
+
+  const moviesQuery = () => {
+    setLoading(true);
+    getMovie(formInput).then(res => {
+      if (!Object.hasOwnProperty.call(res, 'Error')) {
+        setNewMovie(res as MovieData);
+      } else {
+        setNewMovie(null);
+      }
+    }).finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    if (newMovie) {
+      setMovie({
+        title: newMovie.Title,
+        description: newMovie.Plot,
+        imgUrl: newMovie.Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : newMovie.Poster,
+        imdbUrl: `https://www.imdb.com/title/${newMovie.imdbID}`,
+        imdbId: newMovie.imdbID,
+      });
+    }
+  }, [newMovie]);
 
   const addMoviesHandle = () => {
     if (!allMovies.find((el) => el.title === movie?.title)) {
@@ -33,18 +57,18 @@ export const FindMovie: React.FC<Props> = ({
     }
 
     setMovie(null);
-    onChangeInput('');
+    changeInput('');
     setTouched(false);
   };
 
   const finedHandler = () => {
     setTouched(true);
-    onMoviesQuery();
+    moviesQuery();
     setMovie(null);
   };
 
   const changeHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChangeInput(e.target.value);
+    changeInput(e.target.value);
     setTouched(false);
   };
 

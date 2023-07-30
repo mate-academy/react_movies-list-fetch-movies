@@ -1,21 +1,21 @@
-import { useState } from 'react';
+/* eslint-disable no-console */
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { Movie } from './types/Movie';
+import { MovieProvider } from './context/movieContext';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
-
   return (
-    <div className="page">
-      <div className="page-content">
-        <MoviesList movies={movies} />
-      </div>
+    <MovieProvider>
+      <div className="page">
+        <div className="page-content">
+          <MoviesList />
+        </div>
 
-      <div className="sidebar">
-        <FindMovie />
+        <div className="sidebar">
+          <FindMovie />
+        </div>
       </div>
-    </div>
+    </MovieProvider>
   );
 };

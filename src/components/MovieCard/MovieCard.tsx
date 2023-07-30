@@ -7,8 +7,9 @@ type Props = {
 };
 
 export const MovieCard: React.FC<Props> = ({ movie }) => {
+  const defUrl = 'https://via.placeholder.com/360x270.png?text=no%20preview';
   const url = movie.imgUrl === 'N/A'
-    ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+    ? defUrl
     : movie.imgUrl;
 
   return (

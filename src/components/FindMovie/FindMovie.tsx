@@ -17,7 +17,6 @@ export const FindMovie: React.FC = () => {
     addMovie,
   } = useContext(MovieContext);
 
-  console.log(isLoadingMovie, isError);
 
   const onFormClick = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -13,7 +13,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({
   movies, setMovies,
 }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState<string>('');
   const [findMovie, setFindMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);

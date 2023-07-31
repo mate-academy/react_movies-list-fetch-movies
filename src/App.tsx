@@ -8,7 +8,7 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (newMovie: Movie) => {
-    if (movies) {
+    if (movies.length > 0) {
       if (movies.findIndex(
         movie => movie.imdbId === newMovie.imdbId,
       ) !== -1) {

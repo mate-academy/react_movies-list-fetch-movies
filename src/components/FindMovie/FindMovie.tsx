@@ -5,6 +5,7 @@ import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
+import { IMDB_URL_BASE, TEMPORARY_POSTER } from '../../utils/Constants';
 
 type Props = {
   onAdd: (movie: Movie) => void;
@@ -18,12 +19,16 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [isError, setIsError] = useState<boolean>(false);
   const searchField = useRef<HTMLInputElement | null>(null);
 
-  const handlerChangeSearchField = (event: HTMLInputElement) => {
-    if (event.value.length > 0) {
+  const handlerChangeSearchField = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const inputValue = e.target.value;
+
+    if (inputValue.length > 0) {
       setIsError(false);
     }
 
-    setSearchFieldValue(event.value);
+    setSearchFieldValue(inputValue);
   };
 
   const handlerSubmitSearch = (e: React.FormEvent) => {
@@ -32,9 +37,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   };
 
   const handlerReceivedData = (data: MovieData) => {
-    const tempPoster
-      = 'https://via.placeholder.com/360x270.png?text=no%20preview';
-
     const {
       imdbID,
       Poster,
@@ -45,8 +47,8 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     const newMovie = {
       title: Title,
       description: Plot,
-      imgUrl: Poster === 'N/A' ? tempPoster : Poster,
-      imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+      imgUrl: Poster === 'N/A' ? TEMPORARY_POSTER : Poster,
+      imdbUrl: (IMDB_URL_BASE + imdbID),
       imdbId: imdbID,
     };
 
@@ -106,7 +108,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={cn('input', { 'is-danger': isError })}
-              onChange={e => handlerChangeSearchField(e.target)}
+              onChange={handlerChangeSearchField}
             />
           </div>
 

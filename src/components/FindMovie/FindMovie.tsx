@@ -18,7 +18,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovieToList }) => {
   const handleSubmit = (event: React.MouseEvent) => {
     event.preventDefault();
     setLoading(true);
-    prevQuery.current = query;
 
     getMovie(query)
       .then(movieData => {
@@ -36,7 +35,10 @@ export const FindMovie: React.FC<Props> = ({ onAddMovieToList }) => {
           setMovie(false);
         }
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        prevQuery.current = query;
+        setLoading(false);
+      });
   };
 
   const handleAddToList = () => {

@@ -8,9 +8,9 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie): void => {
-    const isInList = movies.some(item => item.imdbId === movie.imdbId);
+    const isMovieInList = movies.some(item => item.imdbId === movie.imdbId);
 
-    if (!isInList) {
+    if (!isMovieInList) {
       setMovies([
         ...movies,
         movie,

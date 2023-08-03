@@ -70,22 +70,24 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
       .findIndex(movieItem => movieItem.imdbId === movie?.imdbId);
 
     if (findMovieIndex < 0 && movie) {
-      setMovie(null);
-      setMovieToFind('');
-      setQuery('');
       setMovies([...movies, movie]);
-    } else {
-      setMovie(null);
-      setMovieToFind('');
-      setQuery('');
     }
+
+    setMovie(null);
+    setMovieToFind('');
+    setQuery('');
+  };
+
+  const handleInputValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setIsError(false);
   };
 
   return (
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => handleSubmitionForm(event)}
+        onSubmit={handleSubmitionForm}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -98,13 +100,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               type="text"
               ref={inputRef}
               value={query}
-              onKeyUp={(event) => (
-                event.code === 'Enter' && handleSubmitionForm(event)
-              )}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                setIsError(false);
-              }}
+              onChange={handleInputValue}
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames(
@@ -140,7 +136,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddToTheList()}
+                onClick={handleAddToTheList}
               >
                 Add to the list
               </button>

@@ -15,7 +15,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isError, setIsError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
@@ -23,7 +23,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const onSubmit = (queryString: string) => {
-    setLoading(true);
+    setIsLoading(true);
 
     getMovie(queryString.toLowerCase())
       .then((data: MovieData | ResponseError) => {
@@ -42,15 +42,15 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         } else {
           setIsError(true);
         }
-      }).finally(() => setLoading(false));
+      }).finally(() => setIsLoading(false));
   };
 
-  const onSubmitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit(query);
   };
 
-  const onAddMovie = () => {
+  const handleClick = () => {
     if (movie) {
       addMovie(movie);
     }
@@ -61,7 +61,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
   return (
     <>
-      <form className="find-movie" onSubmit={onSubmitHandler}>
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -97,7 +97,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="submit"
               className={classNames('button is-light',
                 {
-                  'is-loading': loading,
+                  'is-loading': isLoading,
                 })}
               disabled={!query}
             >
@@ -111,7 +111,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={onAddMovie}
+                onClick={handleClick}
               >
                 Add to the list
               </button>

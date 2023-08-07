@@ -6,15 +6,17 @@ import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import { haveThisMovieInList } from '../../services/movie';
 
 // eslint-disable-next-line max-len
 const DEFAULT_IMAGE = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 type Props = {
+  movies: Movie[],
   onMovieAdd: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
+export const FindMovie: React.FC<Props> = ({ movies, onMovieAdd }) => {
   const [query, setQuery] = useState('');
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +57,7 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   };
 
   const handleMovieAdding = () => {
-    if (foundMovie) {
+    if (foundMovie && !haveThisMovieInList(movies, foundMovie)) {
       onMovieAdd(foundMovie);
       setQuery('');
       setFoundMovie(null);

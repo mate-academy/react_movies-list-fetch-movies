@@ -15,15 +15,8 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          onMovieAdd={(movie) => {
-            const haveThisMovieInList = movies.some(movieInList => (
-              movieInList.imdbId === movie.imdbId
-            ));
-
-            if (!haveThisMovieInList) {
-              setMovies([...movies, movie]);
-            }
-          }}
+          movies={movies}
+          onMovieAdd={(movie) => setMovies([...movies, movie])}
         />
       </div>
     </div>

@@ -59,9 +59,10 @@ export const FindMovie: React.FC<Props> = ({ movies, onMovieAdd }) => {
   const handleMovieAdding = () => {
     if (foundMovie && !haveThisMovieInList(movies, foundMovie)) {
       onMovieAdd(foundMovie);
-      setQuery('');
-      setFoundMovie(null);
     }
+
+    setQuery('');
+    setFoundMovie(null);
   };
 
   return (

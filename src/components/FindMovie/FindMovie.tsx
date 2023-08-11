@@ -27,9 +27,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setQuery(event.target.value);
-    if (isError) {
-      setIsError(false);
-    }
+    setIsError(false);
   };
 
   const findMovie = useCallback(() => {

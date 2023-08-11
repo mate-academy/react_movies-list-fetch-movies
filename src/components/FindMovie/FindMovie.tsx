@@ -10,6 +10,8 @@ import { MovieCard } from '../MovieCard';
 const DEFAULT_POSTER
   = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
+const DEFAULT_IMDB_URL = 'https://www.imdb.com/title/';
+
 type Props = {
   addMovie: (film: Movie) => void;
 };
@@ -70,7 +72,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         imgUrl: (!data.Poster || data.Poster === 'N/A')
           ? DEFAULT_POSTER
           : data.Poster,
-        imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+        imdbUrl: DEFAULT_IMDB_URL + data.imdbID,
         imdbId: data.imdbID,
       };
 

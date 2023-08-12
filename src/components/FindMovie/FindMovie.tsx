@@ -11,10 +11,10 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [loaded, setLoaded] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [loaded, setLoaded] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   const handlerFindMovie = (event: React.FormEvent) => {
     event.preventDefault();

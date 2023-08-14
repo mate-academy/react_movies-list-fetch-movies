@@ -5,9 +5,11 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
+const PREVIEW_IMG = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 type Props = {
   movies: Movie[];
-  setMovies: (value: Movie[]) => void;
+  setMovies: (prevMovies: (prevMovies: Movie[]) => Movie[]) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({
@@ -18,6 +20,12 @@ export const FindMovie: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
+  function resetForm() {
+    setMovie(null);
+    setTitle('');
+    setIsError(false);
+  }
+
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
     setIsError(false);
@@ -25,11 +33,10 @@ export const FindMovie: React.FC<Props> = ({
 
   const handleAddClick = () => {
     if (movie && !movies.some(m => m.imdbId === movie.imdbId)) {
-      setMovies([...movies, movie]);
+      setMovies(prevMovies => ([...prevMovies, movie]));
     }
 
-    setMovie(null);
-    setTitle('');
+    resetForm();
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -53,7 +60,7 @@ export const FindMovie: React.FC<Props> = ({
           title: Title,
           description: Plot,
           imgUrl: Poster !== 'N/A' ? Poster
-            : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+            : PREVIEW_IMG,
           imdbUrl: `https://www.imdb.com/title/${imdbID}`,
           imdbId: imdbID,
         };

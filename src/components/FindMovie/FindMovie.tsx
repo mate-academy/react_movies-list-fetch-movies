@@ -56,8 +56,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
     }
   };
 
-  const handleAddButton = (element: Movie) => {
-    setMovies(element);
+  const handleAddButton = () => {
+    if (movie) {
+      setMovies(movie);
+    }
+
     setMovie(null);
     setQuery('');
   };
@@ -83,7 +86,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': isFound?.Error })}
               value={query}
-              onChange={(event) => handleInputChange(event)}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -103,7 +106,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
               className={classNames('button is-light', {
                 'is-loading': isLoading,
               })}
-              onClick={(event) => handleOnSubmit(event)}
+              onClick={handleOnSubmit}
             >
               Find a movie
             </button>
@@ -115,7 +118,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddButton(movie)}
+                onClick={handleAddButton}
               >
                 Add to the list
               </button>

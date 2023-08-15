@@ -13,7 +13,8 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({
-  movies, setMovies,
+  movies,
+  setMovies,
 }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
@@ -46,28 +47,26 @@ export const FindMovie: React.FC<Props> = ({
 
     getMovie(title)
       .then((response) => {
-        if ('Error' in response) {
+        if ('Title' in response) {
+          const {
+            Title, Plot, Poster, imdbID,
+          } = response;
+
+          const newMovie: Movie = {
+            title: Title,
+            description: Plot,
+            imgUrl: Poster !== 'N/A' ? Poster
+              : PREVIEW_IMG,
+            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+            imdbId: imdbID,
+          };
+
+          setMovie(newMovie);
+        } else {
           setIsError(true);
-
-          return;
         }
-
-        const {
-          Title, Plot, Poster, imdbID,
-        } = response;
-
-        const newMovie: Movie = {
-          title: Title,
-          description: Plot,
-          imgUrl: Poster !== 'N/A' ? Poster
-            : PREVIEW_IMG,
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          imdbId: imdbID,
-        };
-
-        setIsError(false);
-        setMovie(newMovie);
       })
+      .catch(() => setIsError(true))
       .finally(() => {
         setLoading(false);
       });

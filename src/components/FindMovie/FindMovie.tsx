@@ -47,24 +47,24 @@ export const FindMovie: React.FC<Props> = ({
 
     getMovie(title)
       .then((response) => {
-        if ('Title' in response) {
-          const {
-            Title, Plot, Poster, imdbID,
-          } = response;
-
-          const newMovie: Movie = {
-            title: Title,
-            description: Plot,
-            imgUrl: Poster !== 'N/A' ? Poster
-              : PREVIEW_IMG,
-            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-            imdbId: imdbID,
-          };
-
-          setMovie(newMovie);
-        } else {
-          setIsError(true);
+        if ('Error' in response) {
+          throw new Error('no movies found');
         }
+
+        const {
+          Title, Plot, Poster, imdbID,
+        } = response;
+
+        const newMovie: Movie = {
+          title: Title,
+          description: Plot,
+          imgUrl: Poster !== 'N/A' ? Poster
+            : PREVIEW_IMG,
+          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+          imdbId: imdbID,
+        };
+
+        setMovie(newMovie);
       })
       .catch(() => setIsError(true))
       .finally(() => {

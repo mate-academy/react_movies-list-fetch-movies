@@ -36,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
       const movieData = data as MovieData;
 
-      const imgUrl = movieData.Poster
+      const imgUrl = movieData.Poster !== 'N/A'
         ? movieData.Poster
         : 'https://via.placeholder.com/360x270.png?text=no%20preview';
 

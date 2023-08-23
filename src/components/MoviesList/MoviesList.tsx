@@ -8,7 +8,7 @@ type Props = {
   movies: Movie[];
 };
 
-export const MoviesList: React.FC<Props> = ({ movies }) => (
+export const MoviesList: React.FC<Props> = React.memo(({ movies }) => (
   <div className="movies">
     {movies.map(movie => (
       <MovieCard
@@ -17,4 +17,4 @@ export const MoviesList: React.FC<Props> = ({ movies }) => (
       />
     ))}
   </div>
-);
+));

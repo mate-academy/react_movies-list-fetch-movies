@@ -7,8 +7,14 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
+  const checkDublicate = (movie: Movie): Movie[] => {
+    return movies.find(item => item.imdbId === movie.imdbId)
+      ? movies
+      : [...movies, movie];
+  };
+
   const addMovieToTheList = (movie: Movie) => {
-    setMovies([...movies, movie]);
+    setMovies(checkDublicate(movie));
   };
 
   return (

@@ -20,7 +20,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
     setIsLoading(true);
 
-    getMovie(query)
+    getMovie(query.trim())
       .then(movieData => {
         if ('Error' in movieData) {
           setIsError(true);
@@ -28,14 +28,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           return;
         }
 
-        const imgUrl = movieData.Poster === 'N/A'
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : movieData.Poster;
-
         setMovie({
           title: movieData.Title,
           description: movieData.Plot,
-          imgUrl,
+          imgUrl: movieData.Poster,
           imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
           imdbId: movieData.imdbID,
         });

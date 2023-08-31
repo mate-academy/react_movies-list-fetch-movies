@@ -73,10 +73,14 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
           setNewMovie(null);
         }
 
-        setIsLoading(false);
         setMovieWasAskedOnce(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
+
+  const inputIsEmpty = queryTitle.trim().length === 0;
 
   return (
     <>
@@ -124,8 +128,8 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                   'is-loading': isLoading,
                 },
               )}
-              disabled={queryTitle.trim().length === 0}
-              onClick={() => loadMovie()}
+              disabled={inputIsEmpty}
+              onClick={loadMovie}
             >
               {movieWasAskedOnce ? 'Search again' : 'Find a movie'}
             </button>

@@ -66,7 +66,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
           } = movieFromServer as MovieData;
 
           // pack the data and make object of movie
-          const newMovie: Movie = {
+          const newMovieFromServer: Movie = {
             title: Title,
             imgUrl: Poster,
             description: Plot,
@@ -74,7 +74,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
             imdbUrl: imdbID,
           };
 
-          setNewMovie(newMovie);
+          setNewMovie(newMovieFromServer);
         } else {
           // this code run when movie was not found
           setMovieFoundError(true);

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
-import { MovieCard } from '../MovieCard';
-import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
+import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api';
 
 interface Props {
   movies: Movie[];
@@ -12,18 +13,13 @@ interface Props {
 }
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
-  const [queryTitle, setQueryTitle] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  // state movieFoundError if movie was not found
-  const [movieFoundError, setMovieFoundError] = useState<boolean>(false);
+  const [queryTitle, setQueryTitle] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [movieFoundError, setMovieFoundError] = useState(false);
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
+  const [isFindingAgain, setIsFindingAgain] = useState(false);
+  const [movieWasAskedOnce, setMovieWasAskedOnce] = useState(false);
 
-  // they need for understanding when we load movie at first time and when no
-  const [isFindingAgain, setIsFindingAgain] = useState<boolean>(false);
-  const [movieWasAskedOnce, setMovieWasAskedOnce] = useState<boolean>(false);
-
-  //  handlers
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMovieFoundError(false);
     setQueryTitle(event.target.value);
@@ -49,23 +45,19 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setQueryTitle('');
   };
 
-  //  other functions
   const loadMovie = () => {
     setIsLoading(true);
 
-    // here we use API fun getMovie to make API request
     getMovie(queryTitle.trim())
       .catch(() => setMovieFoundError(true))
       .then(movieFromServer => {
         const { Response } = movieFromServer as ResponseError;
 
-        // if movie was found
         if (Response !== 'False') {
           const {
             Title, Poster, Plot, imdbID,
           } = movieFromServer as MovieData;
 
-          // pack the data and make object of movie
           const newMovieFromServer: Movie = {
             title: Title,
             imgUrl: Poster,
@@ -76,7 +68,6 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
           setNewMovie(newMovieFromServer);
         } else {
-          // this code run when movie was not found
           setMovieFoundError(true);
           setIsFindingAgain(false);
           setNewMovie(null);
@@ -104,7 +95,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${movieFoundError && 'is-danger'}`}
+              className={classNames(
+                'input',
+                {
+                  'is-danger': movieFoundError,
+                },
+              )}
               value={queryTitle}
               onChange={handleInputChange}
             />
@@ -122,7 +118,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={`button is-light ${isLoading && 'is-loading'}`}
+              className={classNames(
+                'button is-light',
+                {
+                  'is-loading': isLoading,
+                },
+              )}
               disabled={queryTitle.trim().length === 0}
               onClick={() => loadMovie()}
             >
@@ -136,9 +137,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => {
-                  handleAddMovieToList();
-                }}
+                onClick={handleAddMovieToList}
               >
                 Add to the list
               </button>

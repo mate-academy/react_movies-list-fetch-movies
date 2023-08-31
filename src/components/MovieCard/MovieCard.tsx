@@ -6,9 +6,15 @@ type Props = {
   movie: Movie,
 };
 
+const defaultPic
+    = 'https://dummyimage.com/360x270/e3e3e3/000000&text=no+preview';
+
 export const MovieCard: React.FC<Props> = ({ movie }) => {
   const {
-    title, description, imgUrl, imdbUrl,
+    title,
+    description,
+    imgUrl,
+    imdbUrl,
   } = movie;
 
   return (
@@ -17,7 +23,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
         <figure className="image is-4by3">
           <img
             data-cy="moviePoster"
-            src={imgUrl}
+            src={imgUrl !== 'N/A' ? imgUrl : defaultPic}
             alt="Film logo"
           />
         </figure>

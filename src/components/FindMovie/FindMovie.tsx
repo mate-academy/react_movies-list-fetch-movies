@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
-// import { loadMovie } from '../../functions/loadMovie';
-import { handleAddMovieToList } from '../../functions/handleAddMovieToList';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
@@ -16,11 +14,16 @@ interface Props {
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [queryTitle, setQueryTitle] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // state movieFoundError if movie was not found
   const [movieFoundError, setMovieFoundError] = useState<boolean>(false);
-  const [movie, setMovie] = useState<Movie | null>(null);
+  const [newMovie, setNewMovie] = useState<Movie | null>(null);
+
+  // they need for understanding when we load movie at first time and when no
   const [isFindingAgain, setIsFindingAgain] = useState<boolean>(false);
   const [movieWasAskedOnce, setMovieWasAskedOnce] = useState<boolean>(false);
 
+  //  handlers
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMovieFoundError(false);
     setQueryTitle(event.target.value);
@@ -28,52 +31,55 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // loadMovie(
-    //   queryTitle,
-    //   setMovieFoundError,
-    //   setMovie,
-    //   setIsFindingAgain,
-    //   setIsLoading,
-    //   setMovieWasAskedOnce,
-    // );
   };
 
-  const loadMovie = (
-    // queryTitle: string,
-    // setMovieFoundError: React.Dispatch<React.SetStateAction<boolean>>,
-    // setMovie: React.Dispatch<React.SetStateAction<Movie | null>>,
-    // setIsFindingAgain: React.Dispatch<React.SetStateAction<boolean>>,
-    // setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
-    // setMovieWasAskedOnce: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => {
-    const defaultPic
-    = 'https://dummyimage.com/360x270/e3e3e3/000000&text=no+preview';
+  const handleAddMovieToList = () => {
+    const copyOfMovies: Movie[] = [...movies];
+    const movieAlreadyInList = copyOfMovies.find(movie => {
+      const { imdbId } = newMovie as Movie;
 
+      return movie.imdbId === imdbId;
+    });
+
+    if (!movieAlreadyInList) {
+      setMovies([...copyOfMovies, newMovie as Movie]);
+    }
+
+    setNewMovie(null);
+    setQueryTitle('');
+  };
+
+  //  other functions
+  const loadMovie = () => {
     setIsLoading(true);
 
+    // here we use API fun getMovie to make API request
     getMovie(queryTitle.trim())
       .catch(() => setMovieFoundError(true))
       .then(movieFromServer => {
         const { Response } = movieFromServer as ResponseError;
 
+        // if movie was found
         if (Response !== 'False') {
           const {
             Title, Poster, Plot, imdbID,
           } = movieFromServer as MovieData;
 
+          // pack the data and make object of movie
           const newMovie: Movie = {
             title: Title,
-            imgUrl: Poster || defaultPic,
+            imgUrl: Poster,
             description: Plot,
             imdbId: imdbID,
-            imdbUrl: imdbID ? `https://www.imdb.com/title/${imdbID}` : defaultPic,
+            imdbUrl: imdbID,
           };
 
-          setMovie(newMovie);
+          setNewMovie(newMovie);
         } else {
+          // this code run when movie was not found
           setMovieFoundError(true);
           setIsFindingAgain(false);
-          setMovie(null);
+          setNewMovie(null);
         }
 
         setIsLoading(false);
@@ -125,19 +131,13 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
           </div>
 
           <div className="control">
-            {movie !== null && (
+            {newMovie !== null && (
               <button
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
                 onClick={() => {
-                  handleAddMovieToList(
-                    movies,
-                    movie,
-                    setMovies,
-                    setMovie,
-                    setQueryTitle,
-                  );
+                  handleAddMovieToList();
                 }}
               >
                 Add to the list
@@ -147,10 +147,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         </div>
       </form>
 
-      {movie !== null && !movieFoundError && !isFindingAgain && (
+      {newMovie !== null && !movieFoundError && !isFindingAgain && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={movie} />
+          <MovieCard movie={newMovie} />
         </div>
       )}
     </>

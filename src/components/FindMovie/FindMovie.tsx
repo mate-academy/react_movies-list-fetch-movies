@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
-import { MovieData } from '../../types/MovieData';
 import { getMovie } from '../../api';
-import { ResponseError } from '../../types/ReponseError';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import { MovieData } from '../../types/MovieData';
+import { ResponseError } from '../../types/ReponseError';
 
 const imdbLink = 'https://www.imdb.com/title';
 const defaultImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
@@ -18,8 +18,6 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ setFoundMovie }) => {
   const [isError, setIsError] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState('');
-  const [movieFromServer, setMovieFromServer] = useState<
-  MovieData | ResponseError | null>(null);
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,14 +31,27 @@ export const FindMovie: React.FC<Props> = ({ setFoundMovie }) => {
     setIsLoading(true);
 
     try {
-      const movie = await getMovie(searchInputValue.trim());
+      const result: MovieData | ResponseError = await getMovie(
+        searchInputValue.trim(),
+      );
 
-      if ('Response' in movie && movie.Response === 'False') {
+      if ('Response' in result && result.Response === 'False') {
         setIsError(true);
-        setMovieFromServer(null);
       } else {
         setIsError(false);
-        setMovieFromServer(movie);
+
+        if ('Title' in result) {
+          const movieData: Movie = {
+            title: result.Title,
+            description: result.Plot,
+            imgUrl: result.Poster
+            && result.Poster !== 'N/A' ? result.Poster : defaultImg,
+            imdbUrl: `${imdbLink}/${result.imdbID}`,
+            imdbId: result.imdbID,
+          };
+
+          setNewMovie(movieData);
+        }
       }
     } catch (error) {
       setIsError(true);
@@ -49,27 +60,10 @@ export const FindMovie: React.FC<Props> = ({ setFoundMovie }) => {
     }
   };
 
-  useEffect(() => {
-    if (movieFromServer && 'Title' in movieFromServer) {
-      const movieData: Movie = {
-        title: movieFromServer.Title,
-        description: movieFromServer.Plot,
-        imgUrl: movieFromServer.Poster && movieFromServer.Poster !== 'N/A'
-          ? movieFromServer.Poster
-          : defaultImg,
-        imdbUrl: `${imdbLink}/${movieFromServer.imdbID}`,
-        imdbId: movieFromServer.imdbID,
-      };
-
-      setNewMovie(movieData);
-    }
-  }, [movieFromServer]);
-
   const handleMovieAdd = () => {
     if (newMovie) {
       setFoundMovie(newMovie);
       setSearchInputValue('');
-      setMovieFromServer(null);
       setNewMovie(null);
     }
   };

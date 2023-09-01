@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -6,15 +6,14 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
 
-  useEffect(() => {
-    if (foundMovie && movies.every(
-      movie => foundMovie.imdbId !== movie.imdbId,
-    )) {
+  const onMovieAdd = (foundMovie: Movie) => {
+    const isExists = movies.some(({ imdbId }) => foundMovie.imdbId === imdbId);
+
+    if (!isExists) {
       setMovies([...movies, foundMovie]);
     }
-  }, [foundMovie]);
+  };
 
   return (
     <div className="page">
@@ -24,7 +23,7 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          setFoundMovie={setFoundMovie}
+          onMovieAdd={onMovieAdd}
         />
       </div>
     </div>

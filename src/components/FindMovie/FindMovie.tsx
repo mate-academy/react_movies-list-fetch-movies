@@ -12,10 +12,10 @@ const imdbLink = 'https://www.imdb.com/title';
 const defaultImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 type Props = {
-  setFoundMovie: (movie: Movie) => void,
+  onMovieAdd: (movie: Movie) => void,
 };
 
-export const FindMovie: React.FC<Props> = ({ setFoundMovie }) => {
+export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   const [isError, setIsError] = useState(false);
   const [searchInputValue, setSearchInputValue] = useState('');
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
@@ -62,7 +62,7 @@ export const FindMovie: React.FC<Props> = ({ setFoundMovie }) => {
 
   const handleMovieAdd = () => {
     if (newMovie) {
-      setFoundMovie(newMovie);
+      onMovieAdd(newMovie);
       setSearchInputValue('');
       setNewMovie(null);
     }

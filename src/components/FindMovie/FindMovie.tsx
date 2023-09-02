@@ -21,6 +21,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
   function handleInput(e: string) {
     setQuery(e);
+    setIsFound(true);
   }
 
   function handleMovieAddButton(e: React.MouseEvent) {
@@ -44,7 +45,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
             title: res.Title,
             description: res.Plot,
             imgUrl: res.Poster,
-            imdbUrl: '',
+            imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
             imdbId: res.imdbID,
           }),
           setIsFound(true)
@@ -86,6 +87,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           <div className="control">
             <button
               data-cy="searchButton"
+              disabled={query.length === 0 && true}
               type="submit"
               className={classNames('button is-light', {
                 'button is-loading': loaderState,
@@ -97,14 +99,16 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           </div>
 
           <div className="control">
-            <button
-              data-cy="addButton"
-              type="submit"
-              className="button is-primary"
-              onClick={handleMovieAddButton}
-            >
-              Add to the list
-            </button>
+            {query.length > 0 && (
+              <button
+                data-cy="addButton"
+                type="submit"
+                className="button is-primary"
+                onClick={handleMovieAddButton}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
       </form>

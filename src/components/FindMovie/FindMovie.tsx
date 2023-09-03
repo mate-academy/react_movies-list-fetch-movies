@@ -55,7 +55,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   };
 
   const handleClick = () => {
-    if (movie?.imdbId) {
+    if (movie) {
       addMovie(movie);
     }
 

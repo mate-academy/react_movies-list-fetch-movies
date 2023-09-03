@@ -8,7 +8,7 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovie = (movie: Movie) => {
-    const searchedMovie = movies.some(
+    const searchedMovie = !movies.some(
       currentMovie => currentMovie.imdbId === movie.imdbId,
     );
 

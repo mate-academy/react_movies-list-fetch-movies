@@ -12,9 +12,6 @@ type Props = {
   addMovie: (movie: Movie) => void;
 };
 
-const DEFAULT_POSTER
-  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
-
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -31,14 +28,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     getMovie(titleQuery.toLowerCase())
       .then((data: MovieData | ResponseError) => {
         if ('Title' in data) {
-          const properPoster = data.Poster === 'N/A'
-            ? DEFAULT_POSTER
-            : data.Poster;
-
           setMovie({
             title: data.Title,
             description: data.Plot,
-            imgUrl: properPoster,
+            imgUrl: data.Poster,
             imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
             imdbId: data.imdbID,
           });

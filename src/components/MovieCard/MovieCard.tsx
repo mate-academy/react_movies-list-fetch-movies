@@ -10,6 +10,9 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
   const {
     imgUrl, imdbUrl, description, title,
   } = movie;
+  const DEFAULT_POSTER
+  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+  const properPoster = imgUrl === 'N/A' ? DEFAULT_POSTER : imgUrl;
 
   return (
     <div className="card" data-cy="movieCard">
@@ -17,7 +20,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
         <figure className="image is-4by3">
           <img
             data-cy="moviePoster"
-            src={imgUrl}
+            src={properPoster}
             alt={title}
           />
         </figure>

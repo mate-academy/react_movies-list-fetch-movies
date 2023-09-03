@@ -39,10 +39,13 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
             imdbId: data.imdbID,
           });
-        } else {
-          setIsError(true);
         }
       })
+      .catch((error) => {
+        setIsError(true);
+        throw new Error('An error occurred while fetching the movie:', error);
+      })
+
       .finally(() => setIsLoading(false));
   };
 

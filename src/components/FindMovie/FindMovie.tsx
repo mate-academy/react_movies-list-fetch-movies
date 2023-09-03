@@ -14,15 +14,8 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ onAdd }) => {
-  const defaultState = {
-    title: '',
-    description: '',
-    imgUrl: '',
-    imdbUrl: '',
-    imdbId: '',
-  };
   const [query, setQuery] = useState('');
-  const [newMovie, setNewMovie] = useState(defaultState);
+  const [newMovie, setNewMovie] = useState({} as Movie);
   const [loaderState, setLoaderState] = useState(false);
   const [isFound, setIsFound] = useState(true);
 
@@ -34,7 +27,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   function handleMovieAddButton(e: React.MouseEvent) {
     e.preventDefault();
     onAdd(newMovie);
-    setNewMovie(defaultState);
+    setNewMovie({} as Movie);
     setQuery('');
   }
 

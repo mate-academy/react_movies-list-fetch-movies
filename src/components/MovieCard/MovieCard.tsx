@@ -6,13 +6,16 @@ type Props = {
   movie: Movie,
 };
 
+const DEFAULT_PICTURE
+    = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
         <img
           data-cy="moviePoster"
-          src={movie.imgUrl}
+          src={movie.imgUrl !== 'N/A' ? movie.imgUrl : DEFAULT_PICTURE}
           alt="Film logo"
         />
       </figure>
@@ -35,7 +38,11 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       <div className="content" data-cy="movieDescription">
         {movie.description}
         <br />
-        <a href={movie.imdbUrl} data-cy="movieURL">
+        <a
+          href={`https://www.imdb.com/title/${movie.imdbUrl}`}
+          data-cy="movieURL"
+          onSubmit={event => event.preventDefault()}
+        >
           IMDB
         </a>
       </div>

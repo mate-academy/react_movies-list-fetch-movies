@@ -8,6 +8,7 @@ import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
 import { MovieCard } from '../MovieCard';
+import { defaultPosterLink } from '../../constants';
 
 type Props = {
   movies: Movie[],
@@ -17,14 +18,13 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [title, setTitle] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isLoading, setIsloading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
-  const defaultPosterLink
-    = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
   const getMovieData = (movieTitle: string) => {
-    setIsloading(true);
+    setIsLoading(true);
     setIsError(false);
+
     getMovie(movieTitle)
       .then((newMovieData: MovieData | ResponseError) => {
         if ('imdbID' in newMovieData) {
@@ -43,16 +43,13 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         }
       })
       .catch(() => setIsError(true))
-      .finally(() => setIsloading(false));
+      .finally(() => setIsLoading(false));
   };
 
   const handleFindMovie = (
     e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
-    // if (isError) {
-    //   setIsError(false);
-    // }
 
     getMovieData(title);
   };
@@ -101,7 +98,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn(
+                'input',
+                { 'is-danger': isError },
+              )}
               onChange={handleTitleChange}
               value={title}
             />
@@ -121,7 +121,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               type="submit"
               className={cn('button is-light',
                 { 'is-loading': isLoading })}
-              disabled={!title}
+              disabled={!title.trim()}
             >
               Find a movie
             </button>

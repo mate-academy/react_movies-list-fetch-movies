@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
+import { MovieData } from '../../types/MovieData';
 
 type Props = {
   handleClick: (movie: Movie | null) => void,
@@ -20,26 +21,23 @@ export const FindMovie: React.FC<Props> = ({
   };
 
   const handleSubmit = () => {
+    setIsLoading(true);
     getMovie(query).then(movieData => {
-      setIsLoading(true);
-      if ('Title' in movieData) {
-        const {
-          Title,
-          Plot,
-          Poster,
-          imdbID,
-        } = movieData;
+      const {
+        Title,
+        Plot,
+        Poster,
+        imdbID,
+      } = movieData as MovieData;
 
-        setMovie({
-          title: Title,
-          description: Plot,
-          imgUrl: Poster,
-          imdbUrl: imdbID,
-          imdbId: imdbID,
-        });
-      }
+      setMovie({
+        title: Title,
+        description: Plot,
+        imgUrl: Poster,
+        imdbUrl: imdbID,
+        imdbId: imdbID,
+      });
     }).finally(() => setIsLoading(false));
-    // }).finally(() => setIsLoading(false));
     // console.log(movie);
   };
 
@@ -72,8 +70,8 @@ export const FindMovie: React.FC<Props> = ({
         </div>
 
         <div className="field is-grouped">
-          <div className="control">
-            {query ? (
+          {query ? (
+            <div className="control">
               <button
                 onClick={handleSubmit}
                 data-cy="searchButton"
@@ -84,17 +82,19 @@ export const FindMovie: React.FC<Props> = ({
               >
                 Find a movie
               </button>
-            ) : (
+            </div>
+          ) : (
+            <div className="control">
               <button
                 disabled
-                data-cy="searchButton"
                 type="submit"
+                data-cy="searchButton"
                 className="button is-light"
               >
                 Find a movie
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="control">
             {movie && (

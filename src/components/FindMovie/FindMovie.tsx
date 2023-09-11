@@ -16,10 +16,10 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
-  const [title, setTitle] = useState<string>('');
+  const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const getMovieData = (movieTitle: string) => {
     setIsLoading(true);

@@ -19,6 +19,8 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsloading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
+  const defaultPosterLink
+    = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
   const getMovieData = (movieTitle: string) => {
     setIsloading(true);
@@ -29,16 +31,18 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
           setMovie({
             title: newMovieData.Title,
             description: newMovieData.Plot,
-            imgUrl: newMovieData.Poster
-              ? newMovieData.Poster
-              : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+            imgUrl: newMovieData.Poster === 'N/A'
+              ? defaultPosterLink
+              : newMovieData.Poster,
             imdbUrl: `https://www.imdb.com/title/${newMovieData.imdbID}`,
             imdbId: newMovieData.imdbID,
           });
         } else {
+          setMovie(null);
           setIsError(true);
         }
       })
+      .catch(() => setIsError(true))
       .finally(() => setIsloading(false));
   };
 
@@ -46,9 +50,9 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
-    if (isError) {
-      setIsError(false);
-    }
+    // if (isError) {
+    //   setIsError(false);
+    // }
 
     getMovieData(title);
   };
@@ -138,14 +142,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        {movie && (
-          <>
-            <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
-          </>
-        )}
-      </div>
+      {movie && !isError && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

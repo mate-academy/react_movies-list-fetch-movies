@@ -6,10 +6,9 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  // const [newMovie, setNewMovie] = useState<Movie | null>(null);
 
   const handleClick = (newMovie: Movie | null) => {
-    if (newMovie) {
+    if (newMovie && !movies.find(movie => movie.imdbId === newMovie.imdbId)) {
       setMovies(prev => [...prev, newMovie]);
     }
   };
@@ -23,7 +22,6 @@ export const App = () => {
       <div className="sidebar">
         <FindMovie
           handleClick={handleClick}
-          // handleSearch={setNewMovie}
         />
       </div>
     </div>

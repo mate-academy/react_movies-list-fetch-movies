@@ -24,15 +24,6 @@ export const FindMovie: React.FC<Props> = ({
     setHasError(false);
   };
 
-  // console.log(getMovie('a')
-  //   .then((movieData) => {
-  //     movieData.()
-  //   })
-  //   .then((text) => {
-  //     console.log(text);
-  //   });
-  //   );
-
   const handleAdd = () => {
     handleClick(movie);
     setMovie(null);
@@ -77,7 +68,7 @@ export const FindMovie: React.FC<Props> = ({
     <>
       <form
         className="find-movie"
-        onSubmit={(event) => handleSubmit(event)}
+        onSubmit={handleSubmit}
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">

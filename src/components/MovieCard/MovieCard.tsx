@@ -12,7 +12,6 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
   if (!movie.imgUrl) {
     pathToImage = 'https://via.placeholder.com/360x270.png?text=no%20preview';
   }
-  // console.log(pathToImage);
 
   return (
     <div className="card" data-cy="movieCard">
@@ -31,8 +30,6 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
             <figure className="image is-48x48">
               <img
                 src={pathToImage}
-                // src="images/imdb-logo.jpeg"
-                // src={'images/imdb-logo.jpeg' || 'images/imdb-logo.jpeg'}
                 alt="imdb"
               />
             </figure>

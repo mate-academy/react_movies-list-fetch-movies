@@ -26,6 +26,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setIsLoading(true);
     getMovie(titleQuery.trim().toLowerCase())
       .then((movieData: MovieData | ResponseError) => {
+        // eslint-disable-next-line no-console
+        console.log('movieData', movieData);
         if ('Title' in movieData) {
           setMovie({
             title: movieData.Title,
@@ -75,7 +77,9 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames('input', { 'input is-danger': isError })}
+              className={classNames(
+                'input', { 'input is-danger': isError },
+              )}
               value={title}
               onChange={handleFindMovie}
             />
@@ -118,10 +122,12 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        <MovieCard movie={movie} />
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

@@ -128,10 +128,17 @@ export const FindMovie: React.FC<FindMovieProps> = ({ handleSetMovies }) => {
           </div>
         </div>
       </form>
-
       {error && <p>{error}</p>}
-      {movie && <MovieCard movie={movie} />}
-
+      {movie
+          && (
+            <div
+              className="container"
+              data-cy="previewContainer"
+            >
+              <h2 className="title">Preview</h2>
+              <MovieCard movie={movie} />
+            </div>
+          )}
     </>
   );
 };

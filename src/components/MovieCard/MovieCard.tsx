@@ -6,9 +6,9 @@ type Props = {
   movie: Movie,
 };
 
-export const MovieCard: React.FC<Props> = ({ movie }:Props) => (
-  <div className="container" data-cy="previewContainer">
-    <h2 className="title">Preview</h2>
+export const MovieCard: React.FC<Props> = ({ movie }:Props) => {
+  return (
+
     <div className="card" data-cy="movieCard">
       <div className="card-image">
         <figure className="image is-4by3">
@@ -30,7 +30,9 @@ export const MovieCard: React.FC<Props> = ({ movie }:Props) => (
             </figure>
           </div>
           <div className="media-content">
-            <p className="title is-8" data-cy="movieTitle">{movie.title}</p>
+            <p className="title is-8" data-cy="movieTitle">
+              {movie.title}
+            </p>
           </div>
         </div>
 
@@ -43,5 +45,6 @@ export const MovieCard: React.FC<Props> = ({ movie }:Props) => (
         </div>
       </div>
     </div>
-  </div>
-);
+
+  );
+};

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
@@ -13,7 +13,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [query, setQuery] = useState('');
-  const [movie, setMovie] = useState<MovieData | null>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState<ResponseError | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +27,20 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       if ('Response' in serverData && serverData.Response === 'False') {
         setError(serverData);
       } else {
-        setMovie(serverData as MovieData);
+        setMovie(() => {
+          const mov = serverData as MovieData;
+          const movieObject: Movie = {
+            title: mov.Title,
+            description: mov.Plot,
+            imgUrl: mov.Poster === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : mov.Poster,
+            imdbUrl: `https://www.imdb.com/title/${mov.imdbID}`,
+            imdbId: mov.imdbID,
+          };
+
+          return movieObject;
+        });
       }
     })
       .finally(() => setLoading(false));
@@ -37,17 +50,11 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     setQuery(event.target.value);
   };
 
-  const movieObject: Movie = useMemo(() => ({
-    title: movie?.Title ?? '',
-    description: movie?.Plot ?? '',
-    imgUrl: movie?.Poster
-      ?? 'https://via.placeholder.com/360x270.png?text=no%20preview',
-    imdbUrl: `https://www.imdb.com/title/${movie?.imdbID}`,
-    imdbId: movie?.imdbID ?? '',
-  }), [movie]);
-
   const handleAddMovieButton = () => {
-    onAddMovie(movieObject);
+    if (movie) {
+      onAddMovie(movie);
+    }
+
     setMovie(null);
     setQuery('');
   };
@@ -120,7 +127,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       {!!movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={movieObject} />
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

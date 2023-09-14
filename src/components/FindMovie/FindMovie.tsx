@@ -1,57 +1,64 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 
 import './FindMovie.scss';
+import { ResponseError } from '../../types/ReponseError';
+import { MovieData } from '../../types/MovieData';
+import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
+const DEFAULT_IMG_URL
+  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 type Props = {
-  query: string;
-  setQuery: (value: string) => void;
-  movie: Movie | null;
-  handleAddMovie: (val: Movie) => void;
+  onAddMovie: (value: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({
-  query,
-  setQuery,
-  movie,
-  handleAddMovie,
-}) => {
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+  const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [isMovieExist, setIsMovieExist] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
-  const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
 
-  const [load, setLoad] = useState(false);
+  const checkIfMovieExist = (response: ResponseError | MovieData):
+  response is MovieData => !('Error' in response);
 
-  const checkIfMovieExist = (
+  const handleSubmit = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-    setLoad(true);
+    setLoading(true);
 
-    if (!movie) {
-      setIsMovieExist(true);
-    } else {
-      setCurrentMovie(movie);
-      setShowPreview(true);
-      setIsMovieExist(false);
-    }
+    getMovie(query)
+      .then((foundMovie) => {
+        if (checkIfMovieExist(foundMovie)) {
+          const {
+            Title, imdbID, Plot, Poster,
+          } = foundMovie;
 
-    setTimeout(() => {
-      setLoad(false);
-    }, 100);
+          const newMovie: Movie = {
+            title: Title,
+            description: Plot,
+            imgUrl: Poster === 'N/A'
+              ? DEFAULT_IMG_URL
+              : Poster,
+            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
+            imdbId: imdbID,
+          };
+
+          setMovie(newMovie);
+        } else {
+          setIsMovieExist(true);
+        }
+      }).finally(() => setLoading(false));
   };
 
   const reset = () => {
-    setShowPreview(false);
     setQuery('');
-    setCurrentMovie(null);
-  };
-
-  useEffect(() => {
+    setMovie(null);
     setIsMovieExist(false);
-  }, [query]);
+  };
 
   return (
     <>
@@ -74,7 +81,10 @@ export const FindMovie: React.FC<Props> = ({
                 },
               )}
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setIsMovieExist(false);
+              }}
             />
           </div>
 
@@ -95,41 +105,43 @@ export const FindMovie: React.FC<Props> = ({
                 'button',
                 'is-light',
                 {
-                  'is-loading': load,
+                  'is-loading': loading,
                 },
               )}
-              onClick={checkIfMovieExist}
+              onClick={(event) => {
+                handleSubmit(event);
+              }}
             >
-              {currentMovie
+              {movie
                 ? ('Search again')
                 : ('Find a movie')}
             </button>
           </div>
 
-          <div className="control">
-            {showPreview && (
+          {movie && (
+            <div className="control">
               <button
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
                 onClick={() => {
-                  if (currentMovie) {
-                    handleAddMovie(currentMovie);
+                  if (movie) {
+                    onAddMovie(movie);
                     reset();
                   }
                 }}
               >
                 Add to the list
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </form>
 
-      {showPreview && currentMovie && (
+      {movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          <MovieCard movie={currentMovie} />
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

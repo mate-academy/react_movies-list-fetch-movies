@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
@@ -48,6 +48,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
   const handleChangeInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
+    setError(null);
   };
 
   const handleAddMovieButton = () => {
@@ -58,10 +59,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     setMovie(null);
     setQuery('');
   };
-
-  useEffect(() => {
-    setError(null);
-  }, [query]);
 
   return (
     <>

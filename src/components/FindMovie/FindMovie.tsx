@@ -1,49 +1,62 @@
 import React, { useState } from 'react';
-import './FindMovie.scss';
 import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api';
+import './FindMovie.scss';
 
 type Props = {
-  movies: Movie[],
-  setMovies: (movies: Movie[]) => void;
-  loading: boolean,
-  error: string,
-  previewMovie: Movie,
-  setPreviewMovie: (value: Movie) => void,
-  setError: (value: string) => void,
-  handleFindMovie: (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    query: string
-  ) => void,
+  onAddMovie: (movie: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({
-  movies,
-  setMovies,
-  handleFindMovie,
-  loading,
-  error,
-  previewMovie,
-  setError,
-  setPreviewMovie,
-}) => {
-  const [query, setQuery] = useState('');
+const PLACEHOLDER = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-  const isExistMovie = () => (
-    movies.some(movie => movie.title === previewMovie.title)
-  );
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState('');
+  const [error, setError] = useState('');
+  const [previewMovie, setPreviewMovie] = useState({} as Movie);
+
+  const handleFindMovie = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    searchQuery: string,
+  ) => {
+    e.preventDefault();
+    setLoading(true);
+
+    getMovie(searchQuery)
+      .then((data) => {
+        if ('Error' in data) {
+          setError(data.Error);
+        } else {
+          const movie = {
+            title: data.Title,
+            description: data.Plot,
+            imgUrl: data.Poster === 'N/A'
+              ? PLACEHOLDER
+              : data.Poster,
+            imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+            imdbId: data.imdbID,
+          };
+
+          setPreviewMovie(movie);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const handleChangeQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     setError('');
   };
 
-  const handlerAddMovie = () => {
-    setPreviewMovie({} as Movie);
-    setQuery('');
-    if (!isExistMovie()) {
-      setMovies([...movies, previewMovie]);
+  const handleAddMovie = () => {
+    if (previewMovie) {
+      onAddMovie(previewMovie);
+      setPreviewMovie({} as Movie);
+      setQuery('');
     }
   };
 
@@ -94,26 +107,28 @@ export const FindMovie: React.FC<Props> = ({
             </button>
           </div>
 
-          {previewMovie.title
-            && (
-              <div className="control">
+          <div className="control">
+            {previewMovie.title
+              && (
                 <button
                   data-cy="addButton"
                   type="button"
                   className="button is-primary"
-                  onClick={handlerAddMovie}
+                  onClick={handleAddMovie}
                 >
                   Add to the list
                 </button>
-              </div>
-            )}
+              )}
+          </div>
         </div>
       </form>
-
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {previewMovie.title && <MovieCard movie={previewMovie} />}
-      </div>
+      {previewMovie.title
+        && (
+          <div className="container" data-cy="previewContainer">
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={previewMovie} />
+          </div>
+        )}
     </>
   );
 };

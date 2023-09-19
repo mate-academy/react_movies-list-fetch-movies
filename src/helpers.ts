@@ -2,12 +2,12 @@ import { Movie, MovieData, ResponseError } from './types';
 
 type ResponseData = MovieData | ResponseError;
 
-export function isMovieData(obj: ResponseData): obj is MovieData {
-  return 'imdbID' in obj;
+export function isMovieData(data: ResponseData): data is MovieData {
+  return 'imdbID' in data;
 }
 
-export function isResponseError(obj: ResponseData): obj is ResponseError {
-  return 'Error' in obj;
+export function isResponseError(data: ResponseData): data is ResponseError {
+  return 'Error' in data;
 }
 
 const noPosterImg = 'https://via.placeholder.com/360x270.png?text=no%20preview';

@@ -19,13 +19,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
 
   useEffect(() => {
     if (isLoading) {
-      getMovie(title)
+      getMovie(title.trim().toLowerCase())
         .then(data => {
           if (isMovieData(data)) {
             setMovie(parseMovie(data));
-          }
-
-          if (isResponseError(data)) {
+          } else if (isResponseError(data)) {
             setIsError(true);
           }
         })

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 
@@ -17,26 +17,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
-    if (isLoading) {
-      getMovie(title.trim().toLowerCase())
-        .then(data => {
-          if (isMovieData(data)) {
-            setMovie(parseMovie(data));
-          } else {
-            setIsError(true);
-          }
-        })
-        .catch((error) => {
-          // eslint-disable-next-line no-console
-          console.log(error);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [isLoading]);
-
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
 
@@ -49,6 +29,18 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     event.preventDefault();
 
     setIsLoading(true);
+
+    getMovie(title.trim().toLowerCase())
+      .then(data => {
+        if (isMovieData(data)) {
+          setMovie(parseMovie(data));
+        } else {
+          setIsError(true);
+        }
+      })
+      // eslint-disable-next-line no-console
+      .catch(error => console.log(error))
+      .finally(() => setIsLoading(false));
   };
 
   const handleAddMovie = () => {

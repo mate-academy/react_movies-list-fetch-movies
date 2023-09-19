@@ -4,7 +4,7 @@ import './FindMovie.scss';
 
 import { Movie } from '../../types';
 import { getMovie } from '../../api';
-import { isMovieData, isResponseError, parseMovie } from '../../helpers';
+import { isMovieData, parseMovie } from '../../helpers';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
@@ -23,7 +23,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         .then(data => {
           if (isMovieData(data)) {
             setMovie(parseMovie(data));
-          } else if (isResponseError(data)) {
+          } else {
             setIsError(true);
           }
         })

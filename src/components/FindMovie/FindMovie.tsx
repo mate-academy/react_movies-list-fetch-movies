@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
 
-import { getMovie } from '../../api';
 import { Movie } from '../../types';
+import { getMovie } from '../../api';
 import { isMovieData, isResponseError, parseMovie } from '../../helpers';
 import { MovieCard } from '../MovieCard';
 

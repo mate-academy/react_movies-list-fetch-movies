@@ -1,5 +1,4 @@
-import { MovieData } from './types/MovieData';
-import { ResponseError } from './types/ReponseError';
+import { MovieData, ResponseError } from './types';
 
 const API_URL = 'https://www.omdbapi.com/?apikey=d42ed462';
 

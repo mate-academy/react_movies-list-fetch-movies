@@ -10,20 +10,12 @@ type Props = {
   addMovie: (mov: Movie) => void;
 };
 
-function hasMoviePoster(url: string) {
-  if (url === 'N/A') {
-    return 'https://via.placeholder.com/360x270.png?text=no%20preview';
-  }
-
-  return url;
-}
-
 export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [messageError, setMessageError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchAgain, setSearchAgain] = useState(false);
+  const [messageError, setMessageError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchAgain, setSearchAgain] = useState<boolean>(false);
   const handleMovie = (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
@@ -37,11 +29,10 @@ export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
           }
 
           const data = response as MovieData;
-          const post = hasMoviePoster(data.Poster);
           const findMovie: Movie = {
             title: data.Title,
             description: data.Plot,
-            imgUrl: post,
+            imgUrl: data.Poster,
             imdbUrl: `https://www.imdb.com/title/${data.imdbID}/`,
             imdbId: data.imdbID,
           };

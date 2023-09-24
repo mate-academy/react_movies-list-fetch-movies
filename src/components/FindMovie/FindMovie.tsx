@@ -78,11 +78,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            {isError && (
-              'Can\'t find a movie with such a title'
-            )}
-          </p>
+          {isError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -105,8 +105,8 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             </button>
           </div>
 
-          <div className="control">
-            {movie && (
+          {movie && (
+            <div className="control">
               <button
                 data-cy="addButton"
                 type="button"
@@ -115,19 +115,17 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               >
                 Add to the list
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        {movie && (
-          <>
-            <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
-          </>
-        )}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

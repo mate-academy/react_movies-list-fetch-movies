@@ -1,10 +1,75 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import { Movie } from '../../types/Movie';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { MovieData } from '../../types/MovieData';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  movies: Movie[];
+  setMovies: (movies: Movie[]) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({
+  movies,
+  setMovies,
+}) => {
+  const [title, setTitle] = useState<string>('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    setIsError(false);
+  };
+
+  const handleSearchMovie = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    getMovie(title.trim())
+      .then((response) => {
+        if ('Response' in response && response.Response === 'False') {
+          setIsError(true);
+          setMovie(null);
+        } else {
+          setIsError(false);
+
+          const res = response as MovieData;
+
+          const newMovie: Movie = {
+            title: res.Title,
+            description: res.Plot || '',
+            imgUrl: res.Poster !== 'N/A'
+              ? res.Poster
+              : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+            imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
+            imdbId: res.imdbID || '',
+          };
+
+          setMovie(newMovie);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleAddMovie = () => {
+    if (movie) {
+      setMovies([movie, ...movies]);
+      setMovie(null);
+      setTitle('');
+    }
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={handleSearchMovie}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,12 +82,16 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
+              value={title}
+              onChange={handleTitleChange}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,7 +99,12 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button', {
+                'is-light': !loading,
+                'is-loading': loading,
+              })}
+              disabled={!title}
+              onClick={handleAddMovie}
             >
               Find a movie
             </button>

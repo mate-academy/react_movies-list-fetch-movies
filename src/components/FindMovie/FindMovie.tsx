@@ -7,12 +7,12 @@ import { MovieData } from '../../types/MovieData';
 
 type Props = {
   movies: Movie[];
-  setMovies: (movies: Movie[]) => void;
+  addMovie: (movie: Movie) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({
   movies,
-  setMovies,
+  addMovie,
 }) => {
   const [title, setTitle] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -57,11 +57,16 @@ export const FindMovie: React.FC<Props> = ({
   };
 
   const handleAddMovie = () => {
-    if (movie) {
-      setMovies([movie, ...movies]);
-      setMovie(null);
-      setTitle('');
+    const isUniqueMovie = movies.every(
+      prevmovie => prevmovie.imdbId !== movie?.imdbId,
+    );
+
+    if (movie && isUniqueMovie) {
+      addMovie(movie);
     }
+
+    setTitle('');
+    setMovie(null);
   };
 
   return (
@@ -82,7 +87,7 @@ export const FindMovie: React.FC<Props> = ({
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
-              value={title}
+              value={movie?.title}
               onChange={handleTitleChange}
             />
           </div>

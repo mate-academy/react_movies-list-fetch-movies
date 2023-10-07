@@ -2,27 +2,26 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
 import './FindMovie.scss';
+import { ResponseError } from '../../types/ReponseError';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  movies: Movie[];
   addMovie: (movie: Movie) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({
-  movies,
   addMovie,
 }) => {
   const [title, setTitle] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isError, setIsError] = useState<boolean>(false);
+  const [isError, setIsError] = useState<ResponseError | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    setIsError(false);
+    setIsError(null);
   };
 
   const handleSearchMovie = (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,11 +31,9 @@ export const FindMovie: React.FC<Props> = ({
     getMovie(title.trim())
       .then((response) => {
         if ('Response' in response && response.Response === 'False') {
-          setIsError(true);
+          setIsError(response);
           setMovie(null);
         } else {
-          setIsError(false);
-
           const res = response as MovieData;
 
           const newMovie: Movie = {
@@ -58,11 +55,7 @@ export const FindMovie: React.FC<Props> = ({
   };
 
   const handleAddMovie = () => {
-    const isUniqueMovie = movies.every(
-      prevmovie => prevmovie.imdbId !== movie?.imdbId,
-    );
-
-    if (movie && isUniqueMovie) {
+    if (movie) {
       addMovie(movie);
     }
 
@@ -87,7 +80,9 @@ export const FindMovie: React.FC<Props> = ({
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input"
+              className={classNames('input', {
+                'is-danger': isError,
+              })}
               value={movie?.title}
               onChange={handleTitleChange}
             />
@@ -131,14 +126,12 @@ export const FindMovie: React.FC<Props> = ({
         </div>
       </form>
 
-      {
-        movie && (
-          <div className="container" data-cy="previewContainer">
-            <h2 className="title">Preview</h2>
+      {!!movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
             <MovieCard movie={movie} />
-          </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 };

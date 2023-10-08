@@ -7,7 +7,6 @@ import { getMovie } from './api';
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ResponseError';
 
-
 type Props = {
   addMovie: (movie: Movie) => void;
 };

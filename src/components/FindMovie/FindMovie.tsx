@@ -105,7 +105,7 @@ export const FindMovie: React.FC<Props> = ({
                 'is-loading': loading,
               })}
               disabled={!title}
-              onClick={handleAddMovie}
+              // onClick={handleAddMovie}
             >
               Find a movie
             </button>
@@ -117,7 +117,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                // onClick={handleAddMovie}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>

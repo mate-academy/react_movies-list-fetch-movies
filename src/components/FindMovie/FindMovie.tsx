@@ -117,7 +117,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={handleAddMovie}
+                // onClick={handleAddMovie}
               >
                 Add to the list
               </button>
@@ -129,7 +129,7 @@ export const FindMovie: React.FC<Props> = ({
       {!!movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-            <MovieCard movie={movie} />
+          <MovieCard movie={movie} />
         </div>
       )}
     </>

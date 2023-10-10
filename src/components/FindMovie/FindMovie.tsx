@@ -35,7 +35,9 @@ export const FindMovie: React.FC<Props> = ({ movies, addMovie }) => {
         imdbId: response.imdbID,
       });
     })
-      .catch(() => setErrorMessageMovies('Can\'t find a movie with such a title'))
+      .catch(() => {
+        setErrorMessageMovies('Can\'t find a movie with such a title');
+      })
       .finally(() => setSubmitSpiner(false));
   };
 

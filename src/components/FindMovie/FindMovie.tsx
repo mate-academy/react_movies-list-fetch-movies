@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -75,7 +75,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
-            {movie?.title}
+            Movie title
           </label>
 
           <div className="control">
@@ -86,7 +86,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
               placeholder="Enter a title to search"
               className="input"
               onChange={handleInputTitle}
-              value={movie?.title}
+              value={title}
             />
           </div>
 

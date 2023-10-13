@@ -18,9 +18,6 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // eslint-disable-next-line no-console
-  console.log(movie);
-
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHasError(false);
     setQuery(event.target.value);

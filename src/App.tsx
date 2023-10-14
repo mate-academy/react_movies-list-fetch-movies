@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useContext } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { Movie } from './types/Movie';
+import { movieContext, ContextType } from './Contexts/Contexs';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const { movies } = useContext(movieContext) as ContextType;
 
   return (
     <div className="page">

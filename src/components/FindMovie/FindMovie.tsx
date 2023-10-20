@@ -25,7 +25,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmitForm = (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
 
@@ -81,7 +81,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
 
   return (
     <>
-      <form className="find-movie" onSubmit={handleSubmit}>
+      <form className="find-movie" onSubmit={handleSubmitForm}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title

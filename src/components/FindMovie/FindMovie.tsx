@@ -1,7 +1,23 @@
 import React from 'react';
+import cn from 'classnames';
 import './FindMovie.scss';
+// import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+interface FindMovieProps {
+  onSearch: (term: string) => void;
+  onFind: () => void;
+  isError: boolean;
+  // onAdd: (movie: Movie) => void;
+}
+
+export const FindMovie: React.FC<FindMovieProps> = (
+  {
+    onSearch,
+    onFind,
+    isError,
+    // onAdd,
+  },
+) => {
   return (
     <>
       <form className="find-movie">
@@ -16,21 +32,26 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn('input', { 'is-danger': isError })}
+              onChange={(e) => onSearch(e.target.value)}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
+
         </div>
 
         <div className="field is-grouped">
           <div className="control">
             <button
               data-cy="searchButton"
-              type="submit"
+              type="button"
               className="button is-light"
+              onClick={onFind}
             >
               Find a movie
             </button>

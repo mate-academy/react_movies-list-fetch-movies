@@ -1,21 +1,36 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import './FindMovie.scss';
+<<<<<<< HEAD
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
+=======
+import { Movie } from '../../types/Movie';
+import { getMovie } from '../../api';
+import { MovieCard } from '../MovieCard';
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
 
 interface Props {
   addMovie: (movie: Movie) => void;
 }
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+<<<<<<< HEAD
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorMessage, setIsErrorMessage] = useState(false);
   const [query, setQuery] = useState<string>('');
 
   const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
+=======
+  const [query, setQuery] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorMessage, setIsErrorMesage] = useState(false);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
     event.preventDefault();
 
     if (query) {
@@ -37,16 +52,26 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             imdbId: res.imdbID,
           });
         })
+<<<<<<< HEAD
         .catch(() => setIsErrorMessage(true))
+=======
+        .catch(() => setIsErrorMesage(true))
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
         .finally(() => setIsLoading(false));
     }
 
     setQuery('');
   };
 
+<<<<<<< HEAD
   const handleCahngeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setIsErrorMessage(false);
+=======
+  const handleChangeQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setIsErrorMesage(false);
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
   };
 
   const handleAddMovie = () => {
@@ -61,7 +86,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     <>
       <form
         className="find-movie"
+<<<<<<< HEAD
         onSubmit={handleSubmitForm}
+=======
+        onSubmit={handleSubmit}
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
       >
         <div className="field">
           <label className="label" htmlFor="movie-title">
@@ -76,9 +105,18 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               value={query}
               onChange={handleCahngeQuery}
               placeholder="Enter a title to search"
+<<<<<<< HEAD
               className={classNames('input', { 'is-danger': isErrorMessage })}
             />
           </div>
+=======
+              className="input is-danger"
+              value={query}
+              onChange={handleChangeQuery}
+            />
+          </div>
+
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
           {isErrorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
@@ -91,11 +129,18 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
+<<<<<<< HEAD
               disabled={query === ''}
+=======
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
               className={classNames('button', {
                 'is-light': !isLoading,
                 'is-loading': isLoading,
               })}
+<<<<<<< HEAD
+=======
+              disabled={query === ''}
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
             >
               {movie ? (
                 'Search again'
@@ -104,6 +149,10 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               )}
             </button>
           </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 1d782fb7aac4cd0d93f39a4aaeb48c98f8a8dc19
           {movie && (
             <div className="control">
               <button

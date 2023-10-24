@@ -53,7 +53,15 @@ export const App: React.FC = () => {
 
   const handleAddMovie = () => {
     if (currentMovie !== null) {
-      setMovies(prevMovies => [...prevMovies, currentMovie]);
+      const isAlreadyAdded = movies.some(
+        movie => movie.imdbId === currentMovie.imdbId,
+      );
+
+      if (!isAlreadyAdded) {
+        setMovies(prevMovies => [...prevMovies, currentMovie]);
+      }
+
+      setCurrentMovie(null);
     } else {
       setError(true);
     }

@@ -51,7 +51,6 @@ export const FindMovie: React.FC<FindMovieProps> = (
               Can&apos;t find a movie with such a title
             </p>
           )}
-
         </div>
 
         <div className="field is-grouped">
@@ -78,7 +77,6 @@ export const FindMovie: React.FC<FindMovieProps> = (
                 Add to the list
               </button>
             )}
-
           </div>
         </div>
       </form>

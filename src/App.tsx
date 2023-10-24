@@ -12,8 +12,9 @@ import { isResponseError } from './_utils/isResponseError';
 export const App: React.FC = () => {
   console.log('rendering App');
 
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [currentSearchTerm, setSearchTerm] = useState<string>('');
+  const [currentSearchCount, setSearchCount] = useState(0);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
   const [isError, setError] = useState<boolean>(false);
   const [isLoading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ export const App: React.FC = () => {
   const handleFind = () => {
     console.log('searching with term', currentSearchTerm);
     setLoading(true);
+    setSearchCount(prevCount => prevCount + 1);
     getMovie(currentSearchTerm)
       .then(movieData => {
         if (isResponseError(movieData)) {
@@ -49,6 +51,14 @@ export const App: React.FC = () => {
       });
   };
 
+  const handleAddMovie = () => {
+    if (currentMovie !== null) {
+      setMovies(prevMovies => [...prevMovies, currentMovie]);
+    } else {
+      setError(true);
+    }
+  };
+
   useEffect(() => {
     console.log(currentSearchTerm, 'currentSearch');
   }, [currentSearchTerm]);
@@ -61,6 +71,10 @@ export const App: React.FC = () => {
     console.log('Current normalized Movie', currentMovie);
   }, [currentMovie]);
 
+  useEffect(() => {
+    console.log('movies array =', movies);
+  }, [movies]);
+
   return (
     <div className="page">
       <div className="page-content">
@@ -71,8 +85,9 @@ export const App: React.FC = () => {
         <FindMovie
           onSearch={handleSearch}
           currentSearchTerm={currentSearchTerm}
+          currentSearchCount={currentSearchCount}
           onFind={handleFind}
-          // onAdd={handleAddMovie}
+          onAddMovie={handleAddMovie}
           movie={currentMovie}
           isLoading={isLoading}
           isError={isError}

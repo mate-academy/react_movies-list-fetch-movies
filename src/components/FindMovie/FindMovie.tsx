@@ -7,10 +7,11 @@ import { Movie } from '../../types/Movie';
 interface FindMovieProps {
   onSearch: (term: string) => void;
   currentSearchTerm: string;
+  currentSearchCount: number;
   onFind: () => void;
   isLoading: boolean;
   isError: boolean;
-  // onAdd: (movie: Movie) => void;
+  onAddMovie: (movie: Movie) => void;
   movie: Movie | null;
 }
 
@@ -18,10 +19,11 @@ export const FindMovie: React.FC<FindMovieProps> = (
   {
     onSearch,
     currentSearchTerm,
+    currentSearchCount,
     onFind,
     isLoading,
     isError,
-    // onAdd,
+    onAddMovie,
     movie,
   },
 ) => {
@@ -61,7 +63,7 @@ export const FindMovie: React.FC<FindMovieProps> = (
               onClick={onFind}
               disabled={!currentSearchTerm}
             >
-              Find a movie
+              {currentSearchCount > 0 ? 'Search Again' : 'Find a movie'}
             </button>
           </div>
 
@@ -71,6 +73,7 @@ export const FindMovie: React.FC<FindMovieProps> = (
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
+                onClick={() => onAddMovie(movie)}
               >
                 Add to the list
               </button>
@@ -81,10 +84,13 @@ export const FindMovie: React.FC<FindMovieProps> = (
       </form>
 
       <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
         {movie && (
-          <MovieCard movie={movie} />
+          <>
+            <h2 className="title">Preview</h2>
+            <MovieCard movie={movie} />
+          </>
         )}
+
       </div>
     </>
   );

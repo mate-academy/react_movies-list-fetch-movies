@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
@@ -10,13 +9,9 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
   return fetch(url)
     .then(res => res.json())
     .then(data => {
-      console.log('data from api =', data);
-
       return data;
     })
-    .catch(error => {
-      console.error(error);
-
+    .catch(() => {
       return {
         Response: 'False',
         Error: 'unexpected error',

@@ -6,7 +6,7 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import { getMovie } from './api';
-// import { normalizeMovieData } from './_utils/normalizeMovieData';
+import { normalizeMovieData } from './_utils/normalizeMovieData';
 import { isResponseError } from './_utils/isResponseError';
 
 export const App: React.FC = () => {
@@ -14,8 +14,9 @@ export const App: React.FC = () => {
 
   const [movies] = useState<Movie[]>([]);
   const [currentSearchTerm, setSearchTerm] = useState<string>('');
-  // const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
+  const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
   const [isError, setError] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleSearch = (term: string) => {
     setSearchTerm(term);
@@ -23,6 +24,7 @@ export const App: React.FC = () => {
 
   const handleFind = () => {
     console.log('searching with term', currentSearchTerm);
+    setLoading(true);
     getMovie(currentSearchTerm)
       .then(movieData => {
         if (isResponseError(movieData)) {
@@ -30,12 +32,20 @@ export const App: React.FC = () => {
         } else {
           setError(false);
           console.log('movie data in app', movieData);
+          const normalizedMovie = normalizeMovieData(movieData);
+
+          setCurrentMovie(normalizedMovie);
+          setLoading(false);
           // ... handle movie data
         }
       })
       .catch(error => {
         setError(true);
         console.log(error);
+      })
+      .finally(() => {
+        // This code will run whether the Promise is resolved or rejected
+        // You can add any cleanup or finalization logic here
       });
   };
 
@@ -47,6 +57,10 @@ export const App: React.FC = () => {
     console.log('Error', isError);
   }, [isError]);
 
+  useEffect(() => {
+    console.log('Current normalized Movie', currentMovie);
+  }, [currentMovie]);
+
   return (
     <div className="page">
       <div className="page-content">
@@ -56,9 +70,12 @@ export const App: React.FC = () => {
       <div className="sidebar">
         <FindMovie
           onSearch={handleSearch}
+          currentSearchTerm={currentSearchTerm}
           onFind={handleFind}
+          // onAdd={handleAddMovie}
+          movie={currentMovie}
+          isLoading={isLoading}
           isError={isError}
-        // onAdd={handleAddMovie}
         />
       </div>
     </div>

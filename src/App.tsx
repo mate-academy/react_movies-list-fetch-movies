@@ -27,5 +27,4 @@ export const App = () => {
     </div>
   );
 };
-
 // updated

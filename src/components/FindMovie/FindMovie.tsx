@@ -33,7 +33,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
             title: data.Title,
             description: data.Plot,
             imgUrl: data.Poster,
-            imdbUrl: `https://www.imdb.com/title/${data.imdbID}/`,
+            imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
             imdbId: data.imdbID,
           };
 
@@ -94,7 +94,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ addMovie }) => {
               })}
               disabled={!value}
             >
-              {searchAgain ? 'Seach again' : 'Find a movie'}
+              {searchAgain ? 'Search again' : 'Find a movie'}
             </button>
           </div>
           {movie && !messageError && (

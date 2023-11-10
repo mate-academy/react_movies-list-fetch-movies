@@ -1,7 +1,42 @@
 import React from 'react';
 import './FindMovie.scss';
+import cn from 'classnames';
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  movie: Movie | undefined;
+  handleSetQery: (value: string) => void;
+  query: string;
+  findMovie: (value: string) => void;
+  canNotFind: boolean;
+  handleCanNotFind: (value: boolean) => void;
+  isLoading: boolean;
+  handleSetMovies: (oneMovie: Movie, allMovies: Movie[]) => void;
+  movies: Movie[];
+};
+
+const isLoadingClass = (value: boolean) => cn(
+  'button is-light',
+  { 'is-loading': value === true },
+);
+
+const isDangerClass = (value: boolean) => cn(
+  'input',
+  { 'is-danger': value === true },
+);
+
+export const FindMovie: React.FC<Props> = ({
+  movie,
+  handleSetQery,
+  query,
+  findMovie,
+  canNotFind,
+  handleCanNotFind,
+  isLoading,
+  handleSetMovies,
+  movies,
+}) => {
   return (
     <>
       <form className="find-movie">
@@ -16,13 +51,20 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={isDangerClass(canNotFind)}
+              value={query}
+              onChange={(event) => {
+                handleSetQery(event.target.value);
+                handleCanNotFind(false);
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {canNotFind && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +72,40 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={isLoadingClass(isLoading)}
+              disabled={query.length === 0}
+              onClick={
+                (e) => {
+                  e.preventDefault();
+                  findMovie(query);
+                }
+              }
             >
-              Find a movie
+              {movie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => handleSetMovies(movie, movies)}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

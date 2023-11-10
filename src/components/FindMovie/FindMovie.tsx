@@ -31,7 +31,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
       getMovie(query)
         .then(response => {
-          if (!response) {
+          if (Object.hasOwn(response, 'Error')) {
             throw new Error();
           }
 

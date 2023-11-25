@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { getMovie } from '../../api';
@@ -61,7 +62,12 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
               type="text"
               id="movie-title"
               value={movieTitle}
-              onChange={(e) => setMovieTitle(e.target.value)}
+              onChange={(e) => {
+                setMovieTitle(e.target.value);
+                if (movieTitle !== e.target.value) {
+                  setErrorMessage(false);
+                }
+              }}
               placeholder="Enter a title to search"
               className={cn('input', {
                 'is-danger': errorMessage,
@@ -96,6 +102,17 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
                 className="button is-primary"
                 onClick={() => {
                   if (movie) {
+                    if (movies.length === 0) {
+                      setMovies([...movies, movie]);
+                    // eslint-disable-next-line max-len
+                    } else if (movies.some(item => item.title === movie.title) && movies.length > 0) {
+                      setMoviedata(undefined);
+                      setMovieTitle('');
+                      setErrorMessage(false);
+
+                      return;
+                    }
+
                     setMovies([...movies, movie]);
                     setMoviedata(undefined);
                     setMovieTitle('');

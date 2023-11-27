@@ -24,7 +24,10 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
       setMovie({
         title: moviedata.Title,
         description: moviedata.Plot,
-        imgUrl: moviedata.Poster,
+        imgUrl: moviedata.Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : moviedata.Poster,
+
         imdbUrl: `https://www.imdb.com/title/${moviedata.imdbID}`,
         imdbId: moviedata.imdbID,
       });

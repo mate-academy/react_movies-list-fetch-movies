@@ -55,7 +55,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         .find(movie => movie.imdbId === moviesFromServer[0].imdbId);
 
       if (!existingMovie) {
-        setMovies([...moviesFromServer, ...movies]);
+        setMovies([...movies, ...moviesFromServer]);
       }
     }
 
@@ -86,9 +86,11 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               onChange={handleChangeInput}
             />
           </div>
-          <p className="help is-danger" data-cy="errorMessage">
-            {error}
-          </p>
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {error}
+            </p>
+          )}
 
         </div>
 

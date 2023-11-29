@@ -2,5 +2,11 @@
   "extends": "@mate-academy/students-ts-config",
   "include": [
     "src"
-  ]
+  ],
+  "compilerOptions": {
+    // ...
+    "target": "es5",
+    "lib": ["esnext", "dom"]
+    // ...
+  }
 }

@@ -20,11 +20,11 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
 
     setIsLoading(true);
     getMovie(query)
-      .then(response  => {
+      .then(response => {
         if ('imdbID' in response
           && 'Title' in response
           && 'Plot' in response
-          && 'Poster' in response ) {
+          && 'Poster' in response) {
           const newMovie: Movie = {
             imdbId: response.imdbID,
             title: response.Title,

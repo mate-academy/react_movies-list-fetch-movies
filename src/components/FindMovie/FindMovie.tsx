@@ -1,45 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
-import cn from 'classnames';
-import { MovieCard } from '../MovieCard';
+import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
+import { getMovie } from '../../api';
+import { MovieCard } from '../MovieCard';
 
 type Props = {
-  movie: Movie | undefined;
-  handleSetQery: (value: string) => void;
-  query: string;
-  findMovie: (value: string) => void;
-  canNotFind: boolean;
-  handleCanNotFind: (value: boolean) => void;
-  isLoading: boolean;
-  handleSetMovies: (oneMovie: Movie, allMovies: Movie[]) => void;
-  movies: Movie[];
+  addMovie: (m: Movie) => void,
 };
 
-const isLoadingClass = (value: boolean) => cn(
-  'button is-light',
-  { 'is-loading': value === true },
-);
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+  const [query, setQuery] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [movie, setMovie] = useState<Movie | null>(null);
 
-const isDangerClass = (value: boolean) => cn(
-  'input',
-  { 'is-danger': value === true },
-);
+  const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-export const FindMovie: React.FC<Props> = ({
-  movie,
-  handleSetQery,
-  query,
-  findMovie,
-  canNotFind,
-  handleCanNotFind,
-  isLoading,
-  handleSetMovies,
-  movies,
-}) => {
+    setIsLoading(true);
+    getMovie(query)
+      .then(response => {
+        if ('imdbID' in response
+          && 'Title' in response
+          && 'Plot' in response
+          && 'Poster' in response) {
+          const newMovie: Movie = {
+            imdbId: response.imdbID,
+            title: response.Title,
+            description: response.Plot,
+            imgUrl: response.Poster === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : response.Poster,
+            imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+          };
+
+          setMovie(newMovie);
+        }
+
+        if ('Error' in response) {
+          setErrorMessage(response.Error);
+        }
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const handleAddMovie = () => {
+    if (movie) {
+      addMovie(movie);
+    }
+
+    setMovie(null);
+    setQuery('');
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmitForm}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -50,19 +69,21 @@ export const FindMovie: React.FC<Props> = ({
               data-cy="titleField"
               type="text"
               id="movie-title"
-              placeholder="Enter a title to search"
-              className={isDangerClass(canNotFind)}
               value={query}
-              onChange={(event) => {
-                handleSetQery(event.target.value);
-                handleCanNotFind(false);
+              placeholder="Enter a title to search"
+              className={classNames('input', {
+                'is-danger': errorMessage,
+              })}
+              onChange={event => {
+                setQuery(event.target.value);
+                setErrorMessage('');
               }}
             />
           </div>
 
-          {canNotFind && (
+          {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
         </div>
@@ -72,31 +93,29 @@ export const FindMovie: React.FC<Props> = ({
             <button
               data-cy="searchButton"
               type="submit"
-              className={isLoadingClass(isLoading)}
-              disabled={query.length === 0}
-              onClick={
-                (e) => {
-                  e.preventDefault();
-                  findMovie(query);
-                }
-              }
+              className={classNames('button is-light', {
+                'is-loading': isLoading,
+              })}
+              disabled={!query}
             >
-              {movie ? 'Search again' : 'Find a movie'}
+              {movie
+                ? 'Search again'
+                : 'Find a movie'}
             </button>
           </div>
 
-          {movie && (
-            <div className="control">
+          <div className="control">
+            {movie && (
               <button
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleSetMovies(movie, movies)}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </form>
 

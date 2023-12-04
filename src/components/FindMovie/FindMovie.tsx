@@ -54,7 +54,6 @@ export const FindMovie: React.FC<Props> = ({
               id="movie-title"
               placeholder="Enter a title to search"
               className={cn('input', { 'is-danger': !isValid })}
-              // onFocus={changeIsValid}
               value={currentMovieTitle}
               onChange={event => handleChangeInput(event)}
             />

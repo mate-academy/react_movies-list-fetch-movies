@@ -4,7 +4,6 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import { getMovie } from './api';
-// import { MovieCard } from './components/MovieCard';
 
 export const App: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);

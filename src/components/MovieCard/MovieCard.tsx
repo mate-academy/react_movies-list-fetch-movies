@@ -23,7 +23,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           <figure className="image is-48x48">
             <img
               src="images/imdb-logo.jpeg"
-              alt="imdb"
+              alt="logo"
             />
           </figure>
         </div>

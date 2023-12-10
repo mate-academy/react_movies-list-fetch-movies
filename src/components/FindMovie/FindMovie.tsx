@@ -1,34 +1,33 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
+import cn from 'classnames';
 import { MovieCard } from '../MovieCard/MovieCard';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
-import cn from 'classnames';
 
 type Props = {
   addMovie: (movie: Movie) => void;
-}
+};
 
 export const FindMovie: React.FC<Props> = ({
-  addMovie
+  addMovie,
 }) => {
   const [newMovie, setNewMovie] = useState<Movie | null>(null);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
-
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
     setHasError(false);
-  }
+  };
 
   const handleAddMovie = () => {
     setQuery('');
     addMovie(newMovie as Movie);
-    setNewMovie(null)
-  }
+    setNewMovie(null);
+  };
 
   const handleDownloadMovie = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -50,10 +49,8 @@ export const FindMovie: React.FC<Props> = ({
         });
       }
     })
-    .catch(() => setHasError(true))
-    .finally(() =>
-      setIsLoading(false)
-    )
+      .catch(() => setHasError(true))
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -72,14 +69,16 @@ export const FindMovie: React.FC<Props> = ({
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn('input', {'is-danger': hasError})}
+              className={cn('input', { 'is-danger': hasError })}
             />
           </div>
 
-          {hasError &&
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>}
+          {hasError
+          && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -87,23 +86,25 @@ export const FindMovie: React.FC<Props> = ({
             <button
               data-cy="searchButton"
               type="submit"
-              className={cn('button is-light', {'is-loading': isLoading})}
+              className={cn('button is-light', { 'is-loading': isLoading })}
               disabled={!query}
             >
               Find a movie
             </button>
           </div>
 
-          {newMovie && <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={handleAddMovie}
-            >
-              Add to the list
-            </button>
-          </div>}
+          {newMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAddMovie}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 

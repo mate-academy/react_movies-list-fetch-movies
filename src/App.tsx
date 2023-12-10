@@ -11,7 +11,7 @@ export const App = () => {
     if (!movies.some(movie => movie.imdbId === newMovie.imdbId)) {
       setMovies([...movies, newMovie]);
     }
-  }
+  };
 
   return (
     <div className="page">
@@ -20,7 +20,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie addMovie={AddMovie}/>
+        <FindMovie addMovie={AddMovie} />
       </div>
     </div>
   );

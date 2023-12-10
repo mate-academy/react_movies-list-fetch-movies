@@ -16,7 +16,7 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-dander"
+              className="input is-danger"
             />
           </div>
 

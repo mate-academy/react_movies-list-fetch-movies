@@ -1,7 +1,10 @@
 import React from 'react';
 import './FindMovie.scss';
+// import { useMovies } from '../../providers/MovieProvider';
 
 export const FindMovie: React.FC = () => {
+  // const { addMovie } = useMovies();
+
   return (
     <>
       <form className="find-movie">

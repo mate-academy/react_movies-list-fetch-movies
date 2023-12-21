@@ -14,6 +14,8 @@ interface FindMovieProps {
   handleAddMovie: (movie: Movie) => void
 }
 
+//
+
 export const FindMovie: React.FC<FindMovieProps> = (
   {
     setIsTitle, setTitle, movie, isTitle, isLoading, handleAddMovie,

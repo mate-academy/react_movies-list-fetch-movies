@@ -11,7 +11,7 @@ const DEFAULT_PICTURE
   = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export const FindMovie: React.FC = () => {
-  const { addMovie } = useMovies();
+  const { addMovie, movies } = useMovies();
   const [movieFromServer, setMovieFromServer] = useState<Movie | null>(null);
   const [query, setQuery] = useState<string>('');
   const [error, setError] = useState<ResponseError | null>(null);
@@ -48,6 +48,17 @@ export const FindMovie: React.FC = () => {
       .finally(() => setIsLoading(false));
   };
 
+  const handleAddMovie = () => {
+    if (movieFromServer && movies.find((movie) => (
+      movie.imdbId === movieFromServer.imdbId)) === undefined
+    ) {
+      addMovie(movieFromServer);
+    }
+
+    setMovieFromServer(null);
+    setQuery('');
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -64,7 +75,7 @@ export const FindMovie: React.FC = () => {
               placeholder="Enter a title to search"
               value={query}
               onChange={handleInputChange}
-              className={cn('input', { 'is-danger': 'error' })}
+              className={cn('input', { '': 'error' })}
             />
           </div>
 
@@ -94,7 +105,7 @@ export const FindMovie: React.FC = () => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onSubmit={() => addMovie}
+                onClick={handleAddMovie}
               >
                 Add to the list
               </button>

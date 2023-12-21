@@ -92,7 +92,7 @@ export const FindMovie: React.FC<FindMovieProps> = (
           ) }
         </div>
       </form>
-
+      {/* comments */}
       {movie.title && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>

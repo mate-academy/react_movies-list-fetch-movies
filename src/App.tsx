@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import React from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = React.useState<Movie[]>([]);
 
   const handleMovies = (movie: Movie) => {
     const dublicates = movies.find(item => item.imdbId === movie.imdbId);

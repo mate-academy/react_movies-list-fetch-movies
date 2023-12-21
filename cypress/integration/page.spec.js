@@ -99,7 +99,6 @@ describe('Search form', () => {
       .type('{selectAll}{backspace}');
 
     page.searchButton().should('be.disabled');
-    cy.wait(1000)
   });
 });
 

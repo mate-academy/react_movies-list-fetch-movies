@@ -45,3 +45,5 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
     </div>
   );
 };
+
+//

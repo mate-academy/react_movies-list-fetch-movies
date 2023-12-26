@@ -45,8 +45,10 @@ export const FindMovie: React.FC<Props> = ({ onSelectMovie }) => {
   const handleSelectMovie = () => {
     if (movie) {
       onSelectMovie(movie);
-      setMovie(null);
     }
+
+    setMovie(null);
+    setQuery('');
   };
 
   return (

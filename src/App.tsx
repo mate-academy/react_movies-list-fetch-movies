@@ -5,7 +5,15 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMuvies] = useState<Movie[]>([]);
+
+  const verifyMuvies = (muvi: Movie) => {
+    const verify = movies.some(muv => muv.imdbId === muvi.imdbId);
+
+    if (!verify) {
+      setMuvies((prev) => [...prev, muvi]);
+    }
+  };
 
   return (
     <div className="page">
@@ -14,7 +22,9 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          setMuvies={verifyMuvies}
+        />
       </div>
     </div>
   );

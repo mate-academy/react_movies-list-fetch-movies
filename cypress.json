@@ -5,6 +5,7 @@
   "viewportWidth": 1080,
   "screenshotOnRunFailure": true,
   "reporter": "mochawesome",
+  "pageLoadTimeout": 1200000,
   "reporterOptions": {
     "reportDir": "raw_reports",
     "overwrite": false,

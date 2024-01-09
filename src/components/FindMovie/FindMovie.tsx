@@ -44,7 +44,7 @@ export const FindMovie: React.FC<Props> = ({ handler }) => {
         title: Title,
         description: Plot,
         imgUrl: newMovie.Poster,
-        imdbUrl: '',
+        imdbUrl: `https://www.imdb.com/title/${imdbID}`,
         imdbId: imdbID,
       },
     );

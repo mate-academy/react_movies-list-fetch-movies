@@ -37,7 +37,6 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
           setHasError(true);
         } else {
           setMovie(normalizeMovie(movieFromServer));
-          console.log(normalizeMovie(movieFromServer));
         }
       })
       .catch(() => {

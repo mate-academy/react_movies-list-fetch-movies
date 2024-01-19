@@ -1,5 +1,11 @@
 import ReactDOM from 'react-dom';
 import 'bulma/css/bulma.css';
 import { App } from './App';
+import { GlobalProvider } from './State/State';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(
+  <GlobalProvider>
+    <App />
+  </GlobalProvider>,
+  document.getElementById('root'),
+);

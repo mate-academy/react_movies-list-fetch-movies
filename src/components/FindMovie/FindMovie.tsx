@@ -73,7 +73,8 @@ export const FindMovie: React.FC = () => {
       dispatch({ type: 'addToList', payload: movie });
       setMovie(null);
     } else {
-      setErrorMessage('This movie already exist in the list...');
+      // setErrorMessage('This movie already exist in the list...');
+      setMovie(null);
     }
   }
 
@@ -121,17 +122,19 @@ export const FindMovie: React.FC = () => {
             </button>
           </div>
 
-          <div className="control">
-            <button
-              disabled={!movie}
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={addToList}
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={addToList}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
+
         </div>
       </form>
 

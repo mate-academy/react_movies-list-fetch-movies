@@ -30,7 +30,7 @@ export const FindMovie: React.FC = () => {
 
     setLoading(true);
 
-    const queryTitle = `&t=${query}`;
+    const queryTitle = `&t=${query.trim()}`;
 
     try {
       const response = await fetch(BASE_URL + queryTitle);
@@ -46,36 +46,40 @@ export const FindMovie: React.FC = () => {
       const receivedMovie: Movie = {
         title: movieFromApi.Title,
         description: movieFromApi.Plot,
-        imgUrl: movieFromApi.Poster || DEFOULT_POSTER,
-        imdbUrl: `https://www.imdb.com/title/${movieFromApi.imdbID}/`,
+        imgUrl:
+          movieFromApi.Poster === 'N/A'
+            ? DEFOULT_POSTER
+            : movieFromApi.Poster,
+        imdbUrl: `https://www.imdb.com/title/${movieFromApi.imdbID}`,
         imdbId: movieFromApi.imdbID,
       };
 
       setMovie(receivedMovie);
       setQuery('');
-      setLoading(false);
     } catch (e: any) {
       setErrorMessage(e.message);
     }
+
+    setLoading(false);
   }
 
   function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
-    setQuery(event.target.value.trim());
+    setQuery(event.target.value);
     setErrorMessage('');
   }
 
   function addToList() {
+    setLoading(true);
     if (!movie) {
       return;
     }
 
     if (!checkMovie(movie.imdbId, moviesList)) {
       dispatch({ type: 'addToList', payload: movie });
-      setMovie(null);
-    } else {
-      // setErrorMessage('This movie already exist in the list...');
-      setMovie(null);
     }
+
+    setLoading(false);
+    setMovie(null);
   }
 
   return (
@@ -127,7 +131,6 @@ export const FindMovie: React.FC = () => {
               <button
                 data-cy="addButton"
                 type="button"
-                className="button is-primary"
                 onClick={addToList}
               >
                 Add to the list
@@ -137,11 +140,12 @@ export const FindMovie: React.FC = () => {
 
         </div>
       </form>
-
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && (<MovieCard movie={movie} />)}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

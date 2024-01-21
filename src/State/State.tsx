@@ -5,13 +5,36 @@ type State = {
   moviesList: Movie[],
 };
 
-type Action = { type: 'addToList', payload: Movie };
+type Action
+  = { type: 'addToList', payload: Movie }
+  | { type: 'getListFromLocalStorage', payload: Movie[] };
+
 type Props = {
   children: React.ReactNode;
 };
 
+function getLocalStorage(): Movie[] {
+  const localStorageData = localStorage.getItem('movies');
+
+  if (!localStorageData) {
+    localStorage.removeItem('movies');
+
+    return [];
+  }
+
+  try {
+    const movies = JSON.parse(localStorageData);
+
+    return movies;
+  } catch (err) {
+    localStorage.removeItem('movies');
+
+    return [];
+  }
+}
+
 export const initialState: State = {
-  moviesList: [],
+  moviesList: getLocalStorage(),
 };
 
 function reducer(state: State, action: Action): State {
@@ -21,6 +44,13 @@ function reducer(state: State, action: Action): State {
         ...state,
         moviesList: [...state.moviesList, action.payload],
       };
+
+    case 'getListFromLocalStorage':
+      return {
+        ...state,
+        moviesList: action.payload,
+      };
+
     default:
       return state;
   }
@@ -28,7 +58,7 @@ function reducer(state: State, action: Action): State {
 
 export const StateConstext = React.createContext(initialState);
 export const DispatchContext
-  = React.createContext((() => {}) as React.Dispatch<Action>);
+  = React.createContext((() => { }) as React.Dispatch<Action>);
 
 export const GlobalProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);

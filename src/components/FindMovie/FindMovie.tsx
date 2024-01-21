@@ -1,4 +1,8 @@
-import React, { ChangeEvent, useContext, useState } from 'react';
+import React, {
+  ChangeEvent,
+  useContext,
+  useState,
+} from 'react';
 import './FindMovie.scss';
 import cn from 'classnames';
 import { Movie } from '../../types/Movie';
@@ -28,32 +32,31 @@ export const FindMovie: React.FC = () => {
 
     const queryTitle = `&t=${query}`;
 
-    const response = await fetch(BASE_URL + queryTitle);
+    try {
+      const response = await fetch(BASE_URL + queryTitle);
+      const movieFromApi = await response.json();
 
-    if (!response.ok) {
-      // handle error
-    }
+      if (movieFromApi.Response === 'False') {
+        setErrorMessage('Can\'t find a movie with such a title');
+        setLoading(false);
 
-    const movieFromApi = await response.json();
+        return;
+      }
 
-    if (movieFromApi.Response === 'False') {
-      setErrorMessage('Can\'t find a movie with such a title');
+      const receivedMovie: Movie = {
+        title: movieFromApi.Title,
+        description: movieFromApi.Plot,
+        imgUrl: movieFromApi.Poster || DEFOULT_POSTER,
+        imdbUrl: `https://www.imdb.com/title/${movieFromApi.imdbID}/`,
+        imdbId: movieFromApi.imdbID,
+      };
+
+      setMovie(receivedMovie);
+      setQuery('');
       setLoading(false);
-
-      return;
+    } catch (e: any) {
+      setErrorMessage(e.message);
     }
-
-    const receivedMovie: Movie = {
-      title: movieFromApi.Title,
-      description: movieFromApi.Plot,
-      imgUrl: movieFromApi.Poster || DEFOULT_POSTER,
-      imdbUrl: `https://www.imdb.com/title/${movieFromApi.imdbID}/`,
-      imdbId: movieFromApi.imdbID,
-    };
-
-    setMovie(receivedMovie);
-    setQuery('');
-    setLoading(false);
   }
 
   function handleOnChange(event: ChangeEvent<HTMLInputElement>) {
@@ -69,6 +72,8 @@ export const FindMovie: React.FC = () => {
     if (!checkMovie(movie.imdbId, moviesList)) {
       dispatch({ type: 'addToList', payload: movie });
       setMovie(null);
+    } else {
+      setErrorMessage('This movie already exist in the list...');
     }
   }
 
@@ -107,6 +112,7 @@ export const FindMovie: React.FC = () => {
         <div className="field is-grouped">
           <div className="control">
             <button
+              disabled={!query.length}
               data-cy="searchButton"
               type="submit"
               className={`button ${loading ? 'is-loading' : 'is-light'}`}
@@ -117,6 +123,7 @@ export const FindMovie: React.FC = () => {
 
           <div className="control">
             <button
+              disabled={!movie}
               data-cy="addButton"
               type="button"
               className="button is-primary"

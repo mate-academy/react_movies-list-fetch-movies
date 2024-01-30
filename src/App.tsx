@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './App.scss';
-import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
+import { MoviesList } from './components/MoviesList';
 import { Movie } from './types/Movie';
 
 export const App = () => {

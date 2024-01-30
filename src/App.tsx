@@ -1,10 +1,10 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { StateContext } from './management/GlobalContextProvider';
 
-export const App = () => {
+export const App: React.FC = () => {
   const { movies } = useContext(StateContext);
 
   return (

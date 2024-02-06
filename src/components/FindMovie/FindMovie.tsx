@@ -7,10 +7,12 @@ import { getMovie } from '../../api';
 
 type Props = {
   setMoviesList: React.Dispatch<React.SetStateAction<Movie[]>>;
+  moviesList: Movie[];
 };
 
 export const FindMovie: React.FC<Props> = ({
   setMoviesList,
+  moviesList,
 }) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState(false);
@@ -35,7 +37,7 @@ export const FindMovie: React.FC<Props> = ({
             const movie: Movie = {
               title: data.Title,
               description: data.Plot,
-              imgUrl: data.Poster || defImg,
+              imgUrl: data.Poster !== 'N/A' ? data.Poster : defImg,
               imdbUrl: `https://www.imdb.com/title/${data.imdbID}/`,
               imdbId: data.imdbID,
             };
@@ -54,6 +56,16 @@ export const FindMovie: React.FC<Props> = ({
   }, [query]);
 
   const addToMovieList = () => {
+    const id = movies[0].imdbId;
+    const isExist = moviesList.some(m => m.imdbId === id);
+
+    if (isExist) {
+      setMovies([]);
+      setQuery('');
+
+      return;
+    }
+
     setMoviesList(prevMovie => [...prevMovie, ...movies]);
     setQuery('');
     setMovies([]);
@@ -92,8 +104,8 @@ export const FindMovie: React.FC<Props> = ({
               data-cy="searchButton"
               type="submit"
               disabled={!query}
-              className={cn('button',
-                { 'is-light': query, 'is-loading': isLoading })}
+              className={cn('button is-light',
+                { 'is-loading': isLoading })}
               onClick={(e) => findMovie(e)}
             >
               {movies.length > 0 ? 'Search again' : 'Find a movie'}

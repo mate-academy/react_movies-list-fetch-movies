@@ -19,7 +19,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   // eslint-disable-next-line max-len
   const DEFAULT_POSTER = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
 
@@ -47,8 +47,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       .catch(() => setIsError(true))
       .finally(() => setLoading(false));
   };
-
-  console.log(foundMovie);
 
   const addMovie = () => {
     onAddMovie(foundMovie as Movie);

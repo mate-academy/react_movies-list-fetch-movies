@@ -17,8 +17,8 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          setMoviesList={setMoviesList}
           moviesList={moviesList}
+          setMoviesList={setMoviesList}
         />
       </div>
     </div>

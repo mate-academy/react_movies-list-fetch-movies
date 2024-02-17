@@ -10,8 +10,8 @@ type Props = {
   setMovies: (movies: Movie[]) => void,
 };
 
-const DEFAULT_POSTER
-  = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+// eslint-disable-next-line max-len
+const DEFAULT_POSTER = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [input, setInput] = useState('');

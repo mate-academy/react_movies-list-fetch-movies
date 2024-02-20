@@ -10,9 +10,6 @@ type Props = {
   setMovies: (movies: Movie[]) => void,
 };
 
-// eslint-disable-next-line max-len
-const DEFAULT_POSTER = 'https://via.placeholder.com/360x270.png?text=no%20preview';
-
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [input, setInput] = useState('');
   const [errorMessage, setErrrorMessage] = useState(false);
@@ -49,7 +46,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
             description: response.Plot,
             imgUrl: response.Poster !== 'N/A'
               ? response.Poster
-              : DEFAULT_POSTER,
+              : 'https://via.placeholder.com/360x270.png?text=no%20preview',
             imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
             imdbId: response.imdbID,
           };

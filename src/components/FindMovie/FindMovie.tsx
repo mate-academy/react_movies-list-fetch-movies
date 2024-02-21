@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import cn from 'classnames';
+import { Movie } from '../../types/Movie';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
 
 export const FindMovie: React.FC = () => {
+  const [query, setQuery] = useState('');
+  const [foundMovie, setFoundMovie] = useState<Movie>({
+    title: '',
+    description: '',
+    imgUrl: '',
+    imdbUrl: '',
+    imdbId: '',
+  });
+
+  const findMovieTittle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+  };
+
+  const lookForMovie = () => {
+    getMovie(query).finally(() => setFoundMovie);
+  };
+
   return (
     <>
       <form className="find-movie">
@@ -16,13 +36,19 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn('input', {
+                'is-danger': !foundMovie,
+              })}
+              onChange={findMovieTittle}
+              value={query}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {!foundMovie && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -31,20 +57,23 @@ export const FindMovie: React.FC = () => {
               data-cy="searchButton"
               type="submit"
               className="button is-light"
+              onClick={lookForMovie}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {!foundMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
@@ -55,3 +84,8 @@ export const FindMovie: React.FC = () => {
     </>
   );
 };
+
+// useEffect(() => {
+//   getMovie(query)
+//     .then(set???);
+// }, []);

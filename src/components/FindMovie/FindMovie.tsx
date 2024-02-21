@@ -8,16 +8,17 @@ import { MovieCard } from '../MovieCard';
 const DEFAULT_IMG = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 type Props = {
+  movies: Movie[];
   setMovies: React.Dispatch<SetStateAction<Movie[]>>;
 };
 
-export const FindMovie: React.FC<Props> = ({ setMovies }) => {
+export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessege] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
 
-  const handleSearchMovie = (event: React.FormEvent<HTMLInputElement>) => {
+  const handleSearchMovie = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
 
@@ -45,7 +46,14 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
   };
 
   const addMovie = (newMovie: Movie) => {
-    setMovies(currentMovies => [...currentMovies, newMovie]);
+    const findMovie = movies.some(
+      (film: Movie) => film.title === newMovie.title,
+    );
+
+    if (!findMovie) {
+      setMovies(currentMovies => [...currentMovies, newMovie]);
+    }
+
     setQuery('');
     setMovie(null);
   };

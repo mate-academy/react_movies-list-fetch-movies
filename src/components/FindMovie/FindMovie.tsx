@@ -43,7 +43,7 @@ export const FindMovie: React.FC<Props> = ({
             title: data.Title,
             description: data.Plot,
             imgUrl: data.Poster,
-            imdbUrl: data.Poster,
+            imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
             imdbId: data.imdbID,
           });
         } else {

@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
-export const App = () => {
+export const App: React.FC = () => {
   const cleanMovie = {
     title: '',
     description: '',
@@ -38,3 +38,5 @@ export const App = () => {
     </div>
   );
 };
+
+// `https://www.imdb.com/title/${imdbID}`

@@ -5,7 +5,9 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   return (
     <div className="page">
@@ -14,7 +16,14 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          movies={movies}
+          error={error}
+          loading={loading}
+          setMovies={setMovies}
+          setError={setError}
+          setLoading={setLoading}
+        />
       </div>
     </div>
   );

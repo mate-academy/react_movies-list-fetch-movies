@@ -38,5 +38,3 @@ export const App: React.FC = () => {
     </div>
   );
 };
-
-// `https://www.imdb.com/title/${imdbID}`

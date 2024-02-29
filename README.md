@@ -1,3 +1,4 @@
+[DEMO LINK](https://artemvlasiuk.github.io/react_movies-list-fetch-movies/)
 # Movies list - Fetch movies
 
 > Here is [the working version](https://mate-academy.github.io/react_movies-list-fetch-movies/)
@@ -25,4 +26,4 @@ Implement the `FindMovie` component to load movies from [OMDb API](http://www.om
 - Implement a solution following the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline).
 - Use the [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript).
 - Open one more terminal and run tests with `npm test` to ensure your solution is correct.
-- Replace `<your_account>` with your Github username in the [DEMO LINK](https://<your_account>.github.io/react_movies-list-fetch-movies/) and add it to the PR description.
+- Replace `<your_account>` with your Github username in the [DEMO LINK](https://artemvlasiuk.github.io/react_movies-list-fetch-movies/) and add it to the PR description.

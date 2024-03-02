@@ -94,9 +94,11 @@ export const FindMovie: React.FC<Props> = ({
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            {errorMessage}
-          </p>
+          {errorMessage && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {errorMessage}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -105,7 +107,7 @@ export const FindMovie: React.FC<Props> = ({
               data-cy="searchButton"
               type="submit"
               className={cn('button', 'is-light', {
-                'is-Loading': isLoading,
+                'is-loading': isLoading,
               })}
               onClick={searchMovie}
               disabled={!query}

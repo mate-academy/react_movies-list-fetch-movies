@@ -21,8 +21,6 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
     try {
       const movieData = await getMovie(title);
 
-      console.log(movieData);
-
       if (!movieData.Title) {
         setError("Can't find a movie with such a title");
         setFoundMovie(null);

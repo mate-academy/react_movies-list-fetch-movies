@@ -13,6 +13,8 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
   const [error, setError] = useState<string | null>(null);
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
+  const [addedMovies, setAddedMovies] = useState<Movie[]>([]);
+  const posterNotFoundUrl = './images/360x270.png';
 
   const handleSearchMovie = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,20 +23,19 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
     try {
       const movieData = await getMovie(title);
 
-      if (!movieData.Title) {
+      if ('Error' in movieData) {
         setError("Can't find a movie with such a title");
         setFoundMovie(null);
       } else {
         setFoundMovie({
           title: movieData.Title,
           description: movieData.Plot,
-          imgUrl: movieData.Poster || './images/360x270.png',
+          imgUrl:
+            movieData.Poster !== 'N/A' ? movieData.Poster : posterNotFoundUrl, // Перевіряємо, якщо у фільма немає постера, то показуємо дефолтне фото
           imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
           imdbId: movieData.imdbID,
         });
       }
-
-      setError(null);
     } catch (data) {
       setError("Can't find a movie with such a title");
       setFoundMovie(null);
@@ -45,19 +46,23 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
 
   // функція addMovie, викликається для додавання нового фільму і чистки стану компонента(форми)
   const addMovie = () => {
-    // const hasMovie = foundMovie.some(movie => movie.imdbId === movie?.imdbId);
-
-    if (foundMovie) {
+    // Перевіряємо, чи фільм який хочемо додати не повторюється(по imdbId) і тільки тоді додаємо його.
+    if (
+      foundMovie &&
+      !addedMovies.some(movie => movie.imdbId === foundMovie.imdbId)
+    ) {
       addNewMovie(foundMovie);
+      setAddedMovies([...addedMovies, foundMovie]);
     }
 
     setError(null);
     setFoundMovie(null);
-    setTitle('');
+    setTitle(''); // Скидаємо введені дані в input
   };
 
   const handleInputMovie = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
+    setError(null); // Прибираємо помилку, якщо назву фільму введено вірно
   };
 
   return (

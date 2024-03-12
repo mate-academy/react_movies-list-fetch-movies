@@ -14,7 +14,8 @@ export const FindMovie: React.FC<Props> = ({ addNewMovie }) => {
   const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [title, setTitle] = useState('');
   const [addedMovies, setAddedMovies] = useState<Movie[]>([]);
-  const posterNotFoundUrl = './images/360x270.png';
+  const posterNotFoundUrl =
+    'https://via.placeholder.com/360x270.png?text=no%20preview';
 
   const handleSearchMovie = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

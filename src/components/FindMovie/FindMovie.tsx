@@ -6,10 +6,6 @@ export const FindMovie: React.FC = () => {
     <>
       <form className="find-movie">
         <div className="field">
-          <label className="label" htmlFor="movie-title">
-            Movie title
-          </label>
-
           <div className="control">
             <input
               data-cy="titleField"

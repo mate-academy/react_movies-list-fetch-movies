@@ -19,7 +19,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [loading, setLoading] = useState(false);
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value.trim());
+    setQuery(e.target.value);
     setErrorMessage('');
   };
 

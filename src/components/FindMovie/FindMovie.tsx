@@ -1,10 +1,79 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import classNames from 'classnames';
+import { getMovie } from '../../api';
+import { ResponseError } from '../../types/ReponseError';
+import { MovieData } from '../../types/MovieData';
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  addMovie: (movie: Movie) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
+  const [movie, setMovie] = useState<Movie | ResponseError | null>(null);
+  const [title, setTitle] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  const showPreview = movie && !('Response' in movie);
+
+  const defaultPoster =
+    'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+  const hasMovieData = (data: ResponseError | MovieData): data is MovieData =>
+    'Poster' in data && 'Title' in data && 'Plot' in data && 'imdbID' in data;
+
+  const normalizeMovieData = (data: MovieData): Movie => ({
+    title: data.Title,
+    description: data.Plot,
+    imgUrl: data.Poster === 'N/A' ? defaultPoster : data.Poster,
+    imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+    imdbId: data.imdbID,
+  });
+
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
+    setError(false);
+  };
+
+  const handleAddMovie = () => {
+    if (showPreview) {
+      addMovie(movie);
+    }
+
+    setMovie(null);
+    setTitle('');
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(false);
+    setMovie(null);
+
+    getMovie(title)
+      .then(data => {
+        if ('Response' in data && data.Response === 'False') {
+          setError(true);
+          setMovie(null);
+        } else if (hasMovieData(data)) {
+          setMovie(normalizeMovieData(data));
+        }
+      })
+      .catch(() => {
+        setMovie(null);
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +85,19 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames({
+                input: true,
+                'is-danger': error,
+              })}
+              value={title}
+              onChange={handleTitleChange}
             />
           </div>
-
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +105,36 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              disabled={!title.trim().length}
+              className={classNames({
+                'button is-light': true,
+                'is-loading': loading,
+              })}
             >
-              Find a movie
+              {showPreview ? 'Search again' : 'Find a movie'}
             </button>
           </div>
-
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {showPreview && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAddMovie}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {showPreview && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

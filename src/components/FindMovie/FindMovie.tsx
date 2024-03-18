@@ -54,7 +54,7 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
     setMovie(null);
 
     getMovie(title)
-      .then((data) => {
+      .then(data => {
         if ('Response' in data && data.Response === 'False') {
           setError(true);
           setMovie(null);

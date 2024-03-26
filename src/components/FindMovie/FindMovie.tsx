@@ -44,20 +44,19 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie = () => {} }) => {
     event.preventDefault();
     setLoading(true);
     setTimeout(() => {
-      getMovie(query)
-        .then((result: MovieData | ResponseError) => {
-          if ('Response' in result && result.Response === 'False') {
-            setErrorMessage("Can't find a movie with such a title");
-            setMovie(null);
-          } else {
-            setMovie(normalizeMovieData(result as MovieData));
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-          setLoaded(true);
-        });
+      getMovie(query).then((result: MovieData | ResponseError) => {
+        if ('Response' in result && result.Response === 'False') {
+          setErrorMessage("Can't find a movie with such a title");
+          setMovie(null);
+        } else {
+          setMovie(normalizeMovieData(result as MovieData));
+        }
+      });
     }, 1000);
+    getMovie(query).finally(() => {
+      setLoading(false);
+      setLoaded(true);
+    });
   };
 
   const addMovie = (currentmovie: Movie) => {
@@ -101,8 +100,8 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie = () => {} }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames('button is-light', {
-                'button is-loading': loading,
+              className={classNames('button is-light ', {
+                'is-loading': loading,
               })}
               disabled={!query || loading}
             >

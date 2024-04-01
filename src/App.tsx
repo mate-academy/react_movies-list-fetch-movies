@@ -5,7 +5,7 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   return (
     <div className="page">
@@ -14,7 +14,10 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          addMovies={movie => setMovies(prevState => [...prevState, movie])}
+          movies={movies}
+        />
       </div>
     </div>
   );

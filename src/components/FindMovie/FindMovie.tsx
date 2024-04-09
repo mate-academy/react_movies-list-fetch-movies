@@ -15,6 +15,7 @@ export const FindMovie: React.FC<Props> = ({ movies, addToList }) => {
   const [movieData, setMovieData] = useState<MovieData | ResponseError>();
   const [movie, setMovie] = useState<Movie>();
   const [inputValue, setInputValue] = useState('');
+  const [findValue, setFindValue] = useState('');
   const [isPrewiewRendered, setIsPrewiewRendered] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -40,21 +41,16 @@ export const FindMovie: React.FC<Props> = ({ movies, addToList }) => {
 
   const handleFindButton = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+    if (movieData && (movieData as MovieData).Plot !== undefined) {
+      setMovie(mormalizeMovieData(movieData as MovieData));
+      setIsPrewiewRendered(true);
+      setShowAddButton(true);
+    }
 
-      if (movieData && (movieData as MovieData).Plot !== undefined) {
-        setMovie(mormalizeMovieData(movieData as MovieData));
-        setIsPrewiewRendered(true);
-        setShowAddButton(true);
-      }
-
-      if (movieData && (movieData as MovieData).Plot === undefined) {
-        setIsError(true);
-      }
-    }, 200);
+    if (movieData && (movieData as MovieData).Plot === undefined) {
+      setIsError(true);
+    }
   };
 
   const newMovies = [...movies];
@@ -75,8 +71,13 @@ export const FindMovie: React.FC<Props> = ({ movies, addToList }) => {
   };
 
   useEffect(() => {
-    getMovie(inputValue).then(setMovieData);
-  }, [inputValue]);
+    setLoading(true);
+    setFindValue(inputValue);
+    getMovie(findValue)
+      .then(setMovieData)
+      .catch(() => setIsError(true))
+      .finally(() => setLoading(false));
+  }, [findValue, inputValue]);
 
   return (
     <>

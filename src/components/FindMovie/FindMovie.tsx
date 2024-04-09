@@ -61,8 +61,6 @@ export const FindMovie: React.FC<Props> = ({ movies, addToList }) => {
 
   const newMovies = [...movies];
 
-  console.log(movie);
-
   if (
     movie &&
     newMovies.find(mov => mov.imdbId === movie.imdbId) === undefined

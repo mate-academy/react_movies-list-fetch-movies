@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
-import { ResponseError } from '../../types/ReponseError';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
@@ -12,7 +11,6 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ movies, addToList }) => {
-  const [movieData, setMovieData] = useState<MovieData | ResponseError>();
   const [movie, setMovie] = useState<Movie>();
   const [inputValue, setInputValue] = useState('');
   const [isPrewiewRendered, setIsPrewiewRendered] = useState(false);
@@ -43,24 +41,27 @@ export const FindMovie: React.FC<Props> = ({ movies, addToList }) => {
     setLoading(true);
 
     getMovie(inputValue)
-      .then(setMovieData)
+      .then(responce => {
+        if ((responce as MovieData).Plot !== undefined) {
+          setMovie(mormalizeMovieData(responce as MovieData));
+        } else {
+          setIsError(true);
+        }
+      })
       .catch(() => setIsError(true))
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    if (movieData && (movieData as MovieData).Plot !== undefined) {
-      setMovie(mormalizeMovieData(movieData as MovieData));
+    if (movie && movie.title !== undefined) {
       setIsPrewiewRendered(true);
       setShowAddButton(true);
     }
-
-    if (movieData && (movieData as MovieData).Plot === undefined) {
-      setIsError(true);
-    }
-  }, [movieData]);
+  }, [movie]);
 
   const newMovies = [...movies];
+
+  console.log(movie);
 
   if (
     movie &&

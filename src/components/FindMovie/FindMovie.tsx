@@ -46,16 +46,6 @@ export const FindMovie: React.FC<Props> = ({ movies, addToList }) => {
       .then(setMovieData)
       .catch(() => setIsError(true))
       .finally(() => setLoading(false));
-
-    if (movieData && (movieData as MovieData).Plot !== undefined) {
-      setMovie(mormalizeMovieData(movieData as MovieData));
-      setIsPrewiewRendered(true);
-      setShowAddButton(true);
-    }
-
-    if (movieData && (movieData as MovieData).Plot === undefined) {
-      setIsError(true);
-    }
   };
 
   useEffect(() => {

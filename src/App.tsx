@@ -1,16 +1,16 @@
-import { useState } from 'react';
+import React, { useContext } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { Movie } from './types/Movie';
+import { StateContext } from './context/ReduxContex';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const { saveMovies } = useContext(StateContext);
 
   return (
     <div className="page">
       <div className="page-content">
-        <MoviesList movies={movies} />
+        <MoviesList movies={saveMovies} />
       </div>
 
       <div className="sidebar">

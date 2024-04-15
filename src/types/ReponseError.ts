@@ -1,4 +1,4 @@
 export interface ResponseError {
-  Response: 'False';
+  Response: string;
   Error: string;
 }

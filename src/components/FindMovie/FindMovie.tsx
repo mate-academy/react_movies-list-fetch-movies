@@ -18,7 +18,7 @@ type Props = {
 
 export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [movieData, setMovieData] = useState<MovieTypes>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState('');
   const isError = useMemo(() => {
     return movieData && movieData.Response === 'False';

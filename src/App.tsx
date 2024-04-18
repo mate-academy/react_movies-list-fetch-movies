@@ -1,11 +1,25 @@
-import { useState } from 'react';
 import './App.scss';
-import { MoviesList } from './components/MoviesList';
+
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
+import { MoviesList } from './components/MoviesList';
+import { getMovie } from './api';
+import { useState } from 'react';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  function handleFindMovie(query: string) {
+    return getMovie(query);
+  }
+
+  function handleAddMovie(newMovie: Movie) {
+    setMovies(prevMovies =>
+      prevMovies.some(prevMovie => prevMovie.imdbId === newMovie.imdbId)
+        ? prevMovies
+        : [...prevMovies, newMovie],
+    );
+  }
 
   return (
     <div className="page">
@@ -14,7 +28,10 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          handleFindMovie={handleFindMovie}
+          handleAddMovie={handleAddMovie}
+        />
       </div>
     </div>
   );

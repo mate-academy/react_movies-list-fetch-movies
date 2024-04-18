@@ -1,6 +1,6 @@
 import './FindMovie.scss';
 
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
@@ -51,10 +51,6 @@ export const FindMovie: React.FC<{
     setQuery('');
     setFoundMovie(null);
   }
-
-  useEffect(() => {
-    console.log(isLoading);
-  }, [isLoading]);
 
   return (
     <>

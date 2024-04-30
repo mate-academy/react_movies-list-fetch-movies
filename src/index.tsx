@@ -1,5 +1,12 @@
 import { createRoot } from 'react-dom/client';
 import 'bulma/css/bulma.css';
 import { App } from './App';
+import { GlobalStateProvider } from './types/Store';
 
-createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+const container = document.getElementById('root') as HTMLDivElement;
+
+createRoot(container).render(
+  <GlobalStateProvider>
+    <App />
+  </GlobalStateProvider>,
+);

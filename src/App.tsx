@@ -3,9 +3,10 @@ import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
+import React from 'react';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   return (
     <div className="page">
@@ -14,7 +15,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie onAdd={setMovies} movies={movies} />
       </div>
     </div>
   );

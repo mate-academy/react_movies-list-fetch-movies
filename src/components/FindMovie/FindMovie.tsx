@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import { getMovie } from '../../api';

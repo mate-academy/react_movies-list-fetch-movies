@@ -16,7 +16,7 @@ export const FindMovie: React.FC<Props> = ({ handleMovie }) => {
 
 const [movie, setMovie] = useState<Movie | null>(null);
 const [title, setTitle] = useState('');
-const [error, setError] = useState(false);
+const [isError, setError] = useState(false);
 const [loaderStatus, setLoaderStatus] = useState(false);
 const [valueButton, setValueButton] = useState(titlesButton[0]);
 
@@ -76,14 +76,14 @@ const handleAddToList = (newMovie: Movie) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={cn("input", {"is-danger": error} )}
+              className={cn("input", {"is-danger": isError} )}
               onChange={e => {
                 setTitle(e.target.value);
                 setError(false);
               }}
             />
           </div>
-          {error && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
@@ -102,7 +102,7 @@ const handleAddToList = (newMovie: Movie) => {
             </button>
           </div>
 
-          {!error && movie && (
+          {!isError && movie && (
             <div className="control">
               <button
                 data-cy="addButton"

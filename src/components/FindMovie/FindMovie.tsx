@@ -38,7 +38,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
             description: response.Plot,
             imgUrl:
               response.Poster !== 'N/A' ? response.Poster : DEFAULT_POSTER,
-            imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
+            imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
             imdbId: response.imdbID,
           };
 
@@ -46,10 +46,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
           setErrorMessage('');
         }
       })
-      .catch(() => {
-        setErrorMessage('Can&apos;t find a movie with such a title');
-        setMovie(null);
-      })
+
       .finally(() => {
         setIsLoading(false);
       });
@@ -94,7 +91,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ onAddMovie }) => {
 
           {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
-              {errorMessage}
+              Can&apos;t find a movie with such a title
             </p>
           )}
         </div>

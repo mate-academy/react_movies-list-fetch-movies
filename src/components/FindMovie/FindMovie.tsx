@@ -14,7 +14,7 @@ type Props = {
 export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
   const [movie, setMovie] = useState<Movie | undefined>(undefined);
   const [moviesTitle, setMovieTitle] = useState<string>('');
-  const [movieIsFound, setMovieIsFound] = useState<boolean>(false);
+  const [movieIsFound, setMovieIsNotFound] = useState<boolean>(false);
   const [loader, setLoader] = useState<boolean>(false);
 
   const changeDataIntoMovie = (movieData: MovieData) => {
@@ -22,7 +22,7 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
       title: movieData.Title,
       description: movieData.Plot,
       imgUrl: movieData.Poster,
-      imdbUrl: `https://www.omdbapi.com/?apikey=dd841bde&t=${movieData.imdbID}`,
+      imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
       imdbId: movieData.imdbID,
     };
 
@@ -32,13 +32,13 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
   const handleSearchButton = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setLoader(true);
-    setMovieIsFound(true);
+    setMovieIsNotFound(false);
 
     getMovie(moviesTitle)
       .then((response: MovieData | ResponseError) => {
         if ('Error' in response) {
-          setMovieIsFound(false);
-          setLoader(false);
+          setMovie(undefined);
+          setMovieIsNotFound(true);
 
           return;
         }
@@ -46,14 +46,12 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
         const moviesState = changeDataIntoMovie(response);
 
         setMovie(moviesState);
-        setMovieIsFound(true);
+        setMovieIsNotFound(false);
         setLoader(true);
       })
-      .finally(() => setLoader(false));
-  };
-
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMovieTitle(event.target.value);
+      .finally(() => {
+        setLoader(false);
+      });
   };
 
   const handleAddButton = () => {
@@ -80,11 +78,14 @@ export const FindMovie: React.FC<Props> = ({ handleAddMovie }) => {
               placeholder="Enter a title to search"
               className="input"
               value={moviesTitle}
-              onChange={handleInput}
+              onChange={e => {
+                setMovieTitle(e.target.value);
+                setMovieIsNotFound(false);
+              }}
             />
           </div>
 
-          {movie && !movieIsFound && (
+          {!movie && movieIsFound && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
-import { MovieCard } from '../MovieCard';
+import { MovieData } from '../../types/MovieData';
 import classNames from 'classnames';
+import { MovieCard } from '../MovieCard';
 
 type Props = {
   onAdd: (movies: Movie[]) => void;
@@ -11,68 +12,56 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
-  const [formData, setFormData] = useState({
-    query: '',
-    loading: false,
-    previewMovie: null as Movie | null,
-    error: false,
-  });
+  const [query, setQuery] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [previewMovie, setPreviewMovie] = useState<Movie | null>(null);
+  const [error, setError] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setFormData(prevState => ({ ...prevState, loading: true }));
-    try {
-      const data = await getMovie(formData.query);
+    setLoading(true);
+    getMovie(query)
+      .then(data => {
+        if ('Error' in data) {
+          setError(true);
 
-      if ('Error' in data) {
-        setFormData(prevState => ({ ...prevState, error: true }));
+          return;
+        }
 
-        return;
-      }
+        const movieData = data as MovieData;
 
-      const { Title, Plot, Poster, imdbID } = data;
-
-      setFormData({
-        query: '',
-        loading: false,
-        error: false,
-        previewMovie: {
-          title: Title,
-          description: Plot,
+        setPreviewMovie({
+          title: movieData.Title,
+          description: movieData.Plot,
           imgUrl:
-            Poster === 'N/A'
+            movieData.Poster === 'N/A'
               ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-              : Poster,
-          imdbUrl: `https://www.imdb.com/title/${imdbID}`,
-          imdbId: imdbID,
-        },
-      });
-    } catch (error) {
-      setFormData(prevState => ({ ...prevState, loading: false }));
-    }
+              : movieData.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
+          imdbId: movieData.imdbID,
+        });
+      })
+      .finally(() => setLoading(false));
   };
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-
-    setFormData(prevState => ({ ...prevState, query: value, error: false }));
+    setQuery(event.target.value);
+    setError(false);
   };
 
   const addMovie = () => {
-    const { previewMovie } = formData;
+    setError(false);
+    setQuery('');
+    setPreviewMovie(null);
 
-    if (
-      !previewMovie ||
-      movies.find(movie => movie.imdbId === previewMovie.imdbId)
-    ) {
+    const movieToAdd = previewMovie as Movie;
+
+    if (movies.find(movie => movie.imdbId === movieToAdd.imdbId)) {
       return;
     }
 
-    onAdd([...movies, previewMovie]);
-    setFormData({ ...formData, previewMovie: null });
+    onAdd([...movies, movieToAdd]);
   };
-
-  const { query, loading, previewMovie, error } = formData;
 
   return (
     <>
@@ -81,23 +70,28 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
           <label className="label" htmlFor="movie-title">
             Movie title
           </label>
+
           <div className="control">
             <input
               data-cy="titleField"
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames('input', { 'is-danger': error })}
+              className={classNames('input', {
+                'is-danger': error,
+              })}
               value={query}
               onChange={handleQueryChange}
             />
           </div>
+
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
           )}
         </div>
+
         <div className="field is-grouped">
           <div className="control">
             <button
@@ -111,6 +105,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
               Find a movie
             </button>
           </div>
+
           {!loading && previewMovie && (
             <div className="control">
               <button
@@ -125,6 +120,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
           )}
         </div>
       </form>
+
       {!loading && previewMovie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>

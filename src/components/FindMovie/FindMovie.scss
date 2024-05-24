@@ -1,3 +1,17 @@
 .find-movie {
   margin-bottom: 20px;
 }
+
+.button.is-loading:after,.control.is-loading:after,.loader,.select.is-loading:after {
+  -webkit-animation: spinAround .5s linear infinite;
+  animation: spinAround .5s linear infinite;
+  border-radius: 9999px;
+  border-color: transparent transparent #dbdbdb #dbdbdb;
+  border-style: solid;
+  border-width: 2px;
+  content: "";
+  display: block;
+  height: 1em;
+  position: relative;
+  width: 1em
+}

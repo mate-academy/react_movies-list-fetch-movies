@@ -10,35 +10,41 @@ import { MovieContext } from '../MovieContext/MovieContextProvider';
 export const FindMovie: React.FC = () => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
+  const [load, setLoad] = useState(false);
   const { setMovies, movies } = useContext(MovieContext);
 
   const clickEvent = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
+    setLoad(true);
 
-    getMovie(title).then(respose => {
-      if (respose) {
-        const res = respose as MovieData;
+    getMovie(title)
+      .then(respose => {
+        if (respose) {
+          const res = respose as MovieData;
 
-        if (res.Plot && res.imdbID) {
-          setMovie({
-            title: res.Title,
-            imdbId: res.imdbID,
-            imdbUrl: res.Plot,
-            imgUrl: res.Poster,
-            description: res.Plot,
-          });
-        } else {
-          setMovie({
-            title: '',
-            imdbId: '',
-            imdbUrl: '',
-            imgUrl: '',
-            description: '',
-          });
+          if (res.Plot && res.imdbID) {
+            setMovie({
+              title: res.Title,
+              imdbId: res.imdbID,
+              imdbUrl: 'https://www.imdb.com/title/' + res.imdbID,
+              imgUrl: res.Poster,
+              description: res.Plot,
+            });
+          } else {
+            setMovie({
+              title: '',
+              imdbId: '',
+              imdbUrl: '',
+              imgUrl: '',
+              description: '',
+            });
+          }
         }
-      }
-    });
+      })
+      .finally(() => {
+        setLoad(false);
+      });
   };
 
   const addToList = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -46,7 +52,9 @@ export const FindMovie: React.FC = () => {
     e.stopPropagation();
 
     if (movie) {
-      setMovies([...movies, movie]);
+      if (!movies.find(x => x.imdbId === movie.imdbId)) {
+        setMovies([...movies, movie]);
+      }
     }
 
     setMovie(null);
@@ -68,7 +76,13 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               value={title}
-              onChange={e => setTitle(e.target.value)}
+              onChange={e => {
+                if (movie && !movie.title) {
+                  setMovie(null);
+                }
+
+                setTitle(e.target.value);
+              }}
               className={classNames('input', {
                 'is-danger': movie && !movie.title,
               })}
@@ -87,11 +101,13 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button', 'is-light', {
+                'is-loading': load,
+              })}
               disabled={!title}
               onClick={e => clickEvent(e)}
             >
-              Find a movie
+              {movie === null ? 'Find a movie' : 'Search again'}
             </button>
           </div>
 

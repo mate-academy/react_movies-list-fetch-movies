@@ -47,7 +47,6 @@ export const App = () => {
             };
 
             setAddMovie(newMovie);
-            console.log(newMovie);
           } else {
             const errorData = response;
 
@@ -56,6 +55,7 @@ export const App = () => {
         })
         .finally(() => {
           setIsLoading(false);
+          setMovie('');
         });
     }
   }, [movie]);

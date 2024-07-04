@@ -28,7 +28,6 @@ export const FindMovie: React.FC<Props> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('--------------');
 
     findMovie(title);
   };
@@ -77,7 +76,7 @@ export const FindMovie: React.FC<Props> = ({
             </button>
           </div>
 
-          {/* <div className="control">
+          <div className="control">
             {addMovie && (
               <button
                 data-cy="addButton"
@@ -88,21 +87,10 @@ export const FindMovie: React.FC<Props> = ({
                 Add to the list
               </button>
             )}
-          </div> */}
+          </div>
         </div>
       </form>
-      <div className="control">
-        {addMovie && (
-          <button
-            data-cy="addButton"
-            type="button"
-            className="button is-primary"
-            onClick={addMovieToList}
-          >
-            Add to the list
-          </button>
-        )}
-      </div>
+
       {addMovie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>

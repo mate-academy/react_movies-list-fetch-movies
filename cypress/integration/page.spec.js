@@ -319,7 +319,7 @@ describe('Add button', () => {
       .should('have.text', 'Star Trek');
   });
 
-  it.only('should not add a movie twice', () => {
+  it('should not add a movie twice', () => {
     page.mockRogueOne();
     page.titleField().type('Rogue{enter}');
     cy.wait(1000);

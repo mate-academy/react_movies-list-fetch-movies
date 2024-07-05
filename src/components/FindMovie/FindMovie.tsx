@@ -20,6 +20,7 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addNewMovie }) => {
   const [movieData, setMovieData] = useState<MovieData | null>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
 
+  /* eslint-disable-next-line react-hooks/exhaustive-deps */
   const applyQuery = useCallback(debounce(setAppliedQuery, 1000), []);
 
   const handleQuery = (e: React.ChangeEvent<HTMLInputElement>) => {

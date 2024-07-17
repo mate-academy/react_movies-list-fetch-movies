@@ -1,10 +1,51 @@
-import React from 'react';
+import React, { FormEvent, useRef, useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import classNames from 'classnames';
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
 
 export const FindMovie: React.FC = () => {
+  const [query, setQuery] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorShown, setIsErrorShown] = useState(false);
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleQuery = () => {
+    if (inputRef.current) {
+      setQuery(inputRef.current.value);
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setIsErrorShown(false);
+
+    if (query) {
+      setIsLoading(true);
+      getMovie(query);
+
+      try {
+        const film = await getMovie(query);
+
+        if (!film) {
+          setIsErrorShown(true);
+          setMovie(null);
+        } else {
+          setMovie(film as Movie);
+        }
+      } catch (error) {
+        setIsErrorShown(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -12,17 +53,20 @@ export const FindMovie: React.FC = () => {
 
           <div className="control">
             <input
+              ref={inputRef}
               data-cy="titleField"
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', { 'is-danger': isErrorShown })}
+              onChange={handleQuery}
             />
           </div>
-
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isErrorShown && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,7 +74,10 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button is-light', {
+                'is-loading': isLoading,
+              })}
+              disabled={query === ''}
             >
               Find a movie
             </button>
@@ -50,7 +97,7 @@ export const FindMovie: React.FC = () => {
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {movie && <MovieCard movie={movie} />}
       </div>
     </>
   );

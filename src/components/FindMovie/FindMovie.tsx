@@ -5,7 +5,11 @@ import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  addMovie: (movie: Movie) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ addMovie }) => {
   const [query, setQuery] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isErrorShown, setIsErrorShown] = useState(false);
@@ -24,22 +28,41 @@ export const FindMovie: React.FC = () => {
 
     if (query) {
       setIsLoading(true);
-      getMovie(query);
-
       try {
         const film = await getMovie(query);
 
-        if (!film) {
+        if ('Error' in film) {
           setIsErrorShown(true);
           setMovie(null);
         } else {
-          setMovie(film as Movie);
+          setMovie({
+            title: film.Title,
+            description: film.Plot,
+            imgUrl:
+              film.Poster === 'N/A'
+                ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+                : film.Poster,
+            imdbId: film.imdbID,
+            imdbUrl: `https://www.imdb.com/title/${film.imdbID}`,
+          });
         }
-      } catch (error) {
+      } catch {
         setIsErrorShown(true);
       } finally {
         setIsLoading(false);
       }
+    }
+  };
+
+  const handleAddMovie = () => {
+    if (movie) {
+      addMovie(movie);
+      setQuery('');
+      setMovie(null);
+    }
+
+    if (inputRef.current) {
+      inputRef.current.value = '';
     }
   };
 
@@ -50,7 +73,6 @@ export const FindMovie: React.FC = () => {
           <label className="label" htmlFor="movie-title">
             Movie title
           </label>
-
           <div className="control">
             <input
               ref={inputRef}
@@ -59,7 +81,11 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', { 'is-danger': isErrorShown })}
-              onChange={handleQuery}
+              onChange={() => {
+                handleQuery();
+                setIsErrorShown(false);
+                setMovie(null);
+              }}
             />
           </div>
           {isErrorShown && (
@@ -77,28 +103,33 @@ export const FindMovie: React.FC = () => {
               className={classNames('button is-light', {
                 'is-loading': isLoading,
               })}
-              disabled={query === ''}
+              disabled={query.trim() === ''}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAddMovie}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

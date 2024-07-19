@@ -37,6 +37,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
     if ('Error' in result) {
       setMovie(null);
       setError(result.Error);
+      setIsLoading(false);
 
       return;
     }

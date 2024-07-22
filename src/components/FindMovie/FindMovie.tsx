@@ -42,7 +42,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
       })
 
       .finally(() => setLoading(false));
-    // reset();
   };
 
   const handleAddMovie = () => {

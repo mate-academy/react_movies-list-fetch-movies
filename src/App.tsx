@@ -20,7 +20,10 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie onAddMovie={item => handleAddMovieToMovies(item)} />
+        <FindMovie
+          onAddMovie={item => handleAddMovieToMovies(item)}
+          movies={movies}
+        />
       </div>
     </div>
   );

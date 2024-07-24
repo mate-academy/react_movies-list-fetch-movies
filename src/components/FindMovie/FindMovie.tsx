@@ -4,14 +4,14 @@ import classNames from 'classnames';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
-
 type Props = {
   onAddMovie: (movie: Movie) => void;
+  movies: Movie[];
 };
 
 const DEFAULT_IMG = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
-export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+export const FindMovie: React.FC<Props> = ({ onAddMovie, movies }) => {
   const [query, setQuery] = useState('');
   const [hasError, setHasError] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -32,7 +32,9 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
     getMovie(query)
       .then(data => {
-        if ('Title' in data) {
+        if ('Error' in data) {
+          setHasError(true);
+        } else {
           const { Poster, Title, Plot, imdbID } = data;
 
           setMovie({
@@ -42,8 +44,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             imdbId: imdbID,
             imdbUrl: `https://www.imdb.com/title/${imdbID}`,
           });
-        } else {
-          setHasError(true);
         }
       })
       .finally(() => setIsLoading(false));
@@ -56,7 +56,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   };
 
   const handleAddToTheList = () => {
-    if (movie) {
+    if (movie && !movies.some(item => item.imdbId === movie.imdbId)) {
       onAddMovie(movie);
     }
 

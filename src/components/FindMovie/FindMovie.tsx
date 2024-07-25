@@ -34,6 +34,10 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movies }) => {
       .then(data => {
         if ('Error' in data) {
           setHasError(true);
+
+          if (movie) {
+            setMovie(null);
+          }
         } else {
           const { Poster, Title, Plot, imdbID } = data;
 

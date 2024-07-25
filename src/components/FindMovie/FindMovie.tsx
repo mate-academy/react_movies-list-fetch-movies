@@ -25,6 +25,12 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movies }) => {
     setQuery(event.target.value.trimStart());
   };
 
+  const onReset = () => {
+    setQuery('');
+    setMovie(null);
+    setHasError(false);
+  };
+
   const handleOnSubmitFind = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -34,12 +40,14 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movies }) => {
       .then(data => {
         if ('Error' in data) {
           setHasError(true);
-
-          if (movie) {
-            setMovie(null);
-          }
         } else {
           const { Poster, Title, Plot, imdbID } = data;
+
+          if (movies.some(item => item.imdbId === imdbID)) {
+            onReset();
+
+            return;
+          }
 
           setMovie({
             title: Title,
@@ -51,12 +59,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, movies }) => {
         }
       })
       .finally(() => setIsLoading(false));
-  };
-
-  const onReset = () => {
-    setQuery('');
-    setMovie(null);
-    setHasError(false);
   };
 
   const handleAddToTheList = () => {

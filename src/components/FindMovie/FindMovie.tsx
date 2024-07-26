@@ -116,7 +116,7 @@ export const FindMovie: React.FC<Props> = ({
               className={cn('button is-light', { 'is-loading': loading })}
               disabled={!query || loading}
             >
-              Find a movie
+              {movie === null ? 'Find a movie' : 'Search a movie'}
             </button>
           </div>
           {movie && (

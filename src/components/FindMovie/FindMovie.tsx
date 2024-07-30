@@ -92,7 +92,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={cn('button is-light', { 'is-loading': isLoading })}
+              className={cn('button is-light', {'is-loading': isLoading })}
               disabled={!query.trim()}
             >
               Find a movie

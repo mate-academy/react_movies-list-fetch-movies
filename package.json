@@ -12,6 +12,8 @@
     "ajv-keywords": "^5.1.0",
     "bulma": "^0.9.4",
     "classnames": "^2.5.1",
+    "cross-env": "^7.0.3",
+    "graceful-fs": "^4.2.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "^5.0.1"

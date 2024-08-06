@@ -125,10 +125,12 @@ export const FindMovie: React.FC<Props> = ({ onAdding }) => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {findedMovie && <MovieCard movie={findedMovie} />}
-      </div>
+      {findedMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={findedMovie} />
+        </div>
+      )}
     </>
   );
 };

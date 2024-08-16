@@ -4,6 +4,7 @@ import React, { FormEvent, useRef, useState } from 'react';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
+import { ResponseError } from '../../types/ReponseError';
 import { MovieCard } from '../MovieCard';
 import './FindMovie.scss';
 // #endregion
@@ -25,24 +26,29 @@ export const FindMovie: React.FC<Props> = ({ onAdding }) => {
     setIsError(false);
     searchButton.current?.classList.add('is-loading');
 
+    const isResponseError = (
+      response: MovieData | ResponseError,
+    ): response is ResponseError => {
+      return (response as ResponseError).Error !== undefined;
+    };
+
     getMovie(query)
       .then(response => {
-        if (response.hasOwnProperty('Error')) {
+        if (isResponseError(response)) {
           setIsError(true);
 
           return;
         }
 
-        const movieData = response as MovieData;
         const movie: Movie = {
-          title: movieData.Title,
-          description: movieData.Plot,
+          title: response.Title,
+          description: response.Plot,
           imgUrl:
-            movieData.Poster !== 'N/A'
-              ? movieData.Poster
+            response.Poster !== 'N/A'
+              ? response.Poster
               : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-          imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
-          imdbId: movieData.imdbID,
+          imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+          imdbId: response.imdbID,
         };
 
         setFindedMovie(movie);
@@ -63,6 +69,7 @@ export const FindMovie: React.FC<Props> = ({ onAdding }) => {
     onAdding(findedMovie);
     setQuery('');
     setFindedMovie(null);
+    setIsError(false);
   };
 
   return (

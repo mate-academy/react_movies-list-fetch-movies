@@ -4,6 +4,8 @@
 
 Implement the `FindMovie` component to load movies from [OMDb API](http://www.omdbapi.com/) (You need to register and get an API key).
 
+my key: 364c05b4
+
 1. When a user enters a title and submits the form, send a request to `https://www.omdbapi.com/?apikey=[yourkey]&t=[title]`;
    - use the `getMovie` method from the `api.ts`;
 1. The submit button should be disabled when the title field is empty;
@@ -25,4 +27,4 @@ Implement the `FindMovie` component to load movies from [OMDb API](http://www.om
 - Implement a solution following the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline).
 - Use the [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript).
 - Open one more terminal and run tests with `npm test` to ensure your solution is correct.
-- Replace `<your_account>` with your Github username in the [DEMO LINK](https://<your_account>.github.io/react_movies-list-fetch-movies/) and add it to the PR description.
+- Replace `<your_account>` with your Github username in the [DEMO LINK](https://wsadocha.github.io/react_movies-list-fetch-movies/) and add it to the PR description.

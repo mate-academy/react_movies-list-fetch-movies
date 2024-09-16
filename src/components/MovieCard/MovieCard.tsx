@@ -4,13 +4,18 @@ import './MovieCard.scss';
 
 type Props = {
   movie: Movie;
+  defaultPicture?: string;
 };
 
-export const MovieCard: React.FC<Props> = ({ movie }) => (
+export const MovieCard: React.FC<Props> = ({ movie, defaultPicture }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
-        <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
+        <img
+          data-cy="moviePoster"
+          src={movie.imgUrl === 'N/A' ? defaultPicture : movie.imgUrl}
+          alt="Film logo"
+        />
       </figure>
     </div>
     <div className="card-content">

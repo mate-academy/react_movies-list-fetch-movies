@@ -2,44 +2,45 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
-import classNames from 'classnames'; // Импортируем библиотеку classnames
+import classNames from 'classnames';
+import { Movie } from '../../types/Movie';
 
 interface FindMovieProps {
-  addMovieToList: (movie: any) => void; // Функция для добавления фильма в список
+  addMovieToList: (movie: Movie) => void;
 }
 
 export const FindMovie: React.FC<FindMovieProps> = ({ addMovieToList }) => {
   const [query, setQuery] = useState<string>('');
-  const [movie, setMovie] = useState<any>(null);
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [searchTriggered, setSearchTriggered] = useState<boolean>(false);
+  const [, setSearchTriggered] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!query) return;
+    if (!query) {
+      return;
+    }
 
     setSearchTriggered(true);
-    setLoading(true); // Устанавливаем состояние загрузки в true
+    setLoading(true);
 
     try {
-      console.log('Searching for:', query);
       const findedMovie = await getMovie(query);
 
-      console.log('Received movie data:', findedMovie);
-
       if (findedMovie.Response === 'False') {
-        setError(findedMovie.Error);
+        setError(findedMovie.Error); // Set error message from API response
         setMovie(null);
       } else {
-        // Добавляем логику для установки URL постера по умолчанию
-        const movieWithDefaultPoster = {
+        // Ensure findedMovie conforms to the Movie interface
+        const movieWithDefaultPoster: Movie = {
           ...findedMovie,
           Poster:
             findedMovie.Poster !== 'N/A'
               ? findedMovie.Poster
               : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+          imdbUrl: `https://www.imdb.com/title/${findedMovie.imdbID}/`, // Construct imdbUrl
         };
 
         setMovie(movieWithDefaultPoster);
@@ -49,13 +50,13 @@ export const FindMovie: React.FC<FindMovieProps> = ({ addMovieToList }) => {
       setError('An unexpected error occurred');
       setMovie(null);
     } finally {
-      setLoading(false); // Устанавливаем состояние загрузки в false после завершения запроса
+      setLoading(false);
     }
   };
 
   const handleQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
-    setError(null); // Сбрасываем ошибку при изменении запроса
+    setError(null); // Clear error when query changes
   };
 
   return (

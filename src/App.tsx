@@ -5,7 +5,7 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies, setMovies] = useState<any[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const addMovieToList = (movie: Movie) => {
     setMovies(prevMovies => {

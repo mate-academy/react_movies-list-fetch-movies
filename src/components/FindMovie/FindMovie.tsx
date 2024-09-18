@@ -1,10 +1,32 @@
 import React from 'react';
 import './FindMovie.scss';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+interface Props {
+  query: string;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedMovie: Movie | null;
+  handleSubmit: (e: React.FormEvent<HTMLFormElement>, query: string) => void;
+  isLoading: boolean;
+  handleAddMovie: (movie: Movie) => void;
+  isError: boolean;
+  isFindButtonTouched: boolean;
+}
+
+export const FindMovie: React.FC<Props> = ({
+  query,
+  handleInputChange,
+  selectedMovie,
+  handleSubmit,
+  isLoading,
+  handleAddMovie,
+  isError,
+  isFindButtonTouched,
+}) => {
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={e => handleSubmit(e, query)}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +38,17 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className="input"
+              value={query}
+              onChange={handleInputChange}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +56,34 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              disabled={!query}
+              className={`button is-light ${isLoading && 'is-loading'}`}
             >
-              Find a movie
+              {isFindButtonTouched ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {selectedMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => handleAddMovie(selectedMovie)}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {selectedMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={selectedMovie} />
+        </div>
+      )}
     </>
   );
 };

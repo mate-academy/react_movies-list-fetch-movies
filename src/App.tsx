@@ -5,7 +5,17 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const isDuplicate = (foundMovie: Movie) => movies
+    .map(movie => movie.imdbId)
+    .includes(foundMovie.imdbId);
+
+  const addMovie = (foundMovie: Movie) => {
+    if (!isDuplicate(foundMovie)) {
+      setMovies(addedMovies => [...addedMovies, foundMovie]);
+    }
+  };
 
   return (
     <div className="page">
@@ -14,7 +24,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie addMovie={addMovie} />
       </div>
     </div>
   );

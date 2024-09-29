@@ -68,6 +68,8 @@ export const FindMovie: React.FC<Props> = ({
 
     if (!exists) {
       setMovies(prevMovies => [...prevMovies, movie]);
+      setSearchTitle('');
+      setPreview(null);
     } else {
       setSearchTitle('');
       setPreview(null);
@@ -133,7 +135,6 @@ export const FindMovie: React.FC<Props> = ({
               onClick={handleSubmit}
             >
               {!preview ? 'Find a movie' : 'Search again'}
-              
             </button>
           </div>
 

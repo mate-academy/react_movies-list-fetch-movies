@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
@@ -20,8 +20,9 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     setHasError(false);
   };
 
-  const handleFind = () => {
-    // setFoundMovie(null);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
     setLoading(true);
     getMovie(query)
       .then(movie => {
@@ -31,13 +32,17 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           setFoundMovie({
             title: movie.Title,
             description: movie.Plot,
-            imgUrl: movie.Poster
-              ? movie.Poster
-              : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-            imdbUrl: 'https://www.imdb.com/title/' + movie.imdbID + '/',
+            imgUrl:
+              movie.Poster !== 'N/A'
+                ? movie.Poster
+                : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+            imdbUrl: 'https://www.imdb.com/title/' + movie.imdbID,
             imdbId: movie.imdbID,
           });
         }
+      })
+      .catch(() => {
+        setHasError(true);
       })
       .finally(() => setLoading(false));
   };
@@ -51,23 +56,9 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     setQuery('');
   };
 
-  useEffect(() => {
-    const enterEvent = (e: KeyboardEvent) => {
-      if (e.key === 'Enter' && query !== '') {
-        handleFind();
-      }
-    };
-
-    window.addEventListener('keypress', enterEvent);
-
-    return () => {
-      window.removeEventListener('keypress', enterEvent);
-    };
-  }, []);
-
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -96,11 +87,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           <div className="control">
             <button
               data-cy="searchButton"
-              type="button"
+              type="submit"
               className={classNames('button', 'is-light', {
                 'is-loading': loading,
               })}
-              onClick={handleFind}
               disabled={query === ''}
             >
               {foundMovie ? 'Search again' : 'Find a movie'}
@@ -111,7 +101,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
             <div className="control">
               <button
                 data-cy="addButton"
-                type="submit"
+                type="button"
                 className="button is-primary"
                 onClick={handleAdd}
               >

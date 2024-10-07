@@ -7,6 +7,10 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies] = useState<Movie[]>([]);
 
+  // const addMovie = (movie: Movie) => {
+
+  // };
+
   return (
     <div className="page">
       <div className="page-content">
@@ -19,3 +23,4 @@ export const App = () => {
     </div>
   );
 };
+// addMovie={addMovie}

@@ -5,3 +5,10 @@ export interface Movie {
   imdbUrl: string;
   imdbId: string;
 }
+
+// export interface MovieData {
+//   Poster: string;
+//   Title: string;
+//   Plot: string;
+//   imdbID: string;
+// }

@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import classNames from 'classnames';
-import { getMovie } from '../../api';
-// import { MovieData } from '../../types/MovieData';
-// import { ResponseError } from '../../types/ReponseError';
-import { Loader } from '../Loader';
+import { getMovie, normaliseMovie } from '../../api';
 import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 
 type Props = {
   addMovie?: (movie: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = () => {
+export const FindMovie: React.FC<Props> = ({ addMovie = () => {} }) => {
   const [query, setQuery] = useState('');
   const [value, setValue] = useState('');
+
+  const [movie, setMovie] = useState<Movie | null>(null);
   const [titleError, setTitleError] = useState(false);
-  // const [movieData, setMovieData] = useState<MovieData | null>(null);
   const [preview, setPreview] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const [searchClick, setSearchClick] = useState(false);
 
   const inputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,28 +28,33 @@ export const FindMovie: React.FC<Props> = () => {
     setTitleError(false);
   };
 
-  const searchMovie = () => {
-    setSearchClick(true);
+  const searchMovie = (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
     setLoading(true);
+    setSearchClick(true);
 
     getMovie(query)
       .then(result => {
-        // eslint-disable-next-line
-        console.log(result);
-        if ('Error' in result) {
-          setTitleError(true);
-        } else {
-          // setMovieData(result as MovieData);
+        if (!('Error' in result)) {
           setPreview(true);
+          setMovie(normaliseMovie(result));
+        } else {
+          setTitleError(true);
         }
       })
       .finally(() => setLoading(false));
   };
 
   const addMovieFunction = () => {
-    // addMovie(movieValue);
+    if (movie) {
+      addMovie(movie);
+    }
+
+    setValue('');
     setQuery('');
     setPreview(false);
+    setSearchClick(false);
   };
 
   return (
@@ -84,12 +89,15 @@ export const FindMovie: React.FC<Props> = () => {
           <div className="control">
             <button
               data-cy="searchButton"
-              onClick={() => searchMovie()}
+              onClick={e => {
+                searchMovie(e);
+              }}
               type="submit"
-              className="button is-light"
+              className={classNames('button is-light', {
+                'is-loading': loading,
+              })}
               disabled={!value}
             >
-              {loading && <Loader />}
               {!loading && !searchClick && 'Find a movie'}
               {!loading && searchClick && 'Search again'}
             </button>
@@ -112,18 +120,12 @@ export const FindMovie: React.FC<Props> = () => {
         </div>
       </form>
 
-      {preview && (
+      {preview && movie && (
         <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
-          {/* <MovieCard movie={movie} /> */}
+          <MovieCard movie={movie} />
         </div>
       )}
     </>
   );
 };
-
-// if (result as ResponseError) {
-//   setTitleError(true);
-// } else {
-//   setMovieData(result as MovieData);
-// }

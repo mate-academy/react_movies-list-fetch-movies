@@ -7,7 +7,11 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
+  // функція, яка буде робити задачу onAdd з компонента FindMovies
   const handleAddMovie = (newMovie: Movie) => {
+    /* перевірка на те, чи в масиві уже є фільм
+    з таким ІД, some повертає true якщо хоч одна перевірка
+    співпадає */
     const alreadyExists = movies.some(
       movie => movie.imdbId === newMovie.imdbId,
     );
@@ -16,6 +20,8 @@ export const App = () => {
       return;
     }
 
+    /* в сеттер можна прийняти колбек, параметром якого був попередній
+    стан змінної movies, до попереднього стану додаєм новий фільм */
     setMovies(currMovies => [...currMovies, newMovie]);
   };
 

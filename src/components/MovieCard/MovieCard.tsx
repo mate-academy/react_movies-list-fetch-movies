@@ -1,16 +1,22 @@
 import React from 'react';
 import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
-
 type Props = {
   movie: Movie;
 };
-
 export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
-        <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
+        <img
+          data-cy="moviePoster"
+          src={
+            movie.imgUrl !== 'N/A'
+              ? movie.imgUrl
+              : 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          }
+          alt="Film logo"
+        />
       </figure>
     </div>
     <div className="card-content">
@@ -26,7 +32,6 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
           </p>
         </div>
       </div>
-
       <div className="content" data-cy="movieDescription">
         {movie.description}
         <br />

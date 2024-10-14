@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -10,8 +10,7 @@ export const App = () => {
 
   const handleAddMovie = (newMovie: Movie) => {
     if (!movies.some(movie => movie.imdbId === newMovie.imdbId)) {
-      console.log('bitch')
-      setMovies((movies: Movie[]) => [...movies, newMovie]);
+      setMovies((currentMovies: Movie[]) => [...currentMovies, newMovie]);
     }
   };
 

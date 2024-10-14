@@ -4,8 +4,6 @@ import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 import cn from 'classnames';
-import { MovieData } from '../../types/MovieData';
-import { ResponseError } from '../../types/ReponseError';
 
 interface Props {
   handleAddMovie: (movie: Movie) => void;

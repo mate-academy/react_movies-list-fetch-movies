@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
 
@@ -10,9 +11,18 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
-        <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
+        <img
+          data-cy="moviePoster"
+          src={
+            movie.imgUrl === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : movie.imgUrl
+          }
+          alt="Film logo"
+        />
       </figure>
     </div>
+
     <div className="card-content">
       <div className="media">
         <div className="media-left">

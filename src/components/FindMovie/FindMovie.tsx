@@ -13,9 +13,12 @@ export const FindMovie = ({ onAddMovie }: Props) => {
   const [search, setSearch] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
     try {
       const response = await getMovie(search);
@@ -39,6 +42,8 @@ export const FindMovie = ({ onAddMovie }: Props) => {
       setMovie(normalizedMovie);
     } catch (e) {
       setError('Unexpected error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -82,7 +87,7 @@ export const FindMovie = ({ onAddMovie }: Props) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={`button is-light ${isLoading && 'is-loading'}`}
               disabled={!search}
             >
               Find a movie

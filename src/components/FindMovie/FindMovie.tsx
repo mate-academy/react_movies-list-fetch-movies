@@ -34,7 +34,10 @@ export const FindMovie = ({ onAddMovie }: Props) => {
       const normalizedMovie: Movie = {
         title: movieData.Title,
         description: movieData.Plot,
-        imgUrl: movieData.Poster || './no-preview.png',
+        imgUrl:
+          movieData.Poster !== 'N/A'
+            ? movieData.Poster
+            : 'https://via.placeholder.com/360x270.png?text=no%20preview',
         imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
         imdbId: movieData.imdbID,
       };
@@ -71,7 +74,10 @@ export const FindMovie = ({ onAddMovie }: Props) => {
               placeholder="Enter a title to search"
               className="input is-danger"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={e => {
+                setSearch(e.target.value);
+                setError(null);
+              }}
             />
           </div>
 
@@ -111,10 +117,12 @@ export const FindMovie = ({ onAddMovie }: Props) => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

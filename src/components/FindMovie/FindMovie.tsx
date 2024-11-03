@@ -24,7 +24,13 @@ export const FindMovie: React.FC<IProps> = ({ addMovies }) => {
 
       const res = await getMovie(title);
 
-      'Error' in res ? setError(res.Error) : setMovie(transformMovieData(res));
+      if ('Title' in res) {
+        setMovie(transformMovieData(res));
+      }
+
+      if ('Error' in res) {
+        setError(res.Error);
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -41,7 +47,7 @@ export const FindMovie: React.FC<IProps> = ({ addMovies }) => {
         setError('');
       }
     },
-    [title, error],
+    [error],
   );
 
   const reset = () => {

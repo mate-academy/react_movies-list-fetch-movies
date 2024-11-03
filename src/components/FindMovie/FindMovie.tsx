@@ -76,9 +76,11 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            {errorMsg}
-          </p>
+          {errorMsg && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {errorMsg}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">

@@ -21,7 +21,7 @@ export const MovieCard: React.FC<Props> = React.memo(({ movie }) => (
           </figure>
         </div>
         <div className="media-content">
-          <p className="title is-8" data-cy="movieTitle">
+          <p className="title is-5" data-cy="movieTitle">
             {movie.title}
           </p>
         </div>
@@ -37,3 +37,5 @@ export const MovieCard: React.FC<Props> = React.memo(({ movie }) => (
     </div>
   </div>
 ));
+
+MovieCard.displayName = 'MovieCard';

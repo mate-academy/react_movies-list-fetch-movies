@@ -48,7 +48,6 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   }
 
   function addMovieToList() {
-    console.log(movie);
     let newMovies: Movie[] = [];
 
     let movieExists: boolean = false;

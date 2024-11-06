@@ -5,6 +5,7 @@ import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 import classNames from 'classnames';
+import { ResponseError } from '../../types/ResponseError';
 
 type Props = {
   movies: Movie[];
@@ -15,6 +16,10 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [query, setQuery] = useState<string>('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
+
+  const defaultPicture =
+    'https://via.placeholder.com/360x270.png?text=no%20preview';
 
   function searchMovie(event: React.FormEvent) {
     event.preventDefault();
@@ -22,22 +27,45 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setLoading(true);
 
     getMovie(query)
-      .then(({ Poster, Title, Plot, imdbID }: MovieData) => {
-        const movieData: Movie = {
-          title: Title,
-          description: Plot,
-          imgUrl: Poster,
-          imdbUrl: `https://www.imdb.com/title/${imdbID}/`,
-          imdbId: imdbID,
-        };
+      .then(resMovieData => {
+        if ('Error' in resMovieData) {
+          setErrorMessage(true);
 
-        setMovie(movieData);
+          return;
+        } else {
+          const { Poster, Title, Plot, imdbID } = resMovieData;
+
+          const movieData: Movie = {
+            title: Title,
+            description: Plot,
+            imgUrl: Poster !== 'N/A' ? Poster : defaultPicture,
+            imdbUrl: `https://www.imdb.com/title/${imdbID}/`,
+            imdbId: imdbID,
+          };
+
+          setMovie(movieData);
+        }
       })
       .finally(() => setLoading(false));
   }
 
   function addMovieToList() {
     let newMovies: Movie[] = [];
+
+    let movieExists: boolean = false;
+
+    movies.forEach(film => {
+      if (film.imdbId === movie?.imdbId) {
+        movieExists = true;
+      }
+    });
+
+    if (movieExists) {
+      setMovie(null);
+      setQuery('');
+
+      return;
+    }
 
     if (movie) {
       newMovies = [...movies, movie];
@@ -62,15 +90,20 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', { 'is-danger': errorMessage })}
               value={query}
-              onChange={event => setQuery(event.target.value)}
+              onChange={event => {
+                setQuery(event.target.value);
+                setErrorMessage(false);
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {errorMessage && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -102,10 +135,12 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

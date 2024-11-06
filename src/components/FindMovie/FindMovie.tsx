@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
-import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 import classNames from 'classnames';
-import { ResponseError } from '../../types/ResponseError';
 
 type Props = {
   movies: Movie[];
@@ -39,7 +37,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
             title: Title,
             description: Plot,
             imgUrl: Poster !== 'N/A' ? Poster : defaultPicture,
-            imdbUrl: `https://www.imdb.com/title/${imdbID}/`,
+            imdbUrl: `https://www.imdb.com/title/${imdbID}`,
             imdbId: imdbID,
           };
 
@@ -50,6 +48,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   }
 
   function addMovieToList() {
+    console.log(movie);
     let newMovies: Movie[] = [];
 
     let movieExists: boolean = false;

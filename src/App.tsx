@@ -18,6 +18,7 @@ export const App = () => {
     if (isResponseError(result)) {
       setError(result.Error);
       setPreviewMovie(null);
+
       return;
     }
 
@@ -46,7 +47,8 @@ export const App = () => {
           previewMovie={previewMovie}
           setPreviewMovie={setPreviewMovie}
         />
-        {error && <p className="error-message">{error}</p>} {/* Display error message */}
+        {error && <p className="error-message">{error}</p>}{' '}
+        {/* Display error message */}
       </div>
     </div>
   );

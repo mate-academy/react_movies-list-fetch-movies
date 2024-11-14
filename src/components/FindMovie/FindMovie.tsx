@@ -10,19 +10,28 @@ type Props = {
   setPreviewMovie: (movie: Movie | null) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ onSearch, onAddMovie, previewMovie, setPreviewMovie }) => {
+export const FindMovie: React.FC<Props> = ({
+  onSearch,
+  onAddMovie,
+  previewMovie,
+  setPreviewMovie,
+}) => {
   const [title, setTitle] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    if (error) setError(null);
+    if (error) {
+      setError(null);
+    }
   };
 
   const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -30,7 +39,7 @@ export const FindMovie: React.FC<Props> = ({ onSearch, onAddMovie, previewMovie,
     try {
       await onSearch(title.trim());
     } catch {
-      setError("An unexpected error occurred.");
+      setError('An unexpected error occurred.');
     } finally {
       setIsLoading(false);
     }
@@ -47,7 +56,9 @@ export const FindMovie: React.FC<Props> = ({ onSearch, onAddMovie, previewMovie,
   return (
     <form className="find-movie" onSubmit={handleSearch}>
       <div className="field">
-        <label className="label" htmlFor="movie-title">Movie title</label>
+        <label className="label" htmlFor="movie-title">
+          Movie title
+        </label>
         <div className="control">
           <input
             data-cy="titleField"

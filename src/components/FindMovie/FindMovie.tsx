@@ -35,13 +35,11 @@ export const FindMovie: React.FC<Props> = ({
             setMovie(res);
           }
         })
-        .catch(error => {
-          console.error('Network or parsing error:', error);
-        })
         .finally(() => setLoading(false));
     }
 
     return () => setFindMovieButton(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [findMovieButton]);
 
   function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {

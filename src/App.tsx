@@ -5,7 +5,20 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const [query, setQuery] = useState('');
+
+  const handleSearchMovie = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+  };
+
+  const handleAddMovie = (newMovie: Movie) => {
+    setQuery('');
+    if (!movies.some(({ imdbId }) => newMovie.imdbId === imdbId)) {
+      setMovies((prev) => [...prev, newMovie]);
+    }
+  };
 
   return (
     <div className="page">
@@ -14,7 +27,11 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          query={query}
+          onSearch={handleSearchMovie}
+          onAdd={handleAddMovie}
+        />
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
         <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
       </figure>
     </div>
+
     <div className="card-content">
       <div className="media">
         <div className="media-left">
@@ -20,6 +21,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
             <img src="images/imdb-logo.jpeg" alt="imdb" />
           </figure>
         </div>
+
         <div className="media-content">
           <p className="title is-8" data-cy="movieTitle">
             {movie.title}
@@ -29,7 +31,9 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
 
       <div className="content" data-cy="movieDescription">
         {movie.description}
+
         <br />
+
         <a href={movie.imdbUrl} data-cy="movieURL">
           IMDB
         </a>

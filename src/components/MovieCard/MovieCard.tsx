@@ -6,11 +6,13 @@ type Props = {
   movie: Movie;
 };
 
-export const MovieCard: React.FC<Props> = ({ movie }) => (
+export const MovieCard: React.FC<Props> = ({
+  movie: { title, description, imdbUrl, imgUrl },
+}) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
-        <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
+        <img data-cy="moviePoster" src={imgUrl} alt="Film logo" />
       </figure>
     </div>
     <div className="card-content">
@@ -22,15 +24,15 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
         </div>
         <div className="media-content">
           <p className="title is-8" data-cy="movieTitle">
-            {movie.title}
+            {title}
           </p>
         </div>
       </div>
 
       <div className="content" data-cy="movieDescription">
-        {movie.description}
+        {description}
         <br />
-        <a href={movie.imdbUrl} data-cy="movieURL">
+        <a href={imdbUrl} data-cy="movieURL" target="_blank" rel="noreferrer">
           IMDB
         </a>
       </div>

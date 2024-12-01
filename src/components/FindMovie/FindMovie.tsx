@@ -1,10 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+interface Props {
+  onAdd: (movie: Movie) => void;
+}
+
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+  const [query, setQuery] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    setErrorMsg(null);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    setLoading(true);
+
+    getMovie(query)
+      .then(movie => {
+        if ('Error' in movie) {
+          setErrorMsg("Can't find a movie with such a title");
+        } else {
+          setFoundMovie({
+            title: movie.Title,
+            description: movie.Plot,
+            imgUrl:
+              movie.Poster !== 'N/A'
+                ? movie.Poster
+                : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+            imdbUrl: 'https://www.imdb.com/title/' + movie.imdbID,
+            imdbId: movie.imdbID,
+          });
+        }
+      })
+      .catch(() => {
+        setErrorMsg('Try again');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleAddMovie = () => {
+    if (foundMovie) {
+      onAdd(foundMovie);
+      setQuery('');
+      setFoundMovie(null);
+    }
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +71,16 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${errorMsg ? 'is-danger' : ''}`}
+              onChange={handleChange}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {errorMsg && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {errorMsg}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +88,34 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={`button is-light ${loading ? 'is-loading' : ''}`}
+              disabled={!query.trim()}
             >
-              Find a movie
+              {foundMovie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {foundMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAddMovie}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {foundMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={foundMovie} />
+        </div>
+      )}
     </>
   );
 };

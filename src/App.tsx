@@ -4,8 +4,16 @@ import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
-export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+export const App: React.FC = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const addMovieTotheList = (movieData: Movie) => {
+    const includesMovie = movies.find(movie => movie.imdbId === movieData.imdbId);
+
+    if (!includesMovie) {
+      setMovies(prevMovies => [...prevMovies, movieData])
+    }
+  };
 
   return (
     <div className="page">
@@ -14,7 +22,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie addMovieTotheList={addMovieTotheList} />
       </div>
     </div>
   );

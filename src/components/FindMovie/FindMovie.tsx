@@ -12,6 +12,11 @@ type Props = {
   onMovieListChange: (arg: Movie) => void;
 };
 
+const DEFAULT = {
+  PICTURE: 'https://via.placeholder.com/360x270.png?text=no%20preview',
+};
+const BASEURL = 'https://www.imdb.com/title/';
+
 export const FindMovie: React.FC<Props> = ({
   movieList,
   onMovieListChange,
@@ -20,23 +25,20 @@ export const FindMovie: React.FC<Props> = ({
   const [movie, setMovie] = useState<Movie | null>(null);
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const DEFAULT = {
-    PICTURE: 'https://via.placeholder.com/360x270.png?text=no%20preview',
-  };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const normalizeQuery = event.target.value.trim().toLowerCase();
-
-    setQuery(normalizeQuery);
+    setQuery(event.target.value);
     setHasError(false);
   };
 
-  const handleSearch = (event: React.FormEvent<HTMLButtonElement>) => {
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const normalizeQuery = query.trim().toLowerCase();
 
-    getMovie(query)
+    setLoading(true);
+
+    getMovie(normalizeQuery)
       .then(response => {
-        setLoading(true);
         if ('Error' in response) {
           setHasError(true);
         } else {
@@ -46,7 +48,7 @@ export const FindMovie: React.FC<Props> = ({
             imgUrl:
               response.Poster === 'N/A' ? DEFAULT.PICTURE : response.Poster,
             imdbId: response.imdbID,
-            imdbUrl: response.imdbID,
+            imdbUrl: BASEURL + response.imdbID,
           });
         }
       })
@@ -63,11 +65,12 @@ export const FindMovie: React.FC<Props> = ({
     }
 
     setQuery('');
+    setMovie(null);
   };
 
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={event => handleSearch(event)}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -101,9 +104,8 @@ export const FindMovie: React.FC<Props> = ({
                 'is-loading': loading,
               })}
               disabled={!query && true}
-              onSubmit={event => handleSearch(event)}
             >
-              {hasError ? 'Search again' : 'Find a movie'}
+              {movie ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 

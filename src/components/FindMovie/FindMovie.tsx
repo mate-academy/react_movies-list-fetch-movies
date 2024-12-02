@@ -31,8 +31,10 @@ export const FindMovie: React.FC<Props> = ({
     setHasError(false);
   };
 
-  const handleSearch = (value: string) => {
-    getMovie(value)
+  const handleSearch = (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    getMovie(query)
       .then(response => {
         setLoading(true);
         if ('Error' in response) {
@@ -99,7 +101,7 @@ export const FindMovie: React.FC<Props> = ({
                 'is-loading': loading,
               })}
               disabled={!query && true}
-              onSubmit={() => handleSearch(query)}
+              onSubmit={event => handleSearch(event)}
             >
               {hasError ? 'Search again' : 'Find a movie'}
             </button>

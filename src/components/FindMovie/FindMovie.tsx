@@ -41,7 +41,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     () =>
       debounce((currentQuery: string) => {
         setQuery(currentQuery);
-      }, 300),
+      }, 500),
     [],
   );
 
@@ -55,7 +55,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
-
     setLoading(true);
 
     setTimeout(() => {
@@ -68,7 +67,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
           }
         })
         .finally(() => setLoading(false));
-    }, 300);
+    }, 500);
   };
 
   const handleAddMovie = (
@@ -120,8 +119,9 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               className={classNames('button is-light', {
                 'is-loading': loading,
               })}
-              disabled={!query}
+              disabled={loading || !query}
               onClick={handleFindMovie}
+
             >
               {(!movie && 'Find a movie') || 'Search again'}
             </button>

@@ -30,9 +30,10 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
       title: data.Title,
       description: data.Plot,
       imgUrl:
-        data.Poster ||
-        `https://via.placeholder.com/360x270.png?text=no%20preview`,
-      imdbUrl: `https://www.imdb.com/title/${data.imdbID}/`,
+        data.Poster !== 'N/A'
+          ? data.Poster
+          : `https://via.placeholder.com/360x270.png?text=no%20preview`,
+      imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
       imdbId: data.imdbID,
     };
   };
@@ -119,7 +120,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               className={classNames('button is-light', {
                 'is-loading': loading,
               })}
-              disabled={loading || !query}
+              disabled={!value}
               onClick={handleFindMovie}
             >
               {(!movie && 'Find a movie') || 'Search again'}

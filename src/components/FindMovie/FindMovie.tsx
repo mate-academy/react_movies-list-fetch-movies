@@ -121,7 +121,6 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               })}
               disabled={loading || !query}
               onClick={handleFindMovie}
-
             >
               {(!movie && 'Find a movie') || 'Search again'}
             </button>

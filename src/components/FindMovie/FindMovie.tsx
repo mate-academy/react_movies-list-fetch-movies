@@ -9,7 +9,7 @@ import cn from 'classnames';
 
 type Props = {
   onHandleAdd: (movie: Movie) => void;
-}
+};
 
 export const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
   const [query, setQuery] = useState('');
@@ -17,47 +17,54 @@ export const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setQuery(value);
+      setError(false);
+    },
+    [],
+  );
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-    setError(false);
-  }, []);
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      setIsLoading(true);
+      setError(false);
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(false);
+      getMovie(query.toLowerCase().trim())
+        .then((data: MovieData | ResponseError) => {
+          if ('Error' in data) {
+            setError(true);
+            setMovie(null);
+            return;
+          }
 
-    getMovie(query.toLowerCase().trim())
-      .then((data: MovieData | ResponseError) => {
-        if ('Error' in data) {
+          setMovie({
+            title: data.Title,
+            imdbId: data.imdbID,
+            description: data.Plot,
+            imgUrl:
+              data.Poster !== 'N/A'
+                ? data.Poster
+                : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+            imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+          });
+        })
+        .catch(() => {
           setError(true);
           setMovie(null);
-          return;
-        }
-
-        setMovie({
-          title: data.Title,
-          imdbId: data.imdbID,
-          description: data.Plot,
-          imgUrl: data.Poster !== 'N/A' ? data.Poster : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-          imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
-      })
-      .catch(() => {
-        setError(true);
-        setMovie(null);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [query]
+    },
+    [query],
   );
 
   return (
     <>
-      <form className="find-movie" onSubmit={(e) => handleSubmit(e)}>
+      <form className="find-movie" onSubmit={e => handleSubmit(e)}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -77,9 +84,11 @@ export const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
             />
           </div>
 
-          {error && <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>}
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -96,27 +105,31 @@ export const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
             </button>
           </div>
 
-          {movie && <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={() => {
-                onHandleAdd(movie);
-                setMovie(null);
-                setQuery('');
-              }}
-            >
-              Add to the list
-            </button>
-          </div>}
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  onHandleAdd(movie);
+                  setMovie(null);
+                  setQuery('');
+                }}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      {movie && <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        <MovieCard movie={movie} />
-      </div>}
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 });

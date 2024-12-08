@@ -20,6 +20,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+
       setQuery(value);
       setError(false);
     },
@@ -37,6 +38,7 @@ export const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
           if ('Error' in data) {
             setError(true);
             setMovie(null);
+
             return;
           }
 

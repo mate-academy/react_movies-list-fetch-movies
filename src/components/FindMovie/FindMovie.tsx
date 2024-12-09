@@ -15,15 +15,15 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({ addMovies }) => {
-  const [query, setQuery] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
   const [title, setTitle] = useState('');
   const [data, setData] = useState<MovieData | ResponseError | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [movie, setMovie] = useState<Movie | null>(null);
-  const [isError, setIsError] = useState<boolean | null>(null);
+  const [isError, setIsError] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!title) {
+    if (!title.length) {
       return;
     }
 
@@ -36,7 +36,9 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
   useEffect(() => {
     if (!data) {
       return;
-    } else if ('Title' in data) {
+    }
+
+    if ('Title' in data) {
       const dataPoster =
         data.Poster !== 'N/A'
           ? data.Poster
@@ -56,17 +58,21 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (query) {
+    if (!!query.length) {
       setTitle(query);
     }
+  };
+
+  const resetForm = () => {
+    setMovie(null);
+    setTitle('');
+    setQuery('');
   };
 
   const addToTheList = () => {
     if (movie) {
       addMovies(movie);
-      setMovie(null);
-      setTitle('');
-      setQuery(null);
+      resetForm();
     }
   };
 
@@ -85,7 +91,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
 
           <div className="control">
             <input
-              value={!query ? '' : query}
+              value={query}
               onChange={handleChangeInput}
               data-cy="titleField"
               type="text"
@@ -105,7 +111,7 @@ export const FindMovie: React.FC<Props> = ({ addMovies }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
-              disabled={!query}
+              disabled={!query.length}
               data-cy="searchButton"
               type="submit"
               className={cn('button is-light', { 'is-loading': isLoading })}

@@ -4,14 +4,14 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
-import { MovieCard } from '../MovieCard';
+import MovieCard from '../MovieCard';
 import cn from 'classnames';
 
 type Props = {
   onHandleAdd: (movie: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
+const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState(false);
@@ -135,3 +135,5 @@ export const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
     </>
   );
 });
+
+export default FindMovie;

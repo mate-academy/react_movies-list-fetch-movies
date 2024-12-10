@@ -38,4 +38,5 @@ const MovieCard: React.FC<Props> = ({ movie }) => (
   </div>
 );
 
+MovieCard.displayName = 'MoviesList';
 export default MovieCard;

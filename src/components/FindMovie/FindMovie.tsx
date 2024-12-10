@@ -4,7 +4,7 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { ResponseError } from '../../types/ReponseError';
-import MovieCard from '../MovieCard';
+import MovieCard from '../MovieCard/MovieCard';
 import cn from 'classnames';
 
 type Props = {
@@ -136,4 +136,5 @@ const FindMovie: React.FC<Props> = React.memo(({ onHandleAdd }) => {
   );
 });
 
+FindMovie.displayName = 'MoviesList';
 export default FindMovie;

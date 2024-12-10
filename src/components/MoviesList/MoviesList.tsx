@@ -1,6 +1,6 @@
 import React from 'react';
 import './MoviesList.scss';
-import { MovieCard } from '../MovieCard';
+import MovieCard from '../MovieCard/MovieCard';
 import { Movie } from '../../types/Movie';
 
 type Props = {
@@ -15,4 +15,5 @@ const MoviesList: React.FC<Props> = React.memo(({ movies }) => (
   </div>
 ));
 
+MoviesList.displayName = 'MoviesList';
 export default MoviesList;

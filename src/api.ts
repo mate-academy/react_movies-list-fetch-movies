@@ -8,6 +8,7 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
     if (!res.ok) {
       return Promise.reject(new Error('Movie not found'));
     }
+
     return res.json();
   });
 }

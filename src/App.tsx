@@ -19,6 +19,7 @@ export const App = () => {
     if (isResponseError(result)) {
       setError(result.Error || 'Movie not found');
       setPreviewMovie(null);
+
       return;
     }
 
@@ -27,6 +28,7 @@ export const App = () => {
     if (!movie) {
       setError('Movie not found');
       setPreviewMovie(null);
+
       return;
     }
 
@@ -54,7 +56,11 @@ export const App = () => {
           error={error}
           setError={setError}
         />
-        {error && <p data-cy="error-message" className="error-message">{error}</p>}
+        {error && (
+          <p data-cy="error-message" className="error-message">
+            {error}
+          </p>
+        )}
       </div>
     </div>
   );

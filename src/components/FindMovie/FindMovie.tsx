@@ -31,7 +31,9 @@ export const FindMovie: React.FC<Props> = ({
   const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -39,7 +41,9 @@ export const FindMovie: React.FC<Props> = ({
     try {
       await onSearch(title.trim());
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setError(
+        err instanceof Error ? err.message : 'An unexpected error occurred',
+      );
     } finally {
       setIsLoading(false);
     }

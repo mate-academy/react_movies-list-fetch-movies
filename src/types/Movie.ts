@@ -5,4 +5,3 @@ export type Movie = {
   imgUrl: string;
   imdbUrl: string;
 };
-

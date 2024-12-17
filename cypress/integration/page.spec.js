@@ -6,7 +6,7 @@ const page = {
   mockNotFound: () => cy.intercept('*/www.omdbapi.com/*', { fixture: 'notFound' }),
 
   getByDataCy: name => cy.get(`[data-cy="${name}"]`),
-  
+
   titleField: () => page.getByDataCy('titleField'),
   errorMessage: () => page.getByDataCy('errorMessage'),
   searchButton: () => page.getByDataCy('searchButton'),
@@ -67,7 +67,7 @@ describe('API request', () => {
       .should('equal', 1);
   });
 
-  it('should not be sent it a title is not entered', () => {
+  it('should not be sent if a title is not entered', () => {
     page.searchButton().click({ force: true });
 
     cy.get('@apiCall')
@@ -111,7 +111,7 @@ describe('FindMovie component', () => {
     page.searchButton()
       .should('not.have.class', 'is-loading');
   });
-  
+
   it('should show a spinner while waiting for the search results', () => {
     cy.clock();
     cy.intercept('*/www.omdbapi.com/*', (req) => {
@@ -176,7 +176,7 @@ describe('FindMovie component', () => {
     page.mockRogueOne();
     page.titleField().type('Rogue');
     page.searchButton().click();
-    
+
     page.previewContainer().should('exist');
   });
 
@@ -249,11 +249,17 @@ describe('FindMovie component', () => {
   });
 
   it('should show the error message if a movie is not found', () => {
-    page.mockNotFound();
-    page.titleField().type('qweqweqwe{enter}');
+    cy.intercept('GET', 'https://www.omdbapi.com/*', {
+      statusCode: 200,
+      body: {
+        Response: 'False',
+        Error: 'Movie not found',
+      },
+    }).as('getMovie');
 
-    page.errorMessage()
-      .should('exist');
+    page.titleField().type('qweqweqwe{enter}');
+    cy.wait('@getMovie');
+    page.errorMessage().should('exist').and('contain.text', 'Movie not found');
   });
 
   it('should hide the error message after changing the title', () => {
@@ -277,7 +283,7 @@ describe('Add button', () => {
   it('should add the found movie to the list', () =>{
     page.movieCards()
       .should('have.length', 1);
-  
+
     page.movieCards()
       .eq(0)
       .find('[data-cy="movieTitle"]')
@@ -302,7 +308,7 @@ describe('Add button', () => {
     page.addButton().click();
     page.movieCards()
       .should('have.length', 2);
-  
+
     page.movieCards()
       .eq(1)
       .find('[data-cy="movieTitle"]')
@@ -313,7 +319,7 @@ describe('Add button', () => {
     page.mockRogueOne();
     page.titleField().type('Rogue{enter}');
     page.addButton().click();
-    
+
     page.movieCards().should('have.length', 1);
   });
 

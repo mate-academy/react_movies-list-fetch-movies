@@ -13,16 +13,22 @@ export const App = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleSearch = async (query: string) => {
+    setError(null);
     const result = await getMovie(query);
 
     if (isResponseError(result)) {
-      setError(result.Error);
+      setError(result.Error || 'Movie not found');
       setPreviewMovie(null);
-
       return;
     }
 
     const movie = normalizeMovieData(result);
+
+    if (!movie) {
+      setError('Movie not found');
+      setPreviewMovie(null);
+      return;
+    }
 
     setPreviewMovie(movie);
     setError(null);
@@ -39,16 +45,16 @@ export const App = () => {
       <div className="page-content">
         <MoviesList movies={movies} />
       </div>
-
       <div className="sidebar">
         <FindMovie
           onSearch={handleSearch}
           onAddMovie={handleAddMovie}
           previewMovie={previewMovie}
           setPreviewMovie={setPreviewMovie}
+          error={error}
+          setError={setError}
         />
-        {error && <p className="error-message">{error}</p>}{' '}
-        {/* Display error message */}
+        {error && <p data-cy="error-message" className="error-message">{error}</p>}
       </div>
     </div>
   );

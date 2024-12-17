@@ -4,24 +4,33 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  onSearch: (query: string) => void;
+  onSearch: (query: string) => Promise<void>;
   onAddMovie: (movie: Movie) => void;
   previewMovie: Movie | null;
   setPreviewMovie: (movie: Movie | null) => void;
+  error: string | null;
+  setError: (error: string | null) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ onSearch, onAddMovie, previewMovie, setPreviewMovie }) => {
+export const FindMovie: React.FC<Props> = ({
+  onSearch,
+  onAddMovie,
+  previewMovie,
+  setPreviewMovie,
+  error,
+  setError,
+}) => {
   const [title, setTitle] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
-    if (error) setError(null);
+    setError(null);
   };
 
   const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
+
     if (!title.trim()) return;
 
     setIsLoading(true);
@@ -29,8 +38,8 @@ export const FindMovie: React.FC<Props> = ({ onSearch, onAddMovie, previewMovie,
 
     try {
       await onSearch(title.trim());
-    } catch {
-      setError("An unexpected error occurred.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -44,62 +53,47 @@ export const FindMovie: React.FC<Props> = ({ onSearch, onAddMovie, previewMovie,
     }
   };
 
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
-      handleSearch(event as any);
-    }
-  };
-
   return (
     <form className="find-movie" onSubmit={handleSearch}>
       <div className="field">
-        <label className="label" htmlFor="movie-title">Movie title</label>
-        <div className="control">
-          <input
-            data-cy="titleField"
-            type="text"
-            id="movie-title"
-            placeholder="Enter a title to search"
-            className={`input ${error ? 'is-danger' : ''}`}
-            value={title}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyPress}
-          />
-        </div>
+        <label htmlFor="movie-title">Movie title</label>
+        <input
+          data-cy="titleField"
+          id="movie-title"
+          placeholder="Enter a title"
+          className={`input ${error ? 'is-danger' : ''}`}
+          value={title}
+          onChange={handleInputChange}
+        />
         {error && (
-          <p className="help is-danger" data-cy="errorMessage">
+          <p data-cy="errorMessage" className="help is-danger">
             {error}
           </p>
         )}
       </div>
 
-      <div className="field is-grouped">
-        <div className="control">
-          <button
-            data-cy="searchButton"
-            type="submit"
-            className={`button is-light ${isLoading ? 'is-loading' : ''}`}
-            disabled={!title.trim() || isLoading}
-          >
-            Find a movie
-          </button>
-        </div>
-
-        {previewMovie && (
-          <div className="control">
-            <button
-              type="button"
-              className="button is-primary"
-              onClick={handleAddMovie}
-            >
-              Add to the list
-            </button>
-          </div>
-        )}
-      </div>
+      <button
+        data-cy="searchButton"
+        type="submit"
+        className={`button is-light ${isLoading ? 'is-loading' : ''}`}
+        disabled={!title.trim() || isLoading}
+      >
+        Find a movie
+      </button>
 
       {previewMovie && (
-        <div className="preview">
+        <button
+          data-cy="addButton"
+          type="button"
+          className="button is-primary"
+          onClick={handleAddMovie}
+        >
+          Add to the list
+        </button>
+      )}
+
+      {previewMovie && (
+        <div data-cy="previewContainer">
           <MovieCard movie={previewMovie} />
         </div>
       )}

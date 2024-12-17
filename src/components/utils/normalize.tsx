@@ -6,7 +6,7 @@ export function normalizeMovieData(data: MovieData): Movie {
     imdbId: data.imdbID,
     title: data.Title,
     description: data.Plot,
-    imgUrl: data.Poster !== 'N/A' ? data.Poster : 'default_poster_url.jpg', // Replace with an actual default URL if desired
+    imgUrl: data.Poster !== 'N/A' ? data.Poster : 'https://via.placeholder.com/360x270.png?text=no%20preview',
     imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
   };
 }

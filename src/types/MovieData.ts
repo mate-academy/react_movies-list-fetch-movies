@@ -1,6 +1,6 @@
-export interface MovieData {
-  Poster: string;
+export type MovieData = {
+  imdbID: string;
   Title: string;
   Plot: string;
-  imdbID: string;
-}
+  Poster: string;
+};

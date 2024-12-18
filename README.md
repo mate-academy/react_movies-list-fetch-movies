@@ -2,7 +2,7 @@
 
 ### Description
 
-- Implementув the `FindMovie` component to load movies from external API
+- Implemented the `FindMovie` component to load movies from external API
 
 ### Stack
 

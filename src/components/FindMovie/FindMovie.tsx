@@ -2,13 +2,14 @@ import React, { FormEvent } from 'react';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api';
+import { MovieData } from '../../types/MovieData';
 
 type Props = {
   movie: Movie | null;
   query: string;
   movies: Movie[];
   setQuery: (value: string) => void;
-  setQuerySerch: (value: string) => void;
   onAdd: (newMovie: Movie) => void;
   searchOk: boolean;
   setSearchOk: (value: boolean) => void;
@@ -16,13 +17,13 @@ type Props = {
   setSearchEmpty: (value: boolean) => void;
   loading: boolean;
   setLoading: (value: boolean) => void;
+  setMovie: (value: Movie) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({
   movie,
   query,
   setQuery,
-  setQuerySerch,
   onAdd,
   searchOk,
   setSearchOk,
@@ -30,11 +31,34 @@ export const FindMovie: React.FC<Props> = ({
   setSearchEmpty,
   loading,
   setLoading,
+  setMovie,
 }) => {
+  function transformMovieData(data: MovieData): Movie {
+    return {
+      title: data.Title || '',
+      description: data.Plot || '',
+      imgUrl:
+        data.Poster !== 'N/A'
+          ? data.Poster
+          : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+      imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+      imdbId: data.imdbID || '',
+    };
+  }
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    setLoading(true);
     if (query.trim() !== '') {
-      setQuerySerch(query);
+      getMovie(query).then(response => {
+        if ('Title' in response) {
+          setMovie(transformMovieData(response));
+          setSearchOk(true);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setSearchOk(false);
+        }
+      });
     }
   };
 
@@ -42,10 +66,6 @@ export const FindMovie: React.FC<Props> = ({
     if (movie) {
       onAdd(movie);
     }
-  };
-
-  const startSearch = () => {
-    setLoading(true);
   };
 
   return (
@@ -90,7 +110,6 @@ export const FindMovie: React.FC<Props> = ({
               type="submit"
               className={`button is-light ${loading ? 'is-loading' : ''}`}
               disabled={searchEmpty}
-              onClick={startSearch}
             >
               Find a movie
             </button>

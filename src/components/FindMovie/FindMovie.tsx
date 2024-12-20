@@ -45,6 +45,7 @@ export const FindMovie: React.FC<Props> = ({
       imdbId: data.imdbID || '',
     };
   }
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     setLoading(true);

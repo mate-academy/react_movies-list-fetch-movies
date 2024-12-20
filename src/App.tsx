@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -18,6 +18,7 @@ export const App = () => {
     if (!isDuplicate) {
       setMovies(prevMovies => [...prevMovies, newMovie]);
     }
+
     setQuery('');
     setMovie(null);
   };

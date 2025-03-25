@@ -1,10 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
+import classNames from 'classnames';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  onAddNewMovie: (movie: Movie) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ onAddNewMovie }) => {
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [query, setQuery] = useState('');
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    getMovie(query.trim())
+      .then(movieFromServer => {
+        if ('Error' in movieFromServer) {
+          setHasError(true);
+
+          return;
+        }
+
+        const newMovie = {
+          title: movieFromServer.Title,
+          description: movieFromServer.Plot,
+          imgUrl: movieFromServer.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movieFromServer.imdbID}`,
+          imdbId: movieFromServer.imdbID,
+        };
+
+        setMovie(newMovie);
+      })
+      .catch(error => {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +60,22 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', {
+                'is-danger': hasError,
+              })}
+              value={query}
+              onChange={event => {
+                setQuery(event.target.value);
+                setHasError(false);
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {hasError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +83,39 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames('button is-light', {
+                'is-loading': isLoading,
+              })}
+              disabled={!query.trim()}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  onAddNewMovie(movie);
+                  setMovie(null);
+                }}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

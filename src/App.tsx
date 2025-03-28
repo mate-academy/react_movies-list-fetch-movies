@@ -1,11 +1,13 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
+import { useLocalStorage } from './hooks/useLocalStorage';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  // const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useLocalStorage<Movie[]>('movieList', []);
 
   return (
     <div className="page">
@@ -14,7 +16,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie movieList={movies} onMovies={setMovies} />
       </div>
     </div>
   );

@@ -28,7 +28,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       </div>
 
       <div className="content" data-cy="movieDescription">
-        {movie.description}
+        {movie?.description}
         <br />
         <a href={movie.imdbUrl} data-cy="movieURL">
           IMDB

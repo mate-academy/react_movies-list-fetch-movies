@@ -7,7 +7,7 @@ type Props = {
 };
 
 export const MovieCard: React.FC<Props> = ({ movie }) => (
-  <div className="card" data-cy="movieCard">
+  <div className="card" data-cy="movieCard" key={movie.imdbId}>
     <div className="card-image">
       <figure className="image is-4by3">
         <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
@@ -17,7 +17,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       <div className="media">
         <div className="media-left">
           <figure className="image is-48x48">
-            <img src="images/imdb-logo.jpeg" alt="imdb" />
+            <img src={movie.imgUrl} alt="imdb" />
           </figure>
         </div>
         <div className="media-content">

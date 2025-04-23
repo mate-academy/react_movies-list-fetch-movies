@@ -5,11 +5,11 @@ import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  onClick: (movie: Movie) => void;
+  addMovie: (movie: Movie) => void;
   movies: Movie[];
 };
 
-export const FindMovie: React.FC<Props> = ({ onClick, movies }) => {
+export const FindMovie: React.FC<Props> = ({ addMovie, movies }) => {
   const [query, setQuery] = useState('');
   const [error, setError] = useState(false);
   const [movie, setMovie] = useState<Movie>();
@@ -55,7 +55,7 @@ export const FindMovie: React.FC<Props> = ({ onClick, movies }) => {
 
   const handleOnClick = () => {
     if (movie && !movies.find(mov => mov.imdbId === movie.imdbId)) {
-      onClick({
+      addMovie({
         title: movie.title,
         description: movie.description,
         imgUrl: movie.imgUrl,

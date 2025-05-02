@@ -1,17 +1,20 @@
-import React from 'react';
-
+import { memo } from 'react';
 import './MoviesList.scss';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 
-type Props = {
+type MoviesListProps = {
   movies: Movie[];
 };
 
-export const MoviesList: React.FC<Props> = ({ movies }) => (
+export const MoviesList = memo<MoviesListProps>(({ movies }) => (
   <div className="movies">
-    {movies.map(movie => (
-      <MovieCard key={movie.imdbId} movie={movie} />
-    ))}
+    {movies.length === 0 ? (
+      <p className="no-movies-message">No movies added yet!</p>
+    ) : (
+      movies.map(movie => <MovieCard key={movie.imdbId} movie={movie} />)
+    )}
   </div>
-);
+));
+
+MoviesList.displayName = 'MoviesList';

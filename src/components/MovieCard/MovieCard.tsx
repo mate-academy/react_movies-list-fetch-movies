@@ -1,25 +1,31 @@
-import React from 'react';
+import { memo } from 'react';
 import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
 
-type Props = {
+type MovieCardProps = {
   movie: Movie;
 };
 
-export const MovieCard: React.FC<Props> = ({ movie }) => (
+export const MovieCard = memo<MovieCardProps>(({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
-        <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
+        <img
+          data-cy="moviePoster"
+          src={movie.imgUrl}
+          alt={`${movie.title} poster`}
+        />
       </figure>
     </div>
+
     <div className="card-content">
       <div className="media">
         <div className="media-left">
           <figure className="image is-48x48">
-            <img src="images/imdb-logo.jpeg" alt="imdb" />
+            <img src="images/imdb-logo.jpeg" alt="IMDb logo" />
           </figure>
         </div>
+
         <div className="media-content">
           <p className="title is-8" data-cy="movieTitle">
             {movie.title}
@@ -30,10 +36,18 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       <div className="content" data-cy="movieDescription">
         {movie.description}
         <br />
-        <a href={movie.imdbUrl} data-cy="movieURL">
-          IMDB
+
+        <a
+          href={movie.imdbUrl}
+          data-cy="movieURL"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View on IMDb
         </a>
       </div>
     </div>
   </div>
-);
+));
+
+MovieCard.displayName = 'MovieCard';

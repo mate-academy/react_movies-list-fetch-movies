@@ -33,7 +33,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie query={query} onQueryChange={setQuery} onnAdd={handleAdd} />
+        <FindMovie query={query} onQueryChange={setQuery} onAdd={handleAdd} />
       </div>
     </div>
   );

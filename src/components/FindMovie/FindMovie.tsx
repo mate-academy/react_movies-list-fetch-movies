@@ -8,14 +8,10 @@ import { MovieCard } from '../MovieCard';
 type Props = {
   query: string;
   onQueryChange: (value: string) => void;
-  onnAdd: (movie: Movie) => void;
+  onAdd: (movie: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({
-  query,
-  onQueryChange,
-  onnAdd,
-}) => {
+export const FindMovie: React.FC<Props> = ({ query, onQueryChange, onAdd }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(false);
   const [previewMovie, setPreviewMovie] = useState<Movie | null>(null);
@@ -56,7 +52,7 @@ export const FindMovie: React.FC<Props> = ({
 
   const handleAdd = () => {
     if (previewMovie) {
-      onnAdd(previewMovie);
+      onAdd(previewMovie);
       onQueryChange('');
       setPreviewMovie(null);
     }

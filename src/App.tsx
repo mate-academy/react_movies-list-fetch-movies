@@ -2,10 +2,14 @@ import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { Movie } from './types/Movie';
+import { MovieData } from './types/MovieData';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<MovieData[]>([]);
+  const [query, setQuery] = useState('');
+  const [findMovie, setFindMovie] = useState<MovieData | null>(null);
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="page">
@@ -14,7 +18,17 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          setFindMovie={setFindMovie}
+          setQuery={setQuery}
+          query={query}
+          movie={findMovie}
+          setHasError={setHasError}
+          hasError={hasError}
+          setMovies={setMovies}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+        />
       </div>
     </div>
   );

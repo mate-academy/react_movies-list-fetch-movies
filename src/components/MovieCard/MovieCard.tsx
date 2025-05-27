@@ -6,7 +6,7 @@ type Props = {
   movie: Movie;
 };
 
-export const MovieCard: React.FC<Props> = ({ movie }) => (
+const MemoMovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
@@ -37,3 +37,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
     </div>
   </div>
 );
+
+export const MovieCard = React.memo(MemoMovieCard, (prevProps, nextProps) => {
+  return prevProps.movie.imdbId === nextProps.movie.imdbId;
+});

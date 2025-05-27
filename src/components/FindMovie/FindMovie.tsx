@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
-import { ResponseError } from '../../types/ReponseError';
+import { ResponseError } from '../../types/ResponseError';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 

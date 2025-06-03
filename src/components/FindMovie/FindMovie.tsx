@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
-import { ResponseError } from '../../types/ReponseError';
+import { ResponseError } from '../../types/ResponseError';
 
 const DEFAULTPICTURE =
   'https://via.placeholder.com/360x270.png?text=no%20preview';

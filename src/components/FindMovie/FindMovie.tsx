@@ -27,6 +27,7 @@ export const FindMovie: React.FC<Props> = ({ existingMovies, onAdd }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFoundMovie(null);
 
     const prepearedValue = searchTerm.toLowerCase().trim();
 

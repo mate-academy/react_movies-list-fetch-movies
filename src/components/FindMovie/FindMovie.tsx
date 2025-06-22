@@ -90,7 +90,6 @@ export const FindMovie: React.FC<Props> = ({ addMovie }) => {
               className={
                 loading ? 'button is-light is-loading' : 'button is-light'
               }
-              onClick={handleSubmit}
               disabled={!query.trim()}
             >
               Find a movie

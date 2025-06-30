@@ -3,15 +3,16 @@ import './FindMovie.scss';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { Movie } from '../../types/Movie';
-import { ResponseError } from '../../types/ReponseError';
+import { ResponseError } from '../../types/ResponseError';
 
 type Props = {
   setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
+  movies: Movie[];
 };
 
 const DEFAULT_POSTER = `https://via.placeholder.com/360x270.png?text=no%20preview`;
 
-export const FindMovie: React.FC<Props> = ({ setMovies }) => {
+export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -61,6 +62,10 @@ export const FindMovie: React.FC<Props> = ({ setMovies }) => {
 
   const handleAddMovie = () => {
     if (!movie) {
+      return;
+    }
+
+    if (movies.some(m => m.imdbId === movie.imdbId)) {
       return;
     }
 

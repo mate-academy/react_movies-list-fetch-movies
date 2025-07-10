@@ -21,7 +21,10 @@ export const FindMovie: React.FC<Props> = ({ addToMovieList }) => {
     setNewMovie(null);
     setIsSearched(false);
     setIsError(false);
-    addToMovieList(newMovie!);
+
+    if (newMovie !== null) {
+      addToMovieList(newMovie);
+    }
   }
 
   const handleSearch = useCallback((key: string) => {

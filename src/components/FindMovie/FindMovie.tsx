@@ -4,7 +4,7 @@ import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
-import { ResponseError } from '../../types/ReponseError';
+import { ResponseError } from '../../types/RepsonseError';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
@@ -92,9 +92,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
               className={`input ${error ? 'is-danger' : ''}`}
               onChange={e => {
                 setTitle(e.target.value);
-                if (e) {
-                  setError('');
-                }
+                setError('');
               }}
             />
           </div>

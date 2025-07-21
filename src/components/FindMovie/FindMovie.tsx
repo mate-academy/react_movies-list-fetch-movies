@@ -1,10 +1,36 @@
 import React from 'react';
 import './FindMovie.scss';
+import { ResponseError } from '../../types/ResponseError';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+interface Props {
+  query: string;
+  onTyping: (query: string) => void;
+  onSearch: () => void;
+  loading: boolean;
+  error: ResponseError | undefined;
+  onAdd: () => void;
+  movie: Movie | null;
+}
+
+export const FindMovie: React.FC<Props> = ({
+  query,
+  onTyping,
+  onSearch,
+  loading,
+  error,
+  onAdd,
+  movie,
+}) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearch();
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={onSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -12,17 +38,21 @@ export const FindMovie: React.FC = () => {
 
           <div className="control">
             <input
+              value={query}
+              onChange={e => onTyping(e.target.value)}
               data-cy="titleField"
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${error ? 'is-danger' : ''}`}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {error.Error}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +60,34 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={`button is-light ${loading ? 'is-loading' : ''}`}
+              disabled={query.trim().length === 0}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={onAdd}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

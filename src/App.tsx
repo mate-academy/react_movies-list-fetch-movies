@@ -8,10 +8,10 @@ import { getMovie } from './api';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [query, setQuery] = useState('');
-  const [movie, setMovie] = useState();
+  const [movie, setMovie] = useState<null | Movie>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [findButtonDisabled, setFindButtonDisabled] = useState(true);
-  // const [addButtonDisabled, setAddButtonDisabled] = useState(true);
+  const [addButtonActive, setAddButtonActive] = useState(false);
 
   const defaultImg =
     'https://via.placeholder.com/360x270.png?text=no%20preview';
@@ -21,7 +21,7 @@ export const App = () => {
       title: response.Title,
       imgUrl: response.Poster === 'N/A' ? defaultImg : response.Poster,
       description: response.Plot,
-      imdbUrl: `https://www.imdb.com/title/${response.imdbID}/`,
+      imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
     };
   };
 
@@ -30,7 +30,9 @@ export const App = () => {
 
     if (movie && !isPresent) {
       setMovies([...movies, movie]);
-      setAddButtonDisabled(true);
+      setQuery('');
+      setMovie(null);
+      setAddButtonActive(false)
     }
   };
 
@@ -42,7 +44,7 @@ export const App = () => {
       if (res.Response === 'True') {
         setMovie(normalizeResponse(res));
         setErrorMessage('');
-        // console.log(res)
+         setAddButtonActive(true);
       } else {
         setErrorMessage('Error');
       }
@@ -76,7 +78,8 @@ export const App = () => {
           movie={movie}
           addMovie={addMovie}
           findButtonIsDisabled={findButtonDisabled}
-          // addButtonIsDisabled={addButtonDisabled}
+          addButtonIsActive={addButtonActive}
+          errorMessage={errorMessage}
         />
       </div>
     </div>

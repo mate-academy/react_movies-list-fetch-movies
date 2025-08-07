@@ -2,7 +2,7 @@ import React from 'react';
 import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = ({ onSearch, queryHandler, movie, addMovie, findButtonIsDisabled }) => {
+export const FindMovie: React.FC = ({ onSearch, queryHandler, movie, addMovie, findButtonIsDisabled, addButtonIsActive, errorMessage }) => {
   return (
     <>
       <form className="find-movie" onSubmit={onSearch}>
@@ -17,14 +17,14 @@ export const FindMovie: React.FC = ({ onSearch, queryHandler, movie, addMovie, f
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${errorMessage && 'is-danger'}`}
               onChange={queryHandler}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
+         { errorMessage &&  <p className="help is-danger" data-cy="errorMessage">
             Can&apos;t find a movie with such a title
-          </p>
+          </p>}
         </div>
 
         <div className="field is-grouped">
@@ -39,8 +39,7 @@ export const FindMovie: React.FC = ({ onSearch, queryHandler, movie, addMovie, f
               Find a movie
             </button>
           </div>
-
-          <div className="control">
+{addButtonIsActive && <div className="control">
             <button
               data-cy="addButton"
               type="button"
@@ -49,7 +48,8 @@ export const FindMovie: React.FC = ({ onSearch, queryHandler, movie, addMovie, f
             >
               Add to the list
             </button>
-          </div>
+          </div> }
+
         </div>
       </form>
 

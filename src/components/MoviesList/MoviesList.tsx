@@ -8,10 +8,11 @@ type Props = {
   movies: Movie[];
 };
 
-export const MoviesList: React.FC<Props> = ({ movies }) => (
+// eslint-disable-next-line react/display-name
+export const MoviesList = React.memo(({ movies }: Props) => (
   <div className="movies">
     {movies.map(movie => (
       <MovieCard key={movie.imdbId} movie={movie} />
     ))}
   </div>
-);
+));

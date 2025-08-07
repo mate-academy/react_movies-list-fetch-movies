@@ -1,10 +1,11 @@
 import React from 'react';
 import './FindMovie.scss';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+export const FindMovie: React.FC = ({ onSearch, queryHandler, movie, addMovie, findButtonIsDisabled }) => {
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={onSearch}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -17,6 +18,7 @@ export const FindMovie: React.FC = () => {
               id="movie-title"
               placeholder="Enter a title to search"
               className="input is-danger"
+              onChange={queryHandler}
             />
           </div>
 
@@ -31,6 +33,8 @@ export const FindMovie: React.FC = () => {
               data-cy="searchButton"
               type="submit"
               className="button is-light"
+              onClick={onSearch}
+              disabled={findButtonIsDisabled}
             >
               Find a movie
             </button>
@@ -41,6 +45,7 @@ export const FindMovie: React.FC = () => {
               data-cy="addButton"
               type="button"
               className="button is-primary"
+              onClick={addMovie}
             >
               Add to the list
             </button>
@@ -50,7 +55,7 @@ export const FindMovie: React.FC = () => {
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {movie && <MovieCard movie={movie} />}
       </div>
     </>
   );

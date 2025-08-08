@@ -12,6 +12,7 @@ type Props = {
   addButtonIsActive: boolean;
   errorMessage: boolean;
   isLoading: boolean;
+  query: string;
 };
 
 export const FindMovie: React.FC<Props> = ({
@@ -23,6 +24,7 @@ export const FindMovie: React.FC<Props> = ({
   addButtonIsActive,
   errorMessage,
   isLoading,
+  query,
 }) => {
   return (
     <>
@@ -40,6 +42,7 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className={`input ${errorMessage ? 'is-danger' : ''}`}
               onChange={queryHandler}
+              value={query}
             />
           </div>
 

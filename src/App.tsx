@@ -53,11 +53,12 @@ export const App = () => {
       if (res.Response === 'True') {
         setMovie(normalizeResponse(res));
         setAddButtonActive(true);
-        setIsLoading(false);
+
       } else {
         setErrorMessage(true);
-        setIsLoading(false);
       }
+    }).finally(() => {
+         setIsLoading(false);
     });
   };
 
@@ -93,6 +94,7 @@ export const App = () => {
           addButtonIsActive={addButtonActive}
           errorMessage={errorMessage}
           isLoading={isLoading}
+          query={query}
         />
       </div>
     </div>

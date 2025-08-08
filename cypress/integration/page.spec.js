@@ -6,7 +6,7 @@ const page = {
   mockNotFound: () => cy.intercept('*/www.omdbapi.com/*', { fixture: 'notFound' }),
 
   getByDataCy: name => cy.get(`[data-cy="${name}"]`),
-  
+
   titleField: () => page.getByDataCy('titleField'),
   errorMessage: () => page.getByDataCy('errorMessage'),
   searchButton: () => page.getByDataCy('searchButton'),
@@ -23,6 +23,7 @@ describe('Page by default', () => {
   beforeEach (() => {
     page.stubRequest();
     cy.visit ('/');
+
   });
 
   it('should not have movies', () => {
@@ -111,7 +112,7 @@ describe('FindMovie component', () => {
     page.searchButton()
       .should('not.have.class', 'is-loading');
   });
-  
+
   it('should show a spinner while waiting for the search results', () => {
     cy.clock();
     cy.intercept('*/www.omdbapi.com/*', (req) => {
@@ -176,7 +177,7 @@ describe('FindMovie component', () => {
     page.mockRogueOne();
     page.titleField().type('Rogue');
     page.searchButton().click();
-    
+
     page.previewContainer().should('exist');
   });
 
@@ -277,7 +278,7 @@ describe('Add button', () => {
   it('should add the found movie to the list', () =>{
     page.movieCards()
       .should('have.length', 1);
-  
+
     page.movieCards()
       .eq(0)
       .find('[data-cy="movieTitle"]')
@@ -302,7 +303,7 @@ describe('Add button', () => {
     page.addButton().click();
     page.movieCards()
       .should('have.length', 2);
-  
+
     page.movieCards()
       .eq(1)
       .find('[data-cy="movieTitle"]')
@@ -310,12 +311,12 @@ describe('Add button', () => {
   });
 
   it('should not add a movie twice', () => {
-    page.mockRogueOne();
-    page.titleField().type('Rogue{enter}');
-    page.addButton().click();
-    
-    page.movieCards().should('have.length', 1);
-  });
+  page.mockRogueOne();
+  page.titleField().type('Rogue{enter}');
+  page.addButton().click();
+
+  page.movieCards().should('have.length', 1);
+});
 
   it('should clear the form when submitting a duplicated movie', () => {
     page.mockRogueOne();

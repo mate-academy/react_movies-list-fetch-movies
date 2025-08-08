@@ -9,9 +9,10 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<null | Movie>(null);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(false);
   const [findButtonDisabled, setFindButtonDisabled] = useState(true);
   const [addButtonActive, setAddButtonActive] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const defaultImg =
     'https://via.placeholder.com/360x270.png?text=no%20preview';
@@ -22,31 +23,40 @@ export const App = () => {
       imgUrl: response.Poster === 'N/A' ? defaultImg : response.Poster,
       description: response.Plot,
       imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+      imdbId: response.imdbID,
     };
   };
 
   const addMovie = () => {
+    if (!movie) {
+      return;
+    }
+
     const isPresent = movies.some(m => m.imdbId === movie.imdbId);
 
-    if (movie && !isPresent) {
+    if (!isPresent) {
       setMovies([...movies, movie]);
-      setQuery('');
-      setMovie(null);
-      setAddButtonActive(false)
     }
+
+    setQuery('');
+    setMovie(null);
+    setAddButtonActive(false);
   };
 
   const onSearch = event => {
     event.preventDefault();
     const normalizedQuery = query.trim().toLowerCase();
 
+    setIsLoading(true);
+
     getMovie(normalizedQuery).then(res => {
       if (res.Response === 'True') {
         setMovie(normalizeResponse(res));
-        setErrorMessage('');
-         setAddButtonActive(true);
+        setAddButtonActive(true);
+        setIsLoading(false);
       } else {
-        setErrorMessage('Error');
+        setErrorMessage(true);
+        setIsLoading(false);
       }
     });
   };
@@ -56,14 +66,16 @@ export const App = () => {
 
   const queryHandler = event => {
     const value = event.target.value;
+
     setQuery(value);
+    setErrorMessage(false);
 
     if (value.trim() === '') {
       setFindButtonDisabled(true);
     } else {
       setFindButtonDisabled(false);
-  }
-};
+    }
+  };
 
   return (
     <div className="page">
@@ -80,6 +92,7 @@ export const App = () => {
           findButtonIsDisabled={findButtonDisabled}
           addButtonIsActive={addButtonActive}
           errorMessage={errorMessage}
+          isLoading={isLoading}
         />
       </div>
     </div>

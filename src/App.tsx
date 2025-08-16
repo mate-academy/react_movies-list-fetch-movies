@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -8,9 +8,6 @@ export const App = () => {
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [query, setQuery] = useState('');
-  const [debounceQuery, setDebounceQuery] = useState(query);
-
-  // useEffect({}, []);
 
   const handleInputOnChange = (inputValue: string) => {
     setQuery(inputValue);
@@ -21,10 +18,23 @@ export const App = () => {
   };
 
   const handleAddMovie = () => {
-    if (currentMovie) {
+    if (!currentMovie) {
+      return;
+    }
+
+    if (!movies.find(movie => movie.id === currentMovie.id)) {
       setMovies(prevMovies => [...prevMovies, currentMovie]);
     }
+
+    // console.log('Before setCurrentMovie:', !!currentMovie);
+    setCurrentMovie(null);
+    // console.log('After setCurrentMovie:', !!currentMovie);
+    setQuery('');
   };
+
+  const existingMovieIds = useMemo(() => {
+    return new Set(movies.map(movie => movie.id));
+  }, [movies]);
 
   return (
     <div className="page">
@@ -34,6 +44,7 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
+          movieIdsList={existingMovieIds}
           movie={currentMovie}
           query={query}
           onChange={handleInputOnChange}

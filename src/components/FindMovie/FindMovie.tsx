@@ -10,7 +10,7 @@ interface Props {
   movie: Movie | null;
   onSearch: (arg: Movie | null) => void;
   onChange: (arg: string) => void;
-  onAdd: (movie: Movie) => void;
+  onAdd: () => void;
 }
 
 export const FindMovie: React.FC<Props> = ({
@@ -43,7 +43,7 @@ export const FindMovie: React.FC<Props> = ({
         description: movieData.Plot,
         imgUrl:
           movieData.Poster === 'N/A'
-            ? 'https://placehold.co/300x445/222/fff?text=No+Poster'
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
             : movieData.Poster,
         imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
         imdbId: movieData.imdbID,
@@ -57,13 +57,12 @@ export const FindMovie: React.FC<Props> = ({
     }
   };
 
-  const handleAddModie = () => {
-    if (movie) {
-      onAdd(movie);
-      onSearch(null);
-      onChange('');
-    }
+  const handleInputChange = (inputValue: string) => {
+    onChange(inputValue);
+    setError(null);
   };
+
+  // console.log('FindMovie received movie:', movie);
 
   return (
     <>
@@ -80,8 +79,8 @@ export const FindMovie: React.FC<Props> = ({
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
-              onChange={e => onChange(e.currentTarget.value)}
+              className={cn('input', { 'is-danger': error })}
+              onChange={e => handleInputChange(e.currentTarget.value)}
             />
           </div>
 
@@ -110,7 +109,7 @@ export const FindMovie: React.FC<Props> = ({
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddModie()}
+                onClick={onAdd}
               >
                 Add to the list
               </button>
@@ -119,9 +118,7 @@ export const FindMovie: React.FC<Props> = ({
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        {movie && <MovieCard movie={movie} />}
-      </div>
+      {movie && <MovieCard movie={movie} />}
     </>
   );
 };

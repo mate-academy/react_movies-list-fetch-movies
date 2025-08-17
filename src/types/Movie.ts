@@ -1,7 +1,7 @@
 export interface Movie {
-  Title: string;
-  Plot: string;
-  Poster: string;
+  title: string;
+  description: string;
+  imgUrl: string;
   imdbUrl: string;
-  imdbID: string;
+  imdbId: string;
 }

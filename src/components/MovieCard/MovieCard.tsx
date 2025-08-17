@@ -6,28 +6,12 @@ type Props = {
   movie: Movie;
 };
 
-const DEFAULT_POSTER = 'https://placehold.co/360x270.png?text=no%20preview';
-
 export const MovieCard: React.FC<Props> = ({ movie }) => {
-  const handleImgSrcError = (
-    event: React.SyntheticEvent<HTMLImageElement, Event>,
-  ) => {
-    if (event.currentTarget.src !== DEFAULT_POSTER) {
-      // eslint-disable-next-line no-param-reassign
-      event.currentTarget.src = DEFAULT_POSTER;
-    }
-  };
-
   return (
     <div className="card" data-cy="movieCard">
       <div className="card-image">
         <figure className="image is-4by3">
-          <img
-            data-cy="moviePoster"
-            src={movie.Poster}
-            alt="Film logo"
-            onError={handleImgSrcError}
-          />
+          <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
         </figure>
       </div>
       <div className="card-content">
@@ -39,18 +23,15 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
           </div>
           <div className="media-content">
             <p className="title is-8" data-cy="movieTitle">
-              {movie.Title}
+              {movie.title}
             </p>
           </div>
         </div>
 
         <div className="content" data-cy="movieDescription">
-          {movie.Plot}
+          {movie.description}
           <br />
-          <a
-            href={`https://www.imdb.com/title/${movie.imdbID}`}
-            data-cy="movieURL"
-          >
+          <a href={movie.imdbUrl} data-cy="movieURL">
             IMDB
           </a>
         </div>

@@ -3,11 +3,25 @@ import './FindMovie.scss';
 import classNames from 'classnames';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
+import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 
 interface Props {
   moviesList: Movie[];
   onAddMovies: (value: Movie[]) => void;
+}
+
+const DEFAULT_POSTER_URL =
+  'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+function normalizeMovieData(data: MovieData): Movie {
+  return {
+    imdbId: data.imdbID,
+    title: data.Title,
+    description: data.Plot,
+    imgUrl: data.Poster === 'N/A' ? DEFAULT_POSTER_URL : data.Poster,
+    imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+  };
 }
 
 export const FindMovie: React.FC<Props> = ({ moviesList, onAddMovies }) => {
@@ -31,8 +45,11 @@ export const FindMovie: React.FC<Props> = ({ moviesList, onAddMovies }) => {
       .then(response => {
         if ('Response' in response && response.Response === 'False') {
           setErrorMessage(response.Error);
+          setMovie(null);
         } else {
-          setMovie(response as Movie);
+          const normalizedMovieData = normalizeMovieData(response as MovieData);
+
+          setMovie(normalizedMovieData);
         }
       })
       .finally(() => {
@@ -46,7 +63,7 @@ export const FindMovie: React.FC<Props> = ({ moviesList, onAddMovies }) => {
     }
 
     const movieExist = moviesList.some(
-      (item: Movie) => item.imdbID === movie.imdbID,
+      (item: Movie) => item.imdbId === movie.imdbId,
     );
 
     if (movieExist) {
@@ -83,7 +100,8 @@ export const FindMovie: React.FC<Props> = ({ moviesList, onAddMovies }) => {
 
           {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {/* Can&apos;t find a movie with such a title */}
+              {errorMessage}
             </p>
           )}
         </div>

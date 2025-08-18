@@ -1,7 +1,7 @@
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=fa1fd367';
+const API_URL = 'https://www.omdbapi.com/?apikey=fa1fd367';
 
 // https://www.omdbapi.com/?apikey=your-key
 

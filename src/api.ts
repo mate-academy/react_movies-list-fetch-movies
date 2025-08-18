@@ -1,5 +1,5 @@
 import { MovieData } from './types/MovieData';
-import { ResponseError } from './types/ReponseError';
+import { ResponseError } from './types/ResponseError';
 
 // const OMDBAPI_KEY = import.meta.env.VITE_OMDB_API_KEY;
 

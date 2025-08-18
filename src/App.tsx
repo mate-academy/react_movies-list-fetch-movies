@@ -22,13 +22,17 @@ export const App = () => {
       return;
     }
 
-    if (!movies.find(movie => movie.id === currentMovie.id)) {
+    const isMovieAlreadyAdded = movies.find(
+      movie => movie.id === currentMovie.id,
+    );
+
+    if (!isMovieAlreadyAdded) {
       setMovies(prevMovies => [...prevMovies, currentMovie]);
     }
 
-    // console.log('Before setCurrentMovie:', !!currentMovie);
+    console.log('Before setCurrentMovie:', !!currentMovie);
     setCurrentMovie(null);
-    // console.log('After setCurrentMovie:', !!currentMovie);
+    console.log('After setCurrentMovie:', !!currentMovie);
     setQuery('');
   };
 

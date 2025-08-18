@@ -62,8 +62,6 @@ export const FindMovie: React.FC<Props> = ({
     setError(null);
   };
 
-  // console.log('FindMovie received movie:', movie);
-
   return (
     <>
       <form className="find-movie" onSubmit={e => handleMovieSearch(e)}>
@@ -118,7 +116,11 @@ export const FindMovie: React.FC<Props> = ({
         </div>
       </form>
 
-      {movie && <MovieCard movie={movie} />}
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

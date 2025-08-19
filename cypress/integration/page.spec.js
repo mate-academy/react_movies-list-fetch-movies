@@ -6,7 +6,7 @@ const page = {
   mockNotFound: () => cy.intercept('*/www.omdbapi.com/*', { fixture: 'notFound' }),
 
   getByDataCy: name => cy.get(`[data-cy="${name}"]`),
-  
+
   titleField: () => page.getByDataCy('titleField'),
   errorMessage: () => page.getByDataCy('errorMessage'),
   searchButton: () => page.getByDataCy('searchButton'),
@@ -111,7 +111,7 @@ describe('FindMovie component', () => {
     page.searchButton()
       .should('not.have.class', 'is-loading');
   });
-  
+
   it('should show a spinner while waiting for the search results', () => {
     cy.clock();
     cy.intercept('*/www.omdbapi.com/*', (req) => {
@@ -176,7 +176,7 @@ describe('FindMovie component', () => {
     page.mockRogueOne();
     page.titleField().type('Rogue');
     page.searchButton().click();
-    
+
     page.previewContainer().should('exist');
   });
 
@@ -209,7 +209,7 @@ describe('FindMovie component', () => {
       .should('contain.text', 'In a time of conflict, a group of unlikely heroes band together on a mission to steal the plans to the Death Star, the Empire\'s ultimate weapon of destruction.');
 
     page.previewURL()
-      .should('have.attr', 'href', 'https://www.imdb.com/title/tt3748528');
+      .should('have.attr', 'href', 'https://www.imdb.com/title/tt3748528/');
 
     page.previewPoster()
       .should('have.attr', 'src', 'https://m.media-amazon.com/images/M/MV5BMjEwMzMxODIzOV5BMl5BanBnXkFtZTgwNzg3OTAzMDI@._V1_SX300.jpg');
@@ -226,7 +226,7 @@ describe('FindMovie component', () => {
       .should('contain.text', 'The brash James T. Kirk tries to live up to his father\'s legacy with Mr. Spock keeping him in check as a vengeful Romulan from the future creates black holes to destroy the Federation one planet at a time.');
 
     page.previewURL()
-      .should('have.attr', 'href', 'https://www.imdb.com/title/tt0796366');
+      .should('have.attr', 'href', 'https://www.imdb.com/title/tt0796366/');
 
     page.previewPoster()
       .should('have.attr', 'src', 'https://m.media-amazon.com/images/M/MV5BMjE5NDQ5OTE4Ml5BMl5BanBnXkFtZTcwOTE3NDIzMw@@._V1_SX300.jpg');
@@ -237,7 +237,7 @@ describe('FindMovie component', () => {
     page.titleField().type('Philosopher{enter}');
 
     page.previewPoster()
-      .should('have.attr', 'src', 'https://via.placeholder.com/360x270.png?text=no%20preview');
+      .should('have.attr', 'src', 'https://via.placeholder.com/300x450?text=No+Image');
   });
 
   it('should not show a preview if a movie is not found', () => {
@@ -277,7 +277,7 @@ describe('Add button', () => {
   it('should add the found movie to the list', () =>{
     page.movieCards()
       .should('have.length', 1);
-  
+
     page.movieCards()
       .eq(0)
       .find('[data-cy="movieTitle"]')
@@ -285,7 +285,7 @@ describe('Add button', () => {
   });
 
   it('should clear the title field', () => {
-    page.titleField().should('have.text', '');
+    page.titleField().should('have.value', '');
   });
 
   it('should hide the preview', () => {
@@ -302,7 +302,7 @@ describe('Add button', () => {
     page.addButton().click();
     page.movieCards()
       .should('have.length', 2);
-  
+
     page.movieCards()
       .eq(1)
       .find('[data-cy="movieTitle"]')
@@ -313,7 +313,7 @@ describe('Add button', () => {
     page.mockRogueOne();
     page.titleField().type('Rogue{enter}');
     page.addButton().click();
-    
+
     page.movieCards().should('have.length', 1);
   });
 
@@ -322,7 +322,7 @@ describe('Add button', () => {
     page.titleField().type('Rogue{enter}');
     page.addButton().click();
 
-    page.titleField().should('have.text', '');
+    page.titleField().should('have.value', '');
     page.previewContainer().should('not.exist');
     page.addButton().should('not.exist');
   });

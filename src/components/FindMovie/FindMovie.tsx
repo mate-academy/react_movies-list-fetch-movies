@@ -3,7 +3,7 @@ import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { getMovie } from '../../api';
-import { ResponseError } from '../../types/ReponseError';
+import { ResponseError } from '../../types/ResponseError';
 import { MemoMovieCard } from '../MovieCard';
 import classNames from 'classnames';
 

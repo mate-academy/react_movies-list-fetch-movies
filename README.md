@@ -1,3 +1,5 @@
+[DEMO LINK](https://vkrasnovyd.github.io/react_movies-list-fetch-movies/)
+
 # Movies list - Fetch movies
 
 > Here is [the working version](https://mate-academy.github.io/react_movies-list-fetch-movies/)

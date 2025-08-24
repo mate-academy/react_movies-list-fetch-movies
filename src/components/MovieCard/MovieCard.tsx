@@ -1,6 +1,7 @@
 import React from 'react';
 import { Movie } from '../../types/Movie';
 import './MovieCard.scss';
+import { defaultImageUrl } from '../../services/defaultImageUrl';
 
 type Props = {
   movie: Movie;
@@ -10,7 +11,17 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
-        <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
+        <img
+          data-cy="moviePoster"
+          src={movie.imgUrl}
+          alt="Film logo"
+          onError={(event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+            const img = event.currentTarget;
+
+            img.src = defaultImageUrl;
+            img.onerror = null;
+          }}
+        />
       </figure>
     </div>
     <div className="card-content">

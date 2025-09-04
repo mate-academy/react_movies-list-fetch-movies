@@ -7,6 +7,7 @@ import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
 
 import cn from 'classnames';
+import { MovieData } from '../../types/MovieData';
 
 type Props = {
   handleAddToList: (pickedMovie: Movie) => void;
@@ -30,12 +31,13 @@ export const FindMovie: React.FC<Props> = ({
   const getData = async (searchedMovie: string) => {
     try {
       setIsLoading(true);
-      const requestedData = await getMovie(searchedMovie);
+      const requestedData: MovieData = await getMovie(searchedMovie);
 
       if (
         !requestedData.Title.toUpperCase().includes(searchQuery.toUpperCase())
       ) {
         setIsError(true);
+        setIsLoading(false);
 
         return;
       }
@@ -54,9 +56,11 @@ export const FindMovie: React.FC<Props> = ({
       setPreviewMovie(normalizedMovieData);
     } catch (error) {
       setIsError(true);
-      throw error;
+      setIsLoading(false);
+      // throw error;
     } finally {
       setIsLoading(false);
+      setSearchQuery('');
     }
   };
 
@@ -72,11 +76,13 @@ export const FindMovie: React.FC<Props> = ({
       if (isDublicate) {
         setSearchQuery('');
         setPreviewMovie(null);
+        setSearchQuery('');
 
         return;
       }
 
       handleAddToList(previewMovie);
+      setSearchQuery('');
     }
 
     setPreviewMovie(null);

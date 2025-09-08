@@ -12,12 +12,8 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
       <figure className="image is-4by3">
         <img
           data-cy="moviePoster"
-          src={
-            !movie.imgUrl || movie.imgUrl === 'N/A'
-              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-              : movie.imgUrl
-          }
-          alt="Film logo"
+          src={movie.imgUrl}
+          alt={`${movie.title} poster`}
         />
       </figure>
     </div>

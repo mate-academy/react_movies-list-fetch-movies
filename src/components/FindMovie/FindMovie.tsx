@@ -24,11 +24,11 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    setLoading(true);
-
     const cleanedTitle = title
       .replace(/[^a-zA-Zа-яА-ЯёЁіїІЇєЄґҐ0-9 ]/g, '')
       .trim();
+
+    setLoading(true);
 
     getMovie(cleanedTitle)
       .then(data => {
@@ -40,6 +40,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
           setMovie(data as MovieData);
         }
       })
+      .catch(setErrorMessage)
       .finally(() => setLoading(false));
   }
 
@@ -47,7 +48,10 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
     return {
       title: data.Title,
       description: data.Plot,
-      imgUrl: data.Poster,
+      imgUrl:
+        !data.Poster || data.Poster === 'N/A'
+          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+          : data.Poster,
       imdbId: data.imdbID,
       imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
     };
@@ -57,6 +61,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
     if (movie && checkMovieAlreadyInList(movie.imdbID)) {
       setMovie(null);
       setTitle('');
+      setErrorMessage('');
 
       return;
     }
@@ -67,6 +72,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
 
     setMovie(null);
     setTitle('');
+    setErrorMessage('');
   }
 
   function changeTitle(event: React.ChangeEvent<HTMLInputElement>) {
@@ -110,7 +116,7 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
               className={classNames('button is-light', {
                 'is-loading': loading,
               })}
-              disabled={!title}
+              disabled={!title.trim()}
             >
               {movie ? 'Search again' : 'Find a movie'}
             </button>

@@ -1,10 +1,72 @@
-import React from 'react';
+import React, { FormEvent, useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { MovieCard } from '../MovieCard';
+import { MovieData } from '../../types/MovieData';
+import { ResponseError } from '../../types/ReponseError';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  onAddMovie: (movie: Movie) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+  // 1. Створення станів для назви фільму та даних про фільм
+  const [title, setTitle] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // 2. Обробник надсилання форми
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault(); // Запобігаємо перезавантаженню сторінки
+
+    if (!title.trim()) {
+      setErrorMessage('Please enter a movie title.');
+
+      return;
+    }
+
+    // 3. Скидаємо попередні помилки та встановлюємо стан завантаження
+    setErrorMessage('');
+    setIsLoading(true);
+
+    // 4. Викликаємо функцію getMovie та обробляємо Promise
+    getMovie(title)
+      .then((data: MovieData | ResponseError) => {
+        if ('Error' in data) {
+          setErrorMessage(data.Error);
+          setMovie(null);
+        } else {
+          const DEFAULT_POSTER =
+            'https://via.placeholder.com/360x270.png?text=no%20preview';
+          const poster =
+            data.Poster && data.Poster !== 'N/A' ? data.Poster : DEFAULT_POSTER;
+
+          const transformedMovie = {
+            title: data.Title,
+            description: data.Plot,
+            imgUrl: poster,
+            imdbUrl: `https://imdb.com/title/${data.imdbID}`,
+            imdbId: data.imdbID,
+          };
+
+          setMovie(transformedMovie);
+          setErrorMessage('');
+        }
+      })
+      .catch(() => {
+        setErrorMessage('An unexpected error occurred.');
+        setMovie(null);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +78,23 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${errorMessage ? 'is-danger' : ''}`}
+              value={title} // Прив'язка значення до стану
+              onChange={e => {
+                setTitle(e.target.value);
+                if (errorMessage) {
+                  setErrorMessage('');
+                }
+              }}
+              // Оновлення стану при зміні
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {errorMessage && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {errorMessage}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,27 +102,39 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={`button is-light ${isLoading ? 'is-loading' : ''}`}
+              disabled={!title.trim() || isLoading}
             >
-              Find a movie
+              {isLoading ? 'Searching...' : 'Find a movie'}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  if (movie) {
+                    onAddMovie(movie);
+                    setMovie(null);
+                    setTitle('');
+                    setErrorMessage('');
+                  }
+                }}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {isLoading && <p>Loading...</p>}
+        {movie && <MovieCard movie={movie} />}
       </div>
     </>
   );

@@ -5,27 +5,26 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies, setMovies] = useState<Movie[]>([]);
+    const [movies, setMovies] = useState<Movie[]>([]);
 
-  return (
-    <div className="page">
-      <div className="page-content">
-        <MoviesList movies={movies} />
+    return (
+      <div className="page">
+        <div className="page-content">
+          <MoviesList movies={movies}/>
+        </div>
+
+        <div className="sidebar">
+          <FindMovie
+            onAddMovie={(movie: Movie) => {
+              setMovies(prev => {
+                if (prev.some(m => m.imdbId === movie.imdbId)) {
+                  return prev;
+                }
+                return [...prev, movie];
+              });
+            }}
+          />
+        </div>
       </div>
-
-      <div className="sidebar">
-        <FindMovie
-          onAddMovie={movie => {
-            setMovies(prev => {
-              if (prev.some(m => m.imdbId === movie.imdbID)) {
-                return prev;
-              }
-
-              return [...prev, movie];
-            });
-          }}
-        />
-      </div>
-    </div>
-  );
-};
+    );
+}

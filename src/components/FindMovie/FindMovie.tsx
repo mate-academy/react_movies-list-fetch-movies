@@ -59,7 +59,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       })
       .finally(() => {
         setIsLoading(false);
-        setErrorMessage('');
       });
   };
 
@@ -101,29 +100,31 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
-              disabled={isLoading}
+              className={ `button is-light ${isLoading ? 'is-loading' : ''}` }
+              disabled={!title.trim() || isLoading}
             >
               {isLoading ? 'Searching...' : 'Find a movie'}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={() => {
-                if (movie) {
-                  onAddMovie(movie);
-                  setMovie(null);
-                  setTitle('');
-                }
-              }}
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  if (movie) {
+                    onAddMovie(movie);
+                    setMovie(null);
+                    setTitle('');
+                  }
+                }}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 

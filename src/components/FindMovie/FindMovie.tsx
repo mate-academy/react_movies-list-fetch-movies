@@ -28,6 +28,13 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
       .replace(/[^a-zA-Zа-яА-ЯёЁіїІЇєЄґҐ0-9 ]/g, '')
       .trim();
 
+    if (!cleanedTitle) {
+      setErrorMessage('Please enter a valid title');
+      setMovie(null);
+
+      return;
+    }
+
     setLoading(true);
 
     getMovie(cleanedTitle)
@@ -40,7 +47,9 @@ export const FindMovie: React.FC<Props> = ({ setMovies, movies }) => {
           setMovie(data as MovieData);
         }
       })
-      .catch(setErrorMessage)
+      .catch(err =>
+        setErrorMessage(err?.message ?? String(err) ?? 'Failed to fetch'),
+      )
       .finally(() => setLoading(false));
   }
 

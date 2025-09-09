@@ -22,17 +22,20 @@ export const FindMovie: React.FC<Props> = ({ onMovie }) => {
     setLoading(true);
     setError(null);
 
-    getMovie(query)
+    getMovie(query.trim())
       .then(data => {
         if ('Response' in data && data.Response === 'False') {
           setError(data.Error);
           setMovie(null);
         } else {
-          setMovie(normalizeMovie(data as MovieData));
+          const movieData = data as MovieData;
+
+          setMovie(normalizeMovie(movieData));
         }
       })
       .catch(() => {
         setError('Unexpected error');
+        setMovie(null);
       })
       .finally(() => setLoading(false));
   };
@@ -86,7 +89,7 @@ export const FindMovie: React.FC<Props> = ({ onMovie }) => {
               className={classNames('button is-light', {
                 'is-loading': loading,
               })}
-              disabled={!query || loading}
+              disabled={!query.trim() || loading}
             >
               Find a movie
             </button>

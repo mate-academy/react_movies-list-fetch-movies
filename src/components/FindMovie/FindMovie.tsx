@@ -38,13 +38,15 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
           setErrorMessage(data.Error);
           setMovie(null);
         } else {
+          const DEFAULT_POSTER =
+            'https://via.placeholder.com/360x270.png?text=no%20preview';
+          const poster =
+            data.Poster && data.Poster !== 'N/A' ? data.Poster : DEFAULT_POSTER;
+
           const transformedMovie = {
             title: data.Title,
             description: data.Plot,
-            imgUrl:
-              data.Poster === 'N/A'
-                ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-                : data.Poster,
+            imgUrl: poster,
             imdbUrl: `https://imdb.com/title/${data.imdbID}`,
             imdbId: data.imdbID,
           };
@@ -100,7 +102,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={ `button is-light ${isLoading ? 'is-loading' : ''}` }
+              className={`button is-light ${isLoading ? 'is-loading' : ''}`}
               disabled={!title.trim() || isLoading}
             >
               {isLoading ? 'Searching...' : 'Find a movie'}
@@ -118,6 +120,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
                     onAddMovie(movie);
                     setMovie(null);
                     setTitle('');
+                    setErrorMessage('');
                   }
                 }}
               >

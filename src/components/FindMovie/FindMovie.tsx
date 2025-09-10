@@ -1,64 +1,42 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
-import { Movie } from '../../types/Movie';
-import { MovieData } from '../../types/MovieData';
-import classNames from 'classnames';
-import { getMovie } from '../../api';
 import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
+import cls from 'classnames';
 
 type Props = {
+  onSubmit: (query: string) => void;
   onAdd: (movie: Movie) => void;
+  movie: Movie | null;
+  error: boolean;
+  loader?: boolean; // Optional prop for loading state
+  onInputChange?: () => void;
 };
 
-function normalizeMovieData(data: MovieData): Movie {
-  return {
-    title: data.Title,
-    description: data.Plot,
-    imgUrl:
-      data.Poster != 'N/A'
-        ? data.Poster
-        : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-    imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
-    imdbId: data.imdbID,
-  };
-}
+export const FindMovie: React.FC<Props> = ({
+  onSubmit,
+  onAdd,
+  movie,
+  error,
+  loader,
+  onInputChange,
+}) => {
+  const [query, setQuery] = useState<string>('');
 
-export const FindMovie: React.FC<Props> = ({ onAdd }) => {
-  const [error, setError] = useState('');
-  const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const [movie, setMovie] = useState<Movie | null>(null);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (query) {
-      setLoading(true);
-
-      getMovie(query)
-        .then(data => {
-          if ('Response' in data && data.Response === 'False') {
-            setError(data.Error);
-          } else {
-            const newMovie = normalizeMovieData(data as MovieData);
-
-            setMovie(newMovie);
-          }
-        })
-        .finally(() => setLoading(false));
+    if (query.trim()) {
+      onSubmit(query.trim());
+      setQuery('');
     }
   };
 
-  const handleAddMovie = (newMovie: Movie) => {
-    onAdd(newMovie);
-    setMovie(null);
-    setQuery('');
-  };
+  const handleAddBtnClick = () => {
+    if (movie) {
+      onAdd(movie);
+    }
 
-  const handleQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    setError('');
+    setQuery('');
   };
 
   return (
@@ -73,10 +51,15 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               data-cy="titleField"
               type="text"
               id="movie-title"
-              placeholder="Enter a title to search"
-              className={classNames('input', { 'is-danger': error })}
               value={query}
-              onChange={handleQuery}
+              onChange={e => {
+                setQuery(e.target.value);
+                if (onInputChange) {
+                  onInputChange();
+                }
+              }}
+              placeholder="Enter a title to search"
+              className="input is-danger"
             />
           </div>
 
@@ -90,16 +73,24 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
         <div className="field is-grouped">
           <div className="control">
             <button
+              disabled={query.length === 0}
               data-cy="searchButton"
               type="submit"
-              className={classNames('button is-light', {
-                'is-loading': loading,
-              })}
-              disabled={!query}
+              className={cls('button is-light ', { 'is-loading': loader })}
             >
               Find a movie
             </button>
           </div>
+
+          {loader && (
+            <div className="control">
+              <button className="button is-loading" disabled>
+                Loading...
+              </button>
+            </div>
+          )}
+
+          {/* Show Add button only if movie details are available */}
 
           {movie && (
             <div className="control">
@@ -107,7 +98,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
-                onClick={() => handleAddMovie(movie)}
+                onClick={handleAddBtnClick}
               >
                 Add to the list
               </button>

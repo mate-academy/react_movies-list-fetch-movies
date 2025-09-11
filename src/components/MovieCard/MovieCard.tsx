@@ -10,7 +10,16 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
   <div className="card" data-cy="movieCard">
     <div className="card-image">
       <figure className="image is-4by3">
-        <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
+        <img
+          data-cy="moviePoster"
+          src={movie.imgUrl}
+          alt="Film logo"
+          // onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+          //   const img = e.currentTarget;
+
+          //   img.src = 'https://placehold.co/360x270?text=error+preview';
+          // }}
+        />
       </figure>
     </div>
     <div className="card-content">

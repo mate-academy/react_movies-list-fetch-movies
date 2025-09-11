@@ -12,6 +12,8 @@ type Props = {
   movies: Movie[];
 };
 
+const DEFAULT_URL = 'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 export const FindMovie: React.FC<Props> = ({ onMovies, movies }) => {
   const [query, setQuery] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -38,8 +40,8 @@ export const FindMovie: React.FC<Props> = ({ onMovies, movies }) => {
             title: response.Title,
             description: response.Plot,
             imgUrl:
-              response.Poster === 'N/A'
-                ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              !response.Poster || response.Poster === 'N/A'
+                ? DEFAULT_URL
                 : response.Poster,
             imdbUrl: 'https://www.imdb.com/title/' + response.imdbID,
             imdbId: response.imdbID,
@@ -63,6 +65,11 @@ export const FindMovie: React.FC<Props> = ({ onMovies, movies }) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (query.trim() === '' || loading) {
+      return;
+    }
+
     handleSearch(query);
   };
 

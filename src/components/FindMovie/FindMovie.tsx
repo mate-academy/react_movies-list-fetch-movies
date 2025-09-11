@@ -4,7 +4,6 @@ import './FindMovie.scss';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 import { Movie } from '../../types/Movie';
-import { MovieData } from '../../types/MovieData';
 import { mapMovie } from '../../utils/mapMovie';
 
 type Props = {
@@ -37,7 +36,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
       if ('Response' in data && data.Response === 'False') {
         showError("Can't find a movie with such a title");
       } else {
-        setMovie(mapMovie(data as MovieData));
+        setMovie(mapMovie(data));
       }
     } finally {
       setLoading(false);

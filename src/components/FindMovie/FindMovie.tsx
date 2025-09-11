@@ -19,7 +19,7 @@ export const FindMovie: React.FC<Props> = ({ onMovies, movies }) => {
   const [error, setError] = useState('');
 
   const handleAddMovie = (mov: Movie) => {
-    if (!movies.find(a => a.imdbId === movie?.imdbId)) {
+    if (!movies.find(a => a.imdbId === mov.imdbId)) {
       onMovies(prev => [...prev, mov]);
     }
 
@@ -61,7 +61,7 @@ export const FindMovie: React.FC<Props> = ({ onMovies, movies }) => {
     setError('');
   };
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     handleSearch(query);
   };
@@ -98,7 +98,7 @@ export const FindMovie: React.FC<Props> = ({ onMovies, movies }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              disabled={query === ''}
+              disabled={query === '' || loading}
               className={classNames('button is-light', {
                 'is-loading': loading,
               })}

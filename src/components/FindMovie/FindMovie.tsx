@@ -4,7 +4,6 @@ import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
-//import { ResponseError } from '../../types/ReponseError';
 
 const DEFAULT_IMG = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
@@ -45,7 +44,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, moviesInList }) => {
     setMoviePreview(null);
 
     try {
-      const rawData = await getMovie(query);
+      const rawData = await getMovie(query.trim());
 
       if ('Response' in rawData && rawData.Response === 'False') {
         throw new Error(rawData.Error);
@@ -100,7 +99,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, moviesInList }) => {
               onChange={e => {
                 setQuery(e.target.value);
                 setError(null);
-                if (moviePreview && moviePreview.title !== e.target.value) {
+                if (moviePreview) {
                   setMoviePreview(null);
                 }
               }}

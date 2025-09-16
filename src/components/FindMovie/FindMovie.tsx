@@ -4,7 +4,7 @@ import { getMovie } from '../../api';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 import { Movie } from '../../types/Movie';
-import { ResponseError } from '../../types/ReponseError';
+//import { ResponseError } from '../../types/ReponseError';
 
 const DEFAULT_IMG = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
@@ -29,8 +29,11 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, moviesInList }) => {
     return {
       title: rawMovieData.Title,
       description: rawMovieData.Plot,
-      imgUrl: rawMovieData.Poster === 'N/A' ? DEFAULT_IMG : rawMovieData.Poster,
-      imdbUrl: 'https://www.imdb.com/title/${rawMovieData.imdbID}/',
+      imgUrl:
+        !rawMovieData.Poster || rawMovieData.Poster === 'N/A'
+          ? DEFAULT_IMG
+          : rawMovieData.Poster,
+      imdbUrl: `https://www.imdb.com/title/${rawMovieData.imdbID}/`,
       imdbId: rawMovieData.imdbID,
     };
   };
@@ -45,8 +48,6 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, moviesInList }) => {
       const rawData = await getMovie(query);
 
       if ('Response' in rawData && rawData.Response === 'False') {
-        const errorData = rawData as ResponseError;
-
         throw new Error(rawData.Error);
       }
 
@@ -72,12 +73,11 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, moviesInList }) => {
       );
 
       if (isDuplicate) {
-        alert('This movie is already in your list!');
+        clearForm();
       } else {
         onAddMovie(moviePreview);
+        clearForm();
       }
-
-      clearForm();
     }
   };
 
@@ -99,7 +99,10 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie, moviesInList }) => {
               value={query}
               onChange={e => {
                 setQuery(e.target.value);
-                if (error) setError(null);
+                setError(null);
+                if (moviePreview && moviePreview.title !== e.target.value) {
+                  setMoviePreview(null);
+                }
               }}
             />
           </div>

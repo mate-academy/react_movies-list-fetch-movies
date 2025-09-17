@@ -70,6 +70,7 @@ const FindMovieComponent: React.FC<Props> = ({ setMovie }) => {
       );
       setCurrentMovie(null);
       setQuery('');
+      setError('');
     }
   };
 
@@ -98,7 +99,7 @@ const FindMovieComponent: React.FC<Props> = ({ setMovie }) => {
 
           {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {error}
             </p>
           )}
         </div>

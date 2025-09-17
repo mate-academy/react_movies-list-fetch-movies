@@ -1,10 +1,10 @@
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'https://www.omdbapi.com/?apikey=7d62e7bc';
+const API_URL = `https://www.omdbapi.com/?apikey=${process.env.REACT_APP_OMDB_API_KEY}`;
 
 export function getMovie(query: string): Promise<MovieData | ResponseError> {
-  return fetch(`${API_URL}&t=${query}`)
+  return fetch(`${API_URL}&t=${encodeURIComponent(query)}`)
     .then(res => res.json())
     .catch(() => ({
       Response: 'False',

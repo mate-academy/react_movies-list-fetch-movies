@@ -1,10 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  onAdd: (movie: Movie) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+  const [title, setTitle] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [foundMovie, setFoundMovie] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    if (!title) {
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage('');
+    setFoundMovie(null);
+    getMovie(title)
+      .then(response => {
+        if (response.Response === 'False') {
+          setErrorMessage('Can`t find a movie with such a title');
+        } else {
+          setFoundMovie(response);
+        }
+      })
+      .finally(() => setLoading(false));
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form onSubmit={handleSubmit} className="find-movie">
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +48,22 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={
+                errorMessage.length === 0 ? 'input' : 'input is-danger'
+              }
+              value={title}
+              onChange={e => {
+                setTitle(e.target.value);
+                setErrorMessage('');
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {errorMessage && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {errorMessage}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,27 +71,58 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={`button is-light ${loading ? 'is-loading' : ''}`}
+              disabled={loading || title.trim() === ''}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {foundMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={e => {
+                  e.preventDefault();
+
+                  const normalizedMovie = {
+                    title: foundMovie.Title,
+                    description: foundMovie.Plot,
+                    imgUrl: foundMovie.Poster,
+                    imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
+                    imdbId: foundMovie.imdbID,
+                  };
+
+                  onAdd(normalizedMovie);
+                  setTitle('');
+                  setFoundMovie(null);
+                }}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {foundMovie && (
+          <MovieCard
+            movie={{
+              title: foundMovie.Title,
+              description: foundMovie.Plot,
+              imgUrl:
+                foundMovie.Poster !== 'N/A'
+                  ? foundMovie.Poster
+                  : 'https://via.placeholder.com/300x450?text=No+Image',
+              imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
+              imdbId: foundMovie.imdbID,
+            }}
+          />
+        )}
       </div>
     </>
   );

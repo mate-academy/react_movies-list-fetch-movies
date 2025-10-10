@@ -26,9 +26,12 @@ export const App = () => {
 
       if ('Error' in movie) {
         setIsError(true);
+        setFoundMovie(null);
 
         return;
       }
+
+      setIsError(false);
 
       setFoundMovie({
         title: movie.Title,
@@ -60,12 +63,16 @@ export const App = () => {
 
     if (exists) {
       setFoundMovie(null);
+      setQuery('');
+      setIsError(false);
 
       return;
     }
 
     setMovies([...movies, foundMovie]);
     setFoundMovie(null);
+    setIsError(false);
+    setQuery('');
   };
 
   return (

@@ -87,6 +87,8 @@ export const FindMovie: React.FC<Props> = ({
                 onClick={() => {
                   onAddMovie();
                   setInputValue('');
+                  handleSetQuery('');
+                  setError(false);
                 }}
               >
                 Add to the list

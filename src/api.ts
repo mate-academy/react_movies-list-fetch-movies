@@ -6,7 +6,13 @@ const API_URL = `https://www.omdbapi.com/?apikey=${API_KEY}`;
 
 export function getMovie(query: string): Promise<MovieData | ResponseError> {
   return fetch(`${API_URL}&t=${encodeURIComponent(query.trim())}`)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) {
+        return { Response: 'False', Error: res.statusText || 'request failed' };
+      }
+
+      return res.json();
+    })
     .catch(() => ({
       Response: 'False',
       Error: 'unexpected error',

@@ -33,6 +33,10 @@ export const FindMovie: React.FC<Props> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (inputValue.trim().length === 0) {
+      return;
+    }
+
     onMovieSearch();
   };
 
@@ -68,7 +72,7 @@ export const FindMovie: React.FC<Props> = ({
             <button
               data-cy="searchButton"
               type="submit"
-              disabled={inputValue.length < 1}
+              disabled={inputValue.trim().length < 1}
               className={classNames('button', {
                 'is-light': inputValue,
                 'is-loading': onLoading,

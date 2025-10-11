@@ -8,19 +8,19 @@ export const App = () => {
   const [movies, setMovie] = useState<Movie[]>([]);
 
   const getAddMovie = (newMovie: Movie) => {
-    setMovie(cureentMovie => {
-      if (movies.find(move => move.imdbId === newMovie.imdbId)) {
-        return cureentMovie;
+    setMovie(cureentMovies => {
+      if (cureentMovies.find(move => move.imdbId === newMovie.imdbId)) {
+        return cureentMovies;
       }
 
-      return [...cureentMovie, newMovie];
+      return [...cureentMovies, newMovie];
     });
   };
 
   return (
     <div className="page">
       <div className="page-content">
-        {movies && <MoviesList movies={movies} />}
+        <MoviesList movies={movies} />
       </div>
 
       <div className="sidebar">

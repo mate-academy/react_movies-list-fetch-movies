@@ -28,7 +28,7 @@ export const FindMovie: React.FC<Props> = ({ getAddMovie }) => {
     event.preventDefault();
     setLoading(true);
 
-    getMovie(title)
+    getMovie(title.trim())
       .then(data => {
         if (isError(data)) {
           throw new Error((data as ResponseError).Error);
@@ -91,7 +91,7 @@ export const FindMovie: React.FC<Props> = ({ getAddMovie }) => {
               className={cn('button is-light', {
                 'is-loading': loading,
               })}
-              disabled={title.length === 0}
+              disabled={title.trim().length === 0}
             >
               Find a movie
             </button>

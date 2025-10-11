@@ -7,17 +7,13 @@ const API_URL = 'https://www.omdbapi.com/?apikey=932e507';
 export function getMovieInfo(imdbData: MovieData): Promise<Movie> {
   return fetch(`${API_URL}&i=${imdbData.imdbID}`)
     .then(res => {
-      if (!res.ok) {
-        throw new Error('Network error');
-      }
-
       return res.json();
     })
     .then((data: MovieData) => ({
       title: data.Title,
       description: data.Plot,
       imgUrl:
-        data.Poster === 'N/A'
+        data.Poster === 'N/A' || !data.Poster
           ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
           : data.Poster,
       imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,

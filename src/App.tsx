@@ -5,15 +5,15 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies, setMovie] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
 
   const getAddMovie = (newMovie: Movie) => {
-    setMovie(cureentMovies => {
-      if (cureentMovies.find(move => move.imdbId === newMovie.imdbId)) {
-        return cureentMovies;
+    setMovies(currentMovies => {
+      if (currentMovies.find(m => m.imdbId === newMovie.imdbId)) {
+        return currentMovies;
       }
 
-      return [...cureentMovies, newMovie];
+      return [...currentMovies, newMovie];
     });
   };
 

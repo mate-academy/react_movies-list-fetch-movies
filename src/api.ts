@@ -1,8 +1,9 @@
 import { MovieData } from './types/MovieData';
-import { ResponseError } from './types/ReponseError';
+import { ResponseError } from './types/ResponseError';
 import { Movie } from './types/Movie';
 
 const API_URL = 'https://www.omdbapi.com/?apikey=932e507';
+const PLACEHOLDER = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 export function getMovieInfo(imdbData: MovieData): Promise<Movie> {
   return fetch(`${API_URL}&i=${imdbData.imdbID}`)
@@ -12,10 +13,7 @@ export function getMovieInfo(imdbData: MovieData): Promise<Movie> {
     .then((data: MovieData) => ({
       title: data.Title,
       description: data.Plot,
-      imgUrl:
-        data.Poster === 'N/A' || !data.Poster
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : data.Poster,
+      imgUrl: data.Poster === 'N/A' || !data.Poster ? PLACEHOLDER : data.Poster,
       imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
       imdbId: data.imdbID,
     }));

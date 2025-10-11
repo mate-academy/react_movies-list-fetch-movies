@@ -5,7 +5,7 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { getMovie, getMovieInfo, isError } from '../../api';
 import { MovieData } from '../../types/MovieData';
-import { ResponseError } from '../../types/ReponseError';
+import { ResponseError } from '../../types/ResponseError';
 
 type Props = {
   getAddMovie: (movie: Movie) => void;

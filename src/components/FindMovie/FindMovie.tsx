@@ -5,14 +5,23 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  onAdd: (movie: Movie) => void;
+  movies: Movie[];
+  setMovies: (prev: Movie[]) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const [foundMovie, setFoundMovie] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const handleAddMovie = (movie: Movie): void => {
+    if (movies.some(m => m.imdbId === movie.imdbId)) {
+      return;
+    }
+
+    setMovies(prev => [...prev, movie]);
+  };
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -90,14 +99,18 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
                   const normalizedMovie = {
                     title: foundMovie.Title,
                     description: foundMovie.Plot,
-                    imgUrl: foundMovie.Poster,
+                    imgUrl:
+                      foundMovie.Poster ||
+                      'https://via.placeholder.com/' +
+                        '360x270.png?text=no%20preview',
                     imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
                     imdbId: foundMovie.imdbID,
                   };
 
-                  onAdd(normalizedMovie);
+                  handleAddMovie(normalizedMovie);
                   setTitle('');
                   setFoundMovie(null);
+                  setErrorMessage('');
                 }}
               >
                 Add to the list
@@ -117,7 +130,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd }) => {
               imgUrl:
                 foundMovie.Poster !== 'N/A'
                   ? foundMovie.Poster
-                  : 'https://via.placeholder.com/300x450?text=No+Image',
+                  : 'https://via.placeholder.com/360x270.png?text=no%20preview',
               imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
               imdbId: foundMovie.imdbID,
             }}

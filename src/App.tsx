@@ -7,14 +7,6 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const handleAddMovie = movie => {
-    if (movies.some(m => m.imdbId === movie.imdbId)) {
-      return;
-    }
-
-    setMovies([...movies, movie]);
-  };
-
   return (
     <div className="page">
       <div className="page-content">
@@ -22,7 +14,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie onAdd={handleAddMovie} />
+        <FindMovie movies={movies} setMovies={setMovies} />
       </div>
     </div>
   );

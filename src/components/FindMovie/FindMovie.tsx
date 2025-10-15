@@ -6,13 +6,13 @@ import { MovieCard } from '../MovieCard';
 
 type Props = {
   movies: Movie[];
-  setMovies: (prev: Movie[]) => void;
+  setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
 };
 
 export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
-  const [foundMovie, setFoundMovie] = useState(null);
+  const [foundMovie, setFoundMovie] = useState<Movie | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleAddMovie = (movie: Movie): void => {
@@ -23,7 +23,7 @@ export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
     setMovies(prev => [...prev, movie]);
   };
 
-  const handleSubmit = event => {
+  const handleSubmit: React.FormEvent<HTMLFormElement> = event => {
     event.preventDefault();
     if (!title) {
       return;

@@ -1,29 +1,69 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
-import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
+import { getMovie } from '../../api';
+import { MovieData } from '../../types/MovieData';
+import { ResponseError } from '../../types/ReponseError';
 
 interface Props {
-  query: string;
-  setQuery: (query: string) => void;
-  movieData: MovieData | null;
-  loading: boolean;
-  onSubmit: (event: React.FormEvent) => void;
-  movieError: string;
-  addMovie: (movie: MovieData) => void;
-  errorMessage: string;
+  onAdd: (movie: Movie) => void;
 }
 
-export const FindMovie: React.FC<Props> = ({
-  query,
-  setQuery,
-  movieData,
-  loading,
-  onSubmit,
-  movieError,
-  addMovie,
-  errorMessage,
-}) => {
+const POSTER_FALLBACK = 'https://via.placeholder.com/300x445?text=No+Poster';
+
+function normalizeMovie(d: MovieData) {
+  return {
+    title: d.Title,
+    description: d.Plot,
+    imgUrl: d.Poster && d.Poster !== 'N/A' ? d.Poster : POSTER_FALLBACK,
+    imdbUrl: `https://www.imdb.com/title/${d.imdbID}`,
+    imdbId: d.imdbID,
+  };
+}
+
+function isError(x: MovieData | ResponseError): x is ResponseError {
+  return (x as ResponseError).Response === 'False';
+}
+
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [preview, setPreview] = useState<Movie | null>(null);
+  const [query, setQuery] = useState('');
+
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+
+    getMovie(query)
+      .then(data => {
+        if (isError(data)) {
+          setErrorMessage(data.Error || 'Movie not found');
+          setPreview(null);
+
+          return;
+        } else {
+          setPreview(normalizeMovie(data));
+        }
+      })
+      .catch(error => setErrorMessage(String(error)))
+      .finally(() => setLoading(false));
+    setQuery('');
+  };
+
+  const handleAdd = () => {
+    if (!preview) {
+      return;
+    }
+
+    onAdd(preview);
+
+    setErrorMessage('');
+    setLoading(false);
+    setQuery('');
+  };
+
   return (
     <>
       <form className="find-movie" onSubmit={event => onSubmit(event)}>
@@ -45,14 +85,14 @@ export const FindMovie: React.FC<Props> = ({
           </div>
 
           <p className="help is-danger" data-cy="errorMessage">
-            {movieError ? `Can&apos;t find a movie with such a title` : ''}
+            {errorMessage && `Can&apos;t find a movie with such a title`}
           </p>
         </div>
 
         <div className="field is-grouped">
           <div className="control">
             <button
-              disabled={query ? false : true}
+              disabled={!query.trim() || loading}
               data-cy="searchButton"
               type="submit"
               className={
@@ -64,17 +104,15 @@ export const FindMovie: React.FC<Props> = ({
           </div>
 
           <div className="control">
-            {movieData ? (
+            {preview && (
               <button
-                onClick={() => addMovie(movieData)}
+                onClick={handleAdd}
                 data-cy="addButton"
                 type="button"
                 className="button is-primary"
               >
                 Add to the list
               </button>
-            ) : (
-              ''
             )}
           </div>
         </div>
@@ -82,7 +120,7 @@ export const FindMovie: React.FC<Props> = ({
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {movieData ? <MovieCard movie={movieData} /> : ''}
+        {preview && <MovieCard movie={preview} />}
       </div>
     </>
   );

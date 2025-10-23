@@ -1,57 +1,107 @@
-import React from 'react';
-import './FindMovie.scss';
+import { useState } from 'react';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieData } from '../../types/MovieData';
+import { MovieCard } from '../MovieCard/MovieCard';
 
-export const FindMovie: React.FC = () => {
+const DEFAULT_POSTER =
+  'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+type Props = {
+  movies: Movie[];
+  setMovies: React.Dispatch<React.SetStateAction<Movie[]>>;
+};
+
+export const FindMovie: React.FC<Props> = ({ movies, setMovies }) => {
+  const [title, setTitle] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [preview, setPreview] = useState<Movie | null>(null);
+
+  const normalizeMovie = (data: MovieData): Movie => ({
+    title: data.Title,
+    description: data.Plot,
+    imgUrl: data.Poster && data.Poster !== 'N/A' ? data.Poster : DEFAULT_POSTER,
+    imdbUrl: `https://www.imdb.com/title/${data.imdbID}/`,
+    imdbId: data.imdbID,
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) {
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+    setPreview(null);
+
+    try {
+      const result = await getMovie(title.trim());
+
+      if ('Error' in result) {
+        setError(result.Error);
+      } else {
+        const normalized = normalizeMovie(result);
+
+        setPreview(normalized);
+      }
+    } catch {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAdd = () => {
+    if (!preview) {
+      return;
+    }
+
+    const alreadyExists = movies.some(m => m.imdbId === preview.imdbId);
+
+    if (!alreadyExists) {
+      setMovies(prev => [...prev, preview]);
+    }
+
+    setTitle('');
+    setPreview(null);
+    setError('');
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    if (error) {
+      setError('');
+    }
+  };
+
   return (
-    <>
-      <form className="find-movie">
-        <div className="field">
-          <label className="label" htmlFor="movie-title">
-            Movie title
-          </label>
-
-          <div className="control">
-            <input
-              data-cy="titleField"
-              type="text"
-              id="movie-title"
-              placeholder="Enter a title to search"
-              className="input is-danger"
-            />
-          </div>
-
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
-        </div>
-
-        <div className="field is-grouped">
-          <div className="control">
-            <button
-              data-cy="searchButton"
-              type="submit"
-              className="button is-light"
-            >
-              Find a movie
-            </button>
-          </div>
-
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
-        </div>
+    <div className="find-movie">
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          value={title}
+          onChange={handleTitleChange}
+          placeholder="Enter movie title"
+        />
+        <button
+          type="submit"
+          disabled={!title.trim()}
+          className={isLoading ? 'is-loading' : ''}
+        >
+          Search
+        </button>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
-    </>
+      {error && <p className="error-message">{error}</p>}
+
+      {preview && (
+        <div className="preview">
+          <MovieCard movie={preview} />
+          <button onClick={handleAdd}>Add</button>
+        </div>
+      )}
+    </div>
   );
 };

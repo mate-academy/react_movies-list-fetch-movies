@@ -1,22 +1,24 @@
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'http://www.omdbapi.com/?&apikey=ff39506f';
+const API_URL = 'https://www.omdbapi.com/?&apikey=ff39506f';
 
 export async function getMovie(
   query: string,
 ): Promise<MovieData | ResponseError> {
-  const res = await fetch(`${API_URL}&t=${query}`);
+  try {
+    const res = await fetch(`${API_URL}&t=${encodeURIComponent(query.trim())}`);
+    const data = await res.json();
 
-  if (!res.ok) {
-    throw new Error('error');
+    if (!res.ok) {
+      return {
+        Response: 'False',
+        Error: `HTTP ${res.status} ${res.statusText}`,
+      };
+    }
+
+    return data as MovieData | ResponseError;
+  } catch {
+    return { Response: 'False', Error: 'Network Error, try again' };
   }
-
-  const data = (await res.json()) as ResponseError;
-
-  if (data.Response == 'False') {
-    throw new Error(data.Error || 'Error');
-  }
-
-  return data;
 }

@@ -6,10 +6,10 @@ type Props = {
   movie: Movie;
 };
 
-const imdbURL = "https://www.imdb.com/pt/title";
+const imdbURL = 'https://www.imdb.com/pt/title';
 
 export const MovieCard: React.FC<Props> = ({ movie }) => {
-  return(
+  return (
     <div className="card" data-cy="movieCard">
       <div className="card-image">
         <figure className="image is-4by3">
@@ -29,7 +29,7 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
             </p>
           </div>
         </div>
-  
+
         <div className="content" data-cy="movieDescription">
           {movie.description}
           <br />
@@ -40,4 +40,4 @@ export const MovieCard: React.FC<Props> = ({ movie }) => {
       </div>
     </div>
   );
-}
+};

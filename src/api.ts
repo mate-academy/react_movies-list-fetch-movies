@@ -1,7 +1,9 @@
 import { MovieData } from './types/MovieData';
 import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'https://www.omdbapi.com/?apikey=your-key';
+const API_URL = 'https://www.omdbapi.com/?apikey=409a78f4';
+
+// const API_URL = 'http://www.omdbapi.com/?i=tt3896198&apikey=409a78f4';
 
 export function getMovie(query: string): Promise<MovieData | ResponseError> {
   return fetch(`${API_URL}&t=${query}`)
@@ -11,3 +13,6 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
       Error: 'unexpected error',
     }));
 }
+// export function getMovie(query: string): Promise<MovieData | ResponseError> {
+//   return fetch(`${API_URL}&t=${query}`).then(res => res.json());
+// }

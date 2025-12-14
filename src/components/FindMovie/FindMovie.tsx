@@ -37,7 +37,7 @@ export const FindMovie: React.FC = ({ onChangeMovies }) => {
             description: movieData.Plot,
             imgUrl:
               movieData.Poster.startsWith('http://') ||
-              movieData.Poster.startsWith('https://')
+                movieData.Poster.startsWith('https://')
                 ? movieData.Poster
                 : 'https://via.placeholder.com/360x270.png?text=no%20preview',
             imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
@@ -54,6 +54,10 @@ export const FindMovie: React.FC = ({ onChangeMovies }) => {
   };
 
   const handleAddToList = () => {
+    if (!movie) {
+      return;
+    }
+
     onChangeMovies((oldMovies: Movie[]) => {
       if (oldMovies.find(m => m.imdbId === movie?.imdbId)) {
         return oldMovies;

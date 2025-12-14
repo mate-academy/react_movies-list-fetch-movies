@@ -92,7 +92,7 @@ export const FindMovie: React.FC = ({ onChangeMovies }) => {
           </div>
           {errorMessage && (
             <p className="help is-danger" data-cy="errorMessage">
-              Can&apos;t find a movie with such a title
+              {errorMessage}
             </p>
           )}
         </div>

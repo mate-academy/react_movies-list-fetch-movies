@@ -1,10 +1,69 @@
 import React from 'react';
-import './FindMovie.scss';
+import cl from 'classnames';
 
-export const FindMovie: React.FC = () => {
+import './FindMovie.scss';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api';
+import { transformMovieData } from '../../services/transformMovieData';
+
+type Props = {
+  inputValue: string;
+  findedMovie: Movie | null;
+  load: boolean;
+  danger: boolean;
+  changeInputValue: (query: string) => void;
+  changeFindedMovie: (movie: Movie | null) => void;
+  addMovie: (movie: Movie) => void;
+  changeLoad: (value: boolean) => void;
+  toogleDanger: (value: boolean) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({
+  inputValue,
+  findedMovie,
+  load,
+  danger,
+  changeInputValue,
+  changeFindedMovie,
+  addMovie,
+  toogleDanger,
+  changeLoad,
+}) => {
+  const findMovieHandler = (query: string) => {
+    if (query.trim() === '') {
+      toogleDanger(true);
+      changeLoad(false);
+
+      return;
+    }
+
+    toogleDanger(false);
+    changeFindedMovie(null);
+
+    getMovie(query)
+      .then(data => {
+        if ('Title' in data) {
+          changeFindedMovie(transformMovieData(data));
+          toogleDanger(false);
+        } else {
+          toogleDanger(true);
+        }
+      })
+      .catch(() => toogleDanger(true))
+      .finally(() => changeLoad(false));
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    changeLoad(true);
+    findMovieHandler(inputValue.trim());
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +75,25 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cl('input', {
+                'is-danger': danger,
+              })}
+              value={inputValue}
+              onChange={event => {
+                changeInputValue(event.target.value);
+
+                if (danger) {
+                  toogleDanger(false);
+                }
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {danger && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +101,34 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={cl('button is-light', { 'is-loading': load })}
+              disabled={inputValue.trim() === '' ? true : false}
             >
-              Find a movie
+              {findedMovie !== null ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {findedMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => addMovie(findedMovie)}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {findedMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={findedMovie} />
+        </div>
+      )}
     </>
   );
 };

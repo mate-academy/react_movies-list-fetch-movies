@@ -1,10 +1,32 @@
 import React from 'react';
 import './FindMovie.scss';
+import { MovieCard } from '../MovieCard';
+import { MovieData } from '../../types/MovieData';
+import { transformMovieData } from '../../helpers/transformMovie';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onAdd: (movie: Movie) => void;
+  query: string;
+  isError: boolean;
+  isLoading: boolean;
+  movieData: MovieData | null;
+};
+
+export const FindMovie: React.FC<Props> = ({
+  onInputChange,
+  onSubmit,
+  query,
+  isError,
+  isLoading,
+  movieData,
+  onAdd,
+}) => {
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={onSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +38,17 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${isError ? 'is-danger' : ''}`}
+              value={query}
+              onChange={onInputChange}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {isError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +56,34 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              disabled={!query || isLoading}
+              className={`button is-light ${isLoading ? 'is-loading' : ''}`}
             >
-              Find a movie
+              {movieData ? 'Search again' : 'Find a movie'}
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movieData && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => onAdd(transformMovieData(movieData) as Movie)}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movieData && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={transformMovieData(movieData)} />
+        </div>
+      )}
     </>
   );
 };

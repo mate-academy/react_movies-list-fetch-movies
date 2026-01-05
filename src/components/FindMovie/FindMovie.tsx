@@ -1,10 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { MovieData } from '../../types/MovieData';
+import { ResponseError } from '../../types/ReponseError';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
 
 export const FindMovie: React.FC = () => {
+  const [title, setTitle] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!title.trim()) {
+      return;
+    }
+
+    setError(null);
+    setMovie(null);
+
+    try {
+      const response = await getMovie(title.trim());
+
+      if ('Response' in response && response.Response === 'False') {
+        setError((response as ResponseError).Error);
+        setMovie(null);
+      } else {
+        const movieData = response as MovieData;
+        const convertedMovie: Movie = {
+          title: movieData.Title,
+          description: movieData.Plot,
+          imgUrl: movieData.Poster,
+          imdbId: movieData.imdbID,
+          imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
+        };
+
+        setMovie(convertedMovie);
+        setError(null);
+      }
+    } catch (errorMessage) {
+      setError('An unexpected error occurred');
+      setMovie(null);
+    }
+  };
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +61,17 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={classNames('input', { 'is-danger': error })}
+              value={title}
+              onChange={event => setTitle(event.target.value)}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {error}
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -31,6 +80,7 @@ export const FindMovie: React.FC = () => {
               data-cy="searchButton"
               type="submit"
               className="button is-light"
+              disabled={!title.trim()}
             >
               Find a movie
             </button>
@@ -50,7 +100,7 @@ export const FindMovie: React.FC = () => {
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {movie && <MovieCard movie={movie} />}
       </div>
     </>
   );

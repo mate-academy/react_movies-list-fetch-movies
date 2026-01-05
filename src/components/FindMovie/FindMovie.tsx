@@ -42,7 +42,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
           imgUrl:
             movieData.Poster && movieData.Poster !== 'N/A'
               ? movieData.Poster
-              : 'https://placehold.co/360x270?text=no%20preview',
+              : 'https://via.placeholder.com/360x270.png?text=no%20preview',
           imdbId: movieData.imdbID,
           imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
         };

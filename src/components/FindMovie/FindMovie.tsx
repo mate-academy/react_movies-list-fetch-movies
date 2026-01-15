@@ -6,8 +6,8 @@ import { Movie } from '../../types/Movie';
 
 type Props = {
   onAddMovie: (movie: Movie) => void;
-}
-export const FindMovie: React.FC<Props> = ({onAddMovie = () => {}}) => {
+};
+export const FindMovie: React.FC<Props> = ({ onAddMovie = () => {} }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -19,18 +19,20 @@ export const FindMovie: React.FC<Props> = ({onAddMovie = () => {}}) => {
       setError(null);
     }
   };
-  
+
   const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
-    setLoading(true)
+    setLoading(true);
     getMovie(title)
-      .then((res) => {
+      .then(res => {
         if ('Error' in res) {
           setError(res.Error);
           setMovie(null);
+
           return;
-        };
+        }
+
         const normalizedMovie: Movie = {
           imdbId: res.imdbID,
           title: res.Title,
@@ -39,9 +41,10 @@ export const FindMovie: React.FC<Props> = ({onAddMovie = () => {}}) => {
             res.Poster !== 'N/A'
               ? res.Poster
               : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-          imdbUrl: `https://www.imdb.com/title/${res.imdbID}`
-      };
-      setMovie(normalizedMovie);
+          imdbUrl: `https://www.imdb.com/title/${res.imdbID}`,
+        };
+
+        setMovie(normalizedMovie);
       })
       .catch(() => {
         setError('Unexpected error');
@@ -49,21 +52,21 @@ export const FindMovie: React.FC<Props> = ({onAddMovie = () => {}}) => {
       })
       .finally(() => {
         setLoading(false);
-      })
+      });
   };
 
   const handleOnClick = () => {
-    movie && onAddMovie(movie);
+    if (movie) {
+      onAddMovie(movie);
+    }
+
     setTitle('');
     setMovie(null);
-  }
-  
+  };
+
   return (
     <>
-      <form 
-        className="find-movie"
-        onSubmit={handleSubmitForm}
-      >
+      <form className="find-movie" onSubmit={handleSubmitForm}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -93,7 +96,7 @@ export const FindMovie: React.FC<Props> = ({onAddMovie = () => {}}) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className = {`button is-light ${loading ? 'is-loading' : ''}`}
+              className={`button is-light ${loading ? 'is-loading' : ''}`}
               disabled={title.trim() === ''}
             >
               {!movie ? 'Find a movie' : 'Search again'}

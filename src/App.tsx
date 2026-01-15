@@ -9,13 +9,16 @@ export const App = () => {
 
   const addMovie = (movie: Movie) => {
     setMovies(prevMovie => {
-      const exist = movies.some((mov) => mov.imdbId === movie.imdbId);
+      const exist = prevMovie.some(mov => mov.imdbId === movie.imdbId);
+
       if (exist) {
         return prevMovie;
-      };
-      return [...prevMovie, movie]
-    })
+      }
+
+      return [...prevMovie, movie];
+    });
   };
+
   return (
     <div className="page">
       <div className="page-content">
@@ -23,9 +26,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie 
-          onAddMovie={addMovie}
-        />
+        <FindMovie onAddMovie={addMovie} />
       </div>
     </div>
   );

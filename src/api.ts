@@ -1,13 +1,13 @@
 import { MovieData } from './types/MovieData';
-import { ResponseError } from './types/ReponseError';
 
-const API_URL = 'https://www.omdbapi.com/?apikey=your-key';
+const API_KEY = 'b003ea58';
+const API_URL = `https://www.omdbapi.com/?apikey=${API_KEY}`;
 
-export function getMovie(query: string): Promise<MovieData | ResponseError> {
-  return fetch(`${API_URL}&t=${query}`)
-    .then(res => res.json())
+export function getMovie(title: string): Promise<MovieData | ResponseError> {
+  return fetch(`${API_URL}&t=${title}`)
+    .then(response => response.json())
     .catch(() => ({
       Response: 'False',
-      Error: 'unexpected error',
+      Error: 'Unexpected error',
     }));
 }

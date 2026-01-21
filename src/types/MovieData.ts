@@ -1,6 +1,7 @@
 export interface MovieData {
-  Poster: string;
+  Response: 'True';
   Title: string;
+  Poster: string;
   Plot: string;
   imdbID: string;
 }

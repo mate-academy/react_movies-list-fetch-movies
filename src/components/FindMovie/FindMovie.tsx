@@ -1,7 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import { MovieData } from '../../types/MovieData';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  onAdd: (movie: Movie) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+  const [query, setQuery] = useState('');
+  const [moviePreview, setMoviePreview] = useState<Movie | null>(null);
+  const [error, setError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hideTitle, setHideTitle] = useState(false);
+
+  const handleAddClick = () => {
+    if (moviePreview) {
+      onAdd(moviePreview);
+      setQuery('');
+      setMoviePreview(null);
+    }
+  };
+
+  async function receiveMovie(searchQuery: string) {
+    setIsLoading(true);
+
+    try {
+      const result = await getMovie(searchQuery);
+
+      if (result.Response === 'False') {
+        setError(true);
+      } else {
+        const data = result as MovieData;
+
+        const normalizedMovie: Movie = {
+          imdbId: data.imdbID,
+          title: data.Title,
+          description: data.Plot,
+          imgUrl:
+            data.Poster !== 'N/A'
+              ? data.Poster
+              : 'https://via.placeholder.com/360x270.png?text=no%20preview',
+          imdbUrl: `https://www.imdb.com/title/${data.imdbID}/`,
+        };
+
+        setMoviePreview(normalizedMovie);
+      }
+    } catch (err) {
+      setError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
   return (
     <>
       <form className="find-movie">
@@ -16,13 +69,20 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${hideTitle ? 'is-danger' : ''}`}
+              value={query}
+              onChange={event => {
+                setHideTitle(false);
+                setError(false);
+                setQuery(event.target.value);
+              }}
             />
           </div>
-
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,7 +90,16 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={`button is-light ${isLoading ? 'is-loading' : ''}`}
+              disabled={query === ''}
+              onClick={event => {
+                if (!query) {
+                  setHideTitle(true);
+                }
+
+                event.preventDefault();
+                receiveMovie(query);
+              }}
             >
               Find a movie
             </button>
@@ -41,6 +110,8 @@ export const FindMovie: React.FC = () => {
               data-cy="addButton"
               type="button"
               className="button is-primary"
+              onClick={handleAddClick}
+              disabled={!moviePreview}
             >
               Add to the list
             </button>
@@ -50,7 +121,7 @@ export const FindMovie: React.FC = () => {
 
       <div className="container" data-cy="previewContainer">
         <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
+        {moviePreview ? <MovieCard moviePreview={moviePreview} /> : ''}
       </div>
     </>
   );

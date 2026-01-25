@@ -29,17 +29,17 @@ export const FindMovie: React.FC<Props> = ({ newMovie }) => {
 
     getMovie(inputValue)
       .then(data => {
-        if (!data.Title) {
-          return setError(true);
+        if ('Title' in data) {
+          setMovie({
+            title: data.Title,
+            description: data.Plot,
+            imgUrl: data.Poster,
+            imdbUrl: data.imdbID,
+            imdbId: data.imdbID,
+          });
+        } else {
+          setError(true);
         }
-
-        setMovie({
-          title: data.Title,
-          description: data.Plot,
-          imgUrl: data.Poster,
-          imdbUrl: data.imdbID,
-          imdbId: data.imdbID,
-        });
       })
       .finally(() => {
         setLoading(false);
@@ -54,7 +54,7 @@ export const FindMovie: React.FC<Props> = ({ newMovie }) => {
     }
 
     newMovie(movie);
-    setMovie();
+    setMovie(undefined);
   };
 
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

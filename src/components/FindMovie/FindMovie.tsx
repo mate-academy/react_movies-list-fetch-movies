@@ -3,6 +3,7 @@ import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
+import classNames from 'classnames';
 
 type Props = {
   newMovie: (value: Movie) => void;
@@ -14,28 +15,35 @@ export const FindMovie: React.FC<Props> = ({ newMovie }) => {
 
   const [inputValue, setInputValue] = useState('');
 
+  const [loading, setLoading] = useState(false);
+
   const findMovie = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    setLoading(true);
     if (inputValue === '') {
       setError(true);
 
       return;
     }
 
-    getMovie(inputValue).then(data => {
-      if (!data.Title) {
-        return setError(true);
-      }
+    getMovie(inputValue)
+      .then(data => {
+        if (!data.Title) {
+          return setError(true);
+        }
 
-      setMovie({
-        title: data.Title,
-        description: data.Plot,
-        imgUrl: data.Poster,
-        imdbUrl: data.imdbID,
-        imdbId: data.imdbID,
+        setMovie({
+          title: data.Title,
+          description: data.Plot,
+          imgUrl: data.Poster,
+          imdbUrl: data.imdbID,
+          imdbId: data.imdbID,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    });
   };
 
   const addMovie = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -46,16 +54,18 @@ export const FindMovie: React.FC<Props> = ({ newMovie }) => {
     }
 
     newMovie(movie);
+    setMovie();
   };
 
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = event.target.value;
-    const normalizedValue = rawValue.trim().toLowerCase();
+    const normalizedValue = rawValue;
 
     if (normalizedValue === '') {
       setError(false);
     }
 
+    setError(false);
     setInputValue(normalizedValue);
   };
 
@@ -73,7 +83,10 @@ export const FindMovie: React.FC<Props> = ({ newMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${error ? 'is-danger' : ''} `}
+              className={classNames({
+                input: true,
+                'is-danger': error,
+              })}
               value={inputValue}
               onChange={inputHandler}
             />
@@ -91,7 +104,10 @@ export const FindMovie: React.FC<Props> = ({ newMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={classNames({
+                'button is-light': true,
+                'is-loading': loading,
+              })}
               disabled={inputValue === ''}
             >
               Find a movie

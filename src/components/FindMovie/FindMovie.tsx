@@ -55,15 +55,12 @@ export const FindMovie: React.FC<Props> = ({ newMovie }) => {
 
     newMovie(movie);
     setMovie(undefined);
+    setInputValue('');
   };
 
   const inputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = event.target.value;
     const normalizedValue = rawValue;
-
-    if (normalizedValue === '') {
-      setError(false);
-    }
 
     setError(false);
     setInputValue(normalizedValue);

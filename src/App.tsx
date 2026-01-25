@@ -17,9 +17,9 @@ export const App = () => {
         <FindMovie
           newMovie={movie =>
             setMovies(prev => {
-              const data = prev.filter(item => item.imdbId !== movie.imdbId);
+              const exists = prev.some(item => item.imdbId === movie.imdbId);
 
-              return [...data, movie];
+              return exists ? prev : [...prev, movie];
             })
           }
         />

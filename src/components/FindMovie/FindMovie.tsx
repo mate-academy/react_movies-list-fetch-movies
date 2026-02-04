@@ -17,14 +17,16 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const queryTrimmed = query.trim();
+
   const handleFindMovie = () => {
-    if (!query.trim()) {
+    if (!queryTrimmed) {
       return;
     }
 
     setLoading(true);
 
-    getMovie(query.trim())
+    getMovie(queryTrimmed)
       .then((value: MovieData | ResponseError) => {
         setHasError(false);
         setMovie(null);
@@ -104,7 +106,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               className={classNames('button', 'is-light', {
                 'is-loading': loading,
               })}
-              disabled={!query.length}
+              disabled={!queryTrimmed.length}
             >
               Find a movie
             </button>

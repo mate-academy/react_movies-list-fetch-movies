@@ -1,13 +1,27 @@
 import { MovieData } from './types/MovieData';
-import { ResponseError } from './types/ReponseError';
+import { ResponseError } from './types/ResponseError';
 
-const API_URL = 'https://www.omdbapi.com/?apikey=your-key';
+const BASE_URL = 'https://www.omdbapi.com/';
+const API_KEY = import.meta.env.VITE_OMDB_API_KEY;
 
-export function getMovie(query: string): Promise<MovieData | ResponseError> {
-  return fetch(`${API_URL}&t=${query}`)
-    .then(res => res.json())
-    .catch(() => ({
+export async function getMovie(
+  query: string,
+): Promise<MovieData | ResponseError> {
+  try {
+    const safeQuery = encodeURIComponent(query.trim());
+    const url = `${BASE_URL}?apikey=${API_KEY}&t=${safeQuery}`;
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Network error: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (error: unknown) {
+    return {
       Response: 'False',
-      Error: 'unexpected error',
-    }));
+      Error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
 }

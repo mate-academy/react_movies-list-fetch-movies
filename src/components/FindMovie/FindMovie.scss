@@ -1,3 +1,32 @@
 .find-movie {
   margin-bottom: 20px;
 }
+
+.is-loading{
+  // content: '';
+  // display: flex;
+  // width: 100%;
+  // justify-content: center;
+  // align-items: center;
+
+  &::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    margin: auto;
+    border: 0.1em solid #ddd;
+    border-left-color: #000;
+    animation: load8 1.2s infinite linear;
+  }
+}
+
+@keyframes load8 {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

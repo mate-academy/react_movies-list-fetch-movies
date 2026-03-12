@@ -11,9 +11,9 @@ export const MovieCard: React.FC<Props> = ({ movie }) => (
     <div className="card-image">
       <figure className="image is-4by3">
         <img
-          data-cy="previewPoster"  // ← это решает тест "default image"
+          data-cy="moviePoster"  // ← важно! именно moviePoster, а не previewPoster
           src={movie.imgUrl}
-          alt="Film logo"
+          alt={movie.title || 'Movie poster'}
         />
       </figure>
     </div>

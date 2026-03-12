@@ -7,53 +7,46 @@ import { Movie } from '../../types/Movie';
 import { MovieCard } from '../MovieCard';
 
 type Props = {
-  onAddMovie: (newMovie: Movie) => void;
+  onAdd: (movie: Movie) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState('');
   const [previewMovie, setPreviewMovie] = useState<Movie | null>(null);
 
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
-    setErrorMessage('');
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const trimmedTitle = title.trim();
-    if (!trimmedTitle) {
-      return;
-    }
+    const trimmed = title.trim();
+    if (!trimmed) return;
 
     setLoading(true);
-    setErrorMessage('');
+    setError('');
     setPreviewMovie(null);
 
     try {
-      const response = await getMovie(trimmedTitle);
+      const response = await getMovie(trimmed);
 
-      if ('Error' in response) {
-        setErrorMessage("Can't find a movie with such a title");
+      if ('Response' in response && response.Response === 'False') {
+        setError("Can't find a movie with such a title");
       } else {
         const movie: Movie = {
           title: response.Title,
           description: response.Plot || '',
           imgUrl:
-            response.Poster && response.Poster !== 'N/A'
+            response.Poster !== 'N/A'
               ? response.Poster
               : 'https://via.placeholder.com/360x270.png?text=no%20preview',
-          imdbId: response.imdbID,
           imdbUrl: `https://www.imdb.com/title/${response.imdbID}`,
+          imdbId: response.imdbID,
         };
 
         setPreviewMovie(movie);
       }
     } catch {
-      setErrorMessage("Can't find a movie with such a title");
+      setError("Can't find a movie with such a title");
     } finally {
       setLoading(false);
     }
@@ -61,10 +54,10 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
 
   const handleAdd = () => {
     if (previewMovie) {
-      onAddMovie(previewMovie);
+      onAdd(previewMovie);
       setTitle('');
       setPreviewMovie(null);
-      setErrorMessage('');
+      setError('');
     }
   };
 
@@ -81,15 +74,18 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={classNames('input', { 'is-danger': !!errorMessage })}
+              className={classNames('input', { 'is-danger': !!error })}
               value={title}
-              onChange={handleTitleChange}
+              onChange={e => {
+                setTitle(e.target.value);
+                setError('');
+              }}
             />
           </div>
 
-          {errorMessage && (
+          {error && (
             <p className="help is-danger" data-cy="errorMessage">
-              {errorMessage}
+              {error}
             </p>
           )}
         </div>
@@ -99,7 +95,7 @@ export const FindMovie: React.FC<Props> = ({ onAddMovie }) => {
             <button
               data-cy="searchButton"
               type="submit"
-              className={classNames('button is-light', { 'is-loading': loading })}
+              className={classNames('button is-link', { 'is-loading': loading })}
               disabled={loading || !title.trim()}
             >
               Find a movie

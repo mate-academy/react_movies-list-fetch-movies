@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
@@ -7,19 +7,14 @@ import { Movie } from './types/Movie';
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
 
-  const addMovie = useCallback((newMovie: Movie) => {
-    setMovies(currentMovies => {
-      const exists = currentMovies.some(
-        movie => movie.imdbId === newMovie.imdbId,
-      );
-
-      if (exists) {
-        return [...currentMovies];
+  const handleAddMovie = (movie: Movie) => {
+    setMovies(prev => {
+      if (prev.some(m => m.imdbId === movie.imdbId)) {
+        return prev; // возвращаем тот же массив → React не перерисует заново
       }
-
-      return [...currentMovies, newMovie];
+      return [...prev, movie];
     });
-  }, []);
+  };
 
   return (
     <div className="page">
@@ -28,7 +23,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie onAddMovie={addMovie} />
+        <FindMovie onAdd={handleAddMovie} />
       </div>
     </div>
   );

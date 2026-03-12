@@ -1,14 +1,11 @@
 import { MovieData } from './types/MovieData';
-import { ResponseError } from './types/ReponseError'; // исправил опечатку в названии файла (ReponseError → ResponseError)
+import { ResponseError } from './types/ReponseError';
 
-const API_KEY = 'd28f3f32'; // ← твой ключ (лучше вынести в .env)
+const API_KEY = 'd28f3f32';
 
 const BASE_URL = 'https://www.omdbapi.com/';
 
 export function getMovie(query: string): Promise<MovieData | ResponseError> {
-  // теперь функция принимает только один аргумент — query
-  // ключ хранится внутри файла (или можно вынести в .env)
-
   const url = `${BASE_URL}?apikey=${API_KEY}&t=${encodeURIComponent(query)}`;
 
   return fetch(url)
@@ -19,7 +16,6 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
       return res.json();
     })
     .then(data => {
-      // если сервер вернул ошибку в JSON
       if ('Response' in data && data.Response === 'False') {
         return {
           Response: 'False',
@@ -28,11 +24,8 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
       }
       return data as MovieData;
     })
-    .catch(error => {
-      console.error('API request failed:', error);
-      return {
-        Response: 'False',
-        Error: 'unexpected error',
-      } as ResponseError;
-    });
+    .catch(() => ({
+      Response: 'False',
+      Error: 'unexpected error',
+    }));
 }

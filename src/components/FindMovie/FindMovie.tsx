@@ -83,6 +83,8 @@ export const FindMovie: React.FC<Props> = ({ onMovieAdd }: Props) => {
 
       onMovieAdd(movie);
       setMovie(null);
+      setIsQueryEmpty(true);
+      inputRef.current!.value = '';
     },
     [movie, onMovieAdd],
   );

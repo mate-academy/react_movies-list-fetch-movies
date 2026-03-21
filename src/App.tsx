@@ -2,10 +2,10 @@ import { useState } from 'react';
 import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
-import { MovieData } from './types/MovieData';
+import { NormalizedMovie } from './types/NormalizedMovie';
 
 export const App = () => {
-  const [movies, setMovies] = useState<MovieData[]>([]);
+  const [movies, setMovies] = useState<NormalizedMovie[]>([]);
 
   return (
     <div className="page">

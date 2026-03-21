@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import { getMovie } from '../../api';
-import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 import { clsx } from 'clsx';
+import { NormalizedMovie } from '../../types/NormalizedMovie';
 
 interface Props {
-  movies: MovieData[];
-  onMovieAdd: (movie: MovieData[]) => void;
+  movies: NormalizedMovie[];
+  onMovieAdd: (movie: NormalizedMovie[]) => void;
 }
 
 export const FindMovie: React.FC<Props> = ({ movies, onMovieAdd }) => {
   const [movieTitle, setMovieTitle] = useState('');
-  const [foundedMovie, setFoundedMovie] = useState<MovieData | null>(null);
+  const [foundedMovie, setFoundedMovie] = useState<NormalizedMovie | null>(
+    null,
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -28,7 +30,16 @@ export const FindMovie: React.FC<Props> = ({ movies, onMovieAdd }) => {
           return;
         }
 
-        setFoundedMovie(movie);
+        const newMovie = {
+          ...movie,
+          Poster:
+            movie.Poster === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : movie.Poster,
+          imdbUrl: `https://www.imdb.com/title/${movie.imdbID}`,
+        };
+
+        setFoundedMovie(newMovie);
       })
       .finally(() => {
         setLoading(false);
@@ -42,7 +53,7 @@ export const FindMovie: React.FC<Props> = ({ movies, onMovieAdd }) => {
     setError('');
   };
 
-  const handleMovieAdd = (newMovie: MovieData) => {
+  const handleMovieAdd = (newMovie: NormalizedMovie) => {
     const duplicate = movies.find(movie => movie.imdbID === newMovie.imdbID);
 
     if (!duplicate) {

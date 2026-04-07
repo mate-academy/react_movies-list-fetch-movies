@@ -40,13 +40,16 @@ export const FindMovie: React.FC<Props> = ({
       const data = await getMovie(title.trim());
 
       if (!isMovieData(data)) {
-        setError(data.Error || 'Помилка при завантаженні');
+        setError(data.Error || 'Error loading movie');
         setPreview(null);
       } else {
         const movie: Movie = {
           imdbId: data.imdbID,
           title: data.Title,
-          description: data.Plot || 'No description',
+          description:
+            data.Plot && data.Plot !== 'N/A'
+              ? data.Plot
+              : 'No description available',
           imgUrl: data.Poster !== 'N/A' ? data.Poster : defaultPoster,
           imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
         };
@@ -54,7 +57,7 @@ export const FindMovie: React.FC<Props> = ({
         setPreview(movie);
       }
     } catch {
-      setError('Помилка при завантаженні фільму');
+      setError('Error loading movie');
       setPreview(null);
     } finally {
       setLoading(false);

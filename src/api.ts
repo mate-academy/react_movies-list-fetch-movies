@@ -8,6 +8,6 @@ export function getMovie(query: string): Promise<MovieData | ResponseError> {
     .then(res => res.json())
     .catch(() => ({
       Response: 'False',
-      Error: 'Unexpected error',
+      Error: 'unexpected error',
     }));
 }

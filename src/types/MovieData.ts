@@ -4,3 +4,8 @@ export interface MovieData {
   Plot: string;
   imdbID: string;
 }
+
+export interface ResponseError {
+  Response: 'False';
+  Error: string;
+}

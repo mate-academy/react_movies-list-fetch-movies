@@ -5,7 +5,10 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="page">
@@ -14,7 +17,16 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          query={query}
+          setQuery={setQuery}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          movie={movie}
+          movies={movies}
+          setMovie={setMovie}
+          setMovies={setMovies}
+        />
       </div>
     </div>
   );

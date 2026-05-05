@@ -99,7 +99,10 @@ export const FindMovie: React.FC<Props> = ({
             movie={{
               title: foundMovie.Title,
               description: foundMovie.Plot,
-              imgUrl: foundMovie.Poster,
+              imgUrl:
+                foundMovie.Poster === 'N/A'
+                  ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+                  : foundMovie.Poster,
               imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
               imdbId: foundMovie.imdbID,
             }}

@@ -49,18 +49,26 @@ export const App = () => {
       return;
     }
 
-    const movie: Movie = {
-      title: foundMovie.Title,
-      description: foundMovie.Plot,
-      imgUrl:
-        foundMovie.Poster === 'N/A'
-          ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-          : foundMovie.Poster,
-      imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
-      imdbId: foundMovie.imdbID,
-    };
+    const alreadyAdded = movies.some(
+      movie => movie.imdbId === foundMovie.imdbID,
+    );
 
-    setMovies(currentMovies => [...currentMovies, movie]);
+    if (!alreadyAdded) {
+      setMovies(currentMovies => [
+        ...currentMovies,
+        {
+          title: foundMovie.Title,
+          description: foundMovie.Plot,
+          imgUrl:
+            foundMovie.Poster === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : foundMovie.Poster,
+          imdbUrl: `https://www.imdb.com/title/${foundMovie.imdbID}`,
+          imdbId: foundMovie.imdbID,
+        },
+      ]);
+    }
+
     setFoundMovie(null);
     setQuery('');
   };

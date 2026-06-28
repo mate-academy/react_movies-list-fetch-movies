@@ -1,0 +1,479 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: src/**/*, README.md-o repomix-output.md
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+src/
+  components/
+    FindMovie/
+      FindMovie.scss
+      FindMovie.tsx
+      index.tsx
+    MovieCard/
+      index.tsx
+      MovieCard.scss
+      MovieCard.tsx
+    MoviesList/
+      index.tsx
+      MoviesList.scss
+      MoviesList.tsx
+  types/
+    Movie.ts
+    MovieData.ts
+    ReponseError.ts
+  api.ts
+  App.scss
+  App.tsx
+  index.tsx
+  vite-env.d.ts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/components/FindMovie/FindMovie.scss">
+.find-movie {
+  margin-bottom: 20px;
+}
+</file>
+
+<file path="src/components/FindMovie/index.tsx">
+export * from './FindMovie';
+</file>
+
+<file path="src/components/MovieCard/index.tsx">
+export * from './MovieCard';
+</file>
+
+<file path="src/components/MoviesList/index.tsx">
+export * from './MoviesList';
+</file>
+
+<file path="src/components/MoviesList/MoviesList.scss">
+.movies {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+</file>
+
+<file path="src/types/Movie.ts">
+export interface Movie {
+  title: string;
+  description: string;
+  imgUrl: string;
+  imdbUrl: string;
+  imdbId: string;
+}
+</file>
+
+<file path="src/types/MovieData.ts">
+export interface MovieData {
+  Poster: string;
+  Title: string;
+  Plot: string;
+  imdbID: string;
+}
+</file>
+
+<file path="src/vite-env.d.ts">
+/// <reference types="vite/client" />
+</file>
+
+<file path="src/components/MovieCard/MovieCard.scss">
+.card-image img {
+  object-fit: contain;
+}
+</file>
+
+<file path="src/types/ReponseError.ts">
+export interface ResponseError {
+  Response: 'False';
+  Error: string;
+}
+</file>
+
+<file path="src/App.scss">
+.page {
+  display: grid;
+  grid-template: auto / 1fr 400px;
+  column-gap: 20px;
+  min-height: 100vh;
+}
+
+.page-content {
+  padding: 20px;
+}
+
+.sidebar {
+  padding: 20px;
+  border-left: 1px solid lightgray;
+}
+</file>
+
+<file path="src/index.tsx">
+import { createRoot } from 'react-dom/client';
+import 'bulma/css/bulma.css';
+import { App } from './App';
+
+createRoot(document.getElementById('root') as HTMLElement).render(<App />);
+</file>
+
+<file path="src/api.ts">
+import { Movie } from './types/Movie';
+import { MovieData } from './types/MovieData';
+import { ResponseError } from './types/ReponseError';
+
+const API_URL = 'https://www.omdbapi.com/?apikey=cb2f87';
+
+// trancformation datas
+function mapToMovie(dataMovie: MovieData) {
+  const DEFAULT_POSTER =
+    'https://via.placeholder.com/360x270.png?text=no%20preview';
+
+  return {
+    title: dataMovie.Title,
+    description: dataMovie.Plot,
+    imgUrl:
+      dataMovie.Poster && dataMovie.Poster !== 'N/A'
+        ? dataMovie.Poster
+        : DEFAULT_POSTER,
+    imdbUrl: `https://www.imdb.com/title/${dataMovie.imdbID}`,
+    imdbId: dataMovie.imdbID,
+  };
+}
+
+export async function getMovie(query: string): Promise<Movie> {
+  const response = await fetch(`${API_URL}&t=${query}`);
+
+  if (!response.ok) {
+    throw new Error('unexpected error');
+  }
+
+  const dataMovie: MovieData | ResponseError = await response.json();
+
+  if ('Error' in dataMovie) {
+    throw new Error(dataMovie.Error || 'Movie not found!');
+  }
+
+  return mapToMovie(dataMovie);
+}
+</file>
+
+<file path="src/components/MoviesList/MoviesList.tsx">
+import React from 'react';
+
+import './MoviesList.scss';
+import { MovieCard } from '../MovieCard';
+import { Movie } from '../../types/Movie';
+
+type Props = {
+  movies: Movie[];
+};
+
+export const MoviesList: React.FC<Props> = ({ movies }) => (
+  <div className="movies">
+    {movies.map(movie => (
+      <MovieCard key={movie.imdbId} movie={movie} />
+    ))}
+  </div>
+);
+</file>
+
+<file path="src/App.tsx">
+import { useEffect, useState } from 'react';
+import './App.scss';
+import { MoviesList } from './components/MoviesList';
+import { FindMovie } from './components/FindMovie';
+import { Movie } from './types/Movie';
+import { getMovie } from './api';
+
+export const App = () => {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [findMovie, setFindMovie] = useState<Movie | null>(null);
+  const [query, setQuery] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    if (!query) {
+      return;
+    }
+
+    let isCurrent = true;
+
+    setIsLoading(true);
+
+    getMovie(query)
+      .then(data => {
+        if (isCurrent) {
+          setFindMovie(data);
+          setError(null);
+        }
+      })
+      .catch((err: unknown) => {
+        if (!isCurrent) {
+          return;
+        }
+
+        if (err instanceof Error) {
+          if (err.message === 'Movie not found!') {
+            setError("Can't find a movie with such a title");
+          } else {
+            setError('Произошла ошибка при загрузке данных');
+          }
+        } else {
+          setError('Произошла непредвиденная ошибка');
+        }
+
+        setFindMovie(null);
+      })
+      .finally(() => {
+        if (isCurrent) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [query, counter]);
+
+  // helper for added the movie to Array movies(only dublicate)
+  const handleAddMovie = (newMovie: Movie) => {
+    setMovies(prevMovies => {
+      const existingMovie = prevMovies.find(
+        movie => movie.imdbId === newMovie.imdbId,
+      );
+
+      if (existingMovie) {
+        setFindMovie(null);
+
+        return prevMovies;
+      }
+
+      return [...prevMovies, newMovie];
+    });
+  };
+
+  const handleSearch = (text: string) => {
+    setQuery(text);
+    setCounter(prev => prev + 1);
+  };
+
+  return (
+    <div className="page">
+      <div className="page-content">
+        <MoviesList movies={movies} />
+      </div>
+
+      <div className="sidebar">
+        <FindMovie
+          findMovie={findMovie}
+          setFindMovie={setFindMovie}
+          addMovie={handleAddMovie}
+          onSearch={handleSearch}
+          error={error}
+          setError={setError}
+          isLoading={isLoading}
+        />
+      </div>
+    </div>
+  );
+};
+</file>
+
+<file path="src/components/FindMovie/FindMovie.tsx">
+import React, { useState } from 'react';
+import cn from 'classnames';
+import './FindMovie.scss';
+import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
+
+type Props = {
+  findMovie: Movie | null;
+  addMovie: (movies: Movie) => void;
+  onSearch: (text: string) => void;
+  setFindMovie: (movies: Movie | null) => void;
+  setError: (err: string | null) => void;
+  error: string | null;
+  isLoading: boolean;
+};
+
+export const FindMovie: React.FC<Props> = ({
+  findMovie,
+  addMovie,
+  onSearch,
+  setFindMovie,
+  setError,
+  error,
+  isLoading,
+}) => {
+  const [inputedText, setInputedText] = useState('');
+
+  const isBtnFindDisabled = inputedText.trim() === '';
+
+  return (
+    <>
+      <form className="find-movie">
+        <div className="field">
+          <label className="label" htmlFor="movie-title">
+            Movie title
+          </label>
+
+          <div className="control">
+            <input
+              value={inputedText}
+              data-cy="titleField"
+              type="text"
+              id="movie-title"
+              placeholder="Enter a title to search"
+              className={cn('input', error ? 'is-danger' : '')}
+              onChange={e => {
+                setInputedText(e.target.value);
+                setError(null);
+              }}
+            />
+          </div>
+
+          {error && (
+            <p className="help is-danger" data-cy="errorMessage">
+              {error}
+            </p>
+          )}
+        </div>
+
+        <div className="field is-grouped">
+          <div className="control">
+            <button
+              disabled={isBtnFindDisabled}
+              data-cy="searchButton"
+              type="submit"
+              className={cn(
+                'button is-light',
+                isLoading ? 'is-loading' : false,
+              )}
+              onClick={e => {
+                e.preventDefault();
+                onSearch(inputedText);
+              }}
+            >
+              Find a movie
+            </button>
+          </div>
+
+          {findMovie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={e => {
+                  e.preventDefault();
+                  addMovie(findMovie);
+                  setInputedText('');
+                  setFindMovie(null);
+                }}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
+        </div>
+      </form>
+
+      {findMovie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          {findMovie && <MovieCard movie={findMovie} />}
+        </div>
+      )}
+    </>
+  );
+};
+</file>
+
+<file path="src/components/MovieCard/MovieCard.tsx">
+import React from 'react';
+import { Movie } from '../../types/Movie';
+import './MovieCard.scss';
+
+type Props = {
+  movie: Movie;
+};
+
+export const MovieCard: React.FC<Props> = ({ movie }) => {
+  return (
+    <div className="card" data-cy="movieCard">
+      <div className="card-image">
+        <figure className="image is-4by3">
+          <img data-cy="moviePoster" src={movie.imgUrl} alt="Film logo" />
+        </figure>
+      </div>
+      <div className="card-content">
+        <div className="media">
+          <div className="media-left">
+            <figure className="image is-48x48">
+              <img src="images/imdb-logo.jpeg" alt="imdb" />
+            </figure>
+          </div>
+          <div className="media-content">
+            <p className="title is-8" data-cy="movieTitle">
+              {movie.title}
+            </p>
+          </div>
+        </div>
+
+        <div className="content" data-cy="movieDescription">
+          {movie.description}
+          <br />
+          <a href={movie.imdbUrl} data-cy="movieURL">
+            IMDB
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+};
+</file>
+
+</files>

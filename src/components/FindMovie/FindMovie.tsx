@@ -91,7 +91,7 @@ export const FindMovie: React.FC<Props> = ({ onAdd, movies }) => {
               id="movie-title"
               placeholder="Enter a title to search"
               className={classNames('input', {
-                'is- danger': error,
+                'is-danger': error,
               })}
               value={title}
               onChange={eventInput => {

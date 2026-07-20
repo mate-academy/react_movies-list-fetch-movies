@@ -1,3 +1,15 @@
-.card-image img {
-  object-fit: contain;
+.card {
+  background-color: hsl(221deg, 14%, 9%);
+  color: hsl(221deg, 14%, 71%);
+  box-shadow:
+    0 0.5em 1em -0.13em hsla(0deg, 0%, 100%, 0.1),
+    0 0 0 1px hsla(0deg, 0%, 100%, 0.02);
+
+  .card-image img {
+    object-fit: contain;
+  }
+
+  a {
+    color: hsl(233deg, 100%, 73%);
+  }
 }

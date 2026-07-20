@@ -1,3 +1,45 @@
+$input-bg: hsl(221deg, 14%, 9%);
+$input-focus: hsl(233deg, 100%, 63%);
+$input-border-color: hsl(221deg, 14%, 24%);
+$input-color: hsl(221deg, 14%, 24%);
+$input-color-focus: hsl(221deg, 14%, 93%);
+$input-border-radius: 0.38rem;
+$button-bg: hsla(221deg, 14%, 96%, 1);
+$button-border-color: hsla(221deg, 14%, 96%, 1);
+
 .find-movie {
   margin-bottom: 20px;
+
+  .label {
+    color: hsl(0deg, 0%, 100%);
+  }
+
+  .input {
+    background-color: $input-bg;
+    border-color: $input-border-color;
+    border-radius: $input-border-radius;
+    color: hsl(221deg, 14%, 93%);
+
+    &:focus {
+      border-color: $input-focus;
+      color: $input-color-focus;
+    }
+
+    &::placeholder {
+      color: hsl(0deg, 0%, 29%);
+    }
+  }
+
+  .button {
+    border: none;
+    font-size: 16px;
+    padding: 8px 16px;
+    font-weight: 500;
+  }
+}
+
+.title,
+.label {
+  color: hsl(0deg, 0%, 100%);
+  font-weight: 800;
 }

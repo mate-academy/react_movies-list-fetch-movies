@@ -5,9 +5,16 @@ import { Movie } from '../../types/Movie';
 type Props = {
   findMovie: (query: string) => void;
   movies: Movie[];
+  isError: boolean;
+  setIsError: (err: boolean) => void;
 };
 
-export const FindMovie: React.FC<Props> = ({ findMovie, movies }) => {
+export const FindMovie: React.FC<Props> = ({
+  findMovie,
+  movies,
+  isError,
+  setIsError,
+}) => {
   const [movieTitle, setMovieTitle] = useState('');
 
   return (
@@ -26,11 +33,14 @@ export const FindMovie: React.FC<Props> = ({ findMovie, movies }) => {
               placeholder="Enter a title to search"
               className={`input ${!movies && 'is-danger'}`}
               value={movieTitle}
-              onChange={event => setMovieTitle(event.target.value)}
+              onChange={event => {
+                setMovieTitle(event.target.value);
+                setIsError(false);
+              }}
             />
           </div>
 
-          {!movies && (
+          {isError && (
             <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>

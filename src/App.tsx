@@ -8,10 +8,12 @@ export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   // const [query, setQuery] = useState('Star Wars');
 
+  const [isError, setIsError] = useState(false);
+
   const findMovie = (query: string) => {
     getMovie(query)
       .then(movie => {
-        if (!movies.includes(movie)) {
+        if (!movies.some(m => m.imdbId !== movie.imdbID)) {
           setMovies(prev => [...prev, movie]);
         }
       })
@@ -25,7 +27,12 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie findMovie={findMovie} movies={movies} />
+        <FindMovie
+          findMovie={findMovie}
+          movies={movies}
+          isError={isError}
+          setIsError={setIsError}
+        />
       </div>
     </div>
   );

@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { Movie } from '../../types/Movie';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  findMovie: (query: string) => void;
+  movies: Movie[];
+};
+
+export const FindMovie: React.FC<Props> = ({ findMovie, movies }) => {
+  const [movieTitle, setMovieTitle] = useState('');
+
   return (
     <>
       <form className="find-movie">
@@ -16,13 +24,17 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={`input ${!movies && 'is-danger'}`}
+              value={movieTitle}
+              onChange={event => setMovieTitle(event.target.value)}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {!movies && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -31,6 +43,10 @@ export const FindMovie: React.FC = () => {
               data-cy="searchButton"
               type="submit"
               className="button is-light"
+              onClick={event => {
+                event.preventDefault();
+                findMovie(movieTitle);
+              }}
             >
               Find a movie
             </button>

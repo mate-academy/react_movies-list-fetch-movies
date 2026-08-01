@@ -1,11 +1,22 @@
-import { useState } from 'react';
-import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
+import { getMovie } from './api';
+import { useState } from 'react';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  // const [query, setQuery] = useState('Star Wars');
+
+  const findMovie = (query: string) => {
+    getMovie(query)
+      .then(movie => {
+        if (!movies.includes(movie)) {
+          setMovies(prev => [...prev, movie]);
+        }
+      })
+      .catch(() => setIsError(true));
+  };
 
   return (
     <div className="page">
@@ -14,7 +25,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie findMovie={findMovie} movies={movies} />
       </div>
     </div>
   );

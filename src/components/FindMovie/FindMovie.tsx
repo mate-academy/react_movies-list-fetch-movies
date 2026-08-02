@@ -29,7 +29,7 @@ export const FindMovie: React.FC<Props> = ({
           throw new Error('Film not found');
         }
 
-        const normolizedMovie = {
+        const normalizedMovie = {
           ...data,
           Poster:
             data.Poster === 'N/A'
@@ -37,7 +37,7 @@ export const FindMovie: React.FC<Props> = ({
               : data.Poster,
         };
 
-        setMovie(normolizedMovie);
+        setMovie(normalizedMovie);
       })
       .catch(() => {
         setIsError(true);

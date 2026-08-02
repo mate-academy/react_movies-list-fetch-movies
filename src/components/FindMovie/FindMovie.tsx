@@ -1,21 +1,50 @@
 import React, { useState } from 'react';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
+import { MovieCard } from '../MovieCard';
+import { getMovie } from '../../api';
 
 type Props = {
-  findMovie: (query: string) => void;
-  movies: Movie[];
+  setMovies: (movies: Movie[]) => void;
   isError: boolean;
   setIsError: (err: boolean) => void;
+  isLoading: boolean;
+  setIsLoading: (el: boolean) => void;
 };
 
 export const FindMovie: React.FC<Props> = ({
-  findMovie,
-  movies,
   isError,
   setIsError,
+  isLoading,
+  setIsLoading,
+  setMovies,
 }) => {
   const [movieTitle, setMovieTitle] = useState('');
+  const [movie, setMovie] = useState<Movie | null>(null);
+
+  const getTheMovie = () => {
+    getMovie(movieTitle)
+      .then(data => {
+        if (!data) {
+          throw new Error('Film not found');
+        }
+
+        const normolizedMovie = {
+          ...data,
+          Poster:
+            data.Poster === 'N/A'
+              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+              : data.Poster,
+        };
+
+        setMovie(normolizedMovie);
+      })
+      .catch(() => {
+        setIsError(true);
+        setIsLoading(false);
+      })
+      .finally(() => setIsLoading(false));
+  };
 
   return (
     <>
@@ -31,7 +60,7 @@ export const FindMovie: React.FC<Props> = ({
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className={`input ${!movies && 'is-danger'}`}
+              className={`input ${movieTitle.length === 0 && 'is-danger'}`}
               value={movieTitle}
               onChange={event => {
                 setMovieTitle(event.target.value);
@@ -52,32 +81,47 @@ export const FindMovie: React.FC<Props> = ({
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={`button is-light ${isLoading ? 'is-loading' : ''}`}
+              disabled={movieTitle.length === 0}
               onClick={event => {
                 event.preventDefault();
-                findMovie(movieTitle);
+                if (movieTitle.length === 0) {
+                  return;
+                } else {
+                  // findMovie(movieTitle);
+                  getTheMovie();
+                }
               }}
             >
               Find a movie
             </button>
           </div>
 
-          <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
-          </div>
+          {movie && (
+            <div className="control">
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => {
+                  setMovies(prevMovies => [...prevMovies, movie]);
+                  setMovie(null);
+                  setMovieTitle('');
+                }}
+              >
+                Add to the list
+              </button>
+            </div>
+          )}
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={movie} />
+        </div>
+      )}
     </>
   );
 };

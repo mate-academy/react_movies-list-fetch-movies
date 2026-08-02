@@ -1,24 +1,13 @@
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
-import { getMovie } from './api';
 import { useState } from 'react';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  // const [query, setQuery] = useState('Star Wars');
+  const [isLoading, setIsLoading] = useState(false);
 
   const [isError, setIsError] = useState(false);
-
-  const findMovie = (query: string) => {
-    getMovie(query)
-      .then(movie => {
-        if (!movies.some(m => m.imdbId !== movie.imdbID)) {
-          setMovies(prev => [...prev, movie]);
-        }
-      })
-      .catch(() => setIsError(true));
-  };
 
   return (
     <div className="page">
@@ -28,10 +17,11 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          findMovie={findMovie}
-          movies={movies}
+          setMovies={setMovies}
           isError={isError}
           setIsError={setIsError}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
         />
       </div>
     </div>

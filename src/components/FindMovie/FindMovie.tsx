@@ -44,18 +44,21 @@ export const FindMovie: React.FC<Props> = ({
           data.Poster === 'N/A'
             ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
             : data.Poster;
-        const imdbUrl: string = data.Poster;
         const imdbId: string = data.imdbID;
 
         const normalizedMovie = {
           title: title,
           description: description,
           imgUrl: imgUrl,
-          imdbUrl: imdbUrl,
+          imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
           imdbId: imdbId,
         };
 
-        if (!movies.find(el => el.imdbId === data.imdbID)) {
+        if (
+          !movies.find(el => {
+            return el.imdbId === data.imdbID;
+          })
+        ) {
           setMovie(normalizedMovie);
         }
       })
@@ -75,7 +78,6 @@ export const FindMovie: React.FC<Props> = ({
           if (movieTitle.length === 0) {
             return;
           } else {
-            setIsLoading(true);
             getTheMovie();
           }
         }}

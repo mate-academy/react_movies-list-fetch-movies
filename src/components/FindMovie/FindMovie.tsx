@@ -27,6 +27,7 @@ export const FindMovie: React.FC<Props> = ({
   const getTheMovie = () => {
     setIsLoading(true);
     setIsError(false);
+    setMovie(null);
     getMovie(movieTitle)
       .then(data => {
         if (!data || data.Response === 'False') {
@@ -37,15 +38,24 @@ export const FindMovie: React.FC<Props> = ({
           throw new Error('Film not found');
         }
 
+        const title: string = data.Title;
+        const description: string = data.Plot;
+        const imgUrl: string =
+          data.Poster === 'N/A'
+            ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+            : data.Poster;
+        const imdbUrl: string = data.Poster;
+        const imdbId: string = data.imdbID;
+
         const normalizedMovie = {
-          ...data,
-          Poster:
-            data.Poster === 'N/A'
-              ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
-              : data.Poster,
+          title: title,
+          description: description,
+          imgUrl: imgUrl,
+          imdbUrl: imdbUrl,
+          imdbId: imdbId,
         };
 
-        if (!movies.find(el => el.imdbID === data.imdbID)) {
+        if (!movies.find(el => el.imdbId === data.imdbID)) {
           setMovie(normalizedMovie);
         }
       })
@@ -58,7 +68,18 @@ export const FindMovie: React.FC<Props> = ({
 
   return (
     <>
-      <form className="find-movie">
+      <form
+        className="find-movie"
+        onSubmit={event => {
+          event.preventDefault();
+          if (movieTitle.length === 0) {
+            return;
+          } else {
+            setIsLoading(true);
+            getTheMovie();
+          }
+        }}
+      >
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -93,15 +114,15 @@ export const FindMovie: React.FC<Props> = ({
               type="submit"
               className={`button is-light ${isLoading ? 'is-loading' : ''}`}
               disabled={movieTitle.length === 0}
-              onClick={event => {
-                event.preventDefault();
-                if (movieTitle.length === 0) {
-                  return;
-                } else {
-                  setIsLoading(true);
-                  getTheMovie();
-                }
-              }}
+              // onClick={event => {
+              //   event.preventDefault();
+              //   if (movieTitle.length === 0) {
+              //     return;
+              //   } else {
+              //     setIsLoading(true);
+              //     getTheMovie();
+              //   }
+              // }}
             >
               Find a movie
             </button>
@@ -115,7 +136,7 @@ export const FindMovie: React.FC<Props> = ({
                 className="button is-primary"
                 onClick={() => {
                   setMovies(prevMovies => {
-                    if (prevMovies.some(el => el.imdbID === movie.imdbID)) {
+                    if (prevMovies.some(el => el.imdbId === movie.imdbId)) {
                       return prevMovies;
                     }
 

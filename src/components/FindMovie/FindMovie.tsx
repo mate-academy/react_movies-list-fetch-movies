@@ -5,6 +5,7 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 
 type Props = {
+  movies: Movie[];
   setMovies: (movies: Movie[]) => void;
   isError: boolean;
   setIsError: (err: boolean) => void;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({
+  movies,
   isError,
   setIsError,
   isLoading,
@@ -23,8 +25,14 @@ export const FindMovie: React.FC<Props> = ({
   const [movie, setMovie] = useState<Movie | null>(null);
 
   const getTheMovie = () => {
+    setIsLoading(true);
+    setIsError(false);
     getMovie(movieTitle)
       .then(data => {
+        if (!data || data.Response === 'False') {
+          throw new Error('Film not found');
+        }
+
         if (!data) {
           throw new Error('Film not found');
         }
@@ -37,7 +45,9 @@ export const FindMovie: React.FC<Props> = ({
               : data.Poster,
         };
 
-        setMovie(normalizedMovie);
+        if (!movies.find(el => el.imdbID === data.imdbID)) {
+          setMovie(normalizedMovie);
+        }
       })
       .catch(() => {
         setIsError(true);
@@ -62,8 +72,8 @@ export const FindMovie: React.FC<Props> = ({
               placeholder="Enter a title to search"
               className={`input ${movieTitle.length === 0 && 'is-danger'}`}
               value={movieTitle}
-              onChange={event => {
-                setMovieTitle(event.target.value);
+              onChange={e => {
+                setMovieTitle(e.target.value);
                 setIsError(false);
               }}
             />
@@ -88,7 +98,7 @@ export const FindMovie: React.FC<Props> = ({
                 if (movieTitle.length === 0) {
                   return;
                 } else {
-                  // findMovie(movieTitle);
+                  setIsLoading(true);
                   getTheMovie();
                 }
               }}
@@ -104,7 +114,13 @@ export const FindMovie: React.FC<Props> = ({
                 type="button"
                 className="button is-primary"
                 onClick={() => {
-                  setMovies(prevMovies => [...prevMovies, movie]);
+                  setMovies(prevMovies => {
+                    if (prevMovies.some(el => el.imdbID === movie.imdbID)) {
+                      return prevMovies;
+                    }
+
+                    return [...prevMovies, movie];
+                  });
                   setMovie(null);
                   setMovieTitle('');
                 }}

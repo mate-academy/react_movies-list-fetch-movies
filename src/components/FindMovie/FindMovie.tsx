@@ -7,8 +7,7 @@ import { Movie } from '../../types/Movie';
 import { MovieData } from '../../types/MovieData';
 import { MovieCard } from '../MovieCard';
 
-const DEFAULT_POSTER =
-  'https://via.placeholder.com/360x500?text=No+Poster';
+const DEFAULT_POSTER = 'https://via.placeholder.com/360x270.png?text=no%20preview';
 
 type Props = {
   onMovieAdd: (movie: Movie) => void;
@@ -18,26 +17,19 @@ function normalizeMovie(movieData: MovieData): Movie {
   return {
     title: movieData.Title,
     description: movieData.Plot,
-    imgUrl:
-      movieData.Poster === 'N/A'
-        ? DEFAULT_POSTER
-        : movieData.Poster,
+    imgUrl: movieData.Poster === 'N/A' ? DEFAULT_POSTER : movieData.Poster,
     imdbUrl: `https://www.imdb.com/title/${movieData.imdbID}`,
     imdbId: movieData.imdbID,
   };
 }
 
-export const FindMovie: React.FC<Props> = ({
-  onMovieAdd,
-}) => {
+export const FindMovie: React.FC<Props> = ({ onMovieAdd }) => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState<Movie | null>(null);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleTitleChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
     setHasError(false);
   };
@@ -87,10 +79,7 @@ export const FindMovie: React.FC<Props> = ({
 
   return (
     <>
-      <form
-        className="find-movie"
-        onSubmit={handleSubmit}
-      >
+      <form className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -109,10 +98,7 @@ export const FindMovie: React.FC<Props> = ({
           </div>
 
           {hasError && (
-            <p
-              className="help is-danger"
-              data-cy="errorMessage"
-            >
+            <p className="help is-danger" data-cy="errorMessage">
               Can&apos;t find a movie with such a title
             </p>
           )}
@@ -123,9 +109,7 @@ export const FindMovie: React.FC<Props> = ({
             <button
               data-cy="searchButton"
               type="submit"
-              className={`button is-light ${
-                isLoading ? 'is-loading' : ''
-              }`}
+              className={`button is-light ${isLoading ? 'is-loading' : ''}`}
               disabled={!title.trim() || isLoading}
             >
               {movie ? 'Search again' : 'Find a movie'}
@@ -148,10 +132,7 @@ export const FindMovie: React.FC<Props> = ({
       </form>
 
       {movie && (
-        <div
-          className="container"
-          data-cy="previewContainer"
-        >
+        <div className="container" data-cy="previewContainer">
           <h2 className="title">Preview</h2>
 
           <MovieCard movie={movie} />

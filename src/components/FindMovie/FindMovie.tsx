@@ -53,14 +53,6 @@ export const FindMovie: React.FC<Props> = ({
         };
 
         setMovie(normalizedMovie);
-
-        // if (
-        //   !movies.find(el => {
-        //     return el.imdbId === data.imdbID;
-        //   })
-        // ) {
-        //   setMovie(normalizedMovie);
-        // }
       })
       .catch(() => {
         setIsError(true);
@@ -116,15 +108,6 @@ export const FindMovie: React.FC<Props> = ({
               type="submit"
               className={`button is-light ${isLoading ? 'is-loading' : ''}`}
               disabled={movieTitle.length === 0}
-              // onClick={event => {
-              //   event.preventDefault();
-              //   if (movieTitle.length === 0) {
-              //     return;
-              //   } else {
-              //     setIsLoading(true);
-              //     getTheMovie();
-              //   }
-              // }}
             >
               Find a movie
             </button>

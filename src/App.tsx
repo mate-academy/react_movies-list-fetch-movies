@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import './App.scss';
 import { MoviesList } from './components/MoviesList';
 import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
+import { useState } from 'react';
+import './App.scss';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [isError, setIsError] = useState(false);
 
   return (
     <div className="page">
@@ -14,7 +17,13 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie
+          setMovies={setMovies}
+          isError={isError}
+          setIsError={setIsError}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+        />
       </div>
     </div>
   );

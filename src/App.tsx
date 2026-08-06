@@ -17,7 +17,6 @@ export const App = () => {
 
       <div className="sidebar">
         <FindMovie
-          movies={movies}
           setMovies={setMovies}
           isError={isError}
           setIsError={setIsError}

@@ -5,7 +5,6 @@ import { MovieCard } from '../MovieCard';
 import { getMovie } from '../../api';
 
 type Props = {
-  movies: Movie[];
   setMovies: (movies: Movie[]) => void;
   isError: boolean;
   setIsError: (err: boolean) => void;
@@ -14,7 +13,6 @@ type Props = {
 };
 
 export const FindMovie: React.FC<Props> = ({
-  movies,
   isError,
   setIsError,
   isLoading,
@@ -54,13 +52,15 @@ export const FindMovie: React.FC<Props> = ({
           imdbId: imdbId,
         };
 
-        if (
-          !movies.find(el => {
-            return el.imdbId === data.imdbID;
-          })
-        ) {
-          setMovie(normalizedMovie);
-        }
+        setMovie(normalizedMovie);
+
+        // if (
+        //   !movies.find(el => {
+        //     return el.imdbId === data.imdbID;
+        //   })
+        // ) {
+        //   setMovie(normalizedMovie);
+        // }
       })
       .catch(() => {
         setIsError(true);

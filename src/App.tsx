@@ -5,7 +5,23 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 
 export const App = () => {
-  const [movies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+
+  const addPost = ({ movie }: { movie: Movie | null }) => {
+    if (movie) {
+      setMovies(currentMovies => {
+        const alreadyExists = currentMovies.some(
+          m => m.imdbId === movie.imdbId,
+        );
+
+        if (alreadyExists) {
+          return currentMovies;
+        }
+
+        return [...currentMovies, movie];
+      });
+    }
+  };
 
   return (
     <div className="page">
@@ -14,7 +30,7 @@ export const App = () => {
       </div>
 
       <div className="sidebar">
-        <FindMovie />
+        <FindMovie onSubmit={addPost} />
       </div>
     </div>
   );

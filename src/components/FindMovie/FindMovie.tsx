@@ -104,22 +104,25 @@ export const FindMovie: React.FC<Props> = ({ onSubmit }) => {
           </div>
 
           <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-              onClick={handleAdd}
-            >
-              Add to the list
-            </button>
+            {movie && (
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={handleAdd}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
       </form>
-
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {movie && <MovieCard movie={movie} />}
-      </div>
+      {movie && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          {movie && <MovieCard movie={movie} />}
+        </div>
+      )}
     </>
   );
 };

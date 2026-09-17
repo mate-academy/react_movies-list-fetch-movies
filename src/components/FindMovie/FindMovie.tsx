@@ -1,10 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './FindMovie.scss';
+import { getMovie } from '../../api';
+import { Movie } from '../../types/Movie';
+import cn from 'classnames';
+import { MovieCard } from '../MovieCard';
 
-export const FindMovie: React.FC = () => {
+type Props = {
+  onAdd: (newMovie: Movie) => void;
+};
+
+export const FindMovie: React.FC<Props> = ({ onAdd }) => {
+  const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [preview, setPreview] = useState<Movie | null>(null);
+
+  function handlerSubmit(submitEvent: React.FormEvent<HTMLFormElement>) {
+    submitEvent.preventDefault();
+    setIsLoading(true);
+    setHasError(false);
+    getMovie(query)
+      .then(data => {
+        if ('Error' in data) {
+          setHasError(true);
+        } else {
+          const normalizedMovie = {
+            title: data.Title,
+            description: data.Plot,
+            imdbId: data.imdbID,
+            imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
+            imgUrl:
+              data.Poster === 'N/A'
+                ? 'https://via.placeholder.com/360x270.png?text=no%20preview'
+                : data.Poster,
+          };
+
+          setPreview(normalizedMovie);
+        }
+      })
+      .finally(() => setIsLoading(false));
+  }
+
+  function handlerClick() {
+    if (preview) {
+      onAdd(preview);
+      setQuery('');
+      setPreview(null);
+    }
+  }
+
   return (
     <>
-      <form className="find-movie">
+      <form className="find-movie" onSubmit={handlerSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
@@ -16,13 +63,20 @@ export const FindMovie: React.FC = () => {
               type="text"
               id="movie-title"
               placeholder="Enter a title to search"
-              className="input is-danger"
+              className={cn('input', { 'is-danger': hasError })}
+              value={query}
+              onChange={event => {
+                setHasError(false);
+                setQuery(event.target.value);
+              }}
             />
           </div>
 
-          <p className="help is-danger" data-cy="errorMessage">
-            Can&apos;t find a movie with such a title
-          </p>
+          {hasError && (
+            <p className="help is-danger" data-cy="errorMessage">
+              Can&apos;t find a movie with such a title
+            </p>
+          )}
         </div>
 
         <div className="field is-grouped">
@@ -30,28 +84,34 @@ export const FindMovie: React.FC = () => {
             <button
               data-cy="searchButton"
               type="submit"
-              className="button is-light"
+              className={cn('button is-light', { 'is-loading': isLoading })}
+              disabled={!query}
             >
-              Find a movie
+              {!preview ? 'Find a movie' : 'Search again'}
             </button>
           </div>
 
           <div className="control">
-            <button
-              data-cy="addButton"
-              type="button"
-              className="button is-primary"
-            >
-              Add to the list
-            </button>
+            {preview && (
+              <button
+                data-cy="addButton"
+                type="button"
+                className="button is-primary"
+                onClick={() => handlerClick()}
+              >
+                Add to the list
+              </button>
+            )}
           </div>
         </div>
       </form>
 
-      <div className="container" data-cy="previewContainer">
-        <h2 className="title">Preview</h2>
-        {/* <MovieCard movie={movie} /> */}
-      </div>
+      {preview && (
+        <div className="container" data-cy="previewContainer">
+          <h2 className="title">Preview</h2>
+          <MovieCard movie={preview} />
+        </div>
+      )}
     </>
   );
 };

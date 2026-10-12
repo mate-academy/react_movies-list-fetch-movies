@@ -13,3 +13,8 @@ raw_reports
 reports
 cypress/screenshots
 cypress/videos
+<<<<<<< HEAD
+=======
+reports
+LICENSE
+>>>>>>> b046842 (Added AddMovie.ts to project)

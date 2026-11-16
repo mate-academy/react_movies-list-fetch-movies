@@ -6,16 +6,19 @@ import { Movie } from './types/Movie';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [moviesId, setMoviesId] = useState<string[]>([]);
 
   const addMovie = (newMovie: Movie | null) => {
-    if (newMovie) {
-      setMoviesId(prevIds => [...prevIds, newMovie.imdbId]);
-
-      if (!moviesId.includes(newMovie.imdbId)) {
-        setMovies(prevMovies => [...prevMovies, newMovie]);
-      }
+    if (!newMovie) {
+      return;
     }
+
+    setMovies(prevMovies => {
+      const alreadyAdded = prevMovies.some(
+        movie => movie.imdbId === newMovie.imdbId,
+      );
+
+      return alreadyAdded ? prevMovies : [...prevMovies, newMovie];
+    });
   };
 
   return (

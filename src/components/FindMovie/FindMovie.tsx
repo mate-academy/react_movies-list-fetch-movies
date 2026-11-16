@@ -10,6 +10,9 @@ type Props = {
   movies: Movie[];
 };
 
+const DEFAULT_IMG_URL =
+  'https://via.placeholder.com/360x270.png?text=no%20preview';
+
 export const FindMovie = ({ setMovies, movies }: Props) => {
   const [title, setTitle] = useState('');
   const [isError, setIsError] = useState(false);
@@ -45,7 +48,7 @@ export const FindMovie = ({ setMovies, movies }: Props) => {
             title: data.Title,
             description: data.Plot,
             imdbId: data.imdbID,
-            imgUrl: data.Poster,
+            imgUrl: data.Poster !== 'N/A' ? data.Poster : DEFAULT_IMG_URL,
             imdbUrl: `https://www.imdb.com/title/${data.imdbID}`,
           };
 
